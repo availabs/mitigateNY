@@ -1,0 +1,3 @@
+[submodule "src/modules/avl-falcor"]
+	path = src/modules/avl-falcor
+	url = git@github.com:availabs/avl-falcor.git
