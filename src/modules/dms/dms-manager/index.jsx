@@ -8,6 +8,7 @@ import defaultTheme from '../theme/default-theme'
 const DmsManager = ({
 	config, /* DMS config file */
 	path='', /*  url path string  */
+	location={},
 	theme=defaultTheme
 }) => {
 	// check for valid config
@@ -23,9 +24,9 @@ const DmsManager = ({
 	// 	enhanceFormat(config.format)
 	// ,[config.format])
 
-	console.log('dms-manager', config.children?.[0])
+	// console.log('dms-manager', config.children?.[0], path)
 	// create component from config
-	const RenderView = getActiveView(config.children, path, config.format)
+	const RenderView = getActiveView(config.children, path, config.format, location)
 	if(!RenderView) {
 		return <NoRouteMatch path={path} />
 	}

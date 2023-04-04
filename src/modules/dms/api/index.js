@@ -9,10 +9,11 @@ export async function dmsDataLoader ( config, path='/') {
 	const { app , type } = config.format
 	const activeConfigs = getActiveConfig(config.children, path)
 	const activeConfig = activeConfigs[0] || {} //
+	// console.log('dmsDataLoader', activeConfig, path, activeConfigs)
 	const attributeFilter = get(activeConfig,'options.attributes', [])
 
 	
-	let params = getParams(activeConfig.params, path)
+	let params = activeConfig.params
 
 	//console.log('dmsDataLoader', activeConfig, params, 'path:',path)
 	
@@ -24,7 +25,7 @@ export async function dmsDataLoader ( config, path='/') {
   	// console.log('dmsApiController - path, params', path, params)
   	// console.log('falcorCache', JSON.stringify(falcor.getCache(),null,3))
   	
-  	const data =  length ? Object.values(get(
+  	const data = length ? Object.values(get(
   		await falcor.get([
 			...itemReq, 
 			{from: 0, to: length-1}, 
@@ -65,8 +66,6 @@ export async function dmsDataLoader ( config, path='/') {
   	// 	default:
   	// 		return data
   	// }
-
-  	
 }
 
 export async function dmsDataEditor ( config, data, path='/' ) {

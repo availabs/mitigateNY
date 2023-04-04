@@ -71,18 +71,18 @@ const Blog = {
     { 
       type: BlogLayout,
       action: 'list',
-      path: '',
+      path: '/*',
       msg: 'this is root',
       children: [
         { 
           type: "dms-landing",
           action: 'list',
-          path: ''
+          path: '/'
         },
         { 
           type: 'dms-table',
           action: 'list',
-          path: 'admin',
+          path: '/admin',
           options: {
             attributes: [
               'id',
@@ -120,9 +120,8 @@ const Blog = {
         },
         { 
           type: "dms-card",
-          path: 'post',
+          path: '/post/:id?',
           action: 'view',
-          params: ['id'],
           options: {
             mapDataToProps: {
               title: "item:data.title",
@@ -141,14 +140,13 @@ const Blog = {
         { 
           type: "dms-edit",
           action: 'edit',
-          path: 'new',
+          path: '/new',
           redirect: '/blog/admin'
         },
         { 
           type: "dms-edit",
           action: 'edit',
-          path: 'edit',
-          params: ['id']
+          path: '/edit/:id?'
         },
       ]
     },     

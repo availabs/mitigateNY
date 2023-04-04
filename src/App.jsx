@@ -4,22 +4,16 @@ import {
   RouterProvider
 } from "react-router-dom";
 import Blog from "~/pages/blog"
+import Site from '~/pages/site'
 
 
 const routes = [
   {
-    path: "/",
-    element: (
-      <div>
-        My App
-      </div>    
-    ),
-  },
-  {
     path: "about",
     element: <div>About</div>,
   },
-  Blog
+  Blog,
+  Site
 ];
 
 const App = (props) => {

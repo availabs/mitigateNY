@@ -1,6 +1,6 @@
 // import SectionDisplayComp from "./components/SectionDisplayComp"
 //import Table from '~/modules/dms/components/table'
-import { NavLink, Link } from "@remix-run/react";
+import { NavLink, Link } from "react-router-dom";
 //import AuthMenu from '~/modules/auth/AuthMenu'
 
 
@@ -92,10 +92,17 @@ const page = {
   ]
 }
 
-const SiteLayout = ({children, user}) => (
+const SiteLayout = ({children, user, dataItems}) => (
   <div>
     <div className='flex p-2 text-gray-800 border-b w-full'>
-      <NavLink to='/site' className='p-4'>Home</NavLink>
+      {dataItems.map((d,i) => 
+        <NavLink 
+          key={i}
+          to={`/${d.id}`} 
+          className='p-4'
+        >{d.title}</NavLink>)}
+      <div className='flex-1' />
+      <NavLink to='/admin' className='p-4'>Admin</NavLink>
       {/*<div className='flex flex-1 justify-end '>
         <div>
           <AuthMenu user={user} />
@@ -121,7 +128,7 @@ const siteConfig = {
     { 
       type: SiteLayout,
       action: 'list',
-      path: '',
+      path: '/*',
       children: [
         { 
           type: "dms-landing",
@@ -131,13 +138,13 @@ const siteConfig = {
         { 
           type: "dms-edit",
           action: 'edit',
-          path: '',
-          redirect: '/site'
+          path: '/admin',
+          redirect: 'admin'
         },
         { 
           type: 'dms-table',
           action: 'list',
-          path: '',
+          path: '/admin',
           options: {
             attributes: [
               'id',
@@ -153,7 +160,7 @@ const siteConfig = {
               { type: 'link',
                 name: 'Title',
                 text: ':title',
-                to: '/site/page/:id',
+                to: '/:id',
                 filter: "fuzzyText"
               },
               { type: 'date',
@@ -162,7 +169,7 @@ const siteConfig = {
               },
               { type: 'link',
                 name: '',
-                to: '/site/edit/:id',
+                to: '/edit/:id',
                 text: "edit"
               }  
             ],
@@ -177,14 +184,13 @@ const siteConfig = {
         { 
           type: "dms-edit",
           action: 'edit',
-          path: 'edit',
+          path: '/edit/:id',
           params: ['id']
         },
         { 
           type: "dms-card",
-          path: 'page',
-          action: 'view',
-          params: ['id'],        
+          path: '/:id?',
+          action: 'view'
         },
       ]
     },     

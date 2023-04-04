@@ -11,13 +11,13 @@ import {
 
 
 import DmsDraft from '~/modules/dms-custom/draft'
-import blogConfig from './blog.config.jsx'
+import {siteConfig} from './site.config.jsx'
 
 registerDataType('richtext', DmsDraft)
 
 
 async function loader ({ request, params }) {
-  let data = await dmsDataLoader(blogConfig, `/${params['*'] || ''}`)
+  let data = await dmsDataLoader(siteConfig, `/${params['*'] || ''}`)
   // console.log('loader data', params['*'], data)
   return { 
     data,
@@ -28,18 +28,17 @@ async function loader ({ request, params }) {
 async function action ({ request, params }) {
   const form = await request.formData();
   // const pathname = new URL(request.url).pathname.slice(1);
-  return dmsDataEditor(blogConfig, JSON.parse(form.get("data")), params['*'])
+  return dmsDataEditor(siteConfig, JSON.parse(form.get("data")), params['*'])
 };
 
 function DMS() {
     const params = useParams();
-    //console.log('render dms', params)
     return (
       <div>
-        {/*Params: {JSON.stringify(params)}*/}
+        {/*Params: {`/${params['*'] || ''}`}*/}
         <DmsManager 
-          path={`/${params['*'] || ''}`}
-          config={Object.freeze(blogConfig)}
+          path={ `/${params['*'] || ''}` }
+          config={siteConfig}
         />
       </div>
     )
@@ -57,11 +56,10 @@ function ErrorBoundary({ error }) {
 }
 
 const config = {
-  path: 'blog/*',
+  path: '/*',
   element: <DMS />,
   loader: loader,
-  action: action,
-  errorElement: <ErrorBoundary />
+  action: action
 }
 
 export default config

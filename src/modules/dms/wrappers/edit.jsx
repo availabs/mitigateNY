@@ -7,14 +7,12 @@ import get from 'lodash/get'
 export default function EditWrapper({ Component, format, options, params, ...props}) {
 	const attributes = getAttributes(format, options, 'edit')
 	const {'*':path} = useParams()
-	const pathParams = getParams(params, path)
 	const { data, user } = useLoaderData()
 	let status = useActionData()
 	// console.log('EditWrapper',path, 'data', data.filter(d => filterParams(d,pathParams))[0])
 	
-
 	const [item, setItem] = React.useState(
-		data.filter(d => filterParams(d,pathParams))[0] 
+		data.filter(d => filterParams(d,params))[0] 
 		|| {}
 	)
 	const updateAttribute = (attr, value) => {

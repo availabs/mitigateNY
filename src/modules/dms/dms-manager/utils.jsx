@@ -1,6 +1,8 @@
 import Wrappers from '../wrappers'
 import Components from '../components'
+import { matchRoutes } from 'react-router-dom'
 import cloneDeep from 'lodash/cloneDeep'
+import get from 'lodash/get'
 
 const DefaultComponent = Components.devinfo
 const DefaultWrapper = Wrappers.error
@@ -20,33 +22,39 @@ export function filterParams (data, params) {
 	return filter
 }
 
-function configMatcher (config, path, depth ) { 
-	// config matcher for recursive config analysis
-	const params = [...new Set(['', ...path.split('/')])]
-	return [...config.filter(d => {
-		// if the path is an exact match
-		return (d.path === params[depth])   
-			// or if there are no params at this depth
-			// and there is a root config, use that config
-			|| (typeof params[depth] === 'undefined' && d.path === '')
-			// or if depth is zero (for now -- mayble always?) match against next depth
-			// to allow routes to override root routes  
-			|| (depth === 0 && d.path === params[depth+1])
+function configMatcher (config, path, depth ) {
+	console.log('configMatcher', config,path, depth)
+	// matchRoutes picks best  
+	const matches = matchRoutes(config.map(d => ({path:d.path})), {pathname:path}) || []
+	
+	
+	let matchHash = matches.reduce((out,c) => {
+		out[c.route.path] = c
+		return out
+	},{})
+
+	// console.log('matchHash', matchHash)
+	//let pathMatches = matches.map(d => d.route.path) 
+	
+	return config.filter((d,i) => {
+		let match = matchHash?.[d.path] || false
+		// console.log('match', match[0] ? true : false, d.path, match)
+		if(match){
+			//console.log('m',match)
+			d.params = match.params
+		}
+		return match
 	})
-	// because these conditions may return multiple valid configs
-	// sort for match with longest path
-	// this allows root routes to be overriden
-	.sort((a,b) => b.path.length - a.path.length)
-	// the filter removes root routes from matching 
-	// first level override routes
-	.filter((d, i, arr) => arr.length === 1 || depth > 0  ||  (i == 0 && d.path !== '' ))]
+		
+		
+	
 }
 
 
 export function getActiveConfig (config=[], path='/', depth = 0) {
-	// console.log('test', config, 'path', path)
+	
 	let configs = cloneDeep(configMatcher(config,path, depth))
-	 
+	
 	configs.forEach(out => {
 		out.children = getActiveConfig(out.children, path, depth+1)
 	})

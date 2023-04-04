@@ -2,7 +2,7 @@ import React from 'react'
 import { useTheme } from '../theme'
 import get from 'lodash/get'
 
-export default function Card({item, attributes}) {
+export default function Card({item, attributes={}}) {
 	const theme = useTheme()
 	return (
 		<div key={item.id} className={get(theme,'card.wrapper', '')}>
