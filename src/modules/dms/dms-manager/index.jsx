@@ -1,14 +1,20 @@
 import React from 'react'
-import { InvalidConfig, NoRouteMatch } from './messages'
-import { getActiveConfig, getActiveView, validFormat, enhanceFormat } from './utils'
+import comps from '../components'
+import { 
+	getActiveConfig, 
+	getActiveView,
+	processFormat,
+	validFormat 
+} from './_utils'
 import ThemeContext from '../theme'
 import defaultTheme from '../theme/default-theme'
-//import whiteTheme from '../theme/white-theme'
+import whiteTheme from '../theme/white-theme'
+
+const { InvalidConfig, NoRouteMatch } = comps
 
 const DmsManager = ({
 	config, /* DMS config file */
 	path='', /*  url path string  */
-	location={},
 	theme=defaultTheme
 }) => {
 	// check for valid config
@@ -16,9 +22,6 @@ const DmsManager = ({
 		return <InvalidConfig config={config} />
 	}
 	
-	// get active config from path
-	//const activeConfig = getActiveConfig(config.children, path)
-
 	// add default data to format
 	// const enhancedFormat = React.useMemo(() => 
 	// 	enhanceFormat(config.format)
@@ -26,6 +29,7 @@ const DmsManager = ({
 
 	// console.log('dms-manager', config.children?.[0], path)
 	// create component from config
+	//console.log('formats', formats)
 	const RenderView = getActiveView(config.children, path, config.format, location)
 	if(!RenderView) {
 		return <NoRouteMatch path={path} />

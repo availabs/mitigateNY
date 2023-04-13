@@ -1,6 +1,6 @@
 import { falcor } from '~/main'
 //import { useFalcor } from '~/modules/avl-falcor'
-import { getActiveConfig, getParams, filterParams } from '../dms-manager/utils'
+import { getActiveConfig, filterParams } from '../dms-manager/_utils'
 import { redirect } from "react-router-dom";
 import get from 'lodash/get'
 
@@ -104,8 +104,8 @@ export async function dmsDataEditor ( config, data, path='/' ) {
       		["dms", "data", "create"], 
       		[app, type, data]
       	);
-      	console.log('newData', newData)
-      	return redirect(activeConfig.redirect || '/')
+      	console.log('newData', activeConfig)
+      	return activeConfig.redirect ? redirect(activeConfig.redirect) : {response: 'ok'} 
 	}
 
 	return { message: "Not sure how I got here."}

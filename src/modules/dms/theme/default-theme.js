@@ -14,11 +14,10 @@ function defaultTheme () {
 			viewWrapper: 'overflow-hidden p-2 bg-gray-100 border-b-2'
 		},
 		card: {
-			wrapper: 'p-4 border',
+			wrapper: 'p-4',
 			row: 'flex py-1',
 			rowLabel: 'px-4 w-28 text-sm',
 			rowContent: 'flex-1'
-			
 		}
 
 	}

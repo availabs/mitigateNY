@@ -23,8 +23,8 @@ export default function ErrorWrapper({ Component, format, options, ...props}) {
 
 	// console.log('DMS Error Wrapper ', props)
 	return (
-		<div className='border border-green-300'>
-			<div className='text-xs'>Error Wrapper</div>
+		<div>
+			{/*<div className='text-xs'>Error Wrapper</div>*/}
 			<Component 
 				{...props} 
 				format={format}

@@ -6,68 +6,36 @@ import get from 'lodash/get'
 
 const DefaultComponent = Components.devinfo
 const DefaultWrapper = Wrappers.error
+let childKey = 0
 
-
-export function filterParams (data, params) {
-	// filter data that has params
-	// in params objects
-	let filter = false
-	Object.keys(params).forEach(k => {
-		if(data[k] == params[k]) {
-			filter = true
-		} else {
-			filter = false
-		}
-	})
-	return filter
-}
 
 function configMatcher (config, path, depth ) {
-	console.log('configMatcher', config,path, depth)
-	// matchRoutes picks best  
+	
+	// matchRoutes picks best from all available routes in config
 	const matches = matchRoutes(config.map(d => ({path:d.path})), {pathname:path}) || []
 	
-	
+	// hash matches by route path
 	let matchHash = matches.reduce((out,c) => {
 		out[c.route.path] = c
 		return out
 	},{})
 
-	// console.log('matchHash', matchHash)
-	//let pathMatches = matches.map(d => d.route.path) 
-	
+	// return fitlered configs for best matches
+	// and add extracted params from matchRoutes
 	return config.filter((d,i) => {
 		let match = matchHash?.[d.path] || false
-		// console.log('match', match[0] ? true : false, d.path, match)
 		if(match){
-			//console.log('m',match)
 			d.params = match.params
 		}
 		return match
 	})
-		
-		
-	
 }
 
-
-export function getActiveConfig (config=[], path='/', depth = 0) {
-	
-	let configs = cloneDeep(configMatcher(config,path, depth))
-	
-	configs.forEach(out => {
-		out.children = getActiveConfig(out.children, path, depth+1)
-	})
-	return configs || []
-}
 
 export function getActiveView(config, path, format, depth=0) {
-	//console.log('getActiveView', config, path)
 	// add '' to params array to allow root (/) route  matching
-	//console.log('p-d', path, depth, config)
 	let activeConfigs = configMatcher(config,path,depth)
 
-	//console.log('getActiveConfig', path, depth, activeConfigs?.[0], activeConfigs, activeConfigs.length)
 	// get the component for the active config
 	// or the default component
 	return activeConfigs.map(activeConfig => {
@@ -88,12 +56,27 @@ export function getActiveView(config, path, format, depth=0) {
 		return <Wrapper
 			Component={comp}
 			format={format}
-			key={global.i++}
+			key={childKey++}
 			{...activeConfig}
 			children={children}
 		/>
 	})
 }
+
+
+export function getActiveConfig (config=[], path='/', depth = 0) {
+	
+	let configs = cloneDeep(configMatcher(config,path, depth))
+	
+	configs.forEach(out => {
+		out.children = getActiveConfig(out.children, path, depth+1)
+	})
+	return configs || []
+}
+
+
+
+
 
 export function validFormat(format) {
 	return format && 
@@ -101,6 +84,20 @@ export function validFormat(format) {
 		format.attributes.length > 0
 }
 
+export function processFormat (format, formats = {}) {
+  if (!format) return formats;
+
+  const Format = cloneDeep(format);
+
+  if (Format.registerFormats) {
+    Format.registerFormats.forEach(f => processFormat(f, formats));
+  }
+
+  formats[`${ Format.app }+${ Format.type }`] = Format;
+
+  return formats;
+}
+/*
 export function enhanceFormat(format) {
 	let out  = {...format}
 	// console.log('enhance')
@@ -110,14 +107,19 @@ export function enhanceFormat(format) {
 	}
 	return out
 }
+*/
 
-export function getParams(params, path='') {
-	if(!params || params.length === 0){
-		return {}
-	}
-	const paths = path.split('/')
-	return params.reduce((out, curr, i) => {
-		out[curr] = paths[(i+1)]
-		return out
-	},{})
+
+export function filterParams (data, params) {
+	// filter data that has params
+	// in params objects
+	let filter = false
+	Object.keys(params).forEach(k => {
+		if(data[k] == params[k]) {
+			filter = true
+		} else {
+			filter = false
+		}
+	})
+	return filter
 }

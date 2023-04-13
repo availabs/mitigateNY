@@ -16,26 +16,30 @@ const pageSection = {
         key: 'section',
         type: "text"
       },
-      { key: "element",
-        type: "type-select",
-        attributes: [
-          { key: "Draft Editor",
-            type: "richtext"
-          },
-          { key: "Simple Text",
-            type: "text"
-          },
-          { key: "Asset Table",
-            type: "asset-table"
-          },
-          { key: "NFIP Table",
-            type: "nfip-table"
-          },
-          { key: "Map",
-            type: "map"
-          }
-        ]
-      }
+      {
+        key: 'content',
+        type: "richtext"
+      },
+      // { key: "element",
+      //   type: "type-select",
+      //   attributes: [
+      //     { key: "Draft Editor",
+      //       type: "richtext"
+      //     },
+      //     { key: "Simple Text",
+      //       type: "text"
+      //     },
+      //     { key: "Asset Table",
+      //       type: "asset-table"
+      //     },
+      //     { key: "NFIP Table",
+      //       type: "nfip-table"
+      //     },
+      //     { key: "Map",
+      //       type: "map"
+      //     }
+      //   ]
+      // }
 
   ]
 }
@@ -53,6 +57,13 @@ const page = {
       required: true,
       default: "props:section",
       hidden: true
+    },
+    { key: "richsections",
+      type: "richtext",
+      required: false,
+      isArray: true,
+      default: [],
+      hidden: false
     },
     { key: "sectionLanding",
       type: "boolean",
@@ -78,7 +89,14 @@ const page = {
       key: 'showSidebar',
       type: "boolean",
       default: true,
-      required: true
+      required: true,
+      hidden: true
+    },
+    {
+      key: 'dms-section2',
+      type: 'dms-format',
+      isArray: true,
+      format: 'dms-remix+page-section'
     },
     // {
     //   key: 'sections',
@@ -92,26 +110,28 @@ const page = {
   ]
 }
 
-const SiteLayout = ({children, user, dataItems}) => (
-  <div>
-    <div className='flex p-2 text-gray-800 border-b w-full'>
-      {dataItems.map((d,i) => 
-        <NavLink 
-          key={i}
-          to={`/${d.id}`} 
-          className='p-4'
-        >{d.title}</NavLink>)}
-      <div className='flex-1' />
-      <NavLink to='/admin' className='p-4'>Admin</NavLink>
-      {/*<div className='flex flex-1 justify-end '>
-        <div>
-          <AuthMenu user={user} />
-        </div>
-      </div>*/}
+const SiteLayout = ({children, user, dataItems}) => {
+    return (
+    <div>
+      <div className='flex p-2 text-gray-800 border-b w-full'>
+        {dataItems.map((d,i) => 
+          <NavLink 
+            key={i}
+            to={`/${d.id}`} 
+            className='p-4'
+          >{d.title}</NavLink>)}
+        <div className='flex-1' />
+        <NavLink to='/admin' className='p-4'>Admin</NavLink>
+        {/*<div className='flex flex-1 justify-end '>
+          <div>
+            <AuthMenu user={user} />
+          </div>
+        </div>*/}
+      </div>
+      <div>{children}</div>
     </div>
-    <div>{children}</div>
-  </div>
-)
+  )
+}
 
 const SiteAdmin = (props) => (
   <div>
@@ -139,7 +159,7 @@ const siteConfig = {
           type: "dms-edit",
           action: 'edit',
           path: '/admin',
-          redirect: 'admin'
+          redirect: '/admin'
         },
         { 
           type: 'dms-table',

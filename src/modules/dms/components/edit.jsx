@@ -2,7 +2,7 @@ import React from 'react'
 import { useTheme } from '../theme'
 import get from 'lodash/get'
 
-export default function Card({item, updateAttribute ,attributes, status}) {
+export default function EditCard({item, updateAttribute ,attributes, status}) {
 	const theme = useTheme()
 	
 	return (
@@ -20,6 +20,7 @@ export default function Card({item, updateAttribute ,attributes, status}) {
 										key={`${attrKey}-${i}`} 
 										value={item[attrKey]} 
 										onChange={(v) => updateAttribute(attrKey, v)}
+										{...attributes[attrKey]}
 									/>
 								</div>
 							</div>
