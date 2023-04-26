@@ -18,8 +18,9 @@ const pageSection = {
       },
       {
         key: 'content',
-        type: "richtext"
+        type: "lexical"
       },
+      
       // { key: "element",
       //   type: "type-select",
       //   attributes: [
@@ -52,24 +53,17 @@ const page = {
     { key: "title",
       type: "text"
     },
-    { key: "section",
-      type: "text",
-      required: true,
-      default: "props:section",
-      hidden: true
-    },
-    { key: "richsections",
-      type: "richtext",
-      required: false,
-      isArray: true,
-      default: [],
-      hidden: false
-    },
     { key: "sectionLanding",
       type: "boolean",
       default: false,
       editable: false,
       hidden: true
+    },
+    {
+      key: 'dms-section3',
+      type: 'dms-format',
+      isArray: true,
+      format: 'dms-remix+page-section'
     },
     {
       key: "index",
@@ -92,12 +86,7 @@ const page = {
       required: true,
       hidden: true
     },
-    {
-      key: 'dms-section2',
-      type: 'dms-format',
-      isArray: true,
-      format: 'dms-remix+page-section'
-    },
+    
     // {
     //   key: 'sections',
     //   type: "dms-format",

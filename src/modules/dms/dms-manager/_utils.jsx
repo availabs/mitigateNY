@@ -9,11 +9,13 @@ const DefaultWrapper = Wrappers.error
 let childKey = 0
 
 
-function configMatcher (config, path, depth ) {
+function configMatcher (config, path ) {
 	
 	// matchRoutes picks best from all available routes in config
+
 	const matches = matchRoutes(config.map(d => ({path:d.path})), {pathname:path}) || []
-	
+	// console.log('configMatcher', config, matches, path)
+
 	// hash matches by route path
 	let matchHash = matches.reduce((out,c) => {
 		out[c.route.path] = c
@@ -34,8 +36,9 @@ function configMatcher (config, path, depth ) {
 
 export function getActiveView(config, path, format, depth=0) {
 	// add '' to params array to allow root (/) route  matching
-	let activeConfigs = configMatcher(config,path,depth)
+	let activeConfigs = configMatcher(config,path)
 
+	// console.log('activeConfigs', activeConfigs)
 	// get the component for the active config
 	// or the default component
 	return activeConfigs.map(activeConfig => {
@@ -84,19 +87,7 @@ export function validFormat(format) {
 		format.attributes.length > 0
 }
 
-export function processFormat (format, formats = {}) {
-  if (!format) return formats;
 
-  const Format = cloneDeep(format);
-
-  if (Format.registerFormats) {
-    Format.registerFormats.forEach(f => processFormat(f, formats));
-  }
-
-  formats[`${ Format.app }+${ Format.type }`] = Format;
-
-  return formats;
-}
 /*
 export function enhanceFormat(format) {
 	let out  = {...format}
@@ -110,12 +101,23 @@ export function enhanceFormat(format) {
 */
 
 
-export function filterParams (data, params) {
+export function filterParams (data, params,format) {
 	// filter data that has params
 	// in params objects
+	
+	// let one attribute match wildcard * 
+	let wildKey = format?.attributes?.reduce((out,attr) => {
+		if(attr.matchWildcard){
+			out = attr.key
+		}
+		return out
+	},'') || ''
+
+	// console.log('filterParams', data, params, wildKey)
+	
 	let filter = false
 	Object.keys(params).forEach(k => {
-		if(data[k] == params[k]) {
+		if(data[k] == params[k] || data[wildKey] === params['*']) {
 			filter = true
 		} else {
 			filter = false

@@ -24,7 +24,7 @@ export default function ErrorWrapper({ Component, format, options, ...props}) {
 	// console.log('DMS Error Wrapper ', props)
 	return (
 		<div>
-			{/*<div className='text-xs'>Error Wrapper</div>*/}
+			<div className='text-xs'>Error Wrapper</div>
 			<Component 
 				{...props} 
 				format={format}

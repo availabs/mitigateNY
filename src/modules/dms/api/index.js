@@ -60,15 +60,16 @@ export async function dmsDataLoader ( config, path='/') {
   	// 	case 'list': 
   	// 		return data
   	// 	case 'view':
-  	// 		return data.filter(d => filterParams(d,params))
+  	// 		return data.filter(d => filterParams(d,params,config.format))
   	// 	case 'edit':
-  	// 		return data.filter(d => filterParams(d,params))
+  	// 		return data.filter(d => filterParams(d,params,config.format))
   	// 	default:
   	// 		return data
   	// }
 }
 
-export async function dmsDataEditor ( config, data, path='/' ) {
+export async function dmsDataEditor ( config, data={}, requestType, path='/' ) {
+	//console.log('API - dmsDataEditor', config,data,path)
 	const { app , type } = config.format
 	const { id } = data
 	const attributeKeys = Object.keys(data)
@@ -82,16 +83,22 @@ export async function dmsDataEditor ( config, data, path='/' ) {
 		return out
 	},{})
 	
-	console.log('dmsDataEditor', id, attributeKeys, updateData)
+	console.log('dmsDataEditor', id, attributeKeys, updateData, requestType, path)
 
-	if(id && attributeKeys.length > 0) {
+	if(requestType === 'delete' && id) {
+		await falcor.call(
+			["dms", "data", "delete"], 
+			[app, type, id]
+		)
+		return {response: `Deleted item ${id}`}
+	} else if(id && attributeKeys.length > 0) {
 		/*  if there is an id and data 
 		    do update               
 		*/
 
 		// todo - data verification 
 		
-		let update = await falcor.call(["dms", "data", "edit"], [id, data]);
+		await falcor.call(["dms", "data", "edit"], [id, data]);
 		return {message: "Update successful."}
 	} else if ( attributeKeys.length > 0 ) {
 		/*  if there is only data 
@@ -104,8 +111,8 @@ export async function dmsDataEditor ( config, data, path='/' ) {
       		["dms", "data", "create"], 
       		[app, type, data]
       	);
-      	console.log('newData', activeConfig)
-      	return activeConfig.redirect ? redirect(activeConfig.redirect) : {response: 'ok'} 
+      	
+      	return {response: 'Item created.'} // activeConfig.redirect ? redirect(activeConfig.redirect) : 
 	}
 
 	return { message: "Not sure how I got here."}

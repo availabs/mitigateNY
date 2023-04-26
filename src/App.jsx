@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 import Blog from "~/pages/blog"
 import Site from '~/pages/site'
+import Docs from '~/pages/docs'
 
 
 const routes = [
@@ -12,13 +13,14 @@ const routes = [
     path: "about",
     element: <div>About</div>,
   },
+  Docs,
   Blog,
   Site
 ];
 
 const App = (props) => {
   return (
-    <div className='max-w-6xl mx-auto border p-4'>
+    <div className=''>
       <RouterProvider router={createBrowserRouter(routes)} />
     </div>
   );

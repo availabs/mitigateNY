@@ -1,22 +1,24 @@
 import React, {useEffect} from 'react'
-import { useLoaderData, useActionData, useParams, Form } from "react-router-dom";
+import { useLoaderData, useActionData, useParams, Form, useSubmit } from "react-router-dom";
 import { filterParams } from '../dms-manager/_utils'
 import { getAttributes } from './_utils'
 import get from 'lodash/get'
 
 export default function EditWrapper({ Component, format, options, params, ...props}) {
 	const attributes = getAttributes(format, options, 'edit')
+	const submit = useSubmit();
 	const { data, user } = useLoaderData()
 	let status = useActionData()
+	const {defaultSort = (d) => d } = format
 
 	const [item, setItem] = React.useState(
-		data.filter(d => filterParams(d,params))[0] 
+		defaultSort(data).filter(d => filterParams(d,params,format))[0] 
 		|| {}
 	)
-
+	
+	//console.log('EditWrapper', params)
 	useEffect(() => {
-		//on click to route params is o
-		setItem(data.filter(d => filterParams(d,params))[0] || {})
+		setItem(data.filter(d => filterParams(d,params,format))[0] || {})
 	},[params])
 
 	const updateAttribute = (attr, value) => {
@@ -24,22 +26,18 @@ export default function EditWrapper({ Component, format, options, params, ...pro
 	}
 
 	return (
-		<div >
-			{/*<div className='text-xs'>Edit Wrapper</div>*/}
-			{/*<pre>{JSON.stringify(format,null,3)}</pre>*/}
-			<Form method='post'>
-				<Component 
-					{...props} 
-					format={format}
-					attributes={attributes}
-					item={item}
-					updateAttribute={updateAttribute}
-					options={options}
-					status={status}
-					user={user}
-				/>
-				<input type="hidden" name="data" value={JSON.stringify(item)} />
-			</Form>
-		</div>
+		<Component 
+			{...props} 
+			format={format}
+			attributes={attributes}
+			item={item}
+			dataItems={data}
+			updateAttribute={updateAttribute}
+			setItem={setItem}
+			options={options}
+			status={status}
+			user={user}
+			submit={submit}
+		/>
 	)	
 } 

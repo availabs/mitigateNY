@@ -14,9 +14,7 @@ const Edit = ({Component, value, onChange, attr}) => {
     return (
         <>
             {value.map((v,i) => 
-                <>
-                    <Component.ViewComp value={v} {...attr}/>
-                </>
+                <Component.ViewComp value={v} {...attr} key={i} />
             )}
             <Component.EditComp value={newValue} onChange={setNewValue} {...attr} />
             <button onClick={addNewValue}>Add</button>
@@ -27,7 +25,7 @@ const Edit = ({Component, value, onChange, attr}) => {
 
 const View = ({Component, value, attr}) => {
     if (!value || !value.map) { return '' }
-    return value.map((v,i) => <Component.ViewComp key={i} value={v} {...attr}/>)
+    return value.map((v,i) => <Component.ViewComp {...attr } key={i} value={v}/>)
 }
 
 export default {

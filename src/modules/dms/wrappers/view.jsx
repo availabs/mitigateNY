@@ -7,22 +7,21 @@ import { getAttributes } from './_utils'
 export default function ViewWrapper({ Component, format, options, params, ...props}) {
 	let attributes = getAttributes(format,options)
 	const { data, user } = useLoaderData()
+	const {defaultSort = (d) => d } = format
 
-	//console.log('ViewWrapper', data)
-	const item = data.filter(d => filterParams(d,params))[0] || data[0]
+	const item = defaultSort(data).filter(d => filterParams(d,params,format))[0] || data[0]
 
-
+	//console.log('ViewWrapper', attributes, data)
 	return (
-		<div /*className='border border-green-300'*/>
-			{/*<div className='text-xs'>View Wrapper</div>*/}
-			<Component 
-				{...props} 
-				format={format}
-				attributes={attributes}
-				item={item}
-				options={options}
-				user={user}
-			/>
-		</div>
+		<Component 
+			{...props} 
+			format={format}
+			attributes={attributes}
+			item={item}
+			dataItems={data}
+			options={options}
+			user={user}
+		/>
+		
 	)	
 }

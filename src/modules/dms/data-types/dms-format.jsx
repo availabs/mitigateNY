@@ -12,7 +12,7 @@ function Edit({value, onChange, attributes={}}) {
         }
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
     }
-    console.log('dmsformat EDIT', attributes)
+    //console.log('dmsformat EDIT', attributes)
                     
     return (
         <div>
@@ -38,12 +38,12 @@ function Edit({value, onChange, attributes={}}) {
     )   
 }
 
-const View = ({value={}, attributes, key}) => {
+const View = ({value={}, attributes}) => {
     return (
-        <div key={key}>
+        <div>
             {Object.keys(attributes)
                 .map((attrKey,i) => {
-                    console.log('dmsformat', attrKey, attributes)
+                    // console.log('dmsformat', attrKey, attributes)
                     let ViewComp = attributes[attrKey].ViewComp
                     return(
                         <div key={`${attrKey}-${i}`} >  
