@@ -16,4 +16,4 @@ registerDataType('richtext', DmsDraft)
 registerDataType('lexical', DmsLexical)
 
 
-export default dmsPageFactory(siteConfig,'/site')
+export default dmsPageFactory(siteConfig,'/site/')

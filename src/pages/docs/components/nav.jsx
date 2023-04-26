@@ -1,8 +1,23 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { NavLink, Link, useSubmit, useLocation } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import DndList from './draggable'
 
+
+export const StrictModeDroppable = ({ children, ...props }) => {
+  const [enabled, setEnabled] = useState(false);
+  useEffect(() => {
+    const animation = requestAnimationFrame(() => setEnabled(true));
+    return () => {
+      cancelAnimationFrame(animation);
+      setEnabled(false);
+    };
+  }, []);
+  if (!enabled) {
+    return null;
+  }
+  return <Droppable {...props}>{children}</Droppable>;
+};
 
 const theme = {
   nav: {
@@ -50,7 +65,7 @@ let id = -1;
 const makeId = () => `list-${ ++id }`;
 
 const DraggableItem = ({ id, index, children }) =>
-  <Draggable draggableId={ `draggable-${ id }` } index={ index }>
+  <Draggable draggableId={ `${ id }` } index={ index }>
     { provided => (
         <div ref={ provided.innerRef }
           { ...provided.draggableProps }
@@ -61,38 +76,11 @@ const DraggableItem = ({ id, index, children }) =>
     }
   </Draggable>
 
-  
-export default function Nav({item,dataItems, edit}) {
-  return (
-    <>
-      <div className={theme.nav.container}>
-        <div className={theme.nav.navItemContainer}>
-          <DndList>
-            {dataItems
-              .sort((a,b) => a.index-b.index)
-              .filter(d => !d.parent)
-              .map((d,i) => 
-                <div key={i}>  
-                  <NavLink
-                    to={`${edit ? '/edit' : ''}/${i === 0 && !edit ? '' : d.url_slug || d.id}`} 
-                    className={theme.nav.navItem}
-                  >
-                    {d.title} | {d.index}
-                  </NavLink>
-                  {getChildNav(d,dataItems,edit)}
-                </div>
-            )}
-          </DndList>
-          {edit && <AddItemButton dataItems={dataItems}/>}
-        </div>
-      </div>
-      <div className='w-64 hidden lg:block'/>
-    </>
-  )
-}
 
-export  function NavDrag ({item, dataItems=[], edit}) {
+
+export default function Nav ({item, dataItems=[], edit}) {
   const onDragEnd = React.useCallback(result => {
+    console.log('')
     if (!result.destination) return;
     const start = result.source.index,
       end = result.destination.index;
@@ -105,7 +93,7 @@ export  function NavDrag ({item, dataItems=[], edit}) {
     <div className={theme.nav.container}>
       <div className={theme.nav.navItemContainer}>
         <DragDropContext onDragEnd={ onDragEnd }>
-          <Droppable droppableId={ makeId() } className="box-content">
+          <StrictModeDroppable droppableId={ 'list-root' } className="box-content">
             { 
               (provided, snapshot) => (
                 <div ref={ provided.innerRef }
@@ -134,7 +122,7 @@ export  function NavDrag ({item, dataItems=[], edit}) {
                 </div>
               )
             }
-          </Droppable>
+          </StrictModeDroppable>
         </DragDropContext>
       {edit && <AddItemButton dataItems={dataItems}/>}
       </div>
