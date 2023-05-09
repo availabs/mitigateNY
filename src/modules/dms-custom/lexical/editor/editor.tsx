@@ -10,7 +10,7 @@ import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
 import {CharacterLimitPlugin} from '@lexical/react/LexicalCharacterLimitPlugin';
 import {CheckListPlugin} from '@lexical/react/LexicalCheckListPlugin';
 import {ClearEditorPlugin} from '@lexical/react/LexicalClearEditorPlugin';
-import {CollaborationPlugin} from '@lexical/react/LexicalCollaborationPlugin';
+// import {CollaborationPlugin} from '@lexical/react/LexicalCollaborationPlugin';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import {HashtagPlugin} from '@lexical/react/LexicalHashtagPlugin';
 import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
@@ -24,7 +24,7 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {CAN_USE_DOM} from './shared/canUseDOM';
 
-import {createWebsocketProvider} from './collaboration';
+//import {createWebsocketProvider} from './collaboration';
 import {useSettings} from './context/SettingsContext';
 import {useSharedHistoryContext} from './context/SharedHistoryContext';
 import TableCellNodes from './nodes/TableCellNodes';
@@ -42,9 +42,9 @@ import DragDropPaste from './plugins/DragDropPastePlugin';
 import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import EmojiPickerPlugin from './plugins/EmojiPickerPlugin';
 import EmojisPlugin from './plugins/EmojisPlugin';
-import EquationsPlugin from './plugins/EquationsPlugin';
-import ExcalidrawPlugin from './plugins/ExcalidrawPlugin';
-import FigmaPlugin from './plugins/FigmaPlugin';
+// import EquationsPlugin from './plugins/EquationsPlugin';
+// import ExcalidrawPlugin from './plugins/ExcalidrawPlugin';
+// import FigmaPlugin from './plugins/FigmaPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingTextFormatToolbarPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
@@ -53,7 +53,7 @@ import LinkPlugin from './plugins/LinkPlugin';
 import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
 import MarkdownShortcutPlugin from './plugins/MarkdownShortcutPlugin';
 import {MaxLengthPlugin} from './plugins/MaxLengthPlugin';
-import MentionsPlugin from './plugins/MentionsPlugin';
+// import MentionsPlugin from './plugins/MentionsPlugin';
 import PollPlugin from './plugins/PollPlugin';
 import SpeechToTextPlugin from './plugins/SpeechToTextPlugin';
 import TabFocusPlugin from './plugins/TabFocusPlugin';
@@ -141,7 +141,6 @@ export default function Editor(props): JSX.Element {
         <ComponentPickerPlugin />
         <EmojiPickerPlugin />
         <AutoEmbedPlugin />
-        <MentionsPlugin />
         <EmojisPlugin />
         <HashtagPlugin />
         <KeywordsPlugin />
@@ -152,7 +151,7 @@ export default function Editor(props): JSX.Element {
         />: ''}
         {isRichText ? (
           <>
-            {isCollab ? (
+            {/*isCollab ? (
               <CollaborationPlugin
                 id="main"
                 providerFactory={createWebsocketProvider}
@@ -160,7 +159,8 @@ export default function Editor(props): JSX.Element {
               />
             ) : (
               <HistoryPlugin externalHistoryState={historyState} />
-            )}
+            )*/}
+            <HistoryPlugin externalHistoryState={historyState} />
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">
@@ -188,7 +188,7 @@ export default function Editor(props): JSX.Element {
                 placeholder={null}
                 ErrorBoundary={LexicalErrorBoundary}
               />
-              <MentionsPlugin />
+              
               <HistoryPlugin />
               <ImagesPlugin captionsEnabled={false} />
               <LinkPlugin />
@@ -200,11 +200,15 @@ export default function Editor(props): JSX.Element {
             <PollPlugin />
             <TwitterPlugin />
             <YouTubePlugin />
-            <FigmaPlugin />
-            <ClickableLinkPlugin />
-            <HorizontalRulePlugin />
+            {/*
+            <FigmaPlugin /> 
             <EquationsPlugin />
             <ExcalidrawPlugin />
+            <MentionsPlugin />
+            */}
+            <ClickableLinkPlugin />
+            <HorizontalRulePlugin />
+            
             <TabFocusPlugin />
             <TabIndentationPlugin />
             <CollapsiblePlugin />

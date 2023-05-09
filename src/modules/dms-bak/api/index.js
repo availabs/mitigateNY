@@ -1,19 +1,17 @@
-import { falcor } from '~/main'
 //import { useFalcor } from '~/modules/avl-falcor'
 import { getActiveConfig, filterParams } from '../dms-manager/_utils'
 import { redirect } from "react-router-dom";
 import get from 'lodash/get'
 
 
-export async function dmsDataLoader ( config, path='/') {
+export async function dmsDataLoader (falcor, config, path='/') {
 	const { app , type } = config.format
 	const activeConfigs = getActiveConfig(config.children, path)
 	const activeConfig = activeConfigs[0] || {} //
 	// console.log('dmsDataLoader', activeConfig, path, activeConfigs)
 	const attributeFilter = get(activeConfig,'options.attributes', [])
-
 	
-	let params = activeConfig.params
+	//let params = activeConfig.params
 
 	//console.log('dmsDataLoader', activeConfig, params, 'path:',path)
 	
@@ -68,14 +66,16 @@ export async function dmsDataLoader ( config, path='/') {
   	// }
 }
 
-export async function dmsDataEditor ( config, data={}, requestType, path='/' ) {
+export async function dmsDataEditor (falcor, config, data={}, requestType, path='/' ) {
 	//console.log('API - dmsDataEditor', config,data,path)
 	const { app , type } = config.format
+	//const activeConfig = getActiveConfig(config.children, path)
+	
+
 	const { id } = data
 	const attributeKeys = Object.keys(data)
 		.filter(k => !['id', 'updated_at', 'created_at'].includes(k))
 
-	const activeConfig = getActiveConfig(config.children, path)
 	
 
 	const updateData = attributeKeys.reduce((out,key) => {
@@ -83,7 +83,7 @@ export async function dmsDataEditor ( config, data={}, requestType, path='/' ) {
 		return out
 	},{})
 	
-	console.log('dmsDataEditor', id, attributeKeys, updateData, requestType, path)
+	//console.log('dmsDataEditor', id, attributeKeys, updateData, requestType, path)
 
 	if(requestType === 'delete' && id) {
 		await falcor.call(

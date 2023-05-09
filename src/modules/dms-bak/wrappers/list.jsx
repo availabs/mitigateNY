@@ -7,16 +7,15 @@ export default function ListWrapper({ Component, format, options, ...props}) {
 	const { data, user } = useLoaderData()
 
 	return (
-		<div>
-			{/*<div className='text-xs'>List Wrapper</div>*/}
-			<Component 
-				{...props} 
-				format={format}
-				attributes={attributes}
-				dataItems={data}
-				options={options}
-				user={user}
-			/>
-		</div>
+		
+		<Component 
+			{...props} 
+			format={format}
+			attributes={attributes}
+			dataItems={data}
+			options={options}
+			user={user}
+		/>
+		
 	)	
 }

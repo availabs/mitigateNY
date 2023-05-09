@@ -59,7 +59,8 @@ export function PageControls({ item, dataItems, edit, status }) {
   const saveItem = async () => {
     const newItem = cloneDeep(item)
     newItem.url_slug = getUrlSlug(newItem, dataItems)
-    submit(json2DmsForm(newItem), { method: "post", action: pathname })
+    submit(json2DmsForm(newItem), { method: "post", action: `/docs/edit/${newItem.url_slug}` })
+
   }
   
   //console.log('showDelete', showDelete)
@@ -144,8 +145,9 @@ export function DeleteModal ({item, open, setOpen})  {
           className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
           onClick={async () => {
             setLoading(true)
-            //item.id = 1085;
-            await submit(json2DmsForm(item,'delete'), { method: "post", action: '/edit' })
+            //item.id = 1103;
+            //console.log(item)
+            await submit(json2DmsForm(item,'delete'), { method: "post", action: '/docs/edit' })
             setLoading(false);
             setOpen(false);
           }}

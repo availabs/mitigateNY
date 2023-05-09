@@ -47,6 +47,7 @@ export function getActiveView(config, path, format, depth=0) {
 			Components[activeConfig.type] || DefaultComponent
 		
 		// get the wrapper for the config, or the default wrapper
+		//console.log('activeConfig Action',activeConfig.action)
 		const Wrapper = Wrappers[activeConfig.action] || DefaultWrapper
 		
 		// if there are children 
@@ -76,8 +77,6 @@ export function getActiveConfig (config=[], path='/', depth = 0) {
 	})
 	return configs || []
 }
-
-
 
 
 

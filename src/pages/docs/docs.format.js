@@ -1,7 +1,7 @@
 const docsPageFormat = {
   app: "dms-new",
   type: "docs-page",
-  defaultSort: (d) => d.sort((a,b) => a.index - b.index),
+  defaultSort: (d) => d.sort((a,b) => a.index - b.index || a.parent-b.parent),
   attributes: [
     { key: "title",
       type: "text",

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { useParams, ScrollRestoration, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { 
   DmsManager, 
@@ -7,8 +7,14 @@ import {
   dmsDataEditor, 
 } from '~/modules/dms'
 
+//const noAuth = Component => Component
 
-export default function dmsPageFactory (dmsConfig,dmsPath='/')  {
+export default function dmsPageFactory (
+  falcor,
+  dmsConfig,
+  dmsPath='/',
+  authWrapper = Component => Component 
+) {
 
   async function loader ({ request, params }) {
     let data = await dmsDataLoader(dmsConfig, `/${params['*'] || ''}`)
@@ -28,37 +34,29 @@ export default function dmsPageFactory (dmsConfig,dmsPath='/')  {
   };
 
   function DMS() {
-      const params = useParams();
-      // const { pathname } = useLocation();
-
-      // useEffect(() => {
-      //   console.log('testing')
-      //   window.scrollTo(0, 0);
-      // }, [pathname]);
-      return (
-        <div>
-          <DmsManager 
-            path={ `/${params['*'] || ''}` }
-            config={dmsConfig}
-          />
-        </div>
-      )
+    const params = useParams();
+    
+    const AuthedManager = authWrapper(DmsManager)
+    return (
+      <AuthedManager 
+        path={ `/${params['*'] || ''}` }
+        config={dmsConfig}
+      />
+    )
   }
 
   function ErrorBoundary({ error }) {
     return (
       <div>
-        <h1>DMS Error ErrorBoundary</h1>
-        <p>{error?.message}</p>
-        <p>The stack trace is:</p>
-        <pre>{error?.stack}</pre>
+        <h1>DMS Error</h1>
+        <pre className='p-4 bg-gray-300'>{JSON.stringify(error,null,3)}</pre>
       </div>
     );
   }
 
   return {
     path: `${dmsPath}*`,
-    element: <DMS />,
+    element: (props) =>  <DMS {...props} />,
     loader: loader,
     action: action
   }

@@ -16,4 +16,14 @@ registerDataType('richtext', DmsDraft)
 registerDataType('lexical', DmsLexical)
 
 
-export default dmsPageFactory(siteConfig,'/site/')
+export default { 
+  ...dmsPageFactory(siteConfig,'/site/'),
+  name: 'Home',
+  mainNav: false,
+  sideNav: {
+    size: 'none'
+  },
+  topNav: {
+    position: 'fixed'
+  }
+}

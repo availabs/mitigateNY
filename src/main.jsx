@@ -1,22 +1,52 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+
+import { Provider } from 'react-redux';
+import store from './store';
+
 import {
   FalcorProvider,
   falcorGraph
 } from "./modules/avl-falcor"
-import { API_HOST } from './config'
+
+import { 
+  ThemeContext
+} from "~/modules/avl-components/src"
+
+import { 
+  AVL_THEME
+} from "~/modules/avl-components/src/Themes"
+
+//import AVL_THEME from "~/layout/avail-theme"
+
+import {
+  enableAuth
+} from "./modules/ams/src"
+
+import { 
+  API_HOST,
+  AUTH_HOST, 
+  PROJECT_NAME, 
+  CLIENT_HOST 
+} from './config'
+
 import './index.css';
 
 window.global ||= window;
 
 export const falcor = falcorGraph(API_HOST)
+const AuthEnabledApp = enableAuth(App, { AUTH_HOST, PROJECT_NAME, CLIENT_HOST });
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <FalcorProvider falcor={falcor}>
-      <App />
-    </FalcorProvider>
+    <Provider store={ store }>
+      <FalcorProvider falcor={falcor}>
+        <ThemeContext.Provider value={AVL_THEME}>
+          <AuthEnabledApp />
+        </ThemeContext.Provider>
+      </FalcorProvider>
+    </Provider>
   </React.StrictMode>
 );
 
