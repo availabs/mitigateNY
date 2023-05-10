@@ -11,7 +11,7 @@ import { PageView, PageEdit } from './components/page'
 
 import docsFormat from './docs.format.js'
 
-import { checkAuth } from '/App'
+import { checkAuth } from '~/App'
 
 //registerDataType('lexical', DmsLexical)
 
