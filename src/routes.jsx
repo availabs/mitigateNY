@@ -33,18 +33,6 @@ const DataManager = [
 
 const routes = [
   {
-    path: "/",
-    element: () => <div className='border-2 h-full min-h-screen mb-12 border-pink-500'>Home</div>,
-    sideNav: {
-      size: 'micro' // ['none', 'micro', 'mini', 'compact', 'full']
-    },
-    topNav: {
-      size: 'compact', // ['none', 'compact']
-      menu: 'right', // ['left', right]
-      position: 'fixed' // ['fixed', 'block']
-    } 
-  },
-  {
     path: "/authed",
     element: () => <div className='border-2 h-full min-h-screen mb-12 border-pink-500'>authed</div>,
     sideNav: {

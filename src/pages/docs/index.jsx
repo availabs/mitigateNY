@@ -4,16 +4,16 @@ import {
   dmsPageFactory
 } from '~/modules/dms/src'
 
-//import DmsLexical from '~/modules/dms-custom/lexical'
+import DmsLexical from '~/modules/dms-custom/lexical'
 import { withAuth } from '~/modules/ams/src' 
 import Layout from './components/layout'
 import { PageView, PageEdit } from './components/page'
 
 import docsFormat from './docs.format.js'
 
-import { checkAuth } from '~/App'
+import checkAuth  from '~/layout/checkAuth'
 
-//registerDataType('lexical', DmsLexical)
+registerDataType('lexical', DmsLexical)
 
 
 
