@@ -7,7 +7,7 @@ import {
   dmsDataLoader,
   dmsDataEditor, 
   registerDataType 
-} from '~/modules/dms'
+} from '~/modules/dms/src'
 
 
 import DmsDraft from '~/modules/dms-custom/draft'

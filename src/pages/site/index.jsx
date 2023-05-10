@@ -4,7 +4,7 @@ import React, {useEffect} from 'react'
 import { 
   registerDataType,
   dmsPageFactory
-} from '~/modules/dms'
+} from '~/modules/dms/src'
 
 
 import DmsDraft from '~/modules/dms-custom/draft'
