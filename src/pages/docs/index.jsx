@@ -1,10 +1,8 @@
 import React from 'react'
 import { 
-  registerDataType,
   dmsPageFactory
 } from '~/modules/dms/src'
 
-import DmsLexical from '~/modules/dms-custom/lexical'
 import { withAuth } from '~/modules/ams/src' 
 import Layout from './components/layout'
 import { PageView, PageEdit } from './components/page'
@@ -12,9 +10,6 @@ import { PageView, PageEdit } from './components/page'
 import docsFormat from './docs.format.js'
 
 import checkAuth  from '~/layout/checkAuth'
-
-registerDataType('lexical', DmsLexical)
-
 
 
 const siteConfig = {
