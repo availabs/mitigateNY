@@ -6,22 +6,34 @@ import {
 } from "react-router-dom";
 
 // import { Messages } from '~/modules/avl-components/src'
-import AvailLayout from '~/layout/avail-layout'
 import { withAuth, Messages } from '~/modules/ams/src'
-import get from 'lodash/get'
 
-import routes from '~/routes'
 import Layout from '~/layout/avail-layout'
 import LayoutWrapper from '~/layout/LayoutWrapper'
 
+import { getSubdomain }  from '~/utils'
+
+import DefaultRoutes from '~/routes'
+import www from '~/sites/www'
+
+const Sites = {
+  www
+}
+
 
 const App = (props) => {
+  const SUBDOMAIN = getSubdomain(window.location.host)
   
-  const WrappedRoutes =  useMemo(() => {
-    return LayoutWrapper(routes, Layout)
-  }, [])
-  //console.log('Wrapped', WrappedRoutes)
+  const site = useMemo(() => {
+      return Sites?.[SUBDOMAIN] || Sites['www']
+  },[SUBDOMAIN])
 
+  const WrappedRoutes =  useMemo(() => {
+    const Routes = [...site.Routes, ...DefaultRoutes]
+    return LayoutWrapper(Routes, Layout)
+  }, [site])
+  
+  //console.log('Wrapped', WrappedRoutes)
 
   return (
     <>

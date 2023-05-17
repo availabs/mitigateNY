@@ -70,6 +70,6 @@ export default {
     size: 'none'
   },
   topNav: {
-    position: 'fixed'
+    size: 'none'
   }
 }

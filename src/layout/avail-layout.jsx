@@ -84,21 +84,10 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 										<div to="/" className={`${sideNavOptions.size === 'none' ? '' : 'md:hidden'}` }>
 											<Logo sideNav={sideNavOptions}/>
 										</div>
-										<div>Left</div>
+										
 									</div>
 								}
-								menuItems={[
-									{
-										name: "Docs",
-										path: `/docs`,
-										icon: "os-icon os-icon-home-10",
-									},
-									{
-										name: "Data Sources",
-										path: `/datasources`,
-										icon: "os-icon os-icon-grid-squares2",
-									},
-								]}
+								menuItems={[]}
 								rightMenu={<AuthMenu />}
 								
 							/>
