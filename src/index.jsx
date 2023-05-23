@@ -1,24 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 
 import { Provider } from 'react-redux';
-import store from './store';
+import store from '~/store';
 
 import {
   FalcorProvider,
   falcorGraph
-} from "./modules/avl-falcor"
+} from "~/modules/avl-falcor"
 
 import { 
   ThemeContext
 } from "~/modules/avl-components/src"
 
-import { 
-  AVL_THEME
-} from "~/modules/avl-components/src/Themes"
+// import { 
+//   AVL_THEME
+// } from "~/modules/avl-components/src/Themes"
 
-//import AVL_THEME from "~/layout/avail-theme"
+import AVL_THEME from "~/layout/avail-theme"
 
 import {
   enableAuth
@@ -29,9 +28,10 @@ import {
   AUTH_HOST, 
   PROJECT_NAME, 
   CLIENT_HOST 
-} from './config'
+} from '~/config'
 
-import './index.css';
+import App from '~/App';
+import '~/index.css';
 
 window.global ||= window;
 

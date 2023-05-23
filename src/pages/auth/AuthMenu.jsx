@@ -51,7 +51,6 @@ export default withAuth(({title, shadowed = true, user, children}) => {
                     <div className='p-1 bg-blue-500'>
                         { user.authLevel >= 5 ? 
                         <div className='py-1 '> 
-                            {Item('/docs/edit', 'fad fa-database flex-shrink-0  pr-1', 'Edit Docs')}
                             {Item('/edit', 'fad fa-database flex-shrink-0  pr-1', 'Edit Site')}
                         </div> : ''}
                         <div className='py-1 border-t border-blue-400'> 

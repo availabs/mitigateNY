@@ -16,8 +16,8 @@ const Logo = ({sideNav}) => {
 	return (
 		<>
 			<Link to="/" className={`flex flex-col items-center justify-center`}>
-				<div className='h-12 w-12 flex flex-col items-center justify-center'>
-					A
+				<div className='h-12 px-6 flex flex-col items-center justify-center'>
+					AVAIL 
 				</div>	
 			</Link>
 		</>
@@ -49,7 +49,8 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 	const topNavOptions = {
 		position: topNav.position || 'block',
 		size: topNav.size || 'compact',
-		menu: topNav.menu || 'right'
+		menu: topNav.menu || 'left',
+		menuItems: topNav.menuItems || []
 
 	}
 	//console.log('test', theme.sidenav(themeOptions))
@@ -87,7 +88,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 										
 									</div>
 								}
-								menuItems={[]}
+								menuItems={topNavOptions.menuItems}
 								rightMenu={<AuthMenu />}
 								
 							/>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { withAuth } from '~/modules/ams/src'
 import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
@@ -14,10 +14,14 @@ const LayoutWrapper = withAuth(({
 }) => {
 
   const Child = Element || Comp // support old react router routes
-  const navigate = useNavigate()
-  React.useEffect(() => {
-    checkAuth(props,navigate)
-  },[])
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const { auth, authLevel } = props;
+
+    React.useEffect(() => {
+      checkAuth({ auth, authLevel }, navigate, location);
+    }, [auth, authLevel, navigate, location]);
   
   // console.log('LayoutWrapper props', props)
   // console.log('LayoutWrapper comp',  typeof Comp, Comp )

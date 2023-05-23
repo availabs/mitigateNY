@@ -12,7 +12,7 @@ const Home = () =>
 
 const config = {
   name:'Title',
-  path: "/",
+  path: "/home",
   exact: true,
   auth: false,
   mainNav: false,

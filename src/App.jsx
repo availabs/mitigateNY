@@ -33,8 +33,7 @@ const App = (props) => {
     return LayoutWrapper(Routes, Layout)
   }, [site])
   
-  //console.log('Wrapped', WrappedRoutes)
-
+  
   return (
     <>
       <RouterProvider 

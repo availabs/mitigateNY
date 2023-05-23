@@ -162,7 +162,7 @@ const ppdaf = () => {
         ------*/
     topnav: ({
         color='white',
-        size='compact'
+        size='compact',
         menu='left'
     }) => {
 
@@ -170,10 +170,10 @@ const ppdaf = () => {
         white: {
           contentBg: `bg-slate-100`,
           accentColor: `${accent}-500`,
-          accentBg: `hover:bg-${accent}-500`,
+          accentBg: `hover:bg-white`,
           borderColor: `border-${primary}-100`,
-          textColor: `text-${primary}-500`,
-          highlightColor: `text-${highlight}`,
+          textColor: `text-slate-700`,
+          highlightColor: `text-blue-500`,
         },
         bright: {
           contentBg: `bg-${accent}-700`,
@@ -187,10 +187,10 @@ const ppdaf = () => {
       let sizes = {
         compact: {
           menu: `hidden md:flex flex-1 ${menu === 'left' ? '' : 'justify-end'}`,
-          sideItem: "flex mx-6 pr-4 py-2 text-sm font-light hover:pl-4",
-          topItem: `flex items-center text-sm px-4 border-r h-12 ${colors[color].textColor} ${colors[color].borderColor}
+          sideItem: "flex  mx-6 pr-4 py-2 text-sm font-light hover:pl-4",
+          topItem: `flex font-medium uppercase items-center text-sm px-4 border-r h-12 ${colors[color].textColor} ${colors[color].borderColor}
             ${colors[color].accentBg} hover:${colors[color].highlightColor}`,
-          activeItem: `flex items-center text-sm px-4 border-r h-12 ${colors[color].textColor} ${colors[color].borderColor}
+          activeItem: `flex font-medium uppercase bg-white items-center text-sm px-4 border-r h-12 ${colors[color].textColor} ${colors[color].borderColor}
             ${colors[color].accentBg} hover:${colors[color].highlightColor}`,
           icon: "mr-3 text-lg",
           responsive: 'md:hidden'
