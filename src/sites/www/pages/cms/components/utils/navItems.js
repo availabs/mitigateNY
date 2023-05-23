@@ -2,12 +2,12 @@ const baseUrl =''
 
 function getChildNav(item, dataItems, edit ) {
   let children = dataItems
-    .filter(d => d.parent === item.id)
+    .filter(d => item.id && d.parent === item.id)
     .sort((a,b) => a.index-b.index)
 
   if(children.length === 0) return false
 
-  // console.log('children', children)
+  console.log('children', children, item.id, dataItems.map(d => d.parent))
   return children.map((d,i) => {
     let item  = {
       path: `${edit ? `${baseUrl}/edit` : baseUrl}/${d.url_slug || d.id}`,
@@ -22,7 +22,8 @@ function getChildNav(item, dataItems, edit ) {
 }
 
 export function dataItemsNav (dataItems, edit = false) {
-	return  dataItems
+	console.log('dataItemsNav', dataItems)
+  return  dataItems
     	.sort((a,b) => a.index-b.index)
     	.filter(d => !d.parent)
    	 	.map((d,i) => {
