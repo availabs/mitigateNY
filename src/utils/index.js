@@ -21,3 +21,5 @@ export const getSubdomain = (host) => {
         window.location.host.split('.')[0].toLowerCase() :  
         false
 }
+
+export const pgEnv = 'hazmit_dama';

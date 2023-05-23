@@ -3,7 +3,8 @@ import React from "react"
 import {Select} from "~/modules/avl-components/src"
 import { dmsDataTypes } from "~/modules/dms/src"
 
-import ColorBox from "../colorbox"
+import ColorBox from "../colorbox";
+import LossByDisasterNumberChart from "../LossByDisasterNumberChart";
 
 import get from "lodash/get"
 import isEqual from "lodash/isEqual"
@@ -11,6 +12,7 @@ import isEqual from "lodash/isEqual"
 // register components here
 const ComponentRegistry = {
     "ColorBox": ColorBox,
+    "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
     "lexical": dmsDataTypes.lexical
 }
 

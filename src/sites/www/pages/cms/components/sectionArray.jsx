@@ -148,7 +148,7 @@ const Edit = ({Component, value, onChange, attr}) => {
     }
 
     return (
-        <div className='max-w-3xl mx-auto mb-12'>
+        <div className='max-w-5xl mx-auto mb-12'>
             {values.map((v,i) => {
                 return (
                     <div key={i} className=''>
@@ -194,7 +194,7 @@ const View = ({Component, value, attr}) => {
     if (!value || !value.map) { return '' }
     
     return (
-        <div className='max-w-3xl mx-auto'>
+        <div className='max-w-5xl mx-auto'>
         { 
             value.map((v,i) =>(
                 <div key={i}> 
