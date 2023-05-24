@@ -5,6 +5,7 @@ import { dmsDataTypes } from "~/modules/dms/src"
 
 import ColorBox from "../colorbox";
 import LossByDisasterNumberChart from "../LossByDisasterNumberChart";
+import HazardStatBox from '../HazardStatBox';
 
 import get from "lodash/get"
 import isEqual from "lodash/isEqual"
@@ -13,6 +14,7 @@ import isEqual from "lodash/isEqual"
 const ComponentRegistry = {
     "ColorBox": ColorBox,
     "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
+    "Card: Hazard Risk": HazardStatBox,
     "lexical": dmsDataTypes.lexical
 }
 

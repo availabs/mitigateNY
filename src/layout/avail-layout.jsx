@@ -6,10 +6,6 @@ import AuthMenu from "~/pages/auth/AuthMenu"
 import get from 'lodash/get'
 
 
-const dataManagerCats = {
-	freightatlas: 'Freight Atlas'
-}
-
 const Logo = ({sideNav}) => {
 	const theme = useTheme()
 	const themeOptions = {size: get(sideNav, 'size','micro') ,color: get(sideNav, 'color','dark')}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import get from "lodash.get";
+import get from "lodash/get";
 import { getColorRange  } from "~/modules/avl-components/src";
 import { useFalcor } from "~/modules/avl-falcor"
 // import { useSelector } from "react-redux";
@@ -8,8 +8,10 @@ import { RenderSvgBar } from "./svgBar";
 import {
   hazardsMeta,
   ctypeColors
-} from "../../DataManager/DataTypes/constants/colors";
-import { fnumIndex } from "../../DataManager/utils/macros";
+} from "~/utils/colors";
+import { fnumIndex } from "~/utils/macros";
+import {pgEnv} from "~/utils"
+
 import { scaleQuantize } from "d3-scale";
 
 const palattes = [
@@ -35,7 +37,7 @@ export const HazardStatBox = ({ geoid, hazard, eal_source_id, eal_view_id, size 
   const { falcor, falcorCache } = useFalcor();
   const [nriIds, setNriIds] = useState({ source_id: null, view_id: null });
   const [fusionIds, setfusionIds] = useState({ source_id: null, view_id: null });
-  const pgEnv = useSelector(selectPgEnv);
+  
   const freqCol = `sum(${get(hazardsMeta, [hazard, "prefix"], "total")}_afreq) as freq`,
     expCol = `sum(${get(hazardsMeta, [hazard, "prefix"], "total")}_expt) as exp`;
   const npCol = isTotal ? "national_percent_total" : "national_percent_hazard",

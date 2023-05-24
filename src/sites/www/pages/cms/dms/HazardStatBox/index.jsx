@@ -1,5 +1,6 @@
 import React from "react"
 import { Select } from '~/modules/avl-components/src'
+import { HazardStatBox } from './HazardStatBox'
 
 function isJson(str) {
     try {
@@ -20,34 +21,36 @@ const Edit = ({value, onChange}) => {
     return (
         <div className='w-full'>
             <div className='relative'>
-                ColorBox Editor
-                <Select
-                    domain={['red', 'blue']}
-                    value={data.color}
-                    multi={false}
-                    onChange={ColorSelect}
-                />
-                <div className='relative w-full border border-dashed p-1'>
-                    <div style={{height: '150px', backgroundColor: data.color}}></div>
+                Hazard Stat Box Editor
+                
+                <div className='relative w-full p-1'>
+                    <HazardStatBox 
+                        geoid={'36'} 
+                        hazard={'riverine'} 
+                        eal_source_id={'229'} 
+                        eal_view_id={'653'}
+                        isTotal={true}
+                    />
                 </div>
             </div>
         </div>
     )
 }
 
-Edit.settings = {
-    hasControls: true,
-    name: 'ElementEdit'
-}
 
 const View = ({value}) => {
-    if(!value) return ''
-    let data = typeof value === 'object' ? 
-        value : 
-        JSON.parse(value)
+    // if(!value) return ''
+    // console.log('value', value)
+    
     return (
-        <div className='relative w-full border border-dashed py-2 px-8'>
-            <div style={{height: '150px', backgroundColor: data?.color || 'white'}}></div>
+        <div className='relative w-full  py-2 px-8'>
+            <HazardStatBox 
+                geoid={'36'} 
+                hazard={'riverine'} 
+                eal_source_id={'229'} 
+                eal_view_id={'653'}
+                isTotal={true}
+            />
         </div>
     )           
 }

@@ -1,6 +1,6 @@
 import React from "react"
 import { Select } from '~/modules/avl-components/src'
-import {isJson} from "../../../../../../utils/macros.jsx";
+import {isJson} from "~/utils/macros.jsx";
 
 const Edit = ({value, onChange}) => {
     //console.log('props', props)
@@ -19,7 +19,7 @@ const Edit = ({value, onChange}) => {
                     multi={false}
                     onChange={ColorSelect}
                 />
-                <div className='relative w-full border border-dashed p-1'>
+                <div className='relative w-full py-6 px-6'>
                     <div style={{height: '150px', backgroundColor: data.color}}></div>
                 </div>
             </div>
@@ -39,7 +39,7 @@ const View = ({value}) => {
         value['element-data'] : 
         JSON.parse(value)
     return (
-        <div className='relative w-full border border-dashed py-1 px-6'>
+        <div className='relative w-full py-6 px-6'>
             <div style={{height: '150px', backgroundColor: data?.color || 'white'}}></div>
         </div>
     )           
