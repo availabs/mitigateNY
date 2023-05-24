@@ -7,6 +7,25 @@ import { RenderBarChart } from "./components/RenderBarChart.jsx";
 import { ProcessDataForMap } from "./utils"
 import VersionSelector from "../versionSelector"
 import { Loading } from "./components/loading.jsx"
+
+const GeographySelector = ({value, onChange}) => (
+    <select
+        className='bg-slate-100 p-2 w-full border-b'
+        value={value}
+        onChange={e => onChange(e.target.value)}
+    >
+        <option key={'select a version'} selected="true" disabled="disabled" className="ml-2  truncate">
+            Select a Geography
+        </option>
+        {
+            [{label: 'New York State', value: '36'}, {label: 'Albany County', value: '36001'}]
+                .map((v, i) => (
+                    <option key={i} value={v.value} className="ml-2  truncate">{v.label}</option>
+                ))
+        }
+    </select>
+)
+
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
 
@@ -21,7 +40,8 @@ const Edit = ({value, onChange}) => {
     const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 596);
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(data?.status);
-    const geoid = '36001';
+    const [geoid, setGeoid] = useState(data?.geoid || '36001');
+
     console.log('d?', data)
     const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
     const disasterNameAttributes = ['distinct disaster_number as disaster_number', 'declaration_title'],
@@ -29,6 +49,11 @@ const Edit = ({value, onChange}) => {
 
     useEffect( () => {
         async function getData(){
+            if(!geoid){
+                setStatus('Plase Select a Geography');
+            }else{
+                setStatus(undefined)
+            }
             setLoading(true);
             setStatus(undefined);
             return falcor.get(dependencyPath).then(async res => {
@@ -69,7 +94,7 @@ const Edit = ({value, onChange}) => {
         }
 
         getData()
-    }, [geoid, ealViewId]);
+    }, [geoid, ealViewId, geoid]);
 
     const disasterNames =
         Object.values(get(falcorCache, [...disasterNamePath(disasterDecView)], {}))
@@ -87,7 +112,7 @@ const Edit = ({value, onChange}) => {
                     ProcessDataForMap(lossByYearByDisasterNumber, disasterNames);
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes'], {});
-    console.log('fc?', falcorCache)
+
     useEffect(() =>
             onChange(JSON.stringify(
                 {
@@ -96,9 +121,10 @@ const Edit = ({value, onChange}) => {
                     attributionData,
                     ealViewId,
                     fusionViewId,
-                    status
+                    status,
+                    geoid
                 })),
-        [chartDataActiveView, disaster_numbers, attributionData, status, ealViewId, fusionViewId]);
+        [chartDataActiveView, disaster_numbers, attributionData, status, ealViewId, fusionViewId, geoid]);
 
     return (
         <div className='w-full'>
@@ -107,12 +133,16 @@ const Edit = ({value, onChange}) => {
                 {
                     loading ? <Loading /> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
-                        <RenderBarChart
-                            chartDataActiveView={chartDataActiveView}
-                            disaster_numbers={disaster_numbers}
-                            attributionData={attributionData}
-                            baseUrl={baseUrl}
-                        />
+                            <>
+                                Select a Geography:
+                                <GeographySelector value={geoid} onChange={setGeoid} />
+                                <RenderBarChart
+                                    chartDataActiveView={chartDataActiveView}
+                                    disaster_numbers={disaster_numbers}
+                                    attributionData={attributionData}
+                                    baseUrl={baseUrl}
+                                />
+                            </>
                 }
             </div>
         </div>
