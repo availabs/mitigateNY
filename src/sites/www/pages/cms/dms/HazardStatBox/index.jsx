@@ -77,14 +77,19 @@ const View = ({value}) => {
     // if(!value) return ''
     // console.log('value', value)
     let data = value || {geoid: '36', hazard: 'total', version: '653' }
+    
+    if(!value.geoid) {
+        data =  {geoid: '36', hazard: 'total', version: '653' }
+    }
+    console.log('view', data)
     return (
         <div className='relative w-full  py-2 px-8'>
             <HazardStatBox 
-                geoid={value.geoid} 
-                hazard={value.hazard} 
+                geoid={data.geoid} 
+                hazard={data.hazard} 
                 eal_source_id={'229'} 
                 eal_view_id={'653'}
-                isTotal={value.hazard === 'total'}
+                isTotal={data.hazard === 'total'}
             />
         </div>
     )           
