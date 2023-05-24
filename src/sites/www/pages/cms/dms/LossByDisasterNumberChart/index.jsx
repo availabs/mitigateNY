@@ -161,7 +161,7 @@ const View = ({value}) => {
         value['element-data'] : 
         JSON.parse(value)
     return (
-        <div className='relative w-full border border-dashed p-6'>
+        <div className='relative w-full p-6'>
             {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
