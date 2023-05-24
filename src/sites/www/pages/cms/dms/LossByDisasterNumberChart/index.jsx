@@ -7,6 +7,7 @@ import { RenderBarChart } from "./components/RenderBarChart.jsx";
 import { ProcessDataForMap } from "./utils"
 import VersionSelector from "../versionSelector"
 import { Loading } from "./components/loading.jsx"
+import {Search} from "../geographySeach/index.jsx";
 
 const GeographySelector = ({value, onChange}) => (
     <select
@@ -33,11 +34,11 @@ const Edit = ({value, onChange}) => {
     const baseUrl = '/';
 
     const [disasterDecView, setDisasterDecView] = useState();
-    const [disasterNumbers, setDisasterNumbers] = useState([]);
-    const [ealSourceId, setEalSourceId] = useState(229);
+    const ealSourceId = 229;
     const [ealViewId, setEalViewId] = useState(data?.ealViewId || 599);
-    const [fusionSourceId, setFusionSourceId] = useState(336);
+    const fusionSourceId= 336;
     const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 596);
+
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(data?.status);
     const [geoid, setGeoid] = useState(data?.geoid || '36001');
@@ -50,7 +51,7 @@ const Edit = ({value, onChange}) => {
     useEffect( () => {
         async function getData(){
             if(!geoid){
-                setStatus('Plase Select a Geography');
+                setStatus('Please Select a Geography');
             }else{
                 setStatus(undefined)
             }
@@ -67,24 +68,23 @@ const Edit = ({value, onChange}) => {
                     return Promise.resolve();
                 }
 
-
                 setFusionViewId(fusionView.view_id)
 
                 const lossRes = await falcor.get(
-                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionViewId, "byGeoid", geoid, ["lossByYearByDisasterNumber"]],
-                    ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes', ['source_id', 'view_id', 'version']]
+                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id, "byGeoid", geoid, ["lossByYearByDisasterNumber"]],
+                    ['dama', pgEnv, 'views', 'byId', fusionView.view_id, 'attributes', ['source_id', 'view_id', 'version']]
                 );
                 console.log('useEffect?', lossRes)
                 const disasterNumbers = get(lossRes,
                     ['json', "fusion", pgEnv, "source", fusionSourceId, "view",
-                        fusionViewId, "byGeoid", geoid, "lossByYearByDisasterNumber"], [])
+                        fusionView.view_id, "byGeoid", geoid, "lossByYearByDisasterNumber"], [])
                     .map(dns => dns.disaster_number)
                     ?.filter(dns => dns !== 'SWD')
                     .sort((a, b) => +a - +b);
 
-                if(disasterNumbers.length){
+                if(disasterNumbers?.length){
                     const ddcView = deps.find(d => d.type === "disaster_declarations_summaries_v2");
-                    setDisasterNumbers(disasterNumbers);
+
                     setDisasterDecView(ddcView?.view_id);
                     await falcor.get([...disasterNamePath(ddcView.view_id), JSON.stringify({ filter: { disaster_number: disasterNumbers.sort((a, b) => +a - +b)}}),
                         'databyIndex', {from: 0, to: disasterNumbers.length - 1}, disasterNameAttributes]);
@@ -135,7 +135,7 @@ const Edit = ({value, onChange}) => {
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <>
                                 Select a Geography:
-                                <GeographySelector value={geoid} onChange={setGeoid} />
+                                <Search value={geoid} onChange={setGeoid} />
                                 <RenderBarChart
                                     chartDataActiveView={chartDataActiveView}
                                     disaster_numbers={disaster_numbers}
