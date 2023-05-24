@@ -135,7 +135,7 @@ const Edit = ({value, onChange}) => {
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <>
                                 Select a Geography:
-                                <Search value={geoid} onChange={setGeoid} />
+                                <Search value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
                                 <RenderBarChart
                                     chartDataActiveView={chartDataActiveView}
                                     disaster_numbers={disaster_numbers}

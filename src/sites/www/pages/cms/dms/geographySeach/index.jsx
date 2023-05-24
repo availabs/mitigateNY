@@ -21,17 +21,17 @@ const onChangeFilter = (selected, setSelected, value, geoData, navigate, onChang
   }
 }
 const menuItemsLinks = (option) => {
-  return <Link key={option.geoid} className="block hover:bg-gray-200 text-xl tracking-wide" to={`/geography/${option.geoid}`}>{option.name}</Link>;
+  return <Link key={option.geoid} className="block hover:bg-slate-200 text-xl tracking-wide" to={`/geography/${option.geoid}`}>{option.name}</Link>;
 }
 const menuItemsList = (option) => (
-    <span className={"block hover:bg-gray-200 text-xl tracking-wide"}>{option.name}</span>
+    <span className={"block hover:bg-slate-200 text-xl tracking-wide"}>{option.name}</span>
 )
 
 const renderMenu = (results, menuProps, labelKey, ...props) => {
   return (
-      <Menu className={'bg-gray-100 overflow-hidden z-10'} {...menuProps}>
+      <Menu className={'bg-slate-100  overflow-hidden z-10'} {...menuProps}>
         {results.map((result, index) => (
-            <MenuItem className={"block hover:bg-gray-200 text-xl tracking-wide"} option={result} position={index}>
+            <MenuItem className={"block hover:bg-slate-200 text-xl tracking-wide"} option={result} position={index}>
               {result.name}
             </MenuItem>
         ))}
@@ -106,7 +106,7 @@ export const Search = ({
 
   return (
     <div className={`flex flex row ${className} w-full`}>
-      <i className={`fa fa-search font-light text-xl text-gray-500 pr-2 pt-1`} />
+      <i className={`fa fa-search font-light text-xl bg-slate-100 pr-2 pt-1`} />
       <AsyncTypeahead
         className={'w-full'}
         isLoading={false}
@@ -120,7 +120,7 @@ export const Search = ({
         defaultSelected={ selected }
         onChange = {(selected) => onChangeFilter(selected, setSelected, value, geoData, navigate, onChange)}
         selected={ selected }
-        inputProps={{ className: 'bg-gray-100 w-full' }}
+        inputProps={{ className: 'bg-slate-100  w-full p-1 pl-3' }}
         renderMenu={renderMenu}
       />
       </div>
