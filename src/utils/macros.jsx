@@ -1,5 +1,14 @@
 import get from "lodash/get";
 
+export const isJson = (str)  => {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
 export const HoverComp = ({ data, keys, indexFormat, keyFormat, valueFormat }) => {
     return (
         <div className={`

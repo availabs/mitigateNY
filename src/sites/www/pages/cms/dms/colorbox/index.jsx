@@ -1,14 +1,6 @@
 import React from "react"
 import { Select } from '~/modules/avl-components/src'
-
-function isJson(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-}
+import {isJson} from "../../../../../../utils/macros.jsx";
 
 const Edit = ({value, onChange}) => {
     //console.log('props', props)
