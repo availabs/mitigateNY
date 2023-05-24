@@ -47,7 +47,7 @@ const View = ({value}) => {
         value['element-data'] : 
         JSON.parse(value)
     return (
-        <div className='relative w-full border border-dashed p-1'>
+        <div className='relative w-full border border-dashed py-1 px-6'>
             <div style={{height: '150px', backgroundColor: data?.color || 'white'}}></div>
         </div>
     )           

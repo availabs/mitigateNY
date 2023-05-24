@@ -98,7 +98,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 						}
 					</>)
 				}
-				<div className={`h-full flex-1 bg-neutral-100 `}>
+				<div className={`h-full flex-1 `}>
 					{children}
 				</div>
 			</div>

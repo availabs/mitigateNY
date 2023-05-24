@@ -42,12 +42,11 @@ Edit.settings = {
 
 const View = ({value}) => {
     if(!value) return ''
-    console.log('value', value)
     let data = typeof value === 'object' ? 
         value : 
         JSON.parse(value)
     return (
-        <div className='relative w-full border border-dashed p-1'>
+        <div className='relative w-full border border-dashed py-2 px-8'>
             <div style={{height: '150px', backgroundColor: data?.color || 'white'}}></div>
         </div>
     )           

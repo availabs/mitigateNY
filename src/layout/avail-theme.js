@@ -213,8 +213,8 @@ const ppdaf = () => {
         topnavContent: `flex w-full h-full`,
         topnavMenu: `${sizes[size].menu} h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
         menuIconTop: `text-${colors[color].accentColor} ${sizes[size].icon} group-hover:${colors[color].highlightColor}`,
-        menuOpenIcon: `fa fa-bars`,
-        menuCloseIcon: `fa fa-xmark fa-fw"`,
+        menuOpenIcon: `fa-light fa-bars fa-fw`,
+        menuCloseIcon: `fa-light fa-xmark fa-fw"`,
         navitemTop: `
             group font-sans
             ${sizes[size].topItem}
@@ -223,6 +223,7 @@ const ppdaf = () => {
         `,
         //`px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center  border-transparent  leading-5 text-white hover:bg-white hover:text-darkblue-500 border-gray-200 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full`,
         topmenuRightNavContainer: "hidden md:block h-full",
+        topnavMobileContainer: "bg-slate-100",
         navitemTopActive:
           ` group font-sans
             ${sizes[size].activeItem}
@@ -230,7 +231,7 @@ const ppdaf = () => {
             transition cursor-pointer
           `,
         mobileButton:
-          `${sizes[size].responsive} ${colors[color].contentBg} inline-flex items-center justify-center p-2  text-gray-400 hover:bg-gray-100 `,
+          `${sizes[size].responsive} ${colors[color].contentBg} inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
         vars: {
             colors,
             sizes

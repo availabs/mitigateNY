@@ -3,8 +3,8 @@ import { Select } from '~/modules/avl-components/src';
 import { BarGraph } from '~/modules/avl-graph/src';
 import { useFalcor } from '~/modules/avl-falcor';
 import { pgEnv } from "~/utils/";
-import { fnumIndex, HoverComp } from "../../../../../../utils/macros.jsx";
-import {hazardsMeta} from "../../../../../../utils/colors.jsx";
+import { fnumIndex, HoverComp } from "~/utils/macros.jsx";
+import {hazardsMeta} from "~/utils/colors.jsx";
 import {Link} from "react-router-dom";
 import get from "lodash/get";
 
@@ -154,7 +154,7 @@ const Edit = ({value, onChange}) => {
         ealViewId = 599;
     const fusionSourceId = 336,
         fusionViewId = 596;
-    const geoid = '36001';
+    const geoid = '36';
 
     const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
     const disasterNameAttributes = ['distinct disaster_number as disaster_number', 'declaration_title'],

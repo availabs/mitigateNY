@@ -27,3 +27,9 @@ export const hazardsMeta = {
     // silvery
     'wind':{color: '#dedad2', name:'Wind', prefix: 'swnd'}
 };
+
+export const ctypeColors = {
+  buildings: '#54bebe',
+  population: '#115f9a',
+  crop: '#ffb400'
+}

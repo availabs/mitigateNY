@@ -21,7 +21,7 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave}) {
             <div className='flex border-y items-center h-[50px]'>
                 <div className='flex-1 '>
                     <TitleComp 
-                        className='p-2 w-full text-2xl font-medium'
+                        className='p-2 w-full font-sans font-medium text-md uppercase'
                         placeholder={'Section Title'}
                         value={value?.['title']} 
                         onChange={(v) => updateAttribute('title', v)}
@@ -66,7 +66,7 @@ function SectionView ({value, attributes, onEdit}) {
     return (
         <div>
             <div className='flex border-y h-[50px] items-center'>
-                <div className='flex-1 py-2 px-6 text-2xl font-medium'>
+                <div className='flex-1 py-2 px-6 font-sans font-medium text-md uppercase'>
                     <TitleComp 
                         className='w-full'
                         value={value?.['title']} 
@@ -155,7 +155,7 @@ const Edit = ({Component, value, onChange, attr}) => {
                         {/* add to top */}
                         { edit.index === -1 && i === 0 ? 
                             <AddSectionButton onClick={() => setEditIndex(0)}/> : 
-                                edit.index === -1 || i > 0 ? '' : <div className='h-[28px]' />
+                                edit.index === -1 || i > 0 ? '' : <div className='h-[36px]' />
                         }
 
                         {/* edit new or existing section */}
@@ -180,7 +180,7 @@ const Edit = ({Component, value, onChange, attr}) => {
 
                         {/* add section below */}
                         { edit.index == -1 && v !== '' ? 
-                            <AddSectionButton onClick={() => setEditIndex(i+1)}/> : <div className='h-[28px]' />
+                            <AddSectionButton onClick={() => setEditIndex(i+1)}/> : <div className='h-[36px]' />
                         }
                     </div>
                 )
