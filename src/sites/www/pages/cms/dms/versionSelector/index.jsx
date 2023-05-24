@@ -38,7 +38,7 @@ export default function VersionSelector ({ source_id, view_id, onChange}) {
             .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]));
     }, [falcorCache, source_id, pgEnv]);
 
-    console.log('views', views)
+
     return (
         <div className="w-full">
             <div className="relative">
@@ -46,7 +46,7 @@ export default function VersionSelector ({ source_id, view_id, onChange}) {
                 <select 
                     className='bg-slate-100 p-2 w-full border-b'
                     value={view_id}
-                    onChange={e => onChange(e.target.value)}
+                    onChange={e => onChange(parseInt(e.target.value))}
                 >
                     <option key={'select a version'} selected="true" disabled="disabled" className="ml-2  truncate">Select a
                         Version

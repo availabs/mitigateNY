@@ -18,16 +18,14 @@ const Edit = ({value, onChange}) => {
     const [ealSourceId, setEalSourceId] = useState(229);
     const [ealViewId, setEalViewId] = useState(data?.ealViewId || 599);
     const [fusionSourceId, setFusionSourceId] = useState(336);
-    const [fusionViewId, setFusionViewId] = useState(data?.ealViewId || 596);
+    const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 596);
     const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState();
+    const [status, setStatus] = useState(data?.status);
     const geoid = '36001';
-
+    console.log('d?', data)
     const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
     const disasterNameAttributes = ['distinct disaster_number as disaster_number', 'declaration_title'],
-        disasterNamePath = (view_id) =>
-            ['dama', pgEnv,  "viewsbyId", view_id,
-                "options"];
+          disasterNamePath = (view_id) => ['dama', pgEnv,  "viewsbyId", view_id, "options"];
 
     useEffect( () => {
         async function getData(){
@@ -45,18 +43,18 @@ const Edit = ({value, onChange}) => {
                 }
 
 
-                setFusionViewId(fusionView?.view_id)
+                setFusionViewId(fusionView.view_id)
 
                 const lossRes = await falcor.get(
                     ["fusion", pgEnv, "source", fusionSourceId, "view", fusionViewId, "byGeoid", geoid, ["lossByYearByDisasterNumber"]],
                     ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes', ['source_id', 'view_id', 'version']]
                 );
-
+                console.log('useEffect?', lossRes)
                 const disasterNumbers = get(lossRes,
                     ['json', "fusion", pgEnv, "source", fusionSourceId, "view",
                         fusionViewId, "byGeoid", geoid, "lossByYearByDisasterNumber"], [])
                     .map(dns => dns.disaster_number)
-                    .filter(dns => dns !== 'SWD')
+                    ?.filter(dns => dns !== 'SWD')
                     .sort((a, b) => +a - +b);
 
                 if(disasterNumbers.length){
@@ -89,7 +87,7 @@ const Edit = ({value, onChange}) => {
                     ProcessDataForMap(lossByYearByDisasterNumber, disasterNames);
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes'], {});
-
+    console.log('fc?', falcorCache)
     useEffect(() =>
             onChange(JSON.stringify(
                 {
@@ -97,9 +95,10 @@ const Edit = ({value, onChange}) => {
                     disaster_numbers,
                     attributionData,
                     ealViewId,
-                    fusionViewId
+                    fusionViewId,
+                    status
                 })),
-        [chartDataActiveView, disaster_numbers, attributionData]);
+        [chartDataActiveView, disaster_numbers, attributionData, status, ealViewId, fusionViewId]);
 
     return (
         <div className='w-full'>
@@ -133,7 +132,11 @@ const View = ({value}) => {
         JSON.parse(value)
     return (
         <div className='relative w-full border border-dashed p-6'>
-            <RenderBarChart {...JSON.parse(value)} baseUrl={'/'}/>
+            {
+                data?.status ?
+                    <div className={'p-5 text-center'}>{data?.status}</div> :
+                    <RenderBarChart {...JSON.parse(value)} baseUrl={'/'}/>
+            }
         </div>
     )           
 }
