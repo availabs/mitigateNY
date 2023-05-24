@@ -59,7 +59,7 @@ export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem
   const TitleEdit = attributes['title'].EditComp
 
   return (
-    <div className='flex flex-1 h-full w-full md:px-10 py-6'>
+    <div className='flex flex-1 h-full w-full px-1 md:px-10 py-6'>
       <Nav dataItems={dataItems} edit={true} />
       <div className='flex-1 flex border shadow bg-white px-4 '>
         <div className={theme.page.container}>
