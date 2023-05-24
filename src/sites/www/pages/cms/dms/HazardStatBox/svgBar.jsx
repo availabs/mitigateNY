@@ -15,7 +15,7 @@ function Bars({ data, height, radius, fontSizeOuter, fontSizeInner }) {
       {data.map(({ value, showValue= true, valueFloat= 'left', valueCutoff = 0, label, color, width }, i) => {
         const x = i === 0 ? 0 : data.filter((d, dI) => dI < i).reduce((acc, d) => +acc + +d.width, 0)
         return (
-          <>
+          <React.Fragment key={i}>
             <rect
               key={`bar-${label}`}
               x={0}
@@ -54,7 +54,7 @@ function Bars({ data, height, radius, fontSizeOuter, fontSizeInner }) {
                     fontSize={fontSizeOuter} paintOrder="stroke"
               > {value} </text>
             }
-          </>
+          </React.Fragment>
         )
       }).reverse()
       }
