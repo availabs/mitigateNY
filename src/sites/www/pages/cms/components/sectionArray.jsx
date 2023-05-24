@@ -39,13 +39,13 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave}) {
                     <button 
                         className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
                         onClick={onCancel}
-                    ><i class="fa-light fa-xmark text-2xl fa-fw" title="Cancel"/></button>
+                    ><i className="fa-light fa-xmark text-2xl fa-fw" title="Cancel"/></button>
                 </div>
                 <div className='py-2'>
                     <button 
                         className={'pl-6 py-0.5 text-md cursor-pointer flex items-center hover:text-blue-500 text-slate-400'}
                         onClick={onSave}
-                    ><i class="fa-light fa-floppy-disk text-2xl fa-fw" title="Save"/>  </button>
+                    ><i className="fa-light fa-floppy-disk text-2xl fa-fw" title="Save"/>  </button>
                 </div>
             </div>
             <div>
@@ -84,7 +84,7 @@ function SectionView ({value, attributes, onEdit}) {
                             className={'pl-6 py-0.5 flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
                             onClick={ onEdit }
                         >
-                            <i class="fa-light fa-pencil text-xl fa-fw" title="Edit"></i>
+                            <i className="fa-light fa-pencil text-xl fa-fw" title="Edit"></i>
                             {/*☳ Edit*/}
                         </button>
                     
@@ -107,7 +107,7 @@ const AddSectionButton = ({onClick}) => (
                 className={'pl-6 py-0.5 text-lg cursor-pointer hover:text-blue-500 text-slate-400'}
                 onClick={onClick}
             > 
-            <i class="fa-light fa-sharp fa-layer-plus text-2xl fa-fw" title="Add Section"></i>
+            <i className="fa-light fa-sharp fa-layer-plus text-2xl fa-fw" title="Add Section"></i>
             {/*☷ Add Section*/}
             </button>
         </div>
