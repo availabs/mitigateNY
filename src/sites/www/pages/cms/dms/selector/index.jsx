@@ -28,12 +28,12 @@ function EditComp (props) {
         }
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
     }
-
+    // if(!value?.['element-type']) {
+    //     onChange({...value, 'element-type': 'lexical'})
+    // }
     let DataComp = ComponentRegistry[get(value, "element-type", "lexical")].EditComp
 
-    if(!value?.['element-type']) {
-        onChange({...value, 'element-type': 'lexical'})
-    }
+
     // ComponentRegistry[get(value, "element-type", null)] ?
     //      :
     //     () => <div> Component {value?.["element-type"]} Not Registered </div>
@@ -41,7 +41,7 @@ function EditComp (props) {
     
     return (
         <div className="w-full">
-            <div className="relative">
+            <div className="relative my-1">
                 {/*Selector Edit*/}
                 <select 
                     className='bg-slate-100 p-2 w-full border-b'

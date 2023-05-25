@@ -41,24 +41,26 @@ export default function VersionSelector ({ source_id, view_id, onChange}) {
 
     return (
         <div className="w-full">
-            <div className="relative">
-                Select a Version:
-                <select 
-                    className='bg-slate-100 p-2 w-full border-b'
-                    value={view_id}
-                    onChange={e => onChange(parseInt(e.target.value))}
-                >
-                    <option key={'select a version'} selected="true" disabled="disabled" className="ml-2  truncate">Select a
-                        Version
-                    </option>
-                    {
-                        views
-                            .sort((a, b) => b.view_id - a.view_id)
-                            .map((v, i) => (
-                                <option key={i} value={v.view_id} className="ml-2  truncate">{v.version}</option>
-                            ))
-                    }
-                </select>
+            <div className="relative flex justify-between">
+                <label className={'shrink-0 pr-2 py-1 my-1'}>Select a Version:</label>
+                <div className={`flex w-full shrink my-1`}>
+                    <select
+                        className='bg-slate-100 p-2 w-full border-b'
+                        value={view_id}
+                        onChange={e => onChange(parseInt(e.target.value))}
+                    >
+                        <option key={'select a version'} selected="true" disabled="disabled" className="ml-2  truncate">Select a
+                            Version
+                        </option>
+                        {
+                            views
+                                .sort((a, b) => b.view_id - a.view_id)
+                                .map((v, i) => (
+                                    <option key={i} value={v.view_id} className="ml-2  truncate">{v.version}</option>
+                                ))
+                        }
+                    </select>
+                </div>
             </div>
         </div>
     )

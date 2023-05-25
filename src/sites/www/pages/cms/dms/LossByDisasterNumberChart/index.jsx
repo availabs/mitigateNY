@@ -5,9 +5,10 @@ import { pgEnv } from "~/utils/";
 import { isJson } from "../../../../../../utils/macros.jsx";
 import { RenderBarChart } from "./components/RenderBarChart.jsx";
 import { ProcessDataForMap } from "./utils"
-import VersionSelector from "../versionSelector"
+import VersionSelector from "../versionSelector";
+import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
+import GeographySearch from "../geographySeach/index.jsx";
 import { Loading } from "./components/loading.jsx"
-import {Search} from "../geographySeach/index.jsx";
 
 const GeographySelector = ({value, onChange}) => (
     <select
@@ -129,13 +130,12 @@ const Edit = ({value, onChange}) => {
     return (
         <div className='w-full'>
             <div className='relative'>
-                <VersionSelector source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId}/>
+                <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId} className={'flex-row-reverse'} />
                 {
                     loading ? <Loading /> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <>
-                                Select a Geography:
-                                <Search value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
+                                <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
                                 <RenderBarChart
                                     chartDataActiveView={chartDataActiveView}
                                     disaster_numbers={disaster_numbers}

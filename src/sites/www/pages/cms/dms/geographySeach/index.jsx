@@ -81,7 +81,7 @@ const getCountyData = async ({ falcor, pgEnv, statesData, setGeoData }) => {
   }
 }
 
-export const Search = ({
+export default ({
                          className,
                          value,
                          onChange // if not passed, navigate to geography page
@@ -105,24 +105,27 @@ export const Search = ({
   }, [geoData, value]);
 
   return (
-    <div className={`flex flex row ${className} w-full`}>
-      <i className={`fa fa-search font-light text-xl bg-slate-100 pr-2 pt-1`} />
-      <AsyncTypeahead
-        className={'w-full'}
-        isLoading={false}
-        onSearch={handleSearch}
-        minLength = {2}
-        id="geography-search"
-        key="geography-search"
-        placeholder="Search for a Geography..."
-        options={geoData}
-        labelKey={(option) => `${option.name}`}
-        defaultSelected={ selected }
-        onChange = {(selected) => onChangeFilter(selected, setSelected, value, geoData, navigate, onChange)}
-        selected={ selected }
-        inputProps={{ className: 'bg-slate-100  w-full p-1 pl-3' }}
-        renderMenu={renderMenu}
-      />
+      <div className={'flex justify-between'}>
+        <label className={'shrink-0 pr-2 py-1 my-1'}>Select a Geography:</label>
+        <div className={`flex flex row ${className} w-full shrink my-1`}>
+          <i className={`fa fa-search font-light text-xl bg-slate-100 pr-2 pt-1`} />
+          <AsyncTypeahead
+              className={'w-full'}
+              isLoading={false}
+              onSearch={handleSearch}
+              minLength = {2}
+              id="geography-search"
+              key="geography-search"
+              placeholder="Search for a Geography..."
+              options={geoData}
+              labelKey={(option) => `${option.name}`}
+              defaultSelected={ selected }
+              onChange = {(selected) => onChangeFilter(selected, setSelected, value, geoData, navigate, onChange)}
+              selected={ selected }
+              inputProps={{ className: 'bg-slate-100  w-full p-1 pl-3' }}
+              renderMenu={renderMenu}
+          />
+        </div>
       </div>
   )
 }
