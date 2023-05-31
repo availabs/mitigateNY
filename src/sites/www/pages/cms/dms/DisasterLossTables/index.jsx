@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import get from "lodash/get";
 import { useFalcor } from '~/modules/avl-falcor';
 import { pgEnv } from "~/utils/";
@@ -8,10 +8,9 @@ import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
 import GeographySearch from "../geographySearch/index.jsx";
 import DisasterSearch from "../DisasterSearch/index.jsx";
 import { Loading } from "~/utils/loading.jsx";
-import {fnum} from "~/utils/macros.jsx";
 import {metaData} from "./config.js";
-import {cellFormat} from './utils.jsx'
 import {RenderColumnControls} from "./components/RenderColumnControls.jsx";
+import {RenderTypeSelector} from "./components/RenderTypeSelector.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -62,7 +61,7 @@ const Edit = ({value, onChange}) => {
                 const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView.view_id), "length"], 0);
 
                 if (geoNameLen) {
-                    const geoNameRes = await falcor.get([...geoNamesPath(countyView.view_id), "databyIndex", {
+                    await falcor.get([...geoNamesPath(countyView.view_id), "databyIndex", {
                         from: 0,
                         to: geoNameLen - 1
                     }, ["geoid", "namelsad"]]);
@@ -138,7 +137,12 @@ const Edit = ({value, onChange}) => {
             <div className='relative'>
                 <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
                     Edit Controls
-                    <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId} className={'flex-row-reverse'} />
+                    <VersionSelectorSearchable
+                        source_id={ealSourceId}
+                        view_id={ealViewId}
+                        onChange={setEalViewId}
+                        className={'flex-row-reverse'}
+                    />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
                     <DisasterSearch
                         view_id={ealViewId}
@@ -147,19 +151,12 @@ const Edit = ({value, onChange}) => {
                         onChange={setDisasterNumber}
                         className={'flex-row-reverse'}
                     />
-                    <div className='flex justify-between'>
-                        <label className={'shrink-0 pr-2 py-1 my-1'}>Select Type:</label>
-                        <select
-                            className='w-full shrink my-1 p-2 bg-white rounded-md'
-                            onChange={e => setType(e.target.value)}
-                            value={type}
-                        >
-                            {
-                                Object.keys(metaData)
-                                    .map(key => <option value={key}>{key}</option>)
-                            }
-                        </select>
-                    </div>
+                    <RenderTypeSelector
+                        label={'Select Type:'}
+                        types={Object.keys(metaData)}
+                        type={type}
+                        setType={setType}
+                    />
                     <RenderColumnControls
                         cols={Object.keys(metaData[type].attributes(geoid))}
                         filters={filters}
@@ -175,7 +172,7 @@ const Edit = ({value, onChange}) => {
                                     title={type}
                                     type={type}
                                     attributionData={attributionData}
-                                    baseUrl={'/'}
+                                    baseUrl={baseUrl}
                                 />
                 }
             </div>
