@@ -31,7 +31,7 @@ const renderMenu = (results, menuProps, labelKey, ...props) => {
   return (
       <Menu className={'bg-slate-100  overflow-hidden z-10'} {...menuProps}>
         {results.map((result, index) => (
-            <MenuItem className={"block hover:bg-slate-200 text-xl tracking-wide"} option={result} position={index}>
+            <MenuItem className={"block hover:bg-slate-200 text-xl tracking-wide pl-1"} option={result} position={index}>
               {result.name}
             </MenuItem>
         ))}
@@ -108,7 +108,7 @@ export default ({
       <div className={'flex justify-between'}>
         <label className={'shrink-0 pr-2 py-1 my-1'}>Select a Geography:</label>
         <div className={`flex flex row ${className} w-full shrink my-1`}>
-          <i className={`fa fa-search font-light text-xl bg-slate-100 pr-2 pt-1`} />
+          <i className={`fa fa-search font-light text-xl bg-white pr-2 pt-1 rounded-r-md`} />
           <AsyncTypeahead
               className={'w-full'}
               isLoading={false}
@@ -122,7 +122,7 @@ export default ({
               defaultSelected={ selected }
               onChange = {(selected) => onChangeFilter(selected, setSelected, value, geoData, navigate, onChange)}
               selected={ selected }
-              inputProps={{ className: 'bg-slate-100  w-full p-1 pl-3' }}
+              inputProps={{ className: 'bg-white  w-full p-1 pl-3 rounded-l-md' }}
               renderMenu={renderMenu}
           />
         </div>

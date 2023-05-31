@@ -3,8 +3,8 @@ import get from "lodash/get";
 import { useFalcor } from '~/modules/avl-falcor';
 import { pgEnv } from "~/utils/";
 import { isJson } from "~/utils/macros.jsx";
-import { RenderBarChart } from "./components/RenderBarChart.jsx";
-import { ProcessDataForMap } from "./utils"
+import { RenderStatBoxes } from "./components/RenderStatBoxes.jsx";
+import { ProcessDataForMap } from "./utils";
 import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
 import GeographySearch from "../geographySearch/index.jsx";
 import { Loading } from "~/utils/loading.jsx"
@@ -55,21 +55,6 @@ const Edit = ({value, onChange}) => {
                     ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id, "byGeoid", geoid, ["lossByYearByDisasterNumber"]],
                     ['dama', pgEnv, 'views', 'byId', fusionView.view_id, 'attributes', ['source_id', 'view_id', 'version']]
                 );
-
-                const disasterNumbers = get(lossRes,
-                    ['json', "fusion", pgEnv, "source", fusionSourceId, "view",
-                        fusionView.view_id, "byGeoid", geoid, "lossByYearByDisasterNumber"], [])
-                    .map(dns => dns.disaster_number)
-                    ?.filter(dns => dns !== 'SWD')
-                    .sort((a, b) => +a - +b);
-
-                if(disasterNumbers?.length){
-                    const ddcView = deps.find(d => d.type === "disaster_declarations_summaries_v2");
-
-                    setDisasterDecView(ddcView?.view_id);
-                    await falcor.get([...disasterNamePath(ddcView.view_id), JSON.stringify({ filter: { disaster_number: disasterNumbers.sort((a, b) => +a - +b)}}),
-                        'databyIndex', {from: 0, to: disasterNumbers.length - 1}, disasterNameAttributes]);
-                }
                 setLoading(false);
             })
         }
@@ -77,35 +62,30 @@ const Edit = ({value, onChange}) => {
         getData()
     }, [geoid, ealViewId, geoid]);
 
-    const disasterNames =
-        Object.values(get(falcorCache, [...disasterNamePath(disasterDecView)], {}))
-            .reduce((acc, d) => [...acc, ...Object.values(d?.databyIndex || {})], [])
-            .reduce((acc, disaster) => {
-                acc[disaster['distinct disaster_number as disaster_number']] = disaster.declaration_title;
-                return acc;
-                }, {});
-
     const lossByYearByDisasterNumber =
             get(falcorCache,
                 ["fusion", pgEnv, "source", fusionSourceId, "view", fusionViewId, "byGeoid", geoid,
                     "lossByYearByDisasterNumber", "value"], []),
-        { processed_data: chartDataActiveView, disaster_numbers } =
-                    ProcessDataForMap(lossByYearByDisasterNumber, disasterNames);
+        { total } = ProcessDataForMap(lossByYearByDisasterNumber);
+
+    const numDeclaredEvents = lossByYearByDisasterNumber.filter(d => d.disaster_number !== 'SWD')?.length,
+        numNonDeclaredEvents = lossByYearByDisasterNumber.reduce((acc, d) => acc + +(d.disaster_number === 'SWD' ? d.numevents : 0), 0)
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes'], {});
 
     useEffect(() =>
             onChange(JSON.stringify(
                 {
-                    chartDataActiveView,
-                    disaster_numbers,
                     attributionData,
                     ealViewId,
                     fusionViewId,
                     status,
-                    geoid
+                    geoid,
+                    numDeclaredEvents,
+                    numNonDeclaredEvents,
+                    total
                 })),
-        [chartDataActiveView, disaster_numbers, attributionData, status, ealViewId, fusionViewId, geoid]);
+        [attributionData, status, ealViewId, fusionViewId, geoid, numDeclaredEvents, numNonDeclaredEvents, total]);
 
     return (
         <div className='w-full'>
@@ -119,9 +99,10 @@ const Edit = ({value, onChange}) => {
                     loading ? <Loading /> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <>
-                                <RenderBarChart
-                                    chartDataActiveView={chartDataActiveView}
-                                    disaster_numbers={disaster_numbers}
+                                <RenderStatBoxes
+                                    numNonDeclaredEvents={numNonDeclaredEvents}
+                                    numDeclaredEvents={numDeclaredEvents}
+                                    total={total}
                                     attributionData={attributionData}
                                     baseUrl={baseUrl}
                                 />
@@ -148,7 +129,7 @@ const View = ({value}) => {
             {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
-                    <RenderBarChart {...JSON.parse(value)} baseUrl={'/'}/>
+                    <RenderStatBoxes {...data} baseUrl={'/'}/>
             }
         </div>
     )           
@@ -156,8 +137,8 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'ColorBox',
-    "type": 'Bar Chart',
+    "name": 'Loss Distribution Pie Chart',
+    "type": 'Pie Chart',
     "EditComp": Edit,
     "ViewComp": View
 }

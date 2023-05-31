@@ -70,3 +70,16 @@ export const fnumIndex = (d, fractions = 2, currency = false) => {
 ;
 
 export const fnum = (number, currency = false) => (currency ? '$ ' : '') + parseInt(number).toLocaleString();
+
+export const formatDate = (dateString) => {
+    const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+    };
+    return dateString ? new Date(dateString).toLocaleDateString(undefined, options) : ``;
+};

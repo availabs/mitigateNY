@@ -5,6 +5,12 @@ import { dmsDataTypes } from "~/modules/dms/src"
 
 import ColorBox from "../colorbox";
 import LossByDisasterNumberChart from "../LossByDisasterNumberChart";
+import LossDistributionPieChart from "../LossDistributionPieChart";
+import LossDistributionHeroStats from "../LossDistributionHeroStats";
+import DisastersTable from "../DisastersTable/index.jsx";
+import DisasterInfoStats from "../DisasterInfoStats/index.jsx";
+import DisasterLossStats from "../DisasterLossStats/index.jsx";
+import DisasterLossTables from "../DisasterLossTables/index.jsx";
 import HazardStatBox from '../HazardStatBox';
 
 import get from "lodash/get"
@@ -12,8 +18,14 @@ import isEqual from "lodash/isEqual"
 
 // register components here
 const ComponentRegistry = {
-    "ColorBox": ColorBox,
+    // "ColorBox": ColorBox,
     "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
+    "Chart: Loss Distribution Pie Chart": LossDistributionPieChart,
+    "Hero Stats: Loss Distribution": LossDistributionHeroStats,
+    "Hero Stats: Disaster Info": DisasterInfoStats,
+    "Hero Stats: Disaster Loss": DisasterLossStats,
+    "Table: Disasters": DisastersTable,
+    "Table: Disaster Loss": DisasterLossTables,
     "Card: Hazard Risk": HazardStatBox,
     "lexical": dmsDataTypes.lexical
 }

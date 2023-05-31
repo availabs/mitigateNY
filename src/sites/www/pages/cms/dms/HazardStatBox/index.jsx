@@ -1,71 +1,245 @@
-import React from "react"
-import { Select } from '~/modules/avl-components/src'
-import { HazardStatBox } from './HazardStatBox'
-import { hazardsMeta } from '~/utils/colors'
-
-function isJson(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-}
+import React, {useEffect, useState} from "react"
+import {useFalcor} from "~/modules/avl-falcor"
+import {hazardsMeta} from '~/utils/colors'
+import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
+import GeographySearch from "../geographySearch/index.jsx";
+import {isJson} from "../../../../../../utils/macros.jsx";
+import get from "lodash/get.js";
+import {pgEnv} from "~/utils";
+import {RenderGridOrBox} from "./components/RenderGridOrBox.jsx";
+import {Loading} from "../../../../../../utils/loading.jsx";
 
 const Edit = ({value, onChange}) => {
-    //let [edit,setEedit] = React.useState(value || {geoid: '36', hazard: 'total', version: '653' }) 
-    if(!value.geoid) {
-        // set default
-        onChange({geoid: '36', hazard: 'total', version: '653' })
-    }
+    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
+    const baseUrl = '/';
 
+    const ealSourceId = 229;
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 599);
 
-    console.log('hazard state box', value, hazardsMeta, value.hazard === 'total')
-    
+    const [loading, setLoading] = useState(true);
+    const [hazard, setHazard] = useState(cachedData?.hazard || 'total');
+    const [type, setType] = useState(cachedData?.type || 'card');
+    const [status, setStatus] = useState(cachedData?.status);
+    const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
+    const isTotal = hazard === 'total';
 
+    const {falcor, falcorCache} = useFalcor();
+    const [nriIds, setNriIds] = useState({source_id: null, view_id: null});
+    const [fusionViewId, setfusionViewId] = useState({source_id: null, view_id: null});
+    const [deps, setDeps] = useState([ealViewId]);
+
+    const freqCol =
+            Object.keys(hazardsMeta)
+                .reduce((acc, key) =>
+                        ({
+                            ...acc,
+                            ...{
+                                [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_afreq) as ${get(hazardsMeta, [key, "prefix"], "total")}_freq`
+                            }
+                        })
+                    , {}),
+        expCol =
+            Object.keys(hazardsMeta)
+                .reduce((acc, key) => (
+                    {
+                        ...acc,
+                        [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_expt) as ${get(hazardsMeta, [hazard, "prefix"], "total")}_exp`
+                    }
+                ), {});
+
+    const npCol = isTotal ? "national_percent_total" : "national_percent_hazard",
+        spCol = isTotal ? "state_percent_total" : "state_percent_hazard",
+        ealCol = isTotal ? "avail_eal_total" : "avail_eal";
+
+    let
+        fipsCol = `substring(stcofips, 1, ${geoid.length})`,
+        nriOptions = JSON.stringify({
+            filter: {[fipsCol]: [geoid]},
+            groupBy: [fipsCol]
+        }),
+        nriPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", nriOptions];
+    let
+        actualLossCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) + sum(swd_population_damage) as actual_damage",
+        geoidCOl = `substring(geoid, 1, ${geoid.length})`,
+        fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol],
+        fusionAttributesTotal = [`${geoidCOl} as geoid`, actualLossCol],
+        fusionOptions = JSON.stringify({
+            aggregatedLen: true,
+            filter: isTotal ? {[geoidCOl]: [geoid]} : {[geoidCOl]: [geoid]},
+            groupBy: [geoidCOl, "nri_category"]
+        }),
+        fusionOptionsTotal = JSON.stringify({
+            aggregatedLen: true,
+            filter: isTotal ? {[geoidCOl]: [geoid]} : {[geoidCOl]: [geoid]},
+            groupBy: [geoidCOl]
+        }),
+        fusionPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptions],
+        fusionPathTotal = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptionsTotal];
+
+    React.useEffect(() => {
+        async function getData() {
+            if (!geoid) {
+                setStatus('Please Select a Geography');
+            } else {
+                setStatus(undefined)
+            }
+            setLoading(true);
+            setStatus(undefined);
+
+            await falcor.get(
+                ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId],
+                ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid]
+            ).then(async (res) => {
+                const deps = get(res, ["json", "dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId, "dependencies"]);
+                const nriView = deps.find(d => d.type === "nri");
+                const fusionView = deps.find(d => d.type === "fusion");
+
+                if (!fusionView) {
+                    setLoading(false)
+                    setStatus('This component only supports EAL versions that use Fusion data.')
+                    return Promise.resolve();
+                }
+
+                setNriIds(nriView);
+                setfusionViewId(fusionView);
+
+                const lenRes = await falcor.get([...fusionPath(fusionView), "length"]);
+                const len = get(lenRes, ["json", ...fusionPath(fusionView), "length"], 0);
+
+                const fusionByIndexRoute = [...fusionPath(fusionView), "databyIndex", {
+                    from: 0,
+                    to: len - 1
+                }, fusionAttributes];
+                const fusionTotalByIndexRoute = [...fusionPathTotal(fusionView), "databyIndex", {
+                    from: 0,
+                    to: 0
+                }, fusionAttributesTotal];
+
+                setDeps([ealViewId, nriView.view_id, fusionView.view_id]);
+
+                const attributionRoute = ['dama', pgEnv, 'views', 'byId',
+                    [ealViewId, nriView.view_id, fusionView.view_id],
+                    'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
+
+                const routes = isTotal && len ? [fusionByIndexRoute, fusionTotalByIndexRoute, attributionRoute] :
+                    !isTotal && len ? [[...nriPath(nriView), "databyIndex", {
+                        from: 0,
+                        to: len - 1
+                    }, [...Object.values(freqCol), ...Object.values(expCol)]], fusionByIndexRoute, fusionTotalByIndexRoute, attributionRoute] : [];
+                await falcor.get(...routes);
+                setLoading(false);
+            });
+        }
+
+        getData();
+    }, [ealViewId, geoid, hazard, falcorCache]);
+
+    const size =
+        type === 'card' && hazard !== 'total' ? 'small' :
+            type === 'card' && hazard === 'total' ? 'large' : 'small';
+
+    const attributionDataFn = view_id => get(falcorCache, ['dama', pgEnv, 'views', 'byId', view_id, 'attributes'], {});
+
+    const attributionData = deps.map(d => (
+        {
+            source_id: attributionDataFn(d)?.source_id,
+            view_id: attributionDataFn(d)?.view_id,
+            version: attributionDataFn(d)?.version,
+            _modified_timestamp: attributionDataFn(d)?._modified_timestamp?.value
+        }
+    ))
+
+    console.log('??', attributionData)
+    const hazardPercentileArray =
+        get(falcorCache, ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid, "value"], [])
+            .filter(row => row.geoid === geoid)
+            .map(d => ({
+                key: d.nri_category,
+                label: hazardsMeta[d.nri_category].name,
+                color: hazardsMeta[d.nri_category].color,
+                value: (d.avail_eal * 100 / d.avail_eal_total).toFixed(2),
+                eal: get(d, ealCol, 0),
+                nationalPercentile: get(d, npCol, 0) * 100,
+                statePercentile: get(d, spCol, 0) * 100,
+                actualLoss: (Object.values(
+                    get(falcorCache,
+                        isTotal ? [...fusionPathTotal(fusionViewId), "databyIndex"] : [...fusionPath(fusionViewId), "databyIndex"],
+                        {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[actualLossCol],
+                exposure: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, expCol[d.nri_category]]),
+                frequency: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, freqCol[d.nri_category]], 0)
+            }))
+            .sort((a, b) => +b.value - +a.value);
+
+    useEffect(() => {
+            if (!loading) {
+                onChange(JSON.stringify(
+                    {
+                        ealViewId,
+                        fusionViewId,
+                        status,
+                        geoid,
+                        hazard, hazardPercentileArray, size, isTotal, type, attributionData
+                    }))
+            }
+        },
+        [ealViewId, geoid, hazard, falcorCache, attributionData]);
     return (
         <div className='w-full'>
             <div className='relative'>
-                <div className='border border-blue-500 bg-blue-50 p-2 m-1'>
-                 Hazard Stat Box Editor
-                 <div className='flex'>
-                    <div className='flex-1 p-2'>
-                        <div>Geography</div>
-                        <select 
-                            className='w-full p-2 bg-white'
-                            onChange={e => onChange({...value, geoid: e.target.value})}
-                        > 
-                            <option value='36'>New York State</option>
-                            <option value='36001'>Albany County</option> 
+                <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
+                    Edit Controls
+                    <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId}
+                                               className={'flex-row-reverse'}/>
+                    <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
+                    <div className='flex justify-between'>
+                        <label className={'shrink-0 pr-2 py-1 my-1'}>Select Component Type:</label>
+                        <select
+                            className='w-full shrink my-1 p-2 bg-white rounded-md'
+                            onChange={e => {
+                                setType(e.target.value);
+                                e.target.value === 'grid' ? setHazard(null) : setHazard('total');
+                            }}
+                            value={type}
+                        >
+                            <option value={'card'}>Card</option>
+                            <option value={'grid'}>Grid</option>
                         </select>
                     </div>
-                    <div className='flex-1 p-2'>
-                        <div>Hazard</div>
-                        <select className='w-full p-2 bg-white' onChange={e => onChange({...value, hazard: e.target.value})}> 
-                            <option value='total'>Total</option> 
+
+                    <div className='flex justify-between'>
+                        <label className={'shrink-0 pr-2 py-1 my-1'}>Select Hazard Type:</label>
+                        <select
+                            className='w-full shrink my-1 p-2 bg-white rounded-md'
+                            onChange={e => setHazard(e.target.value)}
+                            disabled={type === 'grid'}
+                            value={hazard}
+                        >
+                            <option value='total'>Total</option>
                             {
-                                Object.keys(hazardsMeta).map((k,i) => {
-                                   return <option value={k}>{hazardsMeta[k].name}</option>
+                                Object.keys(hazardsMeta).map((k, i) => {
+                                    return <option value={k}>{hazardsMeta[k].name}</option>
                                 })
                             }
                         </select>
                     </div>
-                    <div className='flex-1 p-2'>
-                        <div>Version</div>
-                        <select className='w-full p-2 bg-white '> 
-                            <option value='653'>Version 1</option> 
-                        </select>
-                    </div>
-                 </div>
                 </div>
                 <div className='relative w-full p-1'>
-                    <HazardStatBox 
-                        geoid={'36'} 
-                        hazard={value.hazard === 'total' ? '' : value.hazard} 
-                        eal_source_id={'229'} 
-                        eal_view_id={'653'}
-                        isTotal={value.hazard === 'total'}
-                    />
+                    {
+                        loading ? <Loading/> :
+                            status ? <div className={'p-5 text-center'}>{status}</div> :
+                                <div>
+                                    <RenderGridOrBox
+                                        hazard={hazard}
+                                        hazardPercentileArray={hazardPercentileArray}
+                                        size={size}
+                                        isTotal={isTotal}
+                                        type={type}
+                                        attributionData={attributionData}
+                                        baseUrl={'/'}
+                                    />
+                                </div>
+                    }
                 </div>
             </div>
         </div>
@@ -74,30 +248,23 @@ const Edit = ({value, onChange}) => {
 
 
 const View = ({value}) => {
-    // if(!value) return ''
-    // console.log('value', value)
-    let data = value || {geoid: '36', hazard: 'total', version: '653' }
-    
-    if(!value.geoid) {
-        data =  {geoid: '36', hazard: 'total', version: '653' }
-    }
-    console.log('view', data)
+    if (!value) return ''
+
+    let data = typeof value === 'object' ?
+        value['element-data'] :
+        JSON.parse(value)
+
     return (
         <div className='relative w-full  py-2 px-8'>
-            <HazardStatBox 
-                geoid={data.geoid} 
-                hazard={data.hazard} 
-                eal_source_id={'229'} 
-                eal_view_id={'653'}
-                isTotal={data.hazard === 'total'}
-            />
+            <RenderGridOrBox {...data} baseUrl={'/'}/>
         </div>
-    )           
+    )
 }
 
 
 export default {
     "name": 'Hazard Risk Card',
+    "type": 'Card/Grid',
     "EditComp": Edit,
     "ViewComp": View
 }
