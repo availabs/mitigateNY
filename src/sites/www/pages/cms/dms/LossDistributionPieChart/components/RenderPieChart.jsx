@@ -1,17 +1,18 @@
 import { fnumIndex, HoverComp } from "../../../../../../../utils/macros.jsx";
 import React from "react";
 import {PieGraph} from "../../../../../../../modules/avl-graph/src/index.js";
+import {Link} from "react-router-dom";
 
 const colNameMapping = {
     swd_population_damage: 'Population Damage',
     fusion_property_damage: 'Property Damage',
     fusion_crop_damage: 'Crop Damage',
     disaster_number: 'Disaster Number',
-    swd_ttd: 'Non Declared Total',
-    ofd_ttd: 'Declared Total',
+    swd_ttd: 'Non Declared Events Total',
+    ofd_ttd: 'FEMA Declared Disaster Total',
 };
 
-export const RenderPieChart = ({ data, baseUrl }) => {
+export const RenderPieChart = ({ data, attributionData, baseUrl }) => {
     const pieColors = {
         ofd_ttd: '#0089ff',
         swd_ttd: '#ff003b'
@@ -53,6 +54,11 @@ export const RenderPieChart = ({ data, baseUrl }) => {
                 }}
                 groupMode={"stacked"}
             />
+            <div className={'text-xs text-gray-700 pl-1'}>
+                <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
+                    Attribution: { attributionData?.version }
+                </Link>
+            </div>
         </div>
     );
 };

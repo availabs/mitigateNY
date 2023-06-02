@@ -66,7 +66,10 @@ const Edit = ({value, onChange}) => {
 
                 setDisasterDecView(ddsDeps.view_id)
 
-                falcor.get([...disasterDetailsPath(ddsDeps.view_id), { from: 0, to: 0 }, disasterDetailsAttributes]);
+                falcor.get(
+                    [...disasterDetailsPath(ddsDeps.view_id), { from: 0, to: 0 }, disasterDetailsAttributes],
+                    ['dama', pgEnv, 'views', 'byId', ddsDeps.view_id, 'attributes', ['source_id', 'view_id', 'version']]
+                );
 
                 setLoading(false);
             })
@@ -78,6 +81,7 @@ const Edit = ({value, onChange}) => {
     const title = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "declaration_title"]);
     const incidentType = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "incident_type"]);
     const declarationDate = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "declaration_date", "value"], "");
+    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', disasterDecView, 'attributes'], {});
 
     useEffect(() => {
             if(!loading){
@@ -85,6 +89,7 @@ const Edit = ({value, onChange}) => {
                     {
                         ealViewId,
                         disasterDecView,
+                        attributionData,
                         status,
                         geoid,
                         disasterNumber,
@@ -92,7 +97,7 @@ const Edit = ({value, onChange}) => {
                     }))
             }
         },
-        [status, ealViewId, geoid, disasterNumber, title, incidentType, declarationDate]);
+        [status, ealViewId, geoid, attributionData, disasterNumber, title, incidentType, declarationDate]);
     console.log('dn', disasterNumber)
     return (
         <div className='w-full'>
@@ -116,6 +121,8 @@ const Edit = ({value, onChange}) => {
                                     title={title}
                                     incidentType={incidentType}
                                     declarationDate={declarationDate}
+                                    attributionData={attributionData}
+                                    baseUrl={baseUrl}
                                 />
                 }
             </div>
@@ -147,7 +154,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Disaster Header',
+    "name": 'Card: FEMA Disaster Info',
     "type": 'Hero Stats',
     "EditComp": Edit,
     "ViewComp": View

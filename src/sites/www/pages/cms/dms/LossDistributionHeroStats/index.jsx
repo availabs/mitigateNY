@@ -137,7 +137,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Loss Distribution Pie Chart',
+    "name": 'Card: Declared vs Non-Declared Loss',
     "type": 'Pie Chart',
     "EditComp": Edit,
     "ViewComp": View

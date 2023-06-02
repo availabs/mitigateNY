@@ -19,14 +19,14 @@ import isEqual from "lodash/isEqual"
 // register components here
 const ComponentRegistry = {
     // "ColorBox": ColorBox,
-    "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
-    "Chart: Loss Distribution Pie Chart": LossDistributionPieChart,
+    "Card: Hazard Risk": HazardStatBox,
     "Hero Stats: Loss Distribution": LossDistributionHeroStats,
     "Hero Stats: Disaster Info": DisasterInfoStats,
     "Hero Stats: Disaster Loss": DisasterLossStats,
     "Table: Disasters": DisastersTable,
     "Table: Disaster Loss": DisasterLossTables,
-    "Card: Hazard Risk": HazardStatBox,
+    "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
+    "Chart: Loss Distribution Pie Chart": LossDistributionPieChart,
     "lexical": dmsDataTypes.lexical
 }
 
@@ -56,12 +56,12 @@ function EditComp (props) {
             <div className="relative my-1">
                 {/*Selector Edit*/}
                 <select 
-                    className='bg-slate-100 p-2 w-full border-b'
+                    className='bg-slate-100 p-2 w-full border-b rounded-md'
                     value={value?.['element-type'] || 'lexical'}
                     onChange={e => updateAttribute('element-type', e.target.value)}
                 >
                     {Object.keys(ComponentRegistry).map(k => (
-                        <option value={k} key={k}>{k}</option>
+                        <option value={k} key={k}>{ComponentRegistry[k].name || k}</option>
                     ))}
                 </select>
             </div>

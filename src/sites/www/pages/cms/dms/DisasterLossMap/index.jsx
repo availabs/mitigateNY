@@ -9,8 +9,8 @@ import GeographySearch from "../geographySearch/index.jsx";
 import DisasterSearch from "../DisasterSearch/index.jsx";
 import { Loading } from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
-import {RenderColumnControls} from "../columnControls/";
-import {ButtonSelector} from "../buttonSelector/index.jsx";
+import {RenderColumnControls} from "./components/index.jsx";
+import {RenderTypeSelector} from "./components/RenderTypeSelector.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -28,9 +28,6 @@ const Edit = ({value, onChange}) => {
     const [type, setType] = useState(cachedData?.type || 'ihp');
     const [typeId, setTypeId] = useState(cachedData?.typeId);
     const [filters, setFilters] = useState(cachedData?.filters || {});
-    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
-    const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);
-    const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
 
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
     const
@@ -41,20 +38,18 @@ const Edit = ({value, onChange}) => {
 
     const attributionPath = ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
 
-    const geoOptions = JSON.stringify(metaData[type]?.options(disasterNumber, geoid)),
+    const geoOptions = JSON.stringify(metaData[type].options(disasterNumber, geoid)),
         geoPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options"];
 
     useEffect( () => {
         async function getData(){
-            if(!geoid || !type){
-                setStatus('Please Select a Geography and a Type');
+            if(!geoid){
+                setStatus('Please Select a Geography');
             }else{
                 setStatus(undefined)
             }
             setLoading(true);
             setStatus(undefined);
-            setFilters({...filters,
-            ...{[Object.keys(metaData[type]?.attributes(geoid) || {})[0]]: 'text'}})
             return falcor.get(dependencyPath(ealViewId)).then(async res => {
 
                 const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
@@ -87,7 +82,7 @@ const Edit = ({value, onChange}) => {
                 if(!len) setLoading(false);
 
                 await falcor.get(
-                    [...geoPath(typeId.view_id), geoOptions, 'databyIndex', indices, Object.values(metaData[type]?.attributes(geoid))],
+                    [...geoPath(typeId.view_id), geoOptions, 'databyIndex', indices, Object.values(metaData[type].attributes(geoid))],
                     attributionPath
                 );
 
@@ -109,17 +104,16 @@ const Edit = ({value, onChange}) => {
     };
     let data = Object.values(get(falcorCache, [...geoPath(typeId), geoOptions, 'databyIndex'], {}));
     console.log('data?', data, falcorCache, [...geoPath(typeId), geoOptions, 'databyIndex'])
-    metaData[type]?.mapGeoidToName && dataModifier && dataModifier(data);
+    metaData[type].mapGeoidToName && dataModifier && dataModifier(data);
 
-    let columns = Object.keys(metaData[type]?.attributes(geoid) || {})
-        .filter(col => visibleCols?.includes(col) || metaData[type]?.anchorCols?.includes(col))
+    let columns = Object.keys(metaData[type].attributes(geoid))
         .map((col, i) => {
-            const mappedName = metaData[type]?.attributes(geoid)[col];
+            const mappedName = metaData[type].attributes(geoid)[col];
             return {
                 Header:  col,
                 accessor: mappedName,
-                align: metaData[type]?.textCols?.includes(col) ? 'left' : 'right',
-                filter: filters[col]
+                align: metaData[type].textCols?.includes(col) ? 'left' : 'right',
+                filter: (i === 0 && 'text') || filters[col]
             }
         })
 
@@ -132,18 +126,16 @@ const Edit = ({value, onChange}) => {
                         geoid,
                         attributionData,
                         disasterNumber,
-                        pageSize, sortBy,
-                        data, columns, filters, visibleCols, type, typeId
+                        data, columns, filters, type, typeId
                     }))
             }
         },
-        [status, ealViewId, geoid, attributionData, disasterNumber, pageSize, sortBy,
-            data, columns, filters, visibleCols, type, typeId]);
+        [status, ealViewId, geoid, attributionData, disasterNumber, data, columns, filters, type, typeId]);
 
     return (
         <div className='w-full'>
             <div className='relative'>
-                <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 text-sm'}>
+                <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
                     Edit Controls
                     <VersionSelectorSearchable
                         source_id={ealSourceId}
@@ -159,27 +151,16 @@ const Edit = ({value, onChange}) => {
                         onChange={setDisasterNumber}
                         className={'flex-row-reverse'}
                     />
-                    <ButtonSelector
+                    <RenderTypeSelector
                         label={'Select Type:'}
                         types={Object.keys(metaData)}
                         type={type}
-                        setType={e => {
-                            setType(e)
-                            setVisibleCols([])
-                            setFilters({})
-                        }}
+                        setType={setType}
                     />
                     <RenderColumnControls
-                        cols={Object.keys(metaData[type]?.attributes(geoid) || {})}
-                        anchorCols={metaData[type]?.anchorCols}
-                        visibleCols={visibleCols}
-                        setVisibleCols={setVisibleCols}
+                        cols={Object.keys(metaData[type].attributes(geoid))}
                         filters={filters}
                         setFilters={setFilters}
-                        pageSize={pageSize}
-                        setPageSize={setPageSize}
-                        sortBy={sortBy}
-                        setSortBy={setSortBy}
                     />
                 </div>
                 {
@@ -188,8 +169,6 @@ const Edit = ({value, onChange}) => {
                                 <RenderDisasterLossTable
                                     data={data}
                                     columns={columns}
-                                    pageSize={pageSize}
-                                    sortBy={sortBy}
                                     title={type}
                                     type={type}
                                     attributionData={attributionData}
@@ -225,7 +204,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Table: FEMA Disaster Loss by Program',
+    "name": 'Disaster Loss Tables',
     "type": 'Table',
     "EditComp": Edit,
     "ViewComp": View

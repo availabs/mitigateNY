@@ -80,7 +80,7 @@ export default ({
 
   return (
     <div className={'flex justify-between'}>
-      <label className={'shrink-0 pr-2 py-1 my-1'}>Select a Version:</label>
+      <label className={'shrink-0 pr-2 py-1 my-1'}>Data Source Version:</label>
       <div className={`flex flex row ${className} w-full shrink my-1`}>
         <i className={`fa fa-search font-light text-xl bg-white pr-2 pt-1 rounded-r-md`} />
         <AsyncTypeahead
@@ -90,7 +90,7 @@ export default ({
             minLength = {0}
             id="geography-search"
             key="geography-search"
-            placeholder="Search for a Geography..."
+            placeholder="Search for a Data Source..."
             options={views}
             labelKey={(option) => `${option?.version}`}
             defaultSelected={ selected }

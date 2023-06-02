@@ -8,6 +8,7 @@ import get from "lodash/get.js";
 import {pgEnv} from "~/utils";
 import {RenderGridOrBox} from "./components/RenderGridOrBox.jsx";
 import {Loading} from "../../../../../../utils/loading.jsx";
+import {ButtonSelector} from "../buttonSelector/index.jsx";
 
 const Edit = ({value, onChange}) => {
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
@@ -21,7 +22,7 @@ const Edit = ({value, onChange}) => {
     const [type, setType] = useState(cachedData?.type || 'card');
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
-    const isTotal = hazard === 'total';
+    const [isTotal, setIsTotal] = useState(cachedData?.isTotal || (hazard === 'total' && type === 'card'));
 
     const {falcor, falcorCache} = useFalcor();
     const [nriIds, setNriIds] = useState({source_id: null, view_id: null});
@@ -132,7 +133,7 @@ const Edit = ({value, onChange}) => {
         }
 
         getData();
-    }, [ealViewId, geoid, hazard, falcorCache]);
+    }, [ealViewId, geoid, hazard, type, falcorCache]);
 
     const size =
         type === 'card' && hazard !== 'total' ? 'small' :
@@ -170,7 +171,7 @@ const Edit = ({value, onChange}) => {
                 frequency: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, freqCol[d.nri_category]], 0)
             }))
             .sort((a, b) => +b.value - +a.value);
-
+    console.log('???', hazard, hazardPercentileArray, size, isTotal, type, attributionData)
     useEffect(() => {
             if (!loading) {
                 onChange(JSON.stringify(
@@ -183,7 +184,7 @@ const Edit = ({value, onChange}) => {
                     }))
             }
         },
-        [ealViewId, geoid, hazard, falcorCache, attributionData]);
+        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData]);
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -192,31 +193,33 @@ const Edit = ({value, onChange}) => {
                     <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId}
                                                className={'flex-row-reverse'}/>
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
+                    <ButtonSelector
+                        label={'Component Type:'}
+                        types={['card', 'grid']}
+                        type={type}
+                        setType={e => {
+                            setHazard(e === 'grid' ? null : 'total');
+                            setIsTotal(e === 'card')
+                            setType(e);
+                        }}
+                    />
                     <div className='flex justify-between'>
-                        <label className={'shrink-0 pr-2 py-1 my-1'}>Select Component Type:</label>
+                        <label className={'shrink-0 pr-2 py-1 my-1'}>Hazard Type:</label>
                         <select
                             className='w-full shrink my-1 p-2 bg-white rounded-md'
                             onChange={e => {
-                                setType(e.target.value);
-                                e.target.value === 'grid' ? setHazard(null) : setHazard('total');
+                                setIsTotal(e.target.value === 'total')
+                                setHazard(e.target.value)
                             }}
-                            value={type}
-                        >
-                            <option value={'card'}>Card</option>
-                            <option value={'grid'}>Grid</option>
-                        </select>
-                    </div>
-
-                    <div className='flex justify-between'>
-                        <label className={'shrink-0 pr-2 py-1 my-1'}>Select Hazard Type:</label>
-                        <select
-                            className='w-full shrink my-1 p-2 bg-white rounded-md'
-                            onChange={e => setHazard(e.target.value)}
                             disabled={type === 'grid'}
                             value={hazard}
                         >
-                            <option value='total'>Total</option>
                             {
+                                type === 'grid' ?
+                                    <option value={' '}>Not Applicable</option> :
+                                    <option value='total'>Total</option>
+                            }
+                            { type === 'card' &&
                                 Object.keys(hazardsMeta).map((k, i) => {
                                     return <option value={k}>{hazardsMeta[k].name}</option>
                                 })
@@ -263,7 +266,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Hazard Risk Card',
+    "name": 'Card: Hazard Risk',
     "type": 'Card/Grid',
     "EditComp": Edit,
     "ViewComp": View

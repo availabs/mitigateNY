@@ -4,7 +4,7 @@ import get from "lodash/get";
 import {useEffect, useMemo, useState} from "react";
 import {useFalcor} from '~/modules/avl-falcor';
 import {pgEnv} from "~/utils/";
-import {getAttributes, SourceAttributes, ViewAttributes} from "../../../../../../utils/attributes.jsx";
+import {range} from "../../../../../../utils/macros";
 
 
 const handleSearch = (text, selected, setSelected) => {
@@ -57,7 +57,11 @@ export default ({
         disasterDetailsOptions = JSON.stringify({
             filter: {
                 [geoid?.length === 2 ? 'fips_state_code' :
-                        'fips_state_code || fips_county_code' ]: [geoid]},
+                        'fips_state_code || fips_county_code' ]: [geoid]
+            },
+            exclude: {
+                'disaster_number': range(3000, 3999)
+            }
         }),
         disasterDetailsPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", disasterDetailsOptions];
 
@@ -92,7 +96,7 @@ export default ({
 
     return (
         <div className={'flex justify-between'}>
-            <label className={'shrink-0 pr-2 py-1 my-1'}>Select a Version:</label>
+            <label className={'shrink-0 pr-2 py-1 my-1'}>FEMA Disaster:</label>
             <div className={`flex flex row ${className} w-full shrink my-1`}>
                 <i className={`fa fa-search font-light text-xl bg-white pr-2 pt-1 rounded-r-md`}/>
                 <AsyncTypeahead
@@ -102,7 +106,7 @@ export default ({
                     minLength={0}
                     id="geography-search"
                     key="geography-search"
-                    placeholder="Search for a Geography..."
+                    placeholder="Search for a FEMA Disaster..."
                     options={disasters}
                     labelKey={(option) => `${option?.label}`}
                     defaultSelected={selected}

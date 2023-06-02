@@ -3,75 +3,60 @@ import get from "lodash/get";
 import {Link} from "react-router-dom";
 import {Table} from "~/modules/avl-components/src";
 import { fnum } from "~/utils/macros.jsx";
-
-const colNameMapping = {
-    swd_population_damage: 'Population Damage',
-    fusion_property_damage: 'Property Damage',
-    fusion_crop_damage: 'Crop Damage',
-    total_fusion_damage: 'Total Loss',
-    disaster_number: 'Disaster Number',
-    event_id: 'Event Id',
-    nri_category: 'Hazard Type',
-    swd_ttd: 'Non Declared Total',
-    ofd_ttd: 'Declared Total',
-    geoid: 'Geoid',
-    year: 'Year'
-}
+import {hazardsMeta} from "../../../../../../../utils/colors.jsx";
 
 const colAccessNameMapping = {
     'disaster_number': 'distinct disaster_number as disaster_number',
 }
 
-const mapColName = col => colNameMapping[col.includes(' as ') ? col.split(' as ')[1] : col] || col;
+const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
-export const RenderDisastersTable = ({ type, data, fusionAttributes, disasterNames, baseUrl, attributionData, geoid }) => {
-    const columns = useMemo(() =>
-        [fusionAttributes[1], fusionAttributes[2],  fusionAttributes[11],
-            fusionAttributes[8], fusionAttributes[9], fusionAttributes[7], fusionAttributes[10]].map(col => {
-            const mappedName = mapColName(col);
-            return {
-                Header:  mappedName,
-                accessor: column => {
-                    return mappedName === "Disaster Number" ?
-                        get(disasterNames.find(dns => dns[colAccessNameMapping.disaster_number] === column[col]),
-                            "declaration_title", "No Title") + ` (${column[col]})` : column[col];
-                },
-                Cell: cell => {
-                    const value =
-                        ['Year', 'Event Id', 'Disaster Number', 'Hazard Type'].includes(mappedName) ?
-                            cell?.value?.value?.join(', ') || cell?.value :
-                            fnum(cell.value, true)
-                    return mappedName === "Disaster Number" ?
-                        <Link to={`/disaster/${cell.row.original.disaster_number}/geography/${geoid}`}>
-                            {value}
-                        </Link> :
-                        <div>
-                            {value}
-                        </div>;
-                },
-                align: ['Disaster Number', 'Year'].includes(mappedName) ? 'right' : 'left',
-                width: mappedName === mapColName(fusionAttributes[1]) ? '10%' :
-                    mappedName === mapColName(fusionAttributes[10]) ? '20%' :
-                        mappedName === mapColName(fusionAttributes[11]) ? '20%' :
-                            mappedName === mapColName(fusionAttributes[2]) ? '40%' :
-                                '15%'
-                ,
-                filter: ['Disaster Number', 'Year'].includes(mappedName) && 'text'
+export const RenderDisastersTable = ({ type, data, columns, pageSize, sortBy = {}, disasterNames, baseUrl, attributionData, geoid, striped }) => {
+    const updatedColumns = columns.map(c => {
+        const col = c.rawHeader;
+        const Header = c.Header;
+        return {
+            ...c,
+            Cell: cell => {
+                let value = getNestedValue(cell);
+                value = Header === "Disaster Number" ?
+                    get(disasterNames.find(dns => dns[colAccessNameMapping.disaster_number] === value),
+                        "declaration_title", "No Title") + ` (${value})` :
+                    Header === 'NRI Category' ?
+                        (value || []).map(h => hazardsMeta[h]?.name || h).join(', ') :
+                        value;
+                value =
+                    ['Geoid', 'Year', 'Event Id', 'Disaster Number', 'Hazard Type', 'NRI Category', 'Deaths, Injuries'].includes(Header) ?
+                        value :
+                        fnum(value, true)
+                return Header === "Disaster Number" ?
+                    <Link to={`/disaster/${cell.row.original.disaster_number}/geography/${geoid}`}>
+                        {value}
+                    </Link> :
+                    <div>
+                        {value}
+                    </div>;
             }
-        }), [fusionAttributes, disasterNames, data]);
-
+        }
+    })
+    const sortColRaw = updatedColumns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
     return (
         <>
             <div className={'py-5'}>
                 <label key={"nceiLossesTitle"} className={"text-lg capitalize"}> {type} Disasters </label>
-                <Table
-                    columns={columns}
-                    data={data}
-                    sortBy={mapColName(fusionAttributes[10])}
-                    sortOrder={'desc'}
-                    pageSize={5}
-                    striped={false}
-                />
+                {
+                    data?.length > 0 && columns?.length > 0 && (
+                        <Table
+                            columns={updatedColumns}
+                            data={data}
+                            initialPageSize={pageSize}
+                            pageSize={pageSize}
+                            striped={striped}
+                            sortBy={sortColRaw}
+                            sortOrder={Object.values(sortBy)?.[0] || 'asc'}
+                        />
+                    )
+                }
             </div>
             <div className={'text-xs text-gray-700 pl-1'}>
                 <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>

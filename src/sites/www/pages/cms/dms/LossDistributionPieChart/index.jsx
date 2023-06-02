@@ -122,7 +122,7 @@ const View = ({value}) => {
             {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
-                    <RenderPieChart data={data?.total} baseUrl={'/'}/>
+                    <RenderPieChart data={data?.total} attributionData={data?.attributionData} baseUrl={'/'}/>
             }
         </div>
     )           
@@ -130,7 +130,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Loss Distribution Pie Chart',
+    "name": 'Graph: Declared vs Non-Declared Loss',
     "type": 'Pie Chart',
     "EditComp": Edit,
     "ViewComp": View

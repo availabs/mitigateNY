@@ -156,7 +156,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'ColorBox',
+    "name": 'Graph: Historic Loss by Disaster Number',
     "type": 'Bar Chart',
     "EditComp": Edit,
     "ViewComp": View

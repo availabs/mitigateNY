@@ -71,7 +71,10 @@ const Edit = ({value, onChange}) => {
 
                 setDisasterLossView(dlsDeps.view_id)
 
-                await falcor.get([...disasterDetailsPath(dlsDeps.view_id), "databyIndex", { from: 0, to: 0 }, Object.values(disasterDetailsAttributes)]);
+                await falcor.get(
+                    [...disasterDetailsPath(dlsDeps.view_id), "databyIndex", { from: 0, to: 0 }, Object.values(disasterDetailsAttributes)],
+                    ['dama', pgEnv, 'views', 'byId', dlsDeps.view_id, 'attributes', ['source_id', 'view_id', 'version']]
+                );
 
                 setLoading(false);
             })
@@ -88,12 +91,15 @@ const Edit = ({value, onChange}) => {
     const nfipLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.nfip_loss], 0);
     const usdaLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.fema_crop_damage], 0);
 
+    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', disasterLossView, 'attributes'], {});
+
     useEffect(() => {
             if(!loading){
                 onChange(JSON.stringify(
                     {
                         ealViewId,
                         disasterLossView,
+                        attributionData,
                         status,
                         geoid,
                         disasterNumber,
@@ -101,8 +107,8 @@ const Edit = ({value, onChange}) => {
                     }))
             }
         },
-        [status, ealViewId, geoid, disasterNumber, totalLoss, ihpLoss, paLoss, sbaLoss, nfipLoss, usdaLoss]);
-    console.log('dn', disasterNumber, totalLoss, ihpLoss, paLoss, sbaLoss, nfipLoss, usdaLoss, get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0]))
+        [status, ealViewId, attributionData, geoid, disasterNumber, totalLoss, ihpLoss, paLoss, sbaLoss, nfipLoss, usdaLoss]);
+
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -128,6 +134,8 @@ const Edit = ({value, onChange}) => {
                                     sbaLoss={sbaLoss}
                                     nfipLoss={nfipLoss}
                                     usdaLoss={usdaLoss}
+                                    attributionData={attributionData}
+                                    baseUrl={baseUrl}
                                 />
                 }
             </div>
@@ -159,7 +167,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Disaster Loss Info',
+    "name": 'Card: FEMA Disaster Loss Summary',
     "type": 'Hero Stats',
     "EditComp": Edit,
     "ViewComp": View

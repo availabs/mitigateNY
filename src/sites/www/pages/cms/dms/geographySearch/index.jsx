@@ -106,7 +106,7 @@ export default ({
 
   return (
       <div className={'flex justify-between'}>
-        <label className={'shrink-0 pr-2 py-1 my-1'}>Select a Geography:</label>
+        <label className={'shrink-0 pr-2 py-1 my-1'}>Geography:</label>
         <div className={`flex flex row ${className} w-full shrink my-1`}>
           <i className={`fa fa-search font-light text-xl bg-white pr-2 pt-1 rounded-r-md`} />
           <AsyncTypeahead

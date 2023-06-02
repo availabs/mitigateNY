@@ -83,3 +83,6 @@ export const formatDate = (dateString) => {
     };
     return dateString ? new Date(dateString).toLocaleDateString(undefined, options) : ``;
 };
+
+export const range = (start, end) => Array.from({length: (end + 1 - start)}, (v, k) => k + start);
+
