@@ -1,10 +1,11 @@
-import get from "lodash.get";
-import { LayerContainer } from "modules/avl-map/src";
+import get from "lodash/get";
+import { LayerContainer } from "~/modules/avl-map/src";
 import { length } from "tailwindcss/lib/util/dataTypes";
-import { getColorRange } from "../../../modules/avl-components/src";
-import { fnum } from "../../DataManager/utils/macros";
-import ckmeans from "../../DataManager/utils/ckmeans";
+import { getColorRange } from "~/modules/avl-components/src";
+import { fnum } from "~/utils/macros";
+import ckmeans from "~/utils/ckmeans";
 import { scaleThreshold } from "d3-scale";
+import {drawLegend} from "../drawLegend.jsx";
 
 class EALChoroplethOptions extends LayerContainer {
   constructor(props) {
@@ -61,7 +62,7 @@ class EALChoroplethOptions extends LayerContainer {
   ];
 
   legend = {
-    Title: '',
+    Title: e => '',
     type: "threshold",
     format: "0.2s",
     domain: [0, 25, 50, 75, 100],
@@ -121,7 +122,7 @@ class EALChoroplethOptions extends LayerContainer {
   fetchData(falcor) {
 
     const {disaster_number, geoid, view, views, pgEnv} = this.props;
-
+    console.log('props', this.props)
     if(!disaster_number || !view) return Promise.resolve();
     this.data = [];
     const eal_view_id = 577;
@@ -248,8 +249,62 @@ class EALChoroplethOptions extends LayerContainer {
   }
 
   render(map, falcor) {
+    console.log('rendering', this.props)
     this.paintMap(map);
     this.handleMapFocus(map);
+
+    // if(this.props.change) this.props.change({filters: this.filters, ...{img:this.img}, bounds: map.getBounds(), legend: this.legend, style: this.style});
+    if(this.props.change && !this.props.loading){
+
+      // map.on('resize', (e) => {
+      //   this.bounds = map.getBounds();
+      //   this.props.change({filters: this.filters, img: this.img, bounds:  this.bounds, legend: this.legend, style: this.style});
+      // })
+      //
+      // map.on('render', (e) => {
+      //   const canvas = document.querySelector("canvas.mapboxgl-canvas"),
+      //       newCanvas = document.createElement("canvas");
+      //
+      //   let img;
+      //
+      //   newCanvas.width = canvas.width;
+      //   newCanvas.height = canvas.height;
+      //
+      //   const context = newCanvas.getContext("2d")
+      //   context.drawImage(canvas, 0, 0);
+      //
+      //   drawLegend({legend: this.legend, filters: this.filters}, newCanvas, canvas);
+      //   img = newCanvas.toDataURL();
+      //   this.img = img;
+      //   this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
+      //
+      // })
+
+      map.once('idle', (e) => {
+        const canvas = document.querySelector("canvas.mapboxgl-canvas"),
+            newCanvas = document.createElement("canvas");
+
+        let img;
+
+        newCanvas.width = canvas.width;
+        newCanvas.height = canvas.height;
+
+        const context = newCanvas.getContext("2d")
+        context.drawImage(canvas, 0, 0);
+
+        drawLegend({legend: this.legend, filters: this.filters}, newCanvas, canvas);
+        img = newCanvas.toDataURL();
+        this.img = img;
+        this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
+
+      })
+
+      // map.on('styledata', (e) => {
+      //   this.style = map.getStyle();
+      //   this.props.change({filters: this.filters, img: this.img, bounds:  this.bounds, legend: this.legend, style: this.style});
+      // })
+    }
+
 
   }
 }

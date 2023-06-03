@@ -11,6 +11,7 @@ import DisastersTable from "../DisastersTable/index.jsx";
 import DisasterInfoStats from "../DisasterInfoStats/index.jsx";
 import DisasterLossStats from "../DisasterLossStats/index.jsx";
 import DisasterLossTables from "../DisasterLossTables/index.jsx";
+import DisasterLossMap from "../DisasterLossMap/index.jsx";
 import HazardStatBox from '../HazardStatBox';
 
 import get from "lodash/get"
@@ -27,6 +28,7 @@ const ComponentRegistry = {
     "Table: Disaster Loss": DisasterLossTables,
     "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
     "Chart: Loss Distribution Pie Chart": LossDistributionPieChart,
+    "Map: FEMA Disaster Loss": DisasterLossMap,
     "lexical": dmsDataTypes.lexical
 }
 

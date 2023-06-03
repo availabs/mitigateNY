@@ -19,7 +19,7 @@ const RenderSlider = ({value, setValue}) => (
     <div className={'w-full pt-2 mt-3 flex flex-row self-center'}>
         <label
             htmlFor="steps-range"
-            className="shrink-0 pr-2 py-2 my-1 text-sm font-light dark:text-white">
+            className="shrink-0 pr-2 py-2 my-1 text-xs font-light dark:text-white">
             Zoom</label>
         <button onClick={() => setValue(--value)}><i className={'fad fa-minus self-center px-2'} /></button>
         <input id="steps-range"
@@ -28,7 +28,7 @@ const RenderSlider = ({value, setValue}) => (
                value={value} onChange={e => setValue(e.target.value)}
                step="0.5"
                className="
-               py-2 ml-2 my-1 rounded-md w-full shrink self-center
+               py-2 my-1 rounded-md w-full shrink self-center
                h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
         <button onClick={() => setValue(++value)}><i className={'fad fa-plus self-center px-2'} /></button>
 

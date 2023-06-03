@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import get from "lodash/get";
 import { useFalcor } from '~/modules/avl-falcor';
+import { AvlMap } from '~/modules/avl-map/src';
 import { pgEnv } from "~/utils/";
 import { isJson } from "~/utils/macros.jsx";
 import { RenderDisasterLossTable } from "./components/RenderDisasterLossTable.jsx";
@@ -9,8 +10,10 @@ import GeographySearch from "../geographySearch/index.jsx";
 import DisasterSearch from "../DisasterSearch/index.jsx";
 import { Loading } from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
-import {RenderColumnControls} from "./components/index.jsx";
 import {RenderTypeSelector} from "./components/RenderTypeSelector.jsx";
+import config from '~/config.json';
+import {ChoroplethCountyFactory} from "./components/choroplethCountyLayer.jsx";
+import _ from "lodash";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -20,7 +23,7 @@ const Edit = ({value, onChange}) => {
 
     const ealSourceId = 229;
     const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 599);
-    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || 4420);
+    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
     const [countyView, setCountyView] = useState();
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
@@ -30,21 +33,14 @@ const Edit = ({value, onChange}) => {
     const [filters, setFilters] = useState(cachedData?.filters || {});
 
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
-    const
-        geoNamesOptions = JSON.stringify({
-            ...geoid && { filter: { [`substring(geoid, 1, ${geoid?.length})`]: [geoid] } }
-        }),
-        geoNamesPath = view_id => ["dama", pgEnv, "viewsbyId", view_id, "options", geoNamesOptions];
-
     const attributionPath = ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
 
-    const geoOptions = JSON.stringify(metaData[type].options(disasterNumber, geoid)),
-        geoPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options"];
 
     useEffect( () => {
         async function getData(){
-            if(!geoid){
-                setStatus('Please Select a Geography');
+            if(!geoid || !disasterNumber){
+                !geoid && setStatus('Please Select a Geography');
+                !disasterNumber && setStatus('Please Select a Disaster');
             }else{
                 setStatus(undefined)
             }
@@ -57,16 +53,6 @@ const Edit = ({value, onChange}) => {
                 const countyView = deps.find(dep => dep.type === "tl_county");
                 setCountyView(countyView.view_id);
 
-                const geoNameLenRes = await falcor.get([...geoNamesPath(countyView.view_id), "length"]);
-                const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView.view_id), "length"], 0);
-
-                if (geoNameLen) {
-                    await falcor.get([...geoNamesPath(countyView.view_id), "databyIndex", {
-                        from: 0,
-                        to: geoNameLen - 1
-                    }, ["geoid", "namelsad"]]);
-                }
-
                 const typeId = deps.find(dep => dep.type === metaData[type]?.type);
 
                 if(!typeId) {
@@ -76,13 +62,7 @@ const Edit = ({value, onChange}) => {
                 }
                 setTypeId(typeId.view_id);
 
-                const lenRes = await falcor.get([...geoPath(typeId.view_id), geoOptions, 'length']);
-                const len = Math.min(get(lenRes, ['json', ...geoPath(typeId.view_id), geoOptions, 'length'], 0), 100),
-                    indices = { from: 0, to: len - 1 };
-                if(!len) setLoading(false);
-
                 await falcor.get(
-                    [...geoPath(typeId.view_id), geoOptions, 'databyIndex', indices, Object.values(metaData[type].attributes(geoid))],
                     attributionPath
                 );
 
@@ -95,42 +75,33 @@ const Edit = ({value, onChange}) => {
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes'], {});
 
-    const geoNames = Object.values(get(falcorCache, [...geoNamesPath(countyView), "databyIndex"], {}));
-    const  dataModifier = data => {
-        data.map(row => {
-            row.geoid = geoNames?.find(gn => gn.geoid === row.geoid)?.namelsad || row.geoid;
-        })
-        return data
-    };
-    let data = Object.values(get(falcorCache, [...geoPath(typeId), geoOptions, 'databyIndex'], {}));
-    console.log('data?', data, falcorCache, [...geoPath(typeId), geoOptions, 'databyIndex'])
-    metaData[type].mapGeoidToName && dataModifier && dataModifier(data);
-
-    let columns = Object.keys(metaData[type].attributes(geoid))
-        .map((col, i) => {
-            const mappedName = metaData[type].attributes(geoid)[col];
-            return {
-                Header:  col,
-                accessor: mappedName,
-                align: metaData[type].textCols?.includes(col) ? 'left' : 'right',
-                filter: (i === 0 && 'text') || filters[col]
-            }
-        })
-
-    useEffect(() => {
-            if(!loading){
-                onChange(JSON.stringify(
-                    {
-                        ealViewId,
-                        status,
-                        geoid,
-                        attributionData,
-                        disasterNumber,
-                        data, columns, filters, type, typeId
-                    }))
-            }
-        },
-        [status, ealViewId, geoid, attributionData, disasterNumber, data, columns, filters, type, typeId]);
+    const map_layers = useMemo(() => [ ChoroplethCountyFactory() ], []);
+    const layerProps =
+            {
+                ccl: {disaster_number: disasterNumber,
+                    geoid,
+                    view: typeId,
+                    views: [{...metaData[type], id: typeId}],
+                    pgEnv,
+                    loading, setLoading,
+                    change: e => onChange(JSON.stringify({...e, disasterNumber, ealViewId, geoid, typeId}))
+                }
+            };
+    console.log('lp', layerProps)
+    // useEffect(() => {
+    //         if(!loading){
+    //             onChange(JSON.stringify(
+    //                 {
+    //                     ealViewId,
+    //                     status,
+    //                     geoid,
+    //                     attributionData,
+    //                     disasterNumber,
+    //                     data, columns, filters, type, typeId
+    //                 }))
+    //         }
+    //     },
+    //     [status, ealViewId, geoid, attributionData, disasterNumber, data, columns, filters, type, typeId]);
 
     return (
         <div className='w-full'>
@@ -157,23 +128,26 @@ const Edit = ({value, onChange}) => {
                         type={type}
                         setType={setType}
                     />
-                    <RenderColumnControls
-                        cols={Object.keys(metaData[type].attributes(geoid))}
-                        filters={filters}
-                        setFilters={setFilters}
-                    />
                 </div>
                 {
                     loading ? <Loading /> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
-                                <RenderDisasterLossTable
-                                    data={data}
-                                    columns={columns}
-                                    title={type}
-                                    type={type}
-                                    attributionData={attributionData}
-                                    baseUrl={baseUrl}
+                            <div className={`flex-none h-[500px] w-full`}>
+                                <AvlMap
+                                    mapbox_logo={false}
+                                    navigationControl={false}
+                                    accessToken={config.MAPBOX_TOKEN}
+                                    falcor={falcor}
+                                    mapOptions={{
+                                        // styles: [
+                                        //   // { name: "Light", style: "mapbox://styles/am3081/ckdfzeg1k0yed1ileckpfnllj" }
+                                        // ]
+                                    }}
+                                    layers={map_layers}
+                                    layerProps={layerProps}
+                                    CustomSidebar={() => <div />}
                                 />
+                            </div>
                 }
             </div>
         </div>
@@ -191,12 +165,15 @@ const View = ({value}) => {
     let data = typeof value === 'object' ?
         value['element-data'] : 
         JSON.parse(value)
+    console.log('d', data, get(_.values(data).filter(layer => layer.img), [0, 'img']))
     return (
         <div className='relative w-full p-6'>
             {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
-                    <RenderDisasterLossTable {...data} baseUrl={'/'}/>
+                    <div className='h-80vh flex-1 flex flex-col'>
+                        <img alt='Choroplath Map' src={get(data, ['img'])} />
+                    </div>
             }
         </div>
     )           
@@ -204,8 +181,8 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Disaster Loss Tables',
-    "type": 'Table',
+    "name": 'Map: FEMA Disaster Loss',
+    "type": 'Map',
     "EditComp": Edit,
     "ViewComp": View
 }

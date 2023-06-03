@@ -15,6 +15,9 @@ dist-ssr
 package-lock.json
 yarn.lock
 
+# config
+src/config.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
