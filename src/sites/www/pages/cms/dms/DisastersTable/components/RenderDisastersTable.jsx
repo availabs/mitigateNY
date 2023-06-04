@@ -11,7 +11,7 @@ const colAccessNameMapping = {
 
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
-export const RenderDisastersTable = ({ type, data, columns, pageSize, sortBy = {}, disasterNames, baseUrl, attributionData, geoid, striped }) => {
+export const RenderDisastersTable = ({ type, data=[], columns=[], pageSize, sortBy = {}, disasterNames, baseUrl, attributionData, geoid, striped }) => {
     const updatedColumns = columns.map(c => {
         const col = c.rawHeader;
         const Header = c.Header;

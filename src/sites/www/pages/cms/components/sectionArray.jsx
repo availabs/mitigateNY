@@ -65,32 +65,36 @@ function SectionView ({value, attributes, onEdit}) {
 
     return (
         <div>
-            <div className='flex border-y h-[50px] items-center'>
-                <div className='flex-1 py-2 px-6 font-sans font-medium text-md uppercase'>
-                    <TitleComp 
-                        className='w-full'
-                        value={value?.['title']} 
-                    />
-                </div>
-                <div className='p-2'>
-                    <TagsComp 
-                        className=''
-                        value={value?.['tags']}
-                    />
-                </div>
-                { typeof onEdit === 'function' ?
-                    <div className='py-2'>
-                        <button 
-                            className={'pl-6 py-0.5 flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
-                            onClick={ onEdit }
-                        >
-                            <i className="fa-light fa-pencil text-xl fa-fw" title="Edit"></i>
-                            {/*☳ Edit*/}
-                        </button>
-                    
-                    </div> : ''
-                }
-            </div>
+            {
+                (value?.['title'] || value?.['tags']) && (
+                    <div className={`flex border-y h-[50px] items-center`}>
+                        <div className='flex-1 py-2 px-6 font-sans font-medium text-md uppercase'>
+                            <TitleComp
+                                className='w-full'
+                                value={value?.['title']}
+                            />
+                        </div>
+                        <div className='p-2'>
+                            <TagsComp
+                                className=''
+                                value={value?.['tags']}
+                            />
+                        </div>
+                        { typeof onEdit === 'function' ?
+                            <div className='py-2'>
+                                <button
+                                    className={'pl-6 py-0.5 flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
+                                    onClick={ onEdit }
+                                >
+                                    <i className="fa-light fa-pencil text-xl fa-fw" title="Edit"></i>
+                                    {/*☳ Edit*/}
+                                </button>
+
+                            </div> : ''
+                        }
+                    </div>
+                )
+            }
             <div>
                 <ElementComp value={value?.['element']} />
             </div>
