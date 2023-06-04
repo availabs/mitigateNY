@@ -122,7 +122,7 @@ class EALChoroplethOptions extends LayerContainer {
   fetchData(falcor) {
 
     const {disaster_number, geoid, view, views, pgEnv} = this.props;
-    console.log('props', this.props)
+
     if(!disaster_number || !view) return Promise.resolve();
     this.data = [];
     const eal_view_id = 577;
@@ -161,7 +161,6 @@ class EALChoroplethOptions extends LayerContainer {
                 });
                 this.data = data;
 
-                console.log('d?', data, this.data)
                 if(!data?.length) return Promise.resolve();
 
                 const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${false && geoid?.length ===  5 ? `0.1` : `0.5`})), 9, 1) as geom`],
@@ -172,10 +171,8 @@ class EALChoroplethOptions extends LayerContainer {
                       'options', JSON.stringify({ filter: { geoid: [false && geoid?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
                       'databyIndex'
                     ];
-                console.log('geo p', geoPath(geomDep))
                 const geomRes = await falcor.get([...geoPath(geomDep), geoIndices, geomColTransform]);
                 const geom = get(geomRes, ["json", ...geoPath(geomDep), 0, geomColTransform]);
-                console.log('geom', get(JSON.parse(geom), 'bbox'))
                 if(geom){
                   this.mapFocus = get(JSON.parse(geom), 'bbox');
                 }
@@ -184,7 +181,6 @@ class EALChoroplethOptions extends LayerContainer {
   }
 
   handleMapFocus(map) {
-    console.log('mf?', this.mapFocus)
     if (this.mapFocus) {
       try {
           map.fitBounds(this.mapFocus)
@@ -230,8 +226,6 @@ class EALChoroplethOptions extends LayerContainer {
     }else{
       const geoids = this.data.map(d => d.geoid);
       const stateFips = (geoid?.substring(0, 2) || geoids[0] || '00').substring(0, 2);
-      console.log('????????????/', geoid?.substring(0, 2), stateFips)
-
 
       for (let id = 0; id <= 999; id += 1){
         const gid = stateFips + id.toString().padStart(3, '0');
@@ -249,12 +243,11 @@ class EALChoroplethOptions extends LayerContainer {
   }
 
   render(map, falcor) {
-    console.log('rendering', this.props)
     this.paintMap(map);
     this.handleMapFocus(map);
 
     // if(this.props.change) this.props.change({filters: this.filters, ...{img:this.img}, bounds: map.getBounds(), legend: this.legend, style: this.style});
-    if(this.props.change && !this.props.loading){
+    if(this.props.change){
 
       // map.on('resize', (e) => {
       //   this.bounds = map.getBounds();
@@ -291,6 +284,7 @@ class EALChoroplethOptions extends LayerContainer {
 
         const context = newCanvas.getContext("2d")
         context.drawImage(canvas, 0, 0);
+
 
         drawLegend({legend: this.legend, filters: this.filters}, newCanvas, canvas);
         img = newCanvas.toDataURL();

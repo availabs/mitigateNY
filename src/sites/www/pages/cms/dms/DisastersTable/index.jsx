@@ -230,7 +230,7 @@ const Edit = ({value, onChange}) => {
         },
         [attributionData, status, ealViewId, fusionViewId, geoid, pageSize, sortBy,
             type, data, columns, filters, visibleCols, fusionAttributes, disasterNames]);
-    console.log('filters', filters, sortBy)
+
     return (
         <div className='w-full'>
             <div className='relative'>

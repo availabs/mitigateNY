@@ -150,7 +150,6 @@ const Edit = ({value, onChange}) => {
         }
     ))
 
-    console.log('??', attributionData)
     const hazardPercentileArray =
         get(falcorCache, ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid, "value"], [])
             .filter(row => row.geoid === geoid)
@@ -171,7 +170,7 @@ const Edit = ({value, onChange}) => {
                 frequency: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, freqCol[d.nri_category]], 0)
             }))
             .sort((a, b) => +b.value - +a.value);
-    console.log('???', hazard, hazardPercentileArray, size, isTotal, type, attributionData)
+
     useEffect(() => {
             if (!loading) {
                 onChange(JSON.stringify(

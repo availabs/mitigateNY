@@ -50,14 +50,14 @@ export const RenderColumnControls = (
 
 
 
-            <div className={'flex flex-col sm:flex-row space-between my-1 text-sm'}>
+            <div className={'grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 place-items-stretch space-between my-1 text-sm'}>
                 {
                     cols
                         .filter(c => visibleCols.includes(c) || anchorCols.includes(c))
                         .map((c, i) => (
                             <div
                                 key={`col-settings-${c}`}
-                                className={'mx-0.5 flex flex-col justify-between p-2 border border-dashed border-blue-300 rounded-md w-[500px]'}>
+                                className={'m-1 flex flex-col justify-between p-2 border border-dashed border-blue-300 rounded-md'}>
                                 <div className={'font-normal w-full h-full flex flex-row justify-between'}>
                                     <label key={`label-${c}`} className={'mb-auto'}>{c}</label>
                                     {
@@ -87,8 +87,8 @@ export const RenderColumnControls = (
                                     </select>
                                 </div>
 
-                                <div className={'w-full py-2 justify-between'}>
-                                    <label className={'align-bottom shrink-0 pr-2 py-2 my-1'}> Default Sort by: </label>
+                                <div className={'block shrink-0 w-full py-2 justify-between'}>
+                                    <label className={'align-bottom pr-2 py-2 my-1'}> Default Sort by: </label>
                                     <Switch
                                         key={`sortby-${c}`}
                                         checked={sortBy?.[c] || false}
@@ -97,7 +97,7 @@ export const RenderColumnControls = (
                                             sortBy?.[c] ? 'bg-indigo-600' : 'bg-gray-200',
                                             `relative inline-flex 
                                             h-4 w-10 
-                                            flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent 
+                                             cursor-pointer rounded-full border-2 border-transparent 
                                             transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
                                             focus:ring-indigo-600 focus:ring-offset-2`
                                         )}

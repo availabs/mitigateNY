@@ -98,7 +98,7 @@ const Edit = ({value, onChange}) => {
             }
         },
         [status, ealViewId, geoid, attributionData, disasterNumber, title, incidentType, declarationDate]);
-    console.log('dn', disasterNumber)
+
     return (
         <div className='w-full'>
             <div className='relative'>

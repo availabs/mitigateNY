@@ -7,26 +7,19 @@ export const drawLegend = (layer, newCanvas, mbCanvas) => {
 
     let x = mbCanvas.width - 20 - 360,
         y = 20;
+    context.fillStyle = 'white'
+    context.roundRect(x, y, 370, 50, 5);
+    context.fill();
+    // context.fillRect(x, y, 370, 50);
 
-    context.fillRect(x, y, 360, 70);
-
-    x += 10;
-    y += 10;
-
-    context.fillRect(x, y, 340, 50);
-
-    x += 10;
-    y += 10;
-
-    context.font = "12px 'Helvetica Neue', Arial, Helvetica, sans-serif";
-    context.fillStyle = '#ccc'
+    context.fillStyle = '#232323'
     const text = layer.legend.Title({layer});
     context.fillText(text, x + 10, y, 320);
 
     x += 10
     y += 10
 
-    const w = 320 / layer.legend.range.length;
+    const w = 350 / layer.legend.range.length;
     layer.legend.range.forEach((c, i) => {
         context.fillStyle = c;
         context.fillRect(x + i * w, y, w, 20);
@@ -59,7 +52,8 @@ export const drawLegend = (layer, newCanvas, mbCanvas) => {
 
     x += 3;
     y += 33;
-    context.font = "12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif";
+    context.fillStyle = '#232323'
+    context.font = "11px Arial";
     context.textAlign = "right";
     layer.legend.range.forEach((c, i) => {
         const text = format(scale?.invertExtent(c)[1]);

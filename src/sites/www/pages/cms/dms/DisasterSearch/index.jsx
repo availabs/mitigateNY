@@ -70,7 +70,6 @@ export default ({
                         const depsRes = await falcor.get(dependencyPath(view_id));
             const deps = get(depsRes, ["json", ...dependencyPath(view_id), "dependencies"]);
             const ddsDeps = deps.find(d => d.type === "disaster_declarations_summaries_v2");
-            console.log('dds dep for disaster search', ddsDeps)
             if (!ddsDeps) return;
             setDdsView(ddsDeps.view_id);
 

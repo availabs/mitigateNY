@@ -1,6 +1,6 @@
 export const metaData = {
     total_losses: {
-        type: 'disaster_declarations_summaries_v2',
+        type: 'disaster_loss_summary',
         columns: {
             'IHP Loss': 'ihp_loss',
             'PA Loss': 'pa_loss',

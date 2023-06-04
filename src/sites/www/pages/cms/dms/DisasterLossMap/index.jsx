@@ -14,6 +14,8 @@ import {RenderTypeSelector} from "./components/RenderTypeSelector.jsx";
 import config from '~/config.json';
 import {ChoroplethCountyFactory} from "./components/choroplethCountyLayer.jsx";
 import _ from "lodash";
+import {Link} from "react-router-dom";
+import {formatDate} from "../../../../../../utils/macros.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -28,12 +30,11 @@ const Edit = ({value, onChange}) => {
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
-    const [type, setType] = useState(cachedData?.type || 'ihp');
+    const [type, setType] = useState(cachedData?.type || 'total_losses');
     const [typeId, setTypeId] = useState(cachedData?.typeId);
-    const [filters, setFilters] = useState(cachedData?.filters || {});
 
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
-    const attributionPath = ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
+    const attributionPath = view_id => ['dama', pgEnv, 'views', 'byId', view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
 
 
     useEffect( () => {
@@ -63,7 +64,7 @@ const Edit = ({value, onChange}) => {
                 setTypeId(typeId.view_id);
 
                 await falcor.get(
-                    attributionPath
+                    attributionPath(typeId.view_id)
                 );
 
                 setLoading(false);
@@ -73,7 +74,7 @@ const Edit = ({value, onChange}) => {
         getData()
     }, [geoid, ealViewId, disasterNumber, type]);
 
-    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes'], {});
+    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
 
     const map_layers = useMemo(() => [ ChoroplethCountyFactory() ], []);
     const layerProps =
@@ -84,24 +85,9 @@ const Edit = ({value, onChange}) => {
                     views: [{...metaData[type], id: typeId}],
                     pgEnv,
                     loading, setLoading,
-                    change: e => onChange(JSON.stringify({...e, disasterNumber, ealViewId, geoid, typeId}))
+                    change: e => onChange(JSON.stringify({...e, disasterNumber, ealViewId, geoid, status, type, typeId, attributionData}))
                 }
             };
-    console.log('lp', layerProps)
-    // useEffect(() => {
-    //         if(!loading){
-    //             onChange(JSON.stringify(
-    //                 {
-    //                     ealViewId,
-    //                     status,
-    //                     geoid,
-    //                     attributionData,
-    //                     disasterNumber,
-    //                     data, columns, filters, type, typeId
-    //                 }))
-    //         }
-    //     },
-    //     [status, ealViewId, geoid, attributionData, disasterNumber, data, columns, filters, type, typeId]);
 
     return (
         <div className='w-full'>
@@ -132,22 +118,32 @@ const Edit = ({value, onChange}) => {
                 {
                     loading ? <Loading /> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
-                            <div className={`flex-none h-[500px] w-full`}>
-                                <AvlMap
-                                    mapbox_logo={false}
-                                    navigationControl={false}
-                                    accessToken={config.MAPBOX_TOKEN}
-                                    falcor={falcor}
-                                    mapOptions={{
-                                        // styles: [
-                                        //   // { name: "Light", style: "mapbox://styles/am3081/ckdfzeg1k0yed1ileckpfnllj" }
-                                        // ]
-                                    }}
-                                    layers={map_layers}
-                                    layerProps={layerProps}
-                                    CustomSidebar={() => <div />}
-                                />
-                            </div>
+                            <React.Fragment>
+                                <div className={`flex-none h-[500px] w-full p-1`}>
+                                    <AvlMap
+                                        mapbox_logo={false}
+                                        navigationControl={false}
+                                        accessToken={config.MAPBOX_TOKEN}
+                                        falcor={falcor}
+                                        mapOptions={{
+                                            // styles: [
+                                            //   // { name: "Light", style: "mapbox://styles/am3081/ckdfzeg1k0yed1ileckpfnllj" }
+                                            // ]
+                                        }}
+                                        layers={map_layers}
+                                        layerProps={layerProps}
+                                        CustomSidebar={() => <div />}
+                                    />
+                                </div>
+                                <div className={'flex flex-row text-xs text-gray-700 p-1'}>
+                                    <label>Attribution:</label>
+                                    <div className={'flex flex-col pl-1'}>
+                                        <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
+                                            { attributionData?.version } ({formatDate(attributionData?._modified_timestamp?.value)})
+                                        </Link>
+                                    </div>
+                                </div>
+                            </React.Fragment>
                 }
             </div>
         </div>
@@ -165,7 +161,9 @@ const View = ({value}) => {
     let data = typeof value === 'object' ?
         value['element-data'] : 
         JSON.parse(value)
-    console.log('d', data, get(_.values(data).filter(layer => layer.img), [0, 'img']))
+    const baseUrl = '/';
+    const attributionData = data?.attributionData;
+
     return (
         <div className='relative w-full p-6'>
             {
@@ -173,6 +171,14 @@ const View = ({value}) => {
                     <div className={'p-5 text-center'}>{data?.status}</div> :
                     <div className='h-80vh flex-1 flex flex-col'>
                         <img alt='Choroplath Map' src={get(data, ['img'])} />
+                        <div className={'flex flex-row text-xs text-gray-700 p-1'}>
+                            <label>Attribution:</label>
+                            <div className={'flex flex-col pl-1'}>
+                                <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
+                                    { attributionData?.version } ({formatDate(attributionData?._modified_timestamp?.value)})
+                                </Link>
+                            </div>
+                        </div>
                     </div>
             }
         </div>

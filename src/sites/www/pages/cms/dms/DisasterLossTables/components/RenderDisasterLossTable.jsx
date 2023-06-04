@@ -7,7 +7,6 @@ import {cellFormat} from '../utils.jsx'
 
 export const RenderDisasterLossTable = ({ data, columns, pageSize, sortBy={}, title, striped, attributionData, baseUrl, type }) => {
     const sortColRaw = columns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
-    console.log('sort', sortColRaw)
    return (
        <div className={'py-5 flex flex-col'}>
            <label key={title} className={"text-sm float-left capitalize"}> {title} </label>

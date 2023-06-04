@@ -108,7 +108,7 @@ const Edit = ({value, onChange}) => {
         return data
     };
     let data = Object.values(get(falcorCache, [...geoPath(typeId), geoOptions, 'databyIndex'], {}));
-    console.log('data?', data, falcorCache, [...geoPath(typeId), geoOptions, 'databyIndex'])
+
     metaData[type]?.mapGeoidToName && dataModifier && dataModifier(data);
 
     let columns = Object.keys(metaData[type]?.attributes(geoid) || {})
