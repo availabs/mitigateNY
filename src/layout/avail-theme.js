@@ -165,7 +165,8 @@ const ppdaf = () => {
     topnav: ({
         color='white',
         size='compact',
-        menu='left'
+        menu='left',
+        subMenuStyle = 'inline',
     }) => {
 
       let colors = {
@@ -188,11 +189,11 @@ const ppdaf = () => {
       }
       let sizes = {
         compact: {
-          menu: `hidden md:flex flex-1 ${menu === 'left' ? '' : 'justify-end'}`,
+          menu: `hidden md:flex flex-1 ${menu === 'left' ? '' : 'justify-end'} divide-x-2`,
           sideItem: "flex  mx-6 pr-4 py-2 text-sm font-light hover:pl-4",
-          topItem: `flex font-medium uppercase items-center text-sm px-4 border-r h-12 ${colors[color].textColor} ${colors[color].borderColor}
+          topItem: `flex font-medium uppercase items-center text-sm px-4 h-12 ${colors[color].textColor} ${colors[color].borderColor}
             ${colors[color].accentBg} hover:${colors[color].highlightColor}`,
-          activeItem: `flex font-medium uppercase bg-white items-center text-sm px-4 border-r h-12 ${colors[color].textColor} ${colors[color].borderColor}
+          activeItem: `flex font-medium uppercase bg-white items-center text-sm px-4 h-12 ${colors[color].textColor} ${colors[color].borderColor}
             ${colors[color].accentBg} hover:${colors[color].highlightColor}`,
           icon: "mr-3 text-lg",
           responsive: 'md:hidden'
@@ -209,8 +210,33 @@ const ppdaf = () => {
 
       }
 
+        let subMenuStyles = {
+            inline: {
+                // indicatorIcon: 'fa fa-caret-right pt-2.5',
+                // indicatorIconOpen: 'fa fa-caret-down pt-2.5',
+                subMenuWrapper: `pl-2 w-full`,
+                subMenuParentWrapper: `flex flex-col w-full`
+            },
+            flyout: {
+                indicatorIcon: 'fa fa-caret-down pl-2 pt-1',
+                // indicatorIconOpen: 'fa fa-caret-right pl-2',
+                subMenuWrapper: `absolute ml-${sizes[size].width - 8}`,
+                subMenuParentWrapper: `flex flex-row`,
+                subMenuWrapperTop: `absolute top-full`,
+            },
+            row: {
+                indicatorIcon: 'fa fa-caret-down pl-2 pt-0.5',
+                // indicatorIconOpen: 'fa fa-caret-right pl-2 pt-1',
+                subMenuWrapper: `absolute ml-${sizes[size].width - 8}`,
+                subMenuParentWrapper: `flex flex-row`,
+                subMenuWrapperTop: `absolute top-full left-1`,
+                subMenuWrapperInactiveFlyout: `absolute top-12 bg-white z-10`,
+                subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
+            },
+        }
 
-      return {
+
+        return {
         topnavWrapper: `w-full ${colors[color].contentBg} border-b border-gray-200`,
         topnavContent: `flex w-full h-full`,
         topnavMenu: `${sizes[size].menu} h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
@@ -234,7 +260,8 @@ const ppdaf = () => {
           `,
         mobileButton:
           `${sizes[size].responsive} ${colors[color].contentBg} inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
-        vars: {
+            ...subMenuStyles[subMenuStyle],
+            vars: {
             colors,
             sizes
           }

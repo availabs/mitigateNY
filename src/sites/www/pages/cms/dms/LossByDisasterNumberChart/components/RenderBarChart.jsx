@@ -38,8 +38,6 @@ export const RenderBarChart = ({ chartDataActiveView, disaster_numbers, attribut
     const maxValue = maxVal === 'Max' ? Math.max(...yearWiseTotals) :
         fnumToNumber(maxVal);
 
-    console.log('maxval', Math.min(...Object.keys(thresholdTicks)
-        .filter(k => +k > Math.max(...yearWiseTotals))))
     return (
         <div className={`w-full pt-10 my-1 block flex flex-col`} style={{height: "450px"}}>
             <label key={"nceiLossesTitle"} className={"text-lg pb-2"}> Loss by Disaster Number

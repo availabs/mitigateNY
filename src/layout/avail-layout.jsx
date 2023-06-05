@@ -56,6 +56,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 		position: topNav.position || 'block',
 		size: topNav.size || 'compact',
 		menu: topNav.menu || 'left',
+		subMenuStyle: topNav.subMenuStyle || 'row',
 		menuItems: topNav.menuItems || []
 
 	}
@@ -88,6 +89,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 							}`}>
 							<TopNav
 								themeOptions={topNavOptions}
+								// subMenuActivate={'onHover'}
 								leftMenu={
 									<div className='flex items-center justify-center h-12'>
 										<div to="/" className={`${sideNavOptions.size === 'none' ? '' : 'md:hidden'}` }>
@@ -105,7 +107,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 						}
 					</>)
 				}
-				<div className={`h-full flex-1 `}>
+				<div className={`h-full flex-1`}>
 					{children}
 				</div>
 			</div>
