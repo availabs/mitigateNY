@@ -1,10 +1,11 @@
 import { hazardsMeta } from "../../../../../../../utils/colors.jsx";
 import get from "lodash/get.js";
-import { fnumIndex, HoverComp, range } from "../../../../../../../utils/macros.jsx";
+import {fnum, fnumIndex, fnumToNumber, HoverComp, range} from "../../../../../../../utils/macros.jsx";
 import { Link } from "react-router-dom";
 import React from "react";
 import { BarGraph } from "../../../../../../../modules/avl-graph/src/index.js";
 import { RenderLegend } from "./RenderLegend.jsx";
+import {ButtonSelector} from "../../buttonSelector/index.jsx";
 
 const colNameMapping = {
     swd_population_damage: 'Population Damage',
@@ -15,41 +16,36 @@ const colNameMapping = {
     ofd_ttd: 'Declared Total',
 };
 
-const RenderSlider = ({value, setValue}) => (
-    <div className={'w-full pt-2 mt-3 flex flex-row self-center'}>
-        <label
-            htmlFor="steps-range"
-            className="shrink-0 pr-2 py-2 my-1 text-xs font-light dark:text-white">
-            Zoom</label>
-        <button onClick={() => setValue(--value)}><i className={'fad fa-minus self-center px-2'} /></button>
-        <input id="steps-range"
-               type="range"
-               min={0} max={99}
-               value={value} onChange={e => setValue(e.target.value)}
-               step="0.5"
-               className="
-               py-2 my-1 rounded-md w-full shrink self-center
-               h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
-        <button onClick={() => setValue(++value)}><i className={'fad fa-plus self-center px-2'} /></button>
-
-    </div>
-)
+const thresholdTicks = {
+    10_000_000_000 : [50_000_000, 1_000_000_000, 5_000_000_000],
+    5_000_000_000 : [1_000_000, 50_000_000, 1_000_000_000],
+    1_000_000_000 : [500_000, 1_000_000, 500_000_000],
+    1_000_000 : [10_000, 50_000, 500_000],
+    500_000 : [1_000, 10_000, 50_000],
+}
 
 export const RenderBarChart = ({ chartDataActiveView, disaster_numbers, attributionData, baseUrl }) => {
-    const [zoom, setZoom] = React.useState(0);
+    const [maxVal, setMaxVal] = React.useState('Max');
     const minYear = Math.min(...chartDataActiveView.map(d => d.year));
     const maxYear = Math.max(...chartDataActiveView.map(d => d.year));
 
-    const keys = disaster_numbers.map(dn => `${dn}_td`)
+    const keys = disaster_numbers.map(dn => `${dn}_td`);
     const yearWiseTotals = chartDataActiveView.map(d => keys.reduce((a,c) => a + (+d[c] || 0) ,0));
-    const maxValue = Math.max(...yearWiseTotals) * (100 - zoom) / 100
+    const ticks =
+        thresholdTicks[Math.min(...Object.keys(thresholdTicks)
+            .filter(k => +k > Math.max(...yearWiseTotals)), Math.max(...Object.keys(thresholdTicks)))] || []
 
+    const maxValue = maxVal === 'Max' ? Math.max(...yearWiseTotals) :
+        fnumToNumber(maxVal);
+
+    console.log('maxval', Math.min(...Object.keys(thresholdTicks)
+        .filter(k => +k > Math.max(...yearWiseTotals))))
     return (
         <div className={`w-full pt-10 my-1 block flex flex-col`} style={{height: "450px"}}>
             <label key={"nceiLossesTitle"} className={"text-lg pb-2"}> Loss by Disaster Number
             </label>
             <RenderLegend/>
-            <RenderSlider value={zoom} setValue={setZoom}/>
+            <ButtonSelector types={[...ticks.map(t => fnumIndex(t, 0)), 'Max']}  type={maxVal} setType={setMaxVal} size={'large'}/>
             <BarGraph
                 key={"numEvents"}
                 data={chartDataActiveView}

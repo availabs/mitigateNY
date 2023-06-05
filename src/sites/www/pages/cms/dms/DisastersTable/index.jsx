@@ -43,6 +43,7 @@ const Edit = ({value, onChange}) => {
     const [disasterDecView, setDisasterDecView] = useState();
     const [disasterNumbers, setDisasterNumbers] = useState([]);
     const ealSourceId = 229;
+
     const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 683);
     const [fusionViewId, setFusionViewId] = useState(cachedData?.fusionViewId || 657);
 
@@ -79,20 +80,24 @@ const Edit = ({value, onChange}) => {
                 width: '20%'
             },
             'Deaths, Injuries': {
-                raw: "(coalesce(sum(deaths_direct), 0) + coalesce(sum(deaths_indirect), 0))::text || ', ' || (coalesce(sum(injuries_direct), 0) + coalesce(sum(injuries_indirect), 0))::text as population_damage_numbers"
+                raw: "'deaths:' || (coalesce(sum(deaths_direct), 0) + coalesce(sum(deaths_indirect), 0))::text || ', injuries:' || (coalesce(sum(injuries_direct), 0) + coalesce(sum(injuries_indirect), 0))::text as population_damage_numbers"
             },
             'Population Damage $': {
-                raw: 'sum(swd_population_damage) * 11700000 as swd_population_damage'
+                raw: 'sum(swd_population_damage) * 11700000 as swd_population_damage',
+                align: 'right',
             },
             'Property Damage': {
-                raw: 'sum(fusion_property_damage) as fusion_property_damage'
+                raw: 'sum(fusion_property_damage) as fusion_property_damage',
+                align: 'right',
             },
             'Crop Damage': {
-                raw: 'sum(fusion_crop_damage) as fusion_crop_damage'
+                raw: 'sum(fusion_crop_damage) as fusion_crop_damage',
+                align: 'right',
             },
             'Total Damage': {
                 raw: 'coalesce(sum(fusion_property_damage), 0) + coalesce(sum(fusion_crop_damage), 0) as total_fusion_damage',
-                width: '20%'
+                width: '20%',
+                align: 'right',
             },
         },
         anchorCols = ['Year', 'Disaster Number', 'Event Id'],
