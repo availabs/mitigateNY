@@ -1,4 +1,4 @@
-import SectionArray from './components/sectionArray'
+import SectionArray from '../../cms/components/sectionArray'
 
 const cmsSection = {
   app: "dms-site",
@@ -22,7 +22,7 @@ const cmsSection = {
 
 const cmsPageFormat = {
   app: "dms-site",
-  type: "docs-page",
+  type: "docs-play",
   registerFormats: [cmsSection],
   defaultSort: (d) => d.sort((a,b) => a.index - b.index || a.parent-b.parent),
   attributes: [

@@ -12,7 +12,7 @@ const Logo = ({sideNav}) => {
 	return (
 		<>
 			<Link to="/" className={`flex  border-b`}>
-				<div className='h-12 px-6 flex items-center'>
+				<div className='h-12 px-6 flex  items-center '>
 					AVAIL 
 				</div>	
 			</Link>

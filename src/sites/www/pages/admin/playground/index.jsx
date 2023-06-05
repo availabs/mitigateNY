@@ -1,13 +1,15 @@
 import React from "react"
 import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
 import { withAuth } from "~/modules/ams/src" 
-import Layout from "../cms/components/layout"
+import Layout from "../../cms/components/layout"
 import checkAuth  from "~/layout/checkAuth"
-import { PageView, PageEdit } from "../cms/components/page"
+import { PageView, PageEdit } from "../../cms/components/page"
 
-import Selector from "../cms/dms/selector"
+import Selector from "../../cms/dms/selector"
 
-import cmsFormat from "./cms.format.js"
+import cmsFormat from "./playground.format.js"
+
+import { menuItems } from "../index"
 
 registerDataType("selector", Selector)
 
@@ -59,10 +61,12 @@ const siteConfig = {
 }
 
 export default { 
-  ...dmsPageFactory(siteConfig, "/",  withAuth),
+  ...dmsPageFactory(siteConfig, "/playground/",  withAuth),
   name: "CMS",
   sideNav: {
-    size: "none"
+    size: 'mini',
+    color: 'white',
+    menuItems
   },
   topNav: {
     size: "none"

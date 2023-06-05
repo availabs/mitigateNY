@@ -17,7 +17,7 @@ export default function SiteLayout ({children, dataItems,edit, ...props},) {
   }, [dataItems,edit])
 
   return (
-    <Layout topNav={{menuItems, position: 'fixed'}}>
+    <Layout topNav={{menuItems, position: 'fixed', leftNav: <div/> }}>
       <div className={theme.layout.page}>
         <div className={theme.layout.container}> 
           {children}
