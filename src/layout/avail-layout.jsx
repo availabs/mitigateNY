@@ -12,7 +12,7 @@ const Logo = ({sideNav}) => {
 	return (
 		<>
 			<Link to="/" className={`flex  border-b`}>
-				<div className='h-12 px-6 flex  items-center '>
+				<div className='h-12 px-6 flex items-center'>
 					AVAIL 
 				</div>	
 			</Link>
@@ -105,7 +105,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 						}
 					</>)
 				}
-				<div className={`h-full flex-1 `}>
+				<div className={`h-full flex-1 bg-slate-100`}>
 					{children}
 				</div>
 			</div>

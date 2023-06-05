@@ -1,39 +1,29 @@
 import React from 'react';
 
-
-const Home = () => 
-  <div className='h-full flex-1 flex flex-col text-gray-900 bg-slate-100'>
-      <div className="flex-1 flex items-center justify-center flex-col">
-        <div className="text-6xl font-bold">Home Page</div>
-        <div className="text-xl">Put something here</div>
-        <div className="text-xl"></div>
-      </div>
-  </div>
-
-const config = {
-  name:'Title',
-  path: "/admin",
-  exact: true,
-  auth: false,
-  mainNav: false,
+export const authMenuConfig = {
   sideNav: {
     size: 'full',
     color: 'white',
     menuItems: [
       {
+        name: 'Dashboard',
+        icon: 'far fa-home fa-fw',
+        path: '/admin'
+      },
+      {
         name: 'Admin', 
         //path: '/auth/someplace',
-        className: 'px-6 pt-12 pb-1 uppercase text-xs text-blue-400'
+        className: 'px-6 pt-8 pb-1 uppercase text-xs text-blue-400'
       },
       {
         name: 'Plan Status',
         icon: 'far fa-gauge-simple fa-fw',
-        path: '/admin/plans'
+        path: '/admin'
       },
       {
         name: 'CMS',
         icon: 'far fa-edit fa-fw',
-        path: '/admin/plans'
+        path: '/edit'
       },
       {
         name: 'Templates',
@@ -50,7 +40,7 @@ const config = {
       {
         name: 'Cen Rep',
         icon: 'far fa-database fa-fw',
-        path: '/admin/forms/actions'
+        path: '/cenrep'
       },
       {
         name: 'Playground',
@@ -111,6 +101,24 @@ const config = {
   topNav: {
     position: 'fixed'
   },
+}
+
+const Home = () => 
+  <div className='h-full flex-1 flex flex-col text-gray-900 bg-slate-100'>
+      <div className="flex-1 flex items-center justify-center flex-col">
+        <div className="text-6xl font-bold">Home Page</div>
+        <div className="text-xl">Put something here</div>
+        <div className="text-xl"></div>
+      </div>
+  </div>
+
+const config = {
+  name:'Title',
+  path: "/admin",
+  exact: true,
+  auth: false,
+  mainNav: false,
+  ...authMenuConfig,
   component: Home
 }
 

@@ -1,11 +1,11 @@
 import React from "react"
 import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
 import { withAuth } from "~/modules/ams/src" 
-import Layout from "./components/layout"
+import Layout from "../cms/components/layout"
 import checkAuth  from "~/layout/checkAuth"
-import { PageView, PageEdit } from "./components/page"
+import { PageView, PageEdit } from "../cms/components/page"
 
-import Selector from "./dms/selector"
+import Selector from "../cms/dms/selector"
 
 import cmsFormat from "./cms.format.js"
 
