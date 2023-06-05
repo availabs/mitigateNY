@@ -8,11 +8,12 @@ function getChildNav(item, dataItems, edit) {
 
     return children.map((d, i) => {
         let item = {
+            id: d.id,
             path: `${edit ? `${baseUrl}/edit` : baseUrl}/${d.url_slug || d.id}`,
             name: d.title
         }
         if (getChildNav(item, dataItems)) {
-            item.children = getChildNav(d, dataItems, edit)
+            item.subMenus = getChildNav(d, dataItems, edit)
         }
         return item
     })
