@@ -28,7 +28,7 @@ const UserMenu = ({user}) => {
 export const Item = (to, icon, span, condition) => (
     condition === undefined || condition ?
         <Link to={ to } >
-            <div className='px-6 py-2 bg-blue-500 text-white hover:text-blue-100'>
+            <div className='px-6 py-1 bg-blue-500 text-white hover:text-blue-100'>
                 <div className='hover:translate-x-2 transition duration-100 ease-out hover:ease-in'>
                     <i className={`${icon} `} />
                     <span className='pl-2'>{span}</span>
@@ -50,9 +50,16 @@ export default withAuth(({title, shadowed = true, user, children}) => {
                 <Dropdown control={<UserMenu user={user}/>} className={`hover:bg-blue-500 group `} >
                     <div className='p-1 bg-blue-500'>
                         { user.authLevel >= 5 ? 
-                        <div className='py-1 '> 
-                            {Item('/edit', 'fad fa-database flex-shrink-0  pr-1', 'Edit Site')}
-                        </div> : ''}
+                        <div className='py-2'>
+                            <div className=''> 
+                                {Item('/admin', 'fa fa-screwdriver-wrench fa-fw flex-shrink-0  pr-1', 'Admin')}
+                            </div> 
+                            <div className=''> 
+                                {Item('/edit', 'fa fa-money-check-pen fa-fw flex-shrink-0  pr-1', 'Edit Site')}
+                            </div>
+                            
+                        </div>
+                        : ''}
                         <div className='py-1 border-t border-blue-400'> 
                             {Item('/auth/logout', 'fad fa-sign-out-alt pb-2 pr-1', 'Logout')}
                         </div>

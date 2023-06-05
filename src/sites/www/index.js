@@ -1,10 +1,10 @@
-import Home from "./pages/Home"
+import Admin from "./pages/admin"
 import CMS from './pages/cms'
 // import Test from "./pages/Test"
 // import NymtcSurveyCrosswalk from "./pages/nymtcSurveyCrosswalk"
 
 const Routes = [
-  Home,
+  Admin,
   CMS
 ]
 

@@ -1,6 +1,8 @@
 //import Login from "./components/login"
 import { amsFactory } from '~/modules/ams/src'
 
+
+
 const AuthConfig = {
   children: [
     { 

@@ -24,14 +24,14 @@ const ppdaf = () => {
           }
           let colors = {
             white: {
-              contentBg: `bg-${highlight}`,
+              contentBg: `bg-${highlight} border-r`,
               contentBgAccent: `bg-neutral-100`,
               accentColor: `${accent}-600`,
               accentBg: `hover:bg-${accent}-400`,
-              borderColor: `border-${primary}-100`,
+              borderColor: `border-slate-200`,
               textColor: `text-${primary}-600`,
               textColorAccent: `text-slate-800`,
-              highlightColor: `text-${primary}-800`,
+              highlightColor: `text-blue-800`,
             },
             transparent: {
               contentBg: `bg-neutral-100`,
@@ -73,35 +73,36 @@ const ppdaf = () => {
           icon: "mr-3 text-lg",
         },
         compact: {
-          fixed: 'ml-0 md:ml-40',
-          wrapper: "w-40",
+          fixed: 'ml-0 md:ml-44',
+          wrapper: "w-44",
           itemWrapper: 'pt-5',
-          sideItem: "flex pr-4 text-base hover:pl-2",
+          sideItem: "group flex px-3 py-1.5 text-[14px] font-light hover:bg-blue-50 text-slate-700 mx-2 ",
           sideItemActive: "", //"border-r-4 border-blue-500 ",
           topItem: "flex items-center text-sm px-4 border-r h-12",
-          icon: "pl-5  pr-1 py-1 text-[13px]",
-          sideItemContent: 'py-1 px-1 mt-0.5  text-[14px] ',
+          icon: "group w-6 mr-2 text-blue-500 ",
+          sideItemContent: 'group-hover:translate-x-1.5 transition-transform duration-300 ease-in-out',
         },
         full: {
           fixed: '',
           wrapper: "w-full",
-          sideItem: "flex px-4 py-2 text-base font-base border-b ",
-          topItem: "flex pr-4 py-2 text-sm font-light",
-          icon: "mr-4 text-2xl",
+          sideItem: "group flex px-3 py-2 text-[14px] font-light hover:bg-blue-50 text-slate-700 mx-2 ",
+          topItem: "flex pr-4 py-2  font-",
+          icon: "group w-6 mr-2 text-blue-500  ",
+          sideItemContent: 'group-hover:translate-x-1.5 transition-transform duration-300 ease-in-out',
         },
         mini: {
           fixed: 'ml-0 md:ml-20',
           wrapper: "w-20 overflow-x-hidden  pt-4",
-          sideItem: "flex pr-4 py-4 text-base font-base border-b",
+          sideItem: "text-white hover:bg-blue-100 hover:text-blue-100",
           topItem: "flex px-4 items-center text-sm font-light ",
-          icon: "w-20 mr-4 text-4xl",
-          sideItemContent: 'hidden',
+          icon: "w-20 h-10 text-lg text-blue-500",
+          sideItemContent: '',
         },
         micro: {
           fixed: 'ml-0 md:ml-14',
           wrapper: "w-14 overflow-x-hidden",
           itemWrapper: 'p-1',
-          sideItem: "flex text-base font-base",
+          sideItem: "flex text-base font-base ",
           topItem: "flex mx-6 pr-4 py-2 text-sm font-light",
           icon: "w-12 text-2xl hover:bg-neutral-900 px-1 py-3 my-2 rounded-lg mr-4 hover:text-blue-500",
           sideItemContent: 'hidden',
@@ -133,13 +134,14 @@ const ppdaf = () => {
         itemsWrapper: `${colors[color].borderColor} ${sizes[size].itemWrapper}  `,
         navItemContent: `${sizes[size].sideItemContent}`,
         navitemSide: `
-            group font-sans flex flex-col
+            group  flex flex-col
+
             ${sizes[size].sideItem} ${colors[color].sideItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
             transition-all cursor-pointer
          `,
         navitemSideActive: `
-            group font-sans flex flex-col
+            group  flex flex-col
             ${sizes[size].sideItem} ${sizes[size].sideItemActive} ${colors[color].sideItemActive} 
             hover:${colors[color].highlightColor}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300

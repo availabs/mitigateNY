@@ -58,7 +58,7 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave}) {
     )
 }
 
-function SectionView ({value, attributes, onEdit}) {
+function SectionView ({value, attributes, edit, onEdit}) {
     let TitleComp = attributes?.title?.ViewComp
     let TagsComp = attributes?.tags?.ViewComp 
     let ElementComp = attributes?.element?.ViewComp
@@ -66,8 +66,8 @@ function SectionView ({value, attributes, onEdit}) {
     return (
         <div>
             {
-                (value?.['title'] || value?.['tags']) && (
-                    <div className={`flex border-y h-[50px] items-center`}>
+                (value?.['title'] || value?.['tags'] || edit) && (
+                    <div className={`flex border-y h-[50px] items-center mt-4`}>
                         <div className='flex-1 py-2 px-6 font-sans font-medium text-md uppercase'>
                             <TitleComp
                                 className='w-full'
@@ -178,7 +178,8 @@ const Edit = ({Component, value, onChange, attr}) => {
                         { v !== '' && !(edit.index === i && edit.type === 'update') ? 
                             <SectionView 
                                 value={v} 
-                                attributes={attr.attributes} 
+                                attributes={attr.attributes}
+                                edit={true}
                                 onEdit={ edit.index === -1 ? (e) => update(i)  : null } 
                             /> : ''}
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { useTheme, TopNav, SideNav, FlyoutMenu } from "~/modules/avl-components/src/";
+import { useTheme, TopNav, SideNav } from "~/modules/avl-components/src/";
 import { Link, Outlet } from "react-router-dom";
 import AuthMenu from "~/pages/auth/AuthMenu"
 //import {getDomain, getSubdomain} from "utils"
@@ -11,8 +11,8 @@ const Logo = ({sideNav}) => {
 	const themeOptions = {size: get(sideNav, 'size','micro') ,color: get(sideNav, 'color','dark')}
 	return (
 		<>
-			<Link to="/" className={`flex flex-col items-center justify-center`}>
-				<div className='h-12 px-6 flex flex-col items-center justify-center'>
+			<Link to="/" className={`flex  border-b`}>
+				<div className='h-12 px-6 flex  items-center '>
 					AVAIL 
 				</div>	
 			</Link>
@@ -27,12 +27,21 @@ let marginSizes = {
 	compact: 'mr-44',
 	full: 'mr-64'
 }
+
+let fixedSizes = {
+	none: '',
+	micro: 'w-14',
+	mini: 'w-20',
+	compact: 'w-44',
+	full: 'w-64'
+}
+
 let paddingSizes = {
 	none: '',
 	micro: 'pr-14',
 	mini: 'pr-20',
 	compact: 'pr-44',
-	full: 'pr-64'
+	full: 'md:pr-64'
 }
 
 
@@ -40,7 +49,8 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 	const theme = useTheme()
 	const sideNavOptions = {
 		size: sideNav.size || 'none',
-		color: sideNav.color || 'dark'
+		color: sideNav.color || 'dark',
+		menuItems: sideNav.menuItems || menus
 	}
 	const topNavOptions = {
 		position: topNav.position || 'block',
@@ -49,6 +59,8 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 		menuItems: topNav.menuItems || []
 
 	}
+	console.log('sideNav', sideNav.menuItems, sideNavOptions.menuItems)
+	
 	//console.log('test', theme.sidenav(themeOptions))
 
 	return (
@@ -56,11 +68,11 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 			{
 				sideNavOptions.size === 'none' ? '' : (
 					<div className={`hidden md:block ${marginSizes[sideNavOptions.size]}`}>
-						<div className='fixed h-screen'>
+						<div className={`fixed h-screen ${fixedSizes[sideNavOptions.size]}`}>
 							<SideNav 
 								topMenu={<Logo sideNav={sideNavOptions}/>}
 								themeOptions={sideNavOptions}
-								menuItems={menus}
+								menuItems={sideNavOptions.menuItems}
 							/>
 						</div>
 					</div>
@@ -81,7 +93,6 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 										<div to="/" className={`${sideNavOptions.size === 'none' ? '' : 'md:hidden'}` }>
 											<Logo sideNav={sideNavOptions}/>
 										</div>
-										
 									</div>
 								}
 								menuItems={topNavOptions.menuItems}

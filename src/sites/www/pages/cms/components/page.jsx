@@ -21,9 +21,9 @@ export function PageView ({item, dataItems, attributes}) {
       {/*<div className='w-[264px]' />*/}
       <div className='flex-1 flex border shadow bg-white px-4'>
         <div className={theme.page.container + ' '}>
-          <div className='px-6 py-4 font-sans font-medium text-xl text-slate-700 uppercase max-w-5xl mx-auto'>
+          {/*<div className='px-6 py-4 font-sans font-medium text-xl text-slate-700 uppercase max-w-5xl mx-auto'>
             {item['title']}
-          </div>
+          </div>*/}
           
           <div className='text-md font-light leading-7'>
             <ContentView 
