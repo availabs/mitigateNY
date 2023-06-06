@@ -1,4 +1,4 @@
-import Auth from '~/pages/auth'
+import Auth from '~/pages/Auth'
 
 const routes = [
   Auth
