@@ -13,7 +13,7 @@ function getChildNav(item, dataItems, baseUrl='', edit) {
             name: d.title
         }
         if (getChildNav(item, dataItems)) {
-            item.subMenus = getChildNav(d, dataItems, edit)
+            item.subMenus = getChildNav(d, dataItems, baseUrl, edit)
         }
         return item
     })
