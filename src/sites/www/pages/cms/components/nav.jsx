@@ -121,7 +121,7 @@ export default function Nav ({item, dataItems, edit}) {
         index: d.index,
         Comp: () => (
           <NavLink
-            to={`${edit ? `${baseUrl}/edit` : baseUrl}/${i === 0 && !edit ? '' : d.url_slug || d.id}`} 
+            to={`${edit ? `${baseUrl}/edit` : baseUrl}/${d.url_slug || d.id}`} 
             className={theme.nav.navItem}
           >
               {d.title}             
