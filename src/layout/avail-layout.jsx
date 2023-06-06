@@ -65,11 +65,6 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 
 	}
 	
-	console.log('topNavOptions',sideNavOptions, sideNav)
-	//console.log('sideNav', sideNav.menuItems, sideNavOptions.menuItems)
-	
-	//console.log('test', theme.sidenav(themeOptions))
-
 	return (
 		<div className='flex' >
 			{

@@ -24,9 +24,6 @@ export function PageControls({ item, dataItems, edit, status }) {
   const { baseUrl } = React.useContext(CMSContext)
   const NoOp = () => {}
 
-  console.log('pathname', pathname)
-
-
   const duplicateItem = () => {
     const highestIndex = dataItems
     .filter(d => !d.parent)
