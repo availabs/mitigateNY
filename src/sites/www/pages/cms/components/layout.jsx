@@ -22,16 +22,26 @@ const detectNavLevel = (dataItems) => {
   const location = window.location.pathname.replace('/', '');
   const isMatch = dataItems.find(d => d.url_slug === location);
   const level = isMatch ? location.split('/').length : 1
-  console.log('???', location, dataItems)
+  //console.log('???', location, dataItems)
   return level
 
 }
 export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...props},) {
   const menuItems = React.useMemo(() => {
-    return dataItemsNav(dataItems,baseUrl,edit)
+    let items = dataItemsNav(dataItems,baseUrl,edit)
+    if(edit) {
+      items.push( {
+        id: '',
+        onClick: () => console.log('add page'),
+        name: 'Add Page'
+      })
+    }
+    return items
   }, [dataItems,edit])
 
   const level = detectNavLevel(dataItems);
+
+
 
   return (
     <Layout topNav={{menuItems, position: 'fixed' }} sideNav={props.sideNav}>
