@@ -16,7 +16,8 @@ const ppdaf = () => {
     //  ['#5fc0c8','#5559d3','#ed8534','#7e84fa','#7fe06a']
 
     sidenav: (opts={}) =>  {
-        const {color = 'white', size = 'compact',  subMenuStyle = 'inline', responsive = 'top'} = opts
+        let {color = 'white', size = 'compact',  subMenuStyle = 'inline', responsive = 'top'} = opts
+          
           let mobile = {
             top : 'hidden md:block',
             side: 'hidden md:block',
@@ -25,6 +26,7 @@ const ppdaf = () => {
           let colors = {
             white: {
               contentBg: `bg-${highlight} border-r`,
+              sideItemActive:`bg-blue-500 text-white-500`,
               contentBgAccent: `bg-neutral-100`,
               accentColor: `${accent}-600`,
               accentBg: `hover:bg-${accent}-400`,
@@ -92,10 +94,10 @@ const ppdaf = () => {
         },
         mini: {
           fixed: 'ml-0 md:ml-20',
-          wrapper: "w-20 overflow-x-hidden  pt-4",
+          wrapper: "w-20 overflow-x-hidden",
           sideItem: "text-white hover:bg-blue-100 hover:text-blue-100",
           topItem: "flex px-4 items-center text-sm font-light ",
-          icon: "w-20 h-10 text-lg text-blue-500",
+          icon: "w-20 h-10 text-xl  text-blue-500",
           sideItemContent: '',
         },
         micro: {
@@ -109,6 +111,12 @@ const ppdaf = () => {
         },
 
       }
+
+      if(!sizes[size]) {
+        console.warn('invalid size', size)
+        size='none'
+      }
+          
 
       let subMenuStyles = {
                 inline: {
@@ -244,7 +252,7 @@ const ppdaf = () => {
         menuOpenIcon: `fa-light fa-bars fa-fw`,
         menuCloseIcon: `fa-light fa-xmark fa-fw"`,
         navitemTop: `
-            group font-sans
+            w-fit group font-sans
             ${sizes[size].topItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
             transition cursor-pointer
@@ -253,7 +261,7 @@ const ppdaf = () => {
         topmenuRightNavContainer: "hidden md:block h-full",
         topnavMobileContainer: "bg-slate-100",
         navitemTopActive:
-          ` group font-sans
+          ` w-fit group font-sans
             ${sizes[size].activeItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
             transition cursor-pointer

@@ -3,6 +3,8 @@ import { NavLink, Link, useSubmit } from "react-router-dom";
 import Layout from '~/layout/avail-layout'
 import {dataItemsNav} from './utils/navItems'
 
+export const CMSContext = React.createContext(undefined);
+
 const theme = {
   layout: {
     page: 'h-full w-full bg-slate-100 flex flex-col pt-20',
@@ -13,14 +15,16 @@ const theme = {
 
 export default function SiteLayout ({children, dataItems,edit, ...props},) {
   const menuItems = React.useMemo(() => {
-    return dataItemsNav(dataItems,edit)
+    return dataItemsNav(dataItems,props.baseUrl || '',edit)
   }, [dataItems,edit])
-  console.log('menuItems', menuItems)
+  //console.log('menuItems', menuItems)
   return (
-    <Layout topNav={{menuItems, position: 'fixed'}}>
+    <Layout topNav={{menuItems, position: 'fixed' }} sideNav={props.sideNav}>
       <div className={theme.layout.page}>
-        <div className={theme.layout.container}> 
-          {children}
+        <div className={theme.layout.container}>
+          <CMSContext.Provider value={{baseUrl: props.baseUrl || ''}}>
+            {children}
+          </CMSContext.Provider>
         </div>
       </div>
     </Layout>

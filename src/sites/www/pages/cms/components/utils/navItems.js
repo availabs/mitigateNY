@@ -1,6 +1,6 @@
-const baseUrl = ''
+// const baseUrl = ''
 
-function getChildNav(item, dataItems, edit) {
+function getChildNav(item, dataItems, baseUrl='', edit) {
     let children = dataItems
         .filter(d => item.id && d.parent === item.id)
         .sort((a, b) => a.index - b.index)
@@ -20,7 +20,7 @@ function getChildNav(item, dataItems, edit) {
 
 }
 
-export function dataItemsNav(dataItems, edit = false) {
+export function dataItemsNav(dataItems,baseUrl = '', edit = false) {
     return dataItems
         .sort((a, b) => a.index - b.index)
         .filter(d => !d.parent)
