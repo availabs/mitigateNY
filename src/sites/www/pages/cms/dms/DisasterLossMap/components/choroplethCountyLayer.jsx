@@ -121,17 +121,16 @@ class EALChoroplethOptions extends LayerContainer {
 
   fetchData(falcor) {
 
-    const {disaster_number, geoid, view, views, pgEnv} = this.props;
+    const {disaster_number, geoid, ealViewId, view, views, pgEnv} = this.props;
 
     if(!disaster_number || !view) return Promise.resolve();
     this.data = [];
-    const eal_view_id = 577;
     const currentView = views.find(v => v.id.toString() === view.toString());
     const columns = Array.isArray(currentView?.columns) ? currentView?.columns : Object.values(currentView?.columns);
 
     if(!currentView) return Promise.resolve();
 
-    const dependencyPath = ['dama', this.props.pgEnv, 'viewDependencySubgraphs', 'byViewId', eal_view_id],
+    const dependencyPath = ['dama', pgEnv, 'viewDependencySubgraphs', 'byViewId', ealViewId],
       geomColName = `substring(${currentView.geoColumn || 'geoid'}, 1, 5)`,
       disasterNumberColName = currentView.disasterNumberColumn || 'disaster_number',
       options = JSON.stringify({
@@ -144,18 +143,18 @@ class EALChoroplethOptions extends LayerContainer {
         ...(columns || [])
           .reduce((acc, curr) => ({...acc, [curr]: `sum(${curr}) as ${curr}`}) , {})
       },
-      path = ['dama', pgEnv, 'viewsbyId', view, 'options', options]
+      path = view_id => ['dama', pgEnv, 'viewsbyId', view_id, 'options', options]
 
-    return falcor.get([...path, 'length'], dependencyPath)
+    return falcor.get([...path(view), 'length'], dependencyPath)
       .then(async res => {
 
         const geomDep = get(res, ['json', ...dependencyPath, 'dependencies'], [])
                           .find(d => d.type === (false && geoid?.length === 5 ? 'tl_county' : 'tl_state'));
-        const len = get(res, ['json', ...path, 'length']);
+        const len = get(res, ['json', ...path(view), 'length']);
 
-       await len && falcor.get([...path, 'databyIndex', {from:0, to:len - 1}, Object.values(attributes)])
+       await len && falcor.get([...path(view), 'databyIndex', {from:0, to:len - 1}, Object.values(attributes)])
               .then(async res => {
-                let data = Object.values(get(res, ['json', ...path, 'databyIndex'], {}));
+                let data = Object.values(get(res, ['json', ...path(view), 'databyIndex'], {}));
                 data = [...Array(len).keys()].map(i => {
                   return Object.keys(attributes).reduce((acc, curr) => ({...acc, [curr]: data[i][attributes[curr]]}) ,{});
                 });

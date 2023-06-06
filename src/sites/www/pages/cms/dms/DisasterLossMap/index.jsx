@@ -4,7 +4,6 @@ import { useFalcor } from '~/modules/avl-falcor';
 import { AvlMap } from '~/modules/avl-map/src';
 import { pgEnv } from "~/utils/";
 import { isJson } from "~/utils/macros.jsx";
-import { RenderDisasterLossTable } from "./components/RenderDisasterLossTable.jsx";
 import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
 import GeographySearch from "../geographySearch/index.jsx";
 import DisasterSearch from "../DisasterSearch/index.jsx";
@@ -81,6 +80,7 @@ const Edit = ({value, onChange}) => {
             {
                 ccl: {disaster_number: disasterNumber,
                     geoid,
+                    ealViewId,
                     view: typeId,
                     views: [{...metaData[type], id: typeId}],
                     pgEnv,
