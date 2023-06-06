@@ -244,7 +244,8 @@ const ppdaf = () => {
                 indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
                 subMenuWrapper: `absolute ml-${sizes[size].width - 8}`,
                 subMenuParentWrapper: `flex flex-row`,
-                subMenuWrapperTop: `absolute top-full left-1 border-b w-full bg-white`,
+                subMenuWrapperChild: `divide-x`,
+                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-white`,
                 subMenuWrapperInactiveFlyout: `absolute top-12 bg-white shadow-lg z-10`,
                 subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
             },
