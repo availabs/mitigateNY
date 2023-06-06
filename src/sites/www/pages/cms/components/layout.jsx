@@ -18,12 +18,16 @@ const theme = {
   }
 }
 
-const detectNavLevel = (dataItems) => {
-  const location = window.location.pathname.replace('/', '').replace('edit/', '');
+const detectNavLevel = (dataItems, baseUrl) => {
+  const location =
+      window.location.pathname
+          .replace(baseUrl, '')
+          .replace('/', '')
+          .replace('edit/', '')
   const isMatch = dataItems.find(d => d.url_slug === location);
   const isParent = dataItems.filter(d => d.parent === isMatch?.id).length;
   const level = isMatch ? location.split('/').length : 1
-
+  console.log('???????????', location, isMatch, dataItems, baseUrl)
   return level + (isParent ? 1 : 0)
 
 }
@@ -40,7 +44,7 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
     return items
   }, [dataItems,edit])
 
-  const level = detectNavLevel(dataItems);
+  const level = detectNavLevel(dataItems, baseUrl);
 
   return (
     <Layout topNav={{menuItems, position: 'fixed' }} sideNav={props.sideNav}>
