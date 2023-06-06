@@ -21,9 +21,11 @@ const theme = {
 const detectNavLevel = (dataItems) => {
   const location = window.location.pathname.replace('/', '');
   const isMatch = dataItems.find(d => d.url_slug === location);
+  const isParent = dataItems.filter(d => d.parent === isMatch.id).length;
   const level = isMatch ? location.split('/').length : 1
-  console.log('???', location, dataItems)
-  return level
+
+  console.log('???', location, isMatch, )
+  return level + (isParent ? 1 : 0)
 
 }
 export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...props},) {
