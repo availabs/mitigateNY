@@ -16,7 +16,8 @@ const ppdaf = () => {
     //  ['#5fc0c8','#5559d3','#ed8534','#7e84fa','#7fe06a']
 
     sidenav: (opts={}) =>  {
-        const {color = 'white', size = 'compact',  subMenuStyle = 'inline', responsive = 'top'} = opts
+        let {color = 'white', size = 'compact',  subMenuStyle = 'inline', responsive = 'top'} = opts
+          
           let mobile = {
             top : 'hidden md:block',
             side: 'hidden md:block',
@@ -25,6 +26,7 @@ const ppdaf = () => {
           let colors = {
             white: {
               contentBg: `bg-${highlight} border-r`,
+              sideItemActive:`bg-blue-500 text-white-500`,
               contentBgAccent: `bg-neutral-100`,
               accentColor: `${accent}-600`,
               accentBg: `hover:bg-${accent}-400`,
@@ -92,10 +94,10 @@ const ppdaf = () => {
         },
         mini: {
           fixed: 'ml-0 md:ml-20',
-          wrapper: "w-20 overflow-x-hidden  pt-4",
+          wrapper: "w-20 overflow-x-hidden",
           sideItem: "text-white hover:bg-blue-100 hover:text-blue-100",
           topItem: "flex px-4 items-center text-sm font-light ",
-          icon: "w-20 h-10 text-lg text-blue-500",
+          icon: "w-20 h-10 text-xl  text-blue-500",
           sideItemContent: '',
         },
         micro: {
@@ -109,6 +111,12 @@ const ppdaf = () => {
         },
 
       }
+
+      if(!sizes[size]) {
+        console.warn('invalid size', size)
+        size='none'
+      }
+          
 
       let subMenuStyles = {
                 inline: {
@@ -165,7 +173,8 @@ const ppdaf = () => {
     topnav: ({
         color='white',
         size='compact',
-        menu='left'
+        menu='left',
+        subMenuStyle = 'inline',
     }) => {
 
       let colors = {
@@ -188,11 +197,11 @@ const ppdaf = () => {
       }
       let sizes = {
         compact: {
-          menu: `hidden md:flex flex-1 ${menu === 'left' ? '' : 'justify-end'}`,
+          menu: `hidden md:flex flex-1 ${menu === 'left' ? '' : 'justify-end'} divide-x-2`,
           sideItem: "flex  mx-6 pr-4 py-2 text-sm font-light hover:pl-4",
-          topItem: `flex font-medium uppercase items-center text-sm px-4 border-r h-12 ${colors[color].textColor} ${colors[color].borderColor}
+          topItem: `flex font-medium uppercase items-center text-sm px-4 h-12 ${colors[color].textColor} ${colors[color].borderColor}
             ${colors[color].accentBg} hover:${colors[color].highlightColor}`,
-          activeItem: `flex font-medium uppercase bg-white items-center text-sm px-4 border-r h-12 ${colors[color].textColor} ${colors[color].borderColor}
+          activeItem: `flex font-medium uppercase bg-white items-center text-sm px-4 h-12 ${colors[color].textColor} ${colors[color].borderColor}
             ${colors[color].accentBg} hover:${colors[color].highlightColor}`,
           icon: "mr-3 text-lg",
           responsive: 'md:hidden'
@@ -209,8 +218,33 @@ const ppdaf = () => {
 
       }
 
+        let subMenuStyles = {
+            inline: {
+                // indicatorIcon: 'fa fa-caret-right pt-2.5',
+                // indicatorIconOpen: 'fa fa-caret-down pt-2.5',
+                subMenuWrapper: `pl-2 w-full`,
+                subMenuParentWrapper: `flex flex-col w-full`
+            },
+            flyout: {
+                indicatorIcon: 'fa fa-caret-down pl-2 pt-1',
+                // indicatorIconOpen: 'fa fa-caret-right pl-2',
+                subMenuWrapper: `absolute ml-${sizes[size].width - 8}`,
+                subMenuParentWrapper: `flex flex-row`,
+                subMenuWrapperTop: `absolute top-full`,
+            },
+            row: {
+                indicatorIcon: 'fa fa-caret-down pl-2 pt-0.5',
+                // indicatorIconOpen: 'fa fa-caret-right pl-2 pt-1',
+                subMenuWrapper: `absolute ml-${sizes[size].width - 8}`,
+                subMenuParentWrapper: `flex flex-row`,
+                subMenuWrapperTop: `absolute top-full left-1 border-b w-full`,
+                subMenuWrapperInactiveFlyout: `absolute top-12 bg-white z-10`,
+                subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
+            },
+        }
 
-      return {
+
+        return {
         topnavWrapper: `w-full ${colors[color].contentBg} border-b border-gray-200`,
         topnavContent: `flex w-full h-full`,
         topnavMenu: `${sizes[size].menu} h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
@@ -218,7 +252,7 @@ const ppdaf = () => {
         menuOpenIcon: `fa-light fa-bars fa-fw`,
         menuCloseIcon: `fa-light fa-xmark fa-fw"`,
         navitemTop: `
-            group font-sans
+            w-fit group font-sans
             ${sizes[size].topItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
             transition cursor-pointer
@@ -227,14 +261,15 @@ const ppdaf = () => {
         topmenuRightNavContainer: "hidden md:block h-full",
         topnavMobileContainer: "bg-slate-100",
         navitemTopActive:
-          ` group font-sans
+          ` w-fit group font-sans
             ${sizes[size].activeItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
             transition cursor-pointer
           `,
         mobileButton:
           `${sizes[size].responsive} ${colors[color].contentBg} inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
-        vars: {
+            ...subMenuStyles[subMenuStyle],
+            vars: {
             colors,
             sizes
           }

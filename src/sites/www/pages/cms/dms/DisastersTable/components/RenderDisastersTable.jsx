@@ -18,7 +18,7 @@ export const RenderDisastersTable = ({ type, data=[], columns=[], pageSize, sort
         return {
             ...c,
             Cell: cell => {
-                let value = getNestedValue(cell);
+                let value = getNestedValue(cell.value);
                 value = Header === "Disaster Number" ?
                     get(disasterNames.find(dns => dns[colAccessNameMapping.disaster_number] === value),
                         "declaration_title", "No Title") + ` (${value})` :
@@ -28,7 +28,8 @@ export const RenderDisastersTable = ({ type, data=[], columns=[], pageSize, sort
                 value =
                     ['Geoid', 'Year', 'Event Id', 'Disaster Number', 'Hazard Type', 'NRI Category', 'Deaths, Injuries'].includes(Header) ?
                         value :
-                        fnum(value, true)
+                        fnum(value || 0, true)
+
                 return Header === "Disaster Number" ?
                     <Link to={`/disaster/${cell.row.original.disaster_number}/geography/${geoid}`}>
                         {value}

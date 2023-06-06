@@ -41,7 +41,7 @@ export const menuItems = [
   {
     name: 'Playground',
     icon: 'far fa-flask fa-fw',
-    path: '/playground'
+    path: '/playground/edit'
   },
 
   {

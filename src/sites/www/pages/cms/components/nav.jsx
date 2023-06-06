@@ -5,8 +5,9 @@ import Nestable from './nestable';
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 
+import { CMSContext } from './layout'
 
-export const baseUrl = ''
+//export const baseUrl = ''
 
 const theme = {
   nav: {
@@ -26,7 +27,8 @@ const theme = {
   }
 }
 
-function getChildNav(item, dataItems, edit ) {
+function getChildNav(item, dataItems, baseUrl, edit) {
+  
   let children = dataItems
     .filter(d => d.parent === item.id)
     .sort((a,b) => a.index-b.index)
@@ -49,8 +51,8 @@ function getChildNav(item, dataItems, edit ) {
         
       )  
     }
-    if(getChildNav(item,dataItems)) {
-      item.children = getChildNav(d,dataItems, edit)
+    if(getChildNav(item,dataItems,baseUrl,edit)) {
+      item.children = getChildNav(d,dataItems,baseUrl, edit)
     }
     return item
   })
@@ -60,6 +62,7 @@ function getChildNav(item, dataItems, edit ) {
 export default function Nav ({item, dataItems, edit}) {
   const submit = useSubmit()
   const { pathname = '/edit' } = useLocation()
+  const { baseUrl } = React.useContext(CMSContext)
   
   const onDragEnd = React.useCallback(result => {
     let dataItemsHash = dataItems.reduce((out,curr) => {
@@ -125,8 +128,8 @@ export default function Nav ({item, dataItems, edit}) {
           </NavLink>
         )
       }
-      if(getChildNav(item,dataItems)) {
-        item.children = getChildNav(d,dataItems, edit)
+      if(getChildNav(item,dataItems, baseUrl)) {
+        item.children = getChildNav(d,dataItems, baseUrl, edit)
       }
       return item
     })
@@ -172,8 +175,9 @@ export default function Nav ({item, dataItems, edit}) {
 }
 
 function AddItemButton ({dataItems}) {
-  const submit = useSubmit()
-  const { pathname = '/edit' } = useLocation()
+  const submit = useSubmit();
+  const { pathname = '/edit' } = useLocation();
+  const { baseUrl } = React.useContext(CMSContext);
   
   const highestIndex = dataItems
     .filter(d => !d.parent)

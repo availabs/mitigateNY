@@ -69,6 +69,19 @@ export const fnumIndex = (d, fractions = 2, currency = false) => {
     }
 ;
 
+export const fnumToNumber = (d) => {
+    const [number, letter] = d.replace('$', '').trim().split(' ');
+    console.log('??', number, letter, d.replace('$', '').split(' '))
+    const multipliers = {
+        k: 1000,
+        m: 1_000_000,
+        b: 1_000_000_000,
+        t: 1_000_000_000_000
+    }
+
+    return +number * multipliers[letter.toLowerCase() || 1];
+}
+
 export const fnum = (number, currency = false) => (currency ? '$ ' : '') + parseInt(number).toLocaleString();
 
 export const formatDate = (dateString) => {

@@ -6,6 +6,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { useSubmit, useLocation } from "react-router-dom";
 import {json2DmsForm, getUrlSlug, toSnakeCase} from './nav'
 
+import { CMSContext } from './layout'
 
 const theme = {
   pageControls: {
@@ -14,11 +15,16 @@ const theme = {
   }
 }
 
+
+
 export function PageControls({ item, dataItems, edit, status }) {
   const submit = useSubmit()
   const { pathname = '/edit' } = useLocation()
   const [showDelete, setShowDelete] = useState(false)
+  const { baseUrl } = React.useContext(CMSContext)
   const NoOp = () => {}
+
+  console.log('pathname', pathname)
 
 
   const duplicateItem = () => {
@@ -59,7 +65,7 @@ export function PageControls({ item, dataItems, edit, status }) {
   const saveItem = async () => {
     const newItem = cloneDeep(item)
     newItem.url_slug = getUrlSlug(newItem, dataItems)
-    submit(json2DmsForm(newItem), { method: "post", action: `/edit/${newItem.url_slug}` })
+    submit(json2DmsForm(newItem), { method: "post", action: `${baseUrl}/edit/${newItem.url_slug}` })
 
   }
   
@@ -115,6 +121,7 @@ export function PageControls({ item, dataItems, edit, status }) {
 export function DeleteModal ({item, open, setOpen})  {
   const cancelButtonRef = useRef(null)
   const submit = useSubmit()
+  const { baseUrl } = React.useContext(CMSContext)
   const [loading, setLoading] = useState(false)
   return (
     <Modal
@@ -132,7 +139,7 @@ export function DeleteModal ({item, open, setOpen})  {
           </Dialog.Title>
           <div className="mt-2">
             <p className="text-sm text-gray-500">
-              Are you sure you want to deactivate your account? All of your data will be permanently removed
+              Are you sure you want to delete this page? All of the page data will be permanently removed
               from our servers forever. This action cannot be undone.
             </p>
           </div>
@@ -145,9 +152,7 @@ export function DeleteModal ({item, open, setOpen})  {
           className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
           onClick={async () => {
             setLoading(true)
-            //item.id = 1103;
-            //console.log(item)
-            await submit(json2DmsForm(item,'delete'), { method: "post", action: '/edit' })
+            await submit(json2DmsForm(item,'delete'), { method: "post", action: `${baseUrl}/edit/`})
             setLoading(false);
             setOpen(false);
           }}

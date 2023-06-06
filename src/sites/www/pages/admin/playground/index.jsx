@@ -33,7 +33,13 @@ const siteConfig = {
   },
   children: [
     { 
-      type: Layout,
+      type: (props) => (
+        <Layout 
+        {...props}
+        sideNav={{size: 'miniPad'}} 
+        baseUrl={'/playground'}
+        />
+      ),
       action: "list",
       path: "/*",
       children: [
@@ -45,7 +51,14 @@ const siteConfig = {
       ]
     },
     { 
-      type: (props) => <Layout {...props} edit={true}/>,
+      type: (props) => (
+        <Layout 
+          {...props} 
+          edit={true} 
+          sideNav={{size: 'miniPad'}} 
+          baseUrl={'/playground'}
+        />
+      ),
       action: "list",
       path: "/edit/*",
       authLevel: 5,
