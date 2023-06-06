@@ -51,7 +51,7 @@ export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem
         .sort((a,b) => a.index-b.index)
         .filter(d=> !d.parent && d.url_slug)[0]
       //console.log('defaultUrl', defaultUrl)
-      //defaultUrl && defaultUrl.url_slug && navigate(`edit/${defaultUrl.url_slug}`)
+      defaultUrl && defaultUrl.url_slug && navigate(`edit/${defaultUrl.url_slug}`)
     }
   },[])
 

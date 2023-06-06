@@ -2,6 +2,71 @@ import React from "react"
 import isEqual from 'lodash/isEqual'
 import cloneDeep from 'lodash/cloneDeep'
 
+
+function SizeSelect ({size='Column', setSize}) {
+    
+    let sizes = [
+        {name: 'Full', value: 'w-full', icon: 'fal fa-align-justify'},
+        {name: 'Column', value: 'w-6xl mx-auto', icon: 'fal fa-align-center'},
+        {name: '2/3', value: 'w-4xl mx-auto', icon: 'fal fa-align-left'},
+        {name: '1/2', value: 'w-3xl mx-auto', icon: 'fal fa-align-right'},
+        {name: '1/3', value: 'w-2xl mx-auto', icon: 'fal fa-indent'},
+
+    ]
+
+    return (
+        <div
+          className="flex space-x-1 rounded-lg bg-slate-100 p-0.5"
+          role="tablist"
+          aria-orientation="horizontal"
+        >
+          {/*<button
+            className="flex items-center rounded-md py-[0.4375rem] pl-2 pr-2 text-sm font-semibold lg:pr-3 bg-white shadow"
+            role="tab"
+            type="button"
+            aria-selected="true"
+            tabIndex={0}
+          >
+            <svg
+              className="h-5 w-5 flex-none stroke-sky-500"
+              fill="none"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M17.25 10c0 1-1.75 6.25-7.25 6.25S2.75 11 2.75 10 4.5 3.75 10 3.75 17.25 9 17.25 10Z" />
+              <circle cx={10} cy={10} r="2.25" />
+            </svg>
+            <span className="sr-only lg:not-sr-only lg:ml-2 text-slate-900">
+              Preview
+            </span>
+          </button>
+*/}          
+        {sizes.map((s,i) => ( 
+            <button
+                key={i}
+                className={
+                    s.name === size ?
+                    "flex items-center rounded-md py-[0.4375rem] pl-2 pr-2 text-sm font-semibold lg:pr-3 bg-white shadow" :
+                    "flex items-center rounded-md py-[0.4375rem] pl-2 pr-2 text-sm font-semibold lg:pr-3 hover:text-blue-500"
+                }
+                id="headlessui-tabs-tab-3"
+                role="tab"
+                type="button"
+                aria-selected="false"
+                tabIndex={-1}
+                data-headlessui-state=""
+                aria-controls="headlessui-tabs-panel-5"
+              >
+                <i className={`${s.icon} `} />
+                {/*<span className="sr-only lg:not-sr-only lg:ml-2 text-slate-600">{s.name}</span>*/}
+              </button>
+        ))}
+        </div>
+    )
+} 
+
 function SectionEdit ({value, onChange, attributes, onCancel, onSave}) {
     //console.log('SectionEdit', value, attributes)
     
@@ -34,6 +99,15 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave}) {
                         placeholder={'Add Tag...'} 
                         onChange={(v) => updateAttribute('tags', v)}
                     />
+                </div>
+                <div>
+                    <SizeSelect />
+                </div>
+                <div className='py-2'>
+                    <button 
+                        className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
+                        onClick={onCancel}
+                    ><i className="fa-light fa-trash text-2xl fa-fw" title="Cancel"/></button>
                 </div>
                 <div className='py-2'>
                     <button 

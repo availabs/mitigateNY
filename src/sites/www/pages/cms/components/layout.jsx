@@ -30,7 +30,15 @@ const detectNavLevel = (dataItems) => {
 }
 export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...props},) {
   const menuItems = React.useMemo(() => {
-    return dataItemsNav(dataItems,baseUrl,edit)
+    let items = dataItemsNav(dataItems,baseUrl,edit)
+    if(edit) {
+      items.push( {
+        id: '',
+        onClick: () => console.log('add page'),
+        name: 'Add Page'
+      })
+    }
+    return items
   }, [dataItems,edit])
 
   const level = detectNavLevel(dataItems);
