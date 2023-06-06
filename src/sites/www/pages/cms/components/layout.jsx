@@ -19,12 +19,11 @@ const theme = {
 }
 
 const detectNavLevel = (dataItems) => {
-  const location = window.location.pathname.replace('/', '');
+  const location = window.location.pathname.replace('/', '').replace('edit/', '');
   const isMatch = dataItems.find(d => d.url_slug === location);
-  const isParent = dataItems.filter(d => d.parent === isMatch.id).length;
+  const isParent = dataItems.filter(d => d.parent === isMatch?.id).length;
   const level = isMatch ? location.split('/').length : 1
 
-  console.log('???', location, isMatch, )
   return level + (isParent ? 1 : 0)
 
 }
