@@ -57,7 +57,7 @@
     "linkify-it": "^4.0.1",
     "lodash": "^4.17.21",
     "mapbox-gl": "^2.15.0",
-    "maplibre-gl": "^3.0.1",
+    "maplibre-gl2": "npm:maplibre-gl@^3.0.1",
     "match-sorter": "^6.3.1",
     "prettier": "^2.8.7",
     "pretty-bytes": "^6.1.0",

@@ -14,7 +14,7 @@ export const menuItems = [
   {
     name: 'Plan Status',
     icon: 'far fa-gauge-simple fa-fw',
-    path: '/admin'
+    path: '/admin/plan_status'
   },
   {
     name: 'CMS',
@@ -24,7 +24,7 @@ export const menuItems = [
   {
     name: 'Templates',
     icon: 'far fa-paste fa-fw',
-    path: '/admin/plans'
+    path: '/admin/templates'
   },
 
 
@@ -115,8 +115,7 @@ const config = {
   name:'Title',
   path: "/admin",
   exact: true,
-  auth: false,
-  mainNav: false,
+  auth: true,
   ...authMenuConfig,
   component: Home
 }

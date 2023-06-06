@@ -20,7 +20,7 @@ function getChildNav(item, dataItems, baseUrl='', edit) {
 
 }
 
-export function dataItemsNav(dataItems,baseUrl = '', edit = false) {
+export function dataItemsNav(dataItems, baseUrl = '', edit = false) {
     return dataItems
         .sort((a, b) => a.index - b.index)
         .filter(d => !d.parent)
@@ -31,8 +31,8 @@ export function dataItemsNav(dataItems,baseUrl = '', edit = false) {
                 name: d.title
             }
 
-            if (getChildNav(item, dataItems)) {
-                item.subMenus = getChildNav(d, dataItems, edit)
+            if (getChildNav(item, dataItems, baseUrl, edit)) {
+                item.subMenus = getChildNav(d, dataItems, baseUrl, edit)
             }
 
             return item
