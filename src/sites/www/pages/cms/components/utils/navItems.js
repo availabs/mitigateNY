@@ -27,7 +27,7 @@ export function dataItemsNav(dataItems, baseUrl = '', edit = false) {
         .map((d, i) => {
             let item = {
                 id: d.id,
-                path: `${edit ? `${baseUrl}/edit` : baseUrl}/${i === 0 && !edit ? '' : d.url_slug || d.id}`,
+                path: `${edit ? `${baseUrl}/edit` : baseUrl}/${/*i === 0 && !edit ? '' : */d.url_slug || d.id}`,
                 name: d.title
             }
 
