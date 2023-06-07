@@ -52,12 +52,16 @@ const cmsPageFormat = {
       hidden: true
     },
     {
+      key: "size",
+      type: "text"
+    },
+    {
       key: 'sections',
       type: 'dms-format',
       isArray: true,
       format: 'dms-site+cms-section',
       DisplayComp: SectionArray
-    },
+    }
   ]
 }
 

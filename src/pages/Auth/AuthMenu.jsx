@@ -52,10 +52,16 @@ export default withAuth(({title, shadowed = true, user, children}) => {
                         { user.authLevel >= 5 ? 
                         <div className='py-2'>
                             <div className=''> 
-                                {Item('/admin', 'fa fa-screwdriver-wrench fa-fw flex-shrink-0  pr-1', 'Admin')}
+                                {Item('/admin', 'fad fa-screwdriver-wrench fa-fw flex-shrink-0  pr-1', 'Admin')}
+                            </div>
+                            <div className=''> 
+                                {Item('/cenrep', 'fad fa-database fa-fw flex-shrink-0  pr-1', 'Cen Rep')}
                             </div> 
                             <div className=''> 
-                                {Item('/edit', 'fa fa-money-check-pen fa-fw flex-shrink-0  pr-1', 'Edit Site')}
+                                {Item('/playground/edit', 'fad fa-flask fa-fw flex-shrink-0  pr-1', 'Playground')}
+                            </div> 
+                            <div className=''> 
+                                {Item('/edit', 'fad fa-money-check-pen fa-fw flex-shrink-0  pr-1', 'Edit Site')}
                             </div>
                             
                         </div>

@@ -34,11 +34,12 @@ const siteConfig = {
       type: Layout,
       action: "list",
       path: "/*",
-      filter: {mainNav: true, attributes:['name', 'path']},
+      // filter: {mainNav: true, attributes:['name', 'path']},
       children: [
         { 
           type: PageView,
           path: "/*",
+          // filter: {attributes: []},
           action: "view"
         },
       ]
