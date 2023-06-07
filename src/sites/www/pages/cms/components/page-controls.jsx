@@ -68,8 +68,7 @@ export function PageControls({ item, dataItems, edit, status }) {
   
   //console.log('showDelete', showDelete)
   return (
-    <div className='w-52 hidden xl:block'>
-      <div className='w-52 fixed hidden xl:block'> 
+    <>
         {edit &&
           <div className='p-4'>
             <div className='w-full flex justify-center pb-6'>
@@ -110,8 +109,7 @@ export function PageControls({ item, dataItems, edit, status }) {
       <div>
         {status ? <div>{JSON.stringify(status)}</div> : ''}
       </div>
-      </div> 
-    </div>
+    </>
   )
 }
 

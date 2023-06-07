@@ -13,8 +13,8 @@ const theme = {
   },
   navPadding: {
     1: 'pt-0',
-    2: 'pt-8',
-    3: 'pt-20'
+    2: 'pt-12',
+    3: 'pt-24'
   }
 }
 
@@ -27,7 +27,6 @@ const detectNavLevel = (dataItems, baseUrl) => {
   const isMatch = dataItems.find(d => d.url_slug === location);
   const isParent = dataItems.filter(d => d.parent === isMatch?.id).length;
   const level = isMatch ? location.split('/').length : 1
-  console.log('???????????', location, isMatch, dataItems, baseUrl)
   return level + (isParent ? 1 : 0)
 
 }

@@ -81,12 +81,17 @@ export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem
           </div>
         </div>
       </div>
-      <PageControls 
-        item={item} 
-        dataItems={dataItems}
-        edit={true}
-        status={status}
-      />
+      <div className='w-52 hidden xl:block'>
+        <div className='w-52 fixed hidden xl:block'> 
+          <PageControls 
+            item={item} 
+            dataItems={dataItems}
+            edit={true}
+            status={status}
+          />
+        </div>
+      </div>
+      
     </div>   
   ) 
 }

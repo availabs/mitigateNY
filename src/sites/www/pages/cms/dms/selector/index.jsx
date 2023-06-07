@@ -3,7 +3,7 @@ import React from "react"
 import {Select} from "~/modules/avl-components/src"
 import { dmsDataTypes } from "~/modules/dms/src"
 
-import ColorBox from "../colorbox";
+// import ColorBox from "../colorbox";
 import LossByDisasterNumberChart from "../LossByDisasterNumberChart";
 import LossDistributionPieChart from "../LossDistributionPieChart";
 import LossDistributionHeroStats from "../LossDistributionHeroStats";
