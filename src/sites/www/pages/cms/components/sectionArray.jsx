@@ -116,7 +116,7 @@ function SectionView ({value, attributes, edit, onEdit}) {
             {
                 (value?.['title'] || value?.['tags'] || edit) && (
                     <div className={`flex border-y h-[50px] items-center mt-4`}>
-                        <div className='flex-1 py-2 px-6 font-sans font-medium text-md uppercase'>
+                        <div id={`#${value?.title?.replace(/ /g, '_')}`} className='flex-1 py-2 px-6 font-sans font-medium text-md uppercase scroll-mt-36'>
                             <TitleComp
                                 className='w-full'
                                 value={value?.['title']}

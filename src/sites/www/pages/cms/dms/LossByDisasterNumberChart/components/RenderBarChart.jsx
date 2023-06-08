@@ -52,11 +52,6 @@ export const RenderBarChart = ({ chartDataActiveView, disaster_numbers, attribut
     const ticks = stopPoints.map(p => roundedMaxValue * p * multiplier());
 
     const upperLimit = threshold === 'Max' ? maxValue : fnumToNumber(threshold);
-    console.log('??', parseInt(maxValueFormatted), maxValue, maxValueFormatted, maxValue / maxValueFormatted,
-
-        parseInt(maxValue / maxValueFormatted) + 10000000 - (parseInt(maxValue / maxValueFormatted) % 1000000 ),
-            fnumIndex(multiplier())
-    )
 
     return (
         <div className={`w-full pt-10 my-1 block flex flex-col`} style={{height: "450px"}}>

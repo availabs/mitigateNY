@@ -20,6 +20,22 @@ function getChildNav(item, dataItems, baseUrl='', edit) {
 
 }
 
+export function getCurrentDataItem(dataItems, baseUrl) {
+    const location =
+        window.location.pathname
+            .replace(baseUrl, '')
+            .replace('/', '')
+            .replace('edit/', '')
+    return dataItems.find(d => d.url_slug === location);
+}
+
+export function detectNavLevel(dataItems, baseUrl) {
+    const isMatch = getCurrentDataItem(dataItems, baseUrl)
+    const isParent = dataItems.filter(d => d.parent === isMatch?.id).length;
+    const level = isMatch ? isMatch.url_slug?.split('/')?.length : 1;
+    return level + (isParent ? 1 : 0);
+}
+
 export function dataItemsNav(dataItems, baseUrl = '', edit = false) {
     return dataItems
         .sort((a, b) => a.index - b.index)

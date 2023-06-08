@@ -1,7 +1,8 @@
 import React from 'react'
 import { NavLink, Link, useSubmit } from "react-router-dom";
 import Layout from '~/layout/avail-layout'
-import {dataItemsNav} from './utils/navItems'
+import {dataItemsNav, detectNavLevel} from './utils/navItems'
+import {getInPageNav} from "./utils/inPageNavItems.js";
 
 export const CMSContext = React.createContext(undefined);
 
@@ -18,19 +19,8 @@ const theme = {
   }
 }
 
-const detectNavLevel = (dataItems, baseUrl) => {
-  const location =
-      window.location.pathname
-          .replace(baseUrl, '')
-          .replace('/', '')
-          .replace('edit/', '')
-  const isMatch = dataItems.find(d => d.url_slug === location);
-  const isParent = dataItems.filter(d => d.parent === isMatch?.id).length;
-  const level = isMatch ? location.split('/').length : 1
-  return level + (isParent ? 1 : 0)
-
-}
 export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...props},) {
+  console.log('children', dataItems)
   const menuItems = React.useMemo(() => {
     let items = dataItemsNav(dataItems,baseUrl,edit)
     if(edit) {
@@ -45,8 +35,10 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
 
   const level = detectNavLevel(dataItems, baseUrl);
 
+  const inPageNav = getInPageNav(dataItems, baseUrl);
+  console.log('ipn', inPageNav)
   return (
-    <Layout topNav={{menuItems, position: 'fixed' }} sideNav={props.sideNav}>
+    <Layout topNav={{menuItems, position: 'fixed' }} sideNav={edit ? props.sideNav : inPageNav}>
       <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
         <div className={theme.layout.container}>
           <CMSContext.Provider value={{baseUrl: baseUrl}}>
