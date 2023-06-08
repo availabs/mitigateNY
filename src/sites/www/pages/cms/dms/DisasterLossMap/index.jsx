@@ -9,12 +9,12 @@ import GeographySearch from "../geographySearch/index.jsx";
 import DisasterSearch from "../DisasterSearch/index.jsx";
 import { Loading } from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
-import {RenderTypeSelector} from "./components/RenderTypeSelector.jsx";
 import config from '~/config.json';
 import {ChoroplethCountyFactory} from "./components/choroplethCountyLayer.jsx";
 import _ from "lodash";
 import {Link} from "react-router-dom";
 import {formatDate} from "../../../../../../utils/macros.jsx";
+import {ButtonSelector} from "../buttonSelector/index.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -108,9 +108,9 @@ const Edit = ({value, onChange}) => {
                         onChange={setDisasterNumber}
                         className={'flex-row-reverse'}
                     />
-                    <RenderTypeSelector
+                    <ButtonSelector
                         label={'Select Type:'}
-                        types={Object.keys(metaData)}
+                        types={Object.keys(metaData).map(t => ({label: t.replace('_', ' '), value: t}))}
                         type={type}
                         setType={setType}
                     />

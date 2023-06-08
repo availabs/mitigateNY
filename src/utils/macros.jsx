@@ -71,7 +71,7 @@ export const fnumIndex = (d, fractions = 2, currency = false) => {
 
 export const fnumToNumber = (d) => {
     const [number, letter] = d.replace('$', '').trim().split(' ');
-    console.log('??', number, letter, d.replace('$', '').split(' '))
+
     const multipliers = {
         k: 1000,
         m: 1_000_000,
