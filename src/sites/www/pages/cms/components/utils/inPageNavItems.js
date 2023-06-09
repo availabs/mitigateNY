@@ -4,20 +4,21 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
     const currentDI = getCurrentDataItem(dataItems, baseUrl);
 
     const menuItems = currentDI?.sections?.reduce((acc, {title, element, ...props}) => {
-        console.log('section: ', title, element, props)
-        if (!element || !title) return acc;
 
-        const lexicalNavElements = element['element-type'] === 'lexical' ?
-            element['element-data']?.root?.children?.reduce((acc, {type, children}) => {
+        if (!element || !title) return acc;
+        const lexicalNavElements = element['element-type'] === 'lexical' || !element['element-type'] ?
+            element['element-data']?.root?.children?.reduce((acc, {type, tag, children}) => {
                 return type === 'heading' ?
                     [
                         ...acc,
                         {
                             name: children[0]?.text,
                             onClick: (e) => {
-                                console.log('clicking', e, title.replace(/ /g, '_'))
-                                const elmntToView = window.document.getElementById(`#${title?.replace(/ /g, '_')}`);
-                                elmntToView?.scrollIntoView({ behavior: "smooth" });
+                                const elmntToView =
+                                    [...window.document.querySelectorAll(tag)]
+                                        .find(headerElement => headerElement?.children[0]?.innerHTML === children[0]?.text);
+                                // .__lexicalKey_cgviu
+                                elmntToView?.scrollIntoView({ behavior: "smooth", block:'center' });
                             },
                             className: 'px-6 pb-1 text-sm'
                         }
@@ -29,7 +30,6 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
             {
                 name: title,
                 onClick: (e) => {
-                    console.log('clicking', e, title.replace(/ /g, '_'))
                     const elmntToView = window.document.getElementById(`#${title?.replace(/ /g, '_')}`);
                     elmntToView?.scrollIntoView({ behavior: "smooth" });
                 },
@@ -38,7 +38,6 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
             ...(lexicalNavElements || [])
         ]
     }, [])
-    console.log('MI?', menuItems)
 
     return {
         menuItems: menuItems,
