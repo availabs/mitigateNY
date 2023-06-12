@@ -20,7 +20,12 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
                                 // .__lexicalKey_cgviu
                                 elmntToView?.scrollIntoView({ behavior: "smooth", block:'center' });
                             },
-                            className: 'px-6 pb-1 text-sm'
+                            className: `px-6 pb-1 text-sm 
+                            ${
+                                [...window.document.querySelectorAll(tag)]
+                                    .find(headerElement => headerElement?.children[0]?.innerHTML === children[0]?.text)?.offsetParent 
+                                === null ? 'text-blue-200' : ''
+                            }`
                         }
                     ] : acc
             }, []) : []

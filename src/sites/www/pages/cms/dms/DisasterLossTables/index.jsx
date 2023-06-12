@@ -18,8 +18,8 @@ const Edit = ({value, onChange}) => {
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
     const baseUrl = '/';
 
-    const ealSourceId = 229;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 599);
+    const ealSourceId = 343;
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
     const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || 4420);
     const [countyView, setCountyView] = useState();
     const [loading, setLoading] = useState(true);

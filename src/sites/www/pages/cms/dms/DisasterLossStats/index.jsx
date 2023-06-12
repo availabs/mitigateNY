@@ -20,9 +20,9 @@ const Edit = ({value, onChange}) => {
     const baseUrl = '/';
 
     const [disasterLossView, setDisasterLossView] = useState();
-    const ealSourceId = 229;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 599);
-    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || 4420);
+    const ealSourceId = 343;
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
+    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
 
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
@@ -51,8 +51,9 @@ const Edit = ({value, onChange}) => {
 
     useEffect( () => {
         async function getData(){
-            if(!geoid){
-                setStatus('Please Select a Geography');
+            if(!geoid|| !disasterNumber){
+                setStatus('Please Select a Geography and a Disaster.');
+                return Promise.resolve();
             }else{
                 setStatus(undefined)
             }

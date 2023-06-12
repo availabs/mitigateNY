@@ -16,10 +16,10 @@ const Edit = ({value, onChange}) => {
     const baseUrl = '/';
 
     const [disasterDecView, setDisasterDecView] = useState();
-    const ealSourceId = 229;
-    const [ealViewId, setEalViewId] = useState(data?.ealViewId || 599);
+    const ealSourceId = 343;
+    const [ealViewId, setEalViewId] = useState(data?.ealViewId || 692);
     const fusionSourceId= 336;
-    const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 596);
+    const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 657);
 
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(data?.status);
