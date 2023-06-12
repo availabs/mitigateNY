@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
 import get from "lodash/get";
 import { useFalcor } from '~/modules/avl-falcor';
-import { AvlMap } from '~/modules/avl-map/src';
+import { AvlMap } from '~/modules/avl-maplibre/src';
 import { pgEnv } from "~/utils/";
 import { isJson } from "~/utils/macros.jsx";
 import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
@@ -76,6 +76,7 @@ const Edit = ({value, onChange}) => {
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
 
     const map_layers = useMemo(() => [ ChoroplethCountyFactory() ], []);
+    
     const layerProps =
             {
                 ccl: {disaster_number: disasterNumber,
@@ -84,7 +85,8 @@ const Edit = ({value, onChange}) => {
                     view: typeId,
                     views: [{...metaData[type], id: typeId}],
                     pgEnv,
-                    loading, setLoading,
+                    loading, 
+                    // setLoading,
                     change: e => onChange(JSON.stringify({...e, disasterNumber, ealViewId, geoid, status, type, typeId, attributionData}))
                 }
             };
@@ -121,14 +123,13 @@ const Edit = ({value, onChange}) => {
                             <React.Fragment>
                                 <div className={`flex-none h-[500px] w-full p-1`}>
                                     <AvlMap
-                                        mapbox_logo={false}
-                                        navigationControl={false}
-                                        accessToken={config.MAPBOX_TOKEN}
+                                        
                                         falcor={falcor}
                                         mapOptions={{
-                                            // styles: [
-                                            //   // { name: "Light", style: "mapbox://styles/am3081/ckdfzeg1k0yed1ileckpfnllj" }
-                                            // ]
+                                            styles: [
+                                              { name : 'blank', style: {sources: {}, version:8,layers:[{"id":"background","type":"background","layout":{"visibility":"visible"},"paint":{"background-color":'rgba(0,0,0,0)'}}]}},
+                                              { name: "Light", style: "https://api.maptiler.com/maps/dataviz-light/style.json?key=mU28JQ6HchrQdneiq6k9" }                                            ]
+                                              
                                         }}
                                         layers={map_layers}
                                         layerProps={layerProps}

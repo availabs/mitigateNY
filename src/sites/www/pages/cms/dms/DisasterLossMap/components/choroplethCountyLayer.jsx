@@ -1,11 +1,12 @@
 import get from "lodash/get";
-import { LayerContainer } from "~/modules/avl-map/src";
-import { length } from "tailwindcss/lib/util/dataTypes";
+import { LayerContainer } from "~/modules/avl-maplibre/src";
+//import { length } from "tailwindcss/lib/util/dataTypes";
 import { getColorRange } from "~/modules/avl-components/src";
 import { fnum } from "~/utils/macros";
 import ckmeans from "~/utils/ckmeans";
 import { scaleThreshold } from "d3-scale";
 import {drawLegend} from "../drawLegend.jsx";
+import isEqual from 'lodash/isEqual'
 
 class EALChoroplethOptions extends LayerContainer {
   constructor(props) {
@@ -16,18 +17,18 @@ class EALChoroplethOptions extends LayerContainer {
   id = "ccl";
   data = [];
   sources = [
-    {
-      id: "states",
-      source: {
-        "type": "vector",
-        "url": "mapbox://am3081.1fysv9an"
-      },
-    },
+    // {
+    //   id: "states",
+    //   source: {
+    //     "type": "vector",
+    //     "url": "https://api.mapbox.com/v4/mapbox.satellite/{x}/{y}/{z}.webp?sku=101PRSiEvYwSK&access_token=tk.eyJ1IjoiYW0zMDgxIiwiZXhwIjoxNjg2NTk1ODM1LCJpYXQiOjE2ODY1OTIyMzUsInNjb3BlcyI6WyJlc3NlbnRpYWxzIiwic2NvcGVzOmxpc3QiLCJtYXA6cmVhZCIsIm1hcDp3cml0ZSIsInVzZXI6cmVhZCIsInVzZXI6d3JpdGUiLCJ1cGxvYWRzOnJlYWQiLCJ1cGxvYWRzOmxpc3QiLCJ1cGxvYWRzOndyaXRlIiwic3R5bGVzOnRpbGVzIiwic3R5bGVzOnJlYWQiLCJmb250czpsaXN0IiwiZm9udHM6cmVhZCIsImZvbnRzOndyaXRlIiwic3R5bGVzOndyaXRlIiwic3R5bGVzOmxpc3QiLCJzdHlsZXM6ZG93bmxvYWQiLCJzdHlsZXM6cHJvdGVjdCIsInRva2VuczpyZWFkIiwidG9rZW5zOndyaXRlIiwiZGF0YXNldHM6bGlzdCIsImRhdGFzZXRzOnJlYWQiLCJkYXRhc2V0czp3cml0ZSIsInRpbGVzZXRzOmxpc3QiLCJ0aWxlc2V0czpyZWFkIiwidGlsZXNldHM6d3JpdGUiLCJkb3dubG9hZHM6cmVhZCIsInZpc2lvbjpyZWFkIiwidmlzaW9uOmRvd25sb2FkIiwibmF2aWdhdGlvbjpkb3dubG9hZCIsIm9mZmxpbmU6cmVhZCIsIm9mZmxpbmU6d3JpdGUiLCJzdHlsZXM6ZHJhZnQiLCJmb250czptZXRhZGF0YSIsInNwcml0ZS1pbWFnZXM6cmVhZCIsImRhdGFzZXRzOnN0dWRpbyIsImN1c3RvbWVyczp3cml0ZSIsImNyZWRlbnRpYWxzOnJlYWQiLCJjcmVkZW50aWFsczp3cml0ZSIsImFuYWx5dGljczpyZWFkIl0sImNsaWVudCI6Im1hcGJveC5jb20iLCJsbCI6MTY2NzMyNjMxNDMwMSwiaXUiOm51bGwsImVtYWlsIjoiYW0zMDgxQGdtYWlsLmNvbSJ9.MUxuViB3XLGcyKfIvNuP3A"
+    //   },
+    // },
     {
       id: "counties",
       source: {
         "type": "vector",
-        "url": "mapbox://am3081.a8ndgl5n"
+        "url": "https://tiles.availabs.org/data/tl_2020_36_county.json"
       },
     }
   ];
@@ -36,7 +37,7 @@ class EALChoroplethOptions extends LayerContainer {
     {
       "id": "counties",
       "source": "counties",
-      "source-layer": "counties",
+      "source-layer": "tl_2020_us_county",
       "type": "fill",
       "paint": {
         "fill-color": '#8f680f'
@@ -45,7 +46,7 @@ class EALChoroplethOptions extends LayerContainer {
     {
       "id": "counties-line",
       "source": "counties",
-      "source-layer": "counties",
+      "source-layer": "tl_2020_us_county",
       "type": "line",
       paint: {
         "line-width": [
@@ -117,6 +118,27 @@ class EALChoroplethOptions extends LayerContainer {
 
   init(map, falcor, props) {
     map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904]);
+    map.on('idle', (e) => {
+      console.log('IDLEd')
+      const canvas = document.querySelector("canvas.maplibregl-canvas"),
+          newCanvas = document.createElement("canvas");
+
+      let img;
+
+      newCanvas.width = canvas.width;
+      newCanvas.height = canvas.height;
+
+      const context = newCanvas.getContext("2d")
+      context.drawImage(canvas, 0, 0);
+
+
+      drawLegend({legend: this.legend, filters: this.filters}, newCanvas, canvas);
+      img = newCanvas.toDataURL();
+      this.img = img;
+      this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
+
+    })
+
   }
 
   fetchData(falcor) {
@@ -241,11 +263,15 @@ class EALChoroplethOptions extends LayerContainer {
 
   }
 
-  render(map, falcor) {
-    this.paintMap(map);
-    this.handleMapFocus(map);
+  receiveProps(props, prev) {
+    //console.log('receiveProps',Object.values(prev).filter(d => typeof d !== 'function')),props, prev)
+    this.paintMap(this.mapboxMap);
+    this.handleMapFocus(this.mapboxMap);
+  }
 
-    // if(this.props.change) this.props.change({filters: this.filters, ...{img:this.img}, bounds: map.getBounds(), legend: this.legend, style: this.style});
+  render(map, falcor) {
+    console.log('render', this)
+    
     if(this.props.change){
 
       // map.on('resize', (e) => {
@@ -254,7 +280,7 @@ class EALChoroplethOptions extends LayerContainer {
       // })
       //
       // map.on('render', (e) => {
-      //   const canvas = document.querySelector("canvas.mapboxgl-canvas"),
+      //   const canvas = document.querySelector("canvas.maplibregl-canvas"),
       //       newCanvas = document.createElement("canvas");
       //
       //   let img;
@@ -272,30 +298,8 @@ class EALChoroplethOptions extends LayerContainer {
       //
       // })
 
-      map.once('idle', (e) => {
-        const canvas = document.querySelector("canvas.mapboxgl-canvas"),
-            newCanvas = document.createElement("canvas");
+      
 
-        let img;
-
-        newCanvas.width = canvas.width;
-        newCanvas.height = canvas.height;
-
-        const context = newCanvas.getContext("2d")
-        context.drawImage(canvas, 0, 0);
-
-
-        drawLegend({legend: this.legend, filters: this.filters}, newCanvas, canvas);
-        img = newCanvas.toDataURL();
-        this.img = img;
-        this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
-
-      })
-
-      // map.on('styledata', (e) => {
-      //   this.style = map.getStyle();
-      //   this.props.change({filters: this.filters, img: this.img, bounds:  this.bounds, legend: this.legend, style: this.style});
-      // })
     }
 
 
