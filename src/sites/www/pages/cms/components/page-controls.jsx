@@ -1,5 +1,5 @@
 import React, { Fragment, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Transition, Switch } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -10,7 +10,7 @@ import { CMSContext } from './layout'
 
 const theme = {
   pageControls: {
-    controlItem: 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400',
+    controlItem: 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400 flex items-center',
     content: '',
   }
 }
@@ -66,10 +66,10 @@ export function PageControls({ item, dataItems, edit, status }) {
 
   }
 
-  const toggleSidebar = async () => {
+  const toggleSidebar = async (value='') => {
     const newItem = cloneDeep(item)
-    newItem.sidebar = getUrlSlug(newItem, dataItems)
-    submit(json2DmsForm(newItem), { method: "post", action: `${baseUrl}/edit/${newItem.url_slug}` })
+    newItem.sidebar = value
+    submit(json2DmsForm(newItem), { method: "post", action: pathname })
   }
   
   //console.log('showDelete', showDelete)
@@ -110,12 +110,48 @@ export function PageControls({ item, dataItems, edit, status }) {
                 setOpen={setShowDelete}
               />
             </div>
+            <div className={theme.pageControls.controlItem } >
+              <SidebarSwitch
+                item={item}
+                toggleSidebar={toggleSidebar}
+              />
+              Show Sidebar
+              
+            </div>
           </div>
         }
       <div>
         {status ? <div>{JSON.stringify(status)}</div> : ''}
       </div>
     </>
+  )
+}
+
+export function SidebarSwitch({item,toggleSidebar}) {
+  let enabled = item.sidebar === 'show'
+  return (
+    <Switch
+      checked={enabled}
+      onChange={(e) => toggleSidebar(enabled ? '' : 'show')}
+      className="group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+    >
+      <span className="sr-only">Use setting</span>
+      <span aria-hidden="true" className="pointer-events-none absolute h-full w-full rounded-md bg-white" />
+      <span
+        aria-hidden="true"
+        className={`
+          ${enabled ? 'bg-blue-500' : 'bg-gray-200'}
+          pointer-events-none absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out
+        `}
+      />
+      <span
+        aria-hidden="true"
+        className={`
+          ${enabled ? 'translate-x-5' : 'translate-x-0'}
+          pointer-events-none absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out
+        `}
+      />
+    </Switch>
   )
 }
 

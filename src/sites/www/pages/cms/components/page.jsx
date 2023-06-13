@@ -39,11 +39,13 @@ export function PageView ({item, dataItems, attributes}) {
         </div>
          
       </div>
-        <div className='w-48 hidden xl:block'>
-          <div className='w-48 fixed hidden xl:block'> 
-            <SideNav {...inPageNav} />
-          </div>
-        </div>
+        {item?.sidebar === 'show' ? 
+          (<div className='w-48 hidden xl:block'>
+            <div className='w-48 fixed hidden xl:block'> 
+              <SideNav {...inPageNav} /> 
+            </div>
+          </div>)
+        : ''}
       {/*<PageControls />*/}
     </div>    
   ) 
@@ -52,6 +54,8 @@ export function PageView ({item, dataItems, attributes}) {
 
 export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem, status}) {
   const navigate = useNavigate()
+  const {baseUrl} = React.useContext(CMSContext)
+  const inPageNav = getInPageNav(dataItems, baseUrl);
   //if(!dataItems[0]) return <div/>
   
   React.useEffect(() => {
@@ -99,6 +103,7 @@ export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem
             edit={true}
             status={status}
           />
+          {item?.sidebar === 'show' ? <SideNav {...inPageNav} /> : ''}
         </div>
       </div>
       
