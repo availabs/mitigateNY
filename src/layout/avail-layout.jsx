@@ -49,7 +49,7 @@ let paddingSizes = {
 
 
 
-const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
+const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 	const theme = useTheme()
 	const sideNavOptions = {
 		size: sideNav.size || 'none',
@@ -92,11 +92,15 @@ const Layout = ({ children, menus, sideNav={}, topNav={} }) => {
 								themeOptions={topNavOptions}
 								// subMenuActivate={'onHover'}
 								leftMenu={
+									
 									<div className='flex items-center justify-center h-12'>
 										<div to="/" className={`${['none'].includes(sideNavOptions.size)  ? '' : 'md:hidden'}` }>
 											<Logo sideNav={sideNavOptions}/>
 										</div>
+										{title}
 									</div>
+
+									
 								}
 								menuItems={topNavOptions.menuItems}
 								rightMenu={<AuthMenu />}

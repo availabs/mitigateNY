@@ -9,18 +9,19 @@ import Forms from './pages/admin/forms/index'
 // import Test from "./pages/Test"
 // import NymtcSurveyCrosswalk from "./pages/nymtcSurveyCrosswalk"
 
-console.log('test 123', Forms)
+//console.log('test 123', Forms)
 
 const Routes = [
+  // -- Admin Routes -- //
   Admin,
   ...DataManager('/cenrep','hazmit_dama',false,{},authMenuConfig),
   Playground,
+  Forms,
+  // -- Front End Routes -- //
   CMS,
-  Forms
 ]
 
 const site = {
-	title: "Title",
 	Routes
 }
 
