@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react"
-import {useFalcor} from "~/modules/avl-falcor"
-import {hazardsMeta} from '~/utils/colors'
-import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
-import GeographySearch from "../geographySearch/index.jsx";
+import React, {useEffect, useState} from "react";
+import {useFalcor} from "~/modules/avl-falcor";
+import {hazardsMeta} from '~/utils/colors';
+import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
+import GeographySearch from "../../components/geographySearch/index.jsx";
 import {isJson} from "../../../../../../utils/macros.jsx";
 import get from "lodash/get.js";
 import {pgEnv} from "~/utils";
 import {RenderGridOrBox} from "./components/RenderGridOrBox.jsx";
 import {Loading} from "../../../../../../utils/loading.jsx";
-import {ButtonSelector} from "../buttonSelector/index.jsx";
+import {ButtonSelector} from "../../components/buttonSelector/index.jsx";
 
 const Edit = ({value, onChange}) => {
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};

@@ -4,9 +4,9 @@ import { useFalcor } from '~/modules/avl-falcor';
 import { pgEnv } from "~/utils/";
 import { isJson } from "~/utils/macros.jsx";
 import { RenderBarChart } from "./components/RenderBarChart.jsx";
-import { ProcessDataForMap } from "./utils"
-import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
-import GeographySearch from "../geographySearch/index.jsx";
+import { ProcessDataForMap } from "./utils";
+import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
+import GeographySearch from "../../components/geographySearch/index.jsx";
 import { Loading } from "~/utils/loading.jsx"
 
 const Edit = ({value, onChange}) => {

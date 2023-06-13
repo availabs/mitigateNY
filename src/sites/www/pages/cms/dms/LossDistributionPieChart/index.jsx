@@ -5,8 +5,8 @@ import { pgEnv } from "~/utils/";
 import { isJson } from "~/utils/macros.jsx";
 import { RenderPieChart } from "./components/RenderPieChart.jsx";
 import { ProcessDataForMap } from "./utils"
-import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
-import GeographySearch from "../geographySearch/index.jsx";
+import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
+import GeographySearch from "../../components/geographySearch/index.jsx";
 import { Loading } from "~/utils/loading.jsx"
 
 const Edit = ({value, onChange}) => {

@@ -4,14 +4,11 @@ import {useFalcor} from '~/modules/avl-falcor';
 import {pgEnv} from "~/utils/";
 import {isJson} from "~/utils/macros.jsx";
 import {RenderDisastersTable} from "./components/RenderDisastersTable.jsx";
-import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
-import GeographySearch from "../geographySearch/index.jsx";
+import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
+import GeographySearch from "../../components/geographySearch/index.jsx";
 import {Loading} from "~/utils/loading.jsx";
-import {ButtonSelector} from "../buttonSelector/index.jsx";
-import {RenderColumnControls} from "../columnControls/index.jsx";
-import {Link} from "react-router-dom";
-import {fnum} from "../../../../../../utils/macros.jsx";
-import {metaData} from "../DisasterLossTables/config.js";
+import {ButtonSelector} from "../../components/buttonSelector/index.jsx";
+import {RenderColumnControls} from "../../components/columnControls/index.jsx";
 
 const colNameMapping = {
     swd_population_damage: 'Population Damage',

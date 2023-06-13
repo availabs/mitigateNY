@@ -1,11 +1,11 @@
-import { hazardsMeta } from "../../../../../../../utils/colors.jsx";
+import { hazardsMeta } from "~/utils/colors.jsx";
 import get from "lodash/get.js";
-import {fnum, fnumIndex, fnumToNumber, HoverComp, range} from "../../../../../../../utils/macros.jsx";
+import {fnum, fnumIndex, fnumToNumber, HoverComp, range} from "~/utils/macros.jsx";
 import { Link } from "react-router-dom";
 import React from "react";
-import { BarGraph } from "../../../../../../../modules/avl-graph/src/index.js";
+import { BarGraph } from "~/modules/avl-graph/src/index.js";
 import { RenderLegend } from "./RenderLegend.jsx";
-import {ButtonSelector} from "../../buttonSelector/index.jsx";
+import {ButtonSelector} from "../../../components/buttonSelector/index.jsx";
 
 const colNameMapping = {
     swd_population_damage: 'Population Damage',
@@ -16,22 +16,10 @@ const colNameMapping = {
     ofd_ttd: 'Declared Total',
 };
 
-const thresholdTicks = {
-    10_000_000_000 : [50_000_000, 1_000_000_000, 5_000_000_000],
-    5_000_000_000 : [1_000_000, 50_000_000, 1_000_000_000],
-    1_000_000_000 : [500_000, 1_000_000, 500_000_000],
-    70_000_000 : [20_000_000, 30_000_000, 50_000_000],
-    50_000_000 : [10_000_000, 20_000_000, 30_000_000],
-    25_000_000 : [10_000_000, 15_000_000, 20_000_000],
-    20_000_000 : [5_000_000, 10_000_000, 15_000_000],
-    15_000_000 : [1_000_000, 5_000_000, 10_000_000],
-    10_000_000 : [500_000, 1_000_000, 5_000_000],
-    5_000_000 : [50_000, 500_000, 1_000_000],
-    1_000_000 : [10_000, 50_000, 500_000],
-    500_000 : [1_000, 100_000, 250_000],
-}
+export const RenderBarChart = ({ chartDataActiveView = [], disaster_numbers = [], attributionData, baseUrl }) => {
+    if(!chartDataActiveView?.length) return null;
+    console.log('props', chartDataActiveView, disaster_numbers)
 
-export const RenderBarChart = ({ chartDataActiveView, disaster_numbers, attributionData, baseUrl }) => {
     const [threshold, setThreshold] = React.useState('Max');
     const minYear = Math.min(...chartDataActiveView.map(d => d.year));
     const maxYear = Math.max(...chartDataActiveView.map(d => d.year));
@@ -43,11 +31,11 @@ export const RenderBarChart = ({ chartDataActiveView, disaster_numbers, attribut
     const roundingMultiplier = Math.ceil(maxValueFormatted / 5);
     const roundedMaxValue = 5 * roundingMultiplier;
     const multiplier = (n = 100) =>
-        (parseInt(maxValue / maxValueFormatted) +
-        n -
-        (parseInt(maxValue / maxValueFormatted) % n || n)
+        (
+            Math.floor(maxValue / maxValueFormatted) +
+            n - (Math.floor(maxValue / maxValueFormatted) % n || n)
         ) /
-        ( parseInt(maxValueFormatted) === 1 ? 5 : 1);
+        ( Math.floor(maxValueFormatted) === 1 ? 5 : 1);
     const stopPoints = [0.05, 0.5, 0.75];
     const ticks = stopPoints.map(p => roundedMaxValue * p * multiplier());
 

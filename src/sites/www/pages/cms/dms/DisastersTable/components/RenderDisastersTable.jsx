@@ -3,7 +3,7 @@ import get from "lodash/get";
 import {Link} from "react-router-dom";
 import {Table} from "~/modules/avl-components/src";
 import { fnum } from "~/utils/macros.jsx";
-import {hazardsMeta} from "../../../../../../../utils/colors.jsx";
+import {hazardsMeta} from "~/utils/colors.jsx";
 
 const colAccessNameMapping = {
     'disaster_number': 'distinct disaster_number as disaster_number',

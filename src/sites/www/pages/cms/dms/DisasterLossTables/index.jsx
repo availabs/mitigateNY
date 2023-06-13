@@ -4,13 +4,13 @@ import { useFalcor } from '~/modules/avl-falcor';
 import { pgEnv } from "~/utils/";
 import { isJson } from "~/utils/macros.jsx";
 import { RenderDisasterLossTable } from "./components/RenderDisasterLossTable.jsx";
-import VersionSelectorSearchable from "../versionSelector/searchable.jsx";
-import GeographySearch from "../geographySearch/index.jsx";
-import DisasterSearch from "../DisasterSearch/index.jsx";
+import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
+import GeographySearch from "../../components/geographySearch/index.jsx";
+import DisasterSearch from "../../components/DisasterSearch/index.jsx";
 import { Loading } from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
-import {RenderColumnControls} from "../columnControls/";
-import {ButtonSelector} from "../buttonSelector/index.jsx";
+import {RenderColumnControls} from "../../components/columnControls/";
+import {ButtonSelector} from "../../components/buttonSelector/index.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
