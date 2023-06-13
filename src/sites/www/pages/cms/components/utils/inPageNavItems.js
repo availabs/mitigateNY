@@ -20,7 +20,7 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
                                 // .__lexicalKey_cgviu
                                 elmntToView?.scrollIntoView({ behavior: "smooth", block:'center' });
                             },
-                            className: `px-6 pb-1 text-sm 
+                            className: `px-6 pb-1 text-sm cursor-pointer border-l-2 ml-2
                             ${
                                 [...window.document.querySelectorAll(tag)]
                                     .find(headerElement => headerElement?.children[0]?.innerHTML === children[0]?.text)?.offsetParent 
@@ -38,7 +38,7 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
                     const elmntToView = window.document.getElementById(`#${title?.replace(/ /g, '_')}`);
                     elmntToView?.scrollIntoView({ behavior: "smooth" });
                 },
-                className: 'px-6 pt-8 pb-1 uppercase text-xs text-blue-400'
+                className: 'px-6 pt-2 pb-1 uppercase text-xs text-blue-400 cursor-pointer border-l-2 ml-2'
             },
             ...(lexicalNavElements || [])
         ]

@@ -39,11 +39,13 @@ export function PageView ({item, dataItems, attributes}) {
         </div>
          
       </div>
-        <div className='w-52 hidden xl:block'>
-          <div className='w-52 fixed hidden xl:block'> 
-            <SideNav {...inPageNav} />
-          </div>
-        </div>
+        {item?.sidebar === 'show' ? 
+          (<div className='w-48 hidden xl:block'>
+            <div className='w-48 fixed hidden xl:block'> 
+              <SideNav {...inPageNav} /> 
+            </div>
+          </div>)
+        : ''}
       {/*<PageControls />*/}
     </div>    
   ) 
@@ -52,6 +54,8 @@ export function PageView ({item, dataItems, attributes}) {
 
 export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem, status}) {
   const navigate = useNavigate()
+  const {baseUrl} = React.useContext(CMSContext)
+  const inPageNav = getInPageNav(dataItems, baseUrl);
   //if(!dataItems[0]) return <div/>
   
   React.useEffect(() => {
@@ -74,9 +78,9 @@ export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem
       <div className='flex-1 flex border shadow bg-white px-4 '>
         <div className={theme.page.container}>
           {/*{status ? <div>{JSON.stringify(status)}</div> : ''}*/}
-          <div className='px-6 py-2 font-sans font-medium text-xl text-slate-700 uppercase max-w-5xl mx-auto'>
+          <div className='px-6 py-2 font-sans font-medium text-xl text-slate-700 max-w-5xl mx-auto'>
             <TitleEdit
-              className='uppercase w-full p-2'
+              className=' w-full p-2'
               value={item['title']} 
               onChange={(v) => updateAttribute('title', v)}        
               {...attributes['title']}
@@ -99,6 +103,7 @@ export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem
             edit={true}
             status={status}
           />
+          {item?.sidebar === 'show' ? <SideNav {...inPageNav} /> : ''}
         </div>
       </div>
       
