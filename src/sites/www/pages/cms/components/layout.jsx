@@ -41,7 +41,7 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
     <Layout topNav={{menuItems, position: 'fixed' }} sideNav={edit ? props.sideNav : inPageNav}>
       <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
         <div className={theme.layout.container}>
-          <CMSContext.Provider value={{baseUrl: baseUrl}}>
+          <CMSContext.Provider value={{baseUrl}}>
             {children}
           </CMSContext.Provider>
         </div>

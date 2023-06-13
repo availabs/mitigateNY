@@ -2,6 +2,10 @@ import React, {useEffect} from 'react'
 import { NavLink, Link, useSubmit, useNavigate, useParams} from "react-router-dom";
 import Nav from './nav'
 import { PageControls } from './page-controls'
+import { SideNav } from '~/modules/avl-components/src'
+import {getInPageNav} from "./utils/inPageNavItems.js";
+import {CMSContext} from './layout'
+
 
 const theme = {
   page: {
@@ -13,9 +17,10 @@ const theme = {
 
 export function PageView ({item, dataItems, attributes}) {
   if(!item) return <div> No Pages </div>
-
+  const {baseUrl} = React.useContext(CMSContext)
   const ContentView = attributes['sections'].ViewComp
-
+  const inPageNav = getInPageNav(dataItems, baseUrl);
+  
   return (
     <div className='flex flex-1 h-full w-full px-1 md:px-6 py-6'>
       {/*<div className='w-[264px]' />*/}
@@ -34,6 +39,11 @@ export function PageView ({item, dataItems, attributes}) {
         </div>
          
       </div>
+        <div className='w-52 hidden xl:block'>
+          <div className='w-52 fixed hidden xl:block'> 
+            <SideNav {...inPageNav} />
+          </div>
+        </div>
       {/*<PageControls />*/}
     </div>    
   ) 

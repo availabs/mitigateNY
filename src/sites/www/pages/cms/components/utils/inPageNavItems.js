@@ -41,7 +41,9 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
 
     return {
         menuItems: menuItems,
-        size: 'full',
-        color: 'white'
+        themeOptions: {
+            size: 'full',
+            color: 'transparent'
+        }
     };
 }
