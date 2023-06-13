@@ -13,6 +13,10 @@ const cmsSection = {
       type: "text",
       required: false
     },
+    {
+      key: "size",
+      type: "text"
+    },
     { key: "element",
       type: "selector",
       required: false,
@@ -52,8 +56,9 @@ const cmsPageFormat = {
       hidden: true
     },
     {
-      key: "size",
-      type: "text"
+      key: 'sidebar',
+      type: "text",
+      hidden: true
     },
     {
       key: 'sections',

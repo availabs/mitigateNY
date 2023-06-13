@@ -65,6 +65,12 @@ export function PageControls({ item, dataItems, edit, status }) {
     submit(json2DmsForm(newItem), { method: "post", action: `${baseUrl}/edit/${newItem.url_slug}` })
 
   }
+
+  const toggleSidebar = async () => {
+    const newItem = cloneDeep(item)
+    newItem.sidebar = getUrlSlug(newItem, dataItems)
+    submit(json2DmsForm(newItem), { method: "post", action: `${baseUrl}/edit/${newItem.url_slug}` })
+  }
   
   //console.log('showDelete', showDelete)
   return (
