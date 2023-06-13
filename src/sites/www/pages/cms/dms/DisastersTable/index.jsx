@@ -42,9 +42,9 @@ const Edit = ({value, onChange}) => {
 
     const [disasterDecView, setDisasterDecView] = useState();
     const [disasterNumbers, setDisasterNumbers] = useState([]);
-    const ealSourceId = 229;
+    const ealSourceId = 343;
 
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 683);
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
     const [fusionViewId, setFusionViewId] = useState(cachedData?.fusionViewId || 657);
 
     const [loading, setLoading] = useState(true);

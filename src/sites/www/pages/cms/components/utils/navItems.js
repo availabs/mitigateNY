@@ -25,8 +25,11 @@ export function getCurrentDataItem(dataItems, baseUrl) {
         window.location.pathname
             .replace(baseUrl, '')
             .replace('/', '')
-            .replace('edit/', '')
-    return dataItems.find(d => d.url_slug === location);
+            .replace('edit/', '');
+
+    return location === '' ?
+        dataItems.find(d => d.index === 0 && d.parent === '') :
+        dataItems.find((d, i) => d.url_slug === location);
 }
 
 export function detectNavLevel(dataItems, baseUrl) {
