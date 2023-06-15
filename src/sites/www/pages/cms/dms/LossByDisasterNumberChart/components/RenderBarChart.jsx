@@ -18,7 +18,6 @@ const colNameMapping = {
 
 export const RenderBarChart = ({ chartDataActiveView = [], disaster_numbers = [], attributionData, baseUrl }) => {
     if(!chartDataActiveView?.length) return null;
-    console.log('props', chartDataActiveView, disaster_numbers)
 
     const [threshold, setThreshold] = React.useState('Max');
     const minYear = Math.min(...chartDataActiveView.map(d => d.year));

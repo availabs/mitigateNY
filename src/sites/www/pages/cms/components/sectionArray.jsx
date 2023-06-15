@@ -1,7 +1,7 @@
 import React from "react"
 import isEqual from 'lodash/isEqual'
 import cloneDeep from 'lodash/cloneDeep'
-import { sizeOptions, getSizeClass, sizeGridTemplate } from './utils/sizes'
+import {sizeOptions, getSizeClass, sizeGridTemplate, sizeOptionsSVG} from './utils/sizes.jsx'
 
 
 function SizeSelect ({size='1', setSize, onChange}) {
@@ -12,7 +12,7 @@ function SizeSelect ({size='1', setSize, onChange}) {
           role="tablist"
           aria-orientation="horizontal"
         >        
-        {sizeOptions.map((s,i) => ( 
+        {sizeOptionsSVG.map((s,i) => (
             <button
                 key={i}
                 className={
@@ -29,7 +29,8 @@ function SizeSelect ({size='1', setSize, onChange}) {
                     onChange(s.name) 
                 }}
               >
-                <i className={`${s.icon} `} />
+                {/*<i className={`${s.icon} `} />*/}
+                {s.icon}
               </button>
         ))}
         </div>

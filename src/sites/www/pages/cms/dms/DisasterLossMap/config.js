@@ -18,20 +18,28 @@ export const metaData = {
     pa: {
         type: 'public_assistance_funded_projects_details_v1',
         geoColumn: `lpad(state_number_code::text, 2, '0') || lpad(county_code::text, 3, '0')`,
-        columns: ['project_amount']
+        columns: {
+            'Project Amount': 'project_amount'
+        }
     },
     sba: {
         type: 'sba_disaster_loan_data_new',
         disasterNumberColumn: 'fema_disaster_number',
-        columns: ['total_verified_loss']
+        columns: {
+            'Total Verified Loss': 'total_verified_loss'
+        }
     },
     nfip: {
         type: 'fima_nfip_claims_v1_enhanced',
         mapGeoidToName: true,
-        columns: ['total_amount_paid']
+        columns: {
+            'Total Amount Paid': 'total_amount_paid'
+        }
     },
     usda: {
         type: 'usda_crop_insurance_cause_of_loss_enhanced',
-        columns: ['indemnity_amount']
+        columns: {
+            'Indemnity Amount': 'indemnity_amount'
+        }
     },
 };

@@ -1,47 +1,107 @@
 import React, {useEffect, useMemo, useState} from "react";
 import get from "lodash/get";
-import { useFalcor } from '~/modules/avl-falcor';
-import { AvlMap } from '~/modules/avl-maplibre/src';
-import { pgEnv } from "~/utils/";
-import { isJson } from "~/utils/macros.jsx";
+import {useFalcor} from '~/modules/avl-falcor';
+import {pgEnv} from "~/utils/";
+import {isJson} from "~/utils/macros.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch/index.jsx";
 import DisasterSearch from "../../components/DisasterSearch/index.jsx";
-import { Loading } from "~/utils/loading.jsx";
+import {Loading} from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
-import config from '~/config.json';
-import {ChoroplethCountyFactory} from "./components/choroplethCountyLayer.jsx";
-import _ from "lodash";
 import {Link} from "react-router-dom";
 import {formatDate} from "../../../../../../utils/macros.jsx";
 import {ButtonSelector} from "../../components/buttonSelector/index.jsx";
+import {RenderColorPicker} from "./components/colorPicker.jsx";
+import {scaleThreshold} from "d3-scale";
+import {getColorRange} from "../../../../../../pages/DataManager/utils/color-ranges.js";
+import ckmeans from '~/utils/ckmeans';
+import {RenderMap} from "../../components/Map/RenderMap.jsx";
 
+const getDomain = (data = [], range = []) => {
+    if (!data?.length || !range?.length) return [];
+    return data?.length && range?.length ? ckmeans(data, Math.min(data?.length, range?.length)).map(d => parseInt(d)) : [];
+}
+const getColorScale = (data, colors) => {
+    const domain = getDomain(data, colors)
+
+    return scaleThreshold()
+        .domain(domain)
+        .range(colors);
+}
+const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...rest}) => {
+    if (!data?.length || !colors?.length) return {};
+    const geoids = data.map(d => d.geoid);
+    const stateFips = (geoid?.substring(0, 2) || geoids[0] || '00').substring(0, 2);
+    const geoColors = {}
+
+    const colorScale = getColorScale(
+        data.map((d) => paintFn ? paintFn(d) : d[columns?.[0]]).filter(d => d),
+        colors
+    );
+    const domain = getDomain(
+        data.map((d) => paintFn ? paintFn(d) : d[columns?.[0]]).filter(d => d),
+        colors
+    )
+    for (let id = 0; id <= 999; id += 1) {
+        const gid = stateFips + id.toString().padStart(3, '0');
+
+        const record = data.find(d => d.geoid === gid) || {};
+        const value = paintFn ? paintFn(record) : record[columns?.[0]];
+        geoColors[gid] = geoids.includes(gid) && value ? colorScale(value) : '#CCC';
+    }
+    return {geoColors, domain};
+}
 const Edit = ({value, onChange}) => {
-    const { falcor, falcorCache } = useFalcor();
+    const {falcor, falcorCache} = useFalcor();
 
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
     const baseUrl = '/';
 
     const ealSourceId = 343;
     const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
-    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
-    const [countyView, setCountyView] = useState();
+    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || null);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
     const [type, setType] = useState(cachedData?.type || 'total_losses');
     const [typeId, setTypeId] = useState(cachedData?.typeId);
+    const [data, setData] = useState(cachedData?.data);
+    const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
+    const [numColors, setNumColors] = useState(cachedData?.numColors || 9);
+    const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
+    const [colors, setColors] = useState(cachedData?.colors ||  getColorRange(9, "Oranges", false));
+    const [title, setTitle] = useState(cachedData?.title ||  'THis is a legend title.');
 
-    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
+    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id],
+        geomColName = `substring(${metaData[type].geoColumn || 'geoid'}, 1, 5)`,
+        disasterNumberColName = metaData[type].disasterNumberColumn || 'disaster_number',
+        columns = Array.isArray(metaData[type]?.columns) ? metaData[type]?.columns : Object.values(metaData[type]?.columns),
+        options = JSON.stringify({
+            aggregatedLen: true,
+            filter: false && geoid?.length === 5 ? {
+                [disasterNumberColName]: [disasterNumber],
+                [geomColName]: [geoid]
+            } : {[disasterNumberColName]: [disasterNumber]},
+            groupBy: [disasterNumberColName, geomColName]
+        }),
+        attributes = {
+            geoid: `${geomColName} as geoid`,
+            ...(columns || [])
+                .reduce((acc, curr) => ({...acc, [curr]: `sum(${curr}) as ${curr}`}), {})
+        },
+        gromPath = view_id => ['dama', pgEnv, 'viewsbyId', view_id, 'options', options];
+
     const attributionPath = view_id => ['dama', pgEnv, 'views', 'byId', view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
 
 
-    useEffect( () => {
-        async function getData(){
-            if(!geoid || !disasterNumber){
+    useEffect(() => {
+        // get required data, pass paint properties as prop.
+        async function getData() {
+            if (!geoid || !disasterNumber) {
                 !geoid && setStatus('Please Select a Geography');
                 !disasterNumber && setStatus('Please Select a Disaster');
-            }else{
+                return Promise.resolve();
+            } else {
                 setStatus(undefined)
             }
             setLoading(true);
@@ -50,46 +110,95 @@ const Edit = ({value, onChange}) => {
 
                 const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
 
-                const countyView = deps.find(dep => dep.type === "tl_county");
-                setCountyView(countyView.view_id);
-
+                const stateView = deps.find(dep => dep.type === "tl_state");
                 const typeId = deps.find(dep => dep.type === metaData[type]?.type);
 
-                if(!typeId) {
+                if (!typeId) {
                     setLoading(false)
                     setStatus('This component only supports EAL versions that use Fusion data.')
                     return Promise.resolve();
                 }
                 setTypeId(typeId.view_id);
 
-                await falcor.get(
+                const geomRes = await falcor.get(
+                    [...gromPath(typeId.view_id), 'length'],
                     attributionPath(typeId.view_id)
                 );
+
+                const len = get(geomRes, ['json', ...gromPath(typeId.view_id), 'length']);
+
+                await len && falcor.get([...gromPath(typeId.view_id), 'databyIndex', {
+                    from: 0,
+                    to: len - 1
+                }, Object.values(attributes)])
+                    .then(async res => {
+                        let data = Object.values(get(res, ['json', ...gromPath(typeId.view_id), 'databyIndex'], {}));
+                        data = [...Array(len).keys()].map(i => {
+                            return Object.keys(attributes).reduce((acc, curr) => ({
+                                ...acc,
+                                [curr]: data[i][attributes[curr]]
+                            }), {});
+                        });
+
+                        setData(data);
+
+                        if (!data?.length) return Promise.resolve();
+
+                        const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${false && geoid?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
+                            geoIndices = {from: 0, to: 0},
+                            stateFips = get(data, [0, 'geoid']) || geoid?.substring(0, 2),
+                            geoPath = ({view_id}) =>
+                                ['dama', pgEnv, 'viewsbyId', view_id,
+                                    'options', JSON.stringify({filter: {geoid: [false && geoid?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
+                                    'databyIndex'
+                                ];
+                        const geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);
+                        const geom = get(geomRes, ["json", ...geoPath(stateView), 0, geomColTransform]);
+                        if (geom) {
+                            console.log('setting focus', get(JSON.parse(geom), 'bbox'))
+                            setMapfocus(get(JSON.parse(geom), 'bbox'));
+                        }
+                    })
 
                 setLoading(false);
             })
         }
 
         getData()
-    }, [geoid, ealViewId, disasterNumber, type]);
+    }, [geoid, ealViewId, disasterNumber, type, numColors, shade, colors]);
+
+    const {geoColors, domain} = getGeoColors({geoid, data, columns: columns, paintFn: metaData[type].paintFn, colors});
+    // const domain = getDomain(data, colors);
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
-
-    const map_layers = useMemo(() => [ ChoroplethCountyFactory() ], []);
-    
     const layerProps =
-            {
-                ccl: {disaster_number: disasterNumber,
-                    geoid,
+        {
+            ccl: {
+                view: metaData[type],
+                data,
+                geoColors,
+                mapFocus,
+                domain,
+                colors,
+                title,
+                change: e => onChange(JSON.stringify({
+                    ...e,
+                    disasterNumber,
                     ealViewId,
-                    view: typeId,
-                    views: [{...metaData[type], id: typeId}],
-                    pgEnv,
-                    loading, 
-                    // setLoading,
-                    change: e => onChange(JSON.stringify({...e, disasterNumber, ealViewId, geoid, status, type, typeId, attributionData}))
-                }
-            };
+                    geoid,
+                    status,
+                    type,
+                    typeId,
+                    attributionData,
+                    data,
+                    geoColors,
+                    mapFocus,
+                    domain,
+                    numColors,
+                    colors
+                }))
+            }
+        };
 
     return (
         <div className='w-full'>
@@ -102,7 +211,7 @@ const Edit = ({value, onChange}) => {
                         onChange={setEalViewId}
                         className={'flex-row-reverse'}
                     />
-                    <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
+                    <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
                     <DisasterSearch
                         view_id={ealViewId}
                         value={disasterNumber}
@@ -111,36 +220,38 @@ const Edit = ({value, onChange}) => {
                         className={'flex-row-reverse'}
                     />
                     <ButtonSelector
-                        label={'Select Type:'}
+                        label={'Type:'}
                         types={Object.keys(metaData).map(t => ({label: t.replace('_', ' '), value: t}))}
                         type={type}
                         setType={setType}
                     />
+                    <RenderColorPicker
+                        title={'Colors: '}
+                        numColors={numColors}
+                        setNumColors={setNumColors}
+                        shade={shade}
+                        setShade={setShade}
+                        colors={colors}
+                        setColors={setColors}
+                    />
                 </div>
                 {
-                    loading ? <Loading /> :
+                    loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <React.Fragment>
                                 <div className={`flex-none h-[500px] w-full p-1`}>
-                                    <AvlMap
-                                        
+                                    <RenderMap
                                         falcor={falcor}
-                                        mapOptions={{
-                                            styles: [
-                                              { name : 'blank', style: {sources: {}, version:8,layers:[{"id":"background","type":"background","layout":{"visibility":"visible"},"paint":{"background-color":'rgba(0,0,0,0)'}}]}},
-                                              { name: "Light", style: "https://api.maptiler.com/maps/dataviz-light/style.json?key=mU28JQ6HchrQdneiq6k9" }                                            ]
-                                              
-                                        }}
-                                        layers={map_layers}
                                         layerProps={layerProps}
-                                        CustomSidebar={() => <div />}
+                                        legend={{domain, range: colors, title}}
                                     />
                                 </div>
                                 <div className={'flex flex-row text-xs text-gray-700 p-1'}>
                                     <label>Attribution:</label>
                                     <div className={'flex flex-col pl-1'}>
-                                        <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
-                                            { attributionData?.version } ({formatDate(attributionData?._modified_timestamp?.value)})
+                                        <Link
+                                            to={`/${baseUrl}/source/${attributionData?.source_id}/versions/${attributionData?.view_id}`}>
+                                            {attributionData?.version} ({formatDate(attributionData?._modified_timestamp?.value)})
                                         </Link>
                                     </div>
                                 </div>
@@ -157,10 +268,10 @@ Edit.settings = {
 }
 
 const View = ({value}) => {
-    if(!value) return ''
+    if (!value) return ''
 
     let data = typeof value === 'object' ?
-        value['element-data'] : 
+        value['element-data'] :
         JSON.parse(value)
     const baseUrl = '/';
     const attributionData = data?.attributionData;
@@ -171,19 +282,20 @@ const View = ({value}) => {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
                     <div className='h-80vh flex-1 flex flex-col'>
-                        <img alt='Choroplath Map' src={get(data, ['img'])} />
+                        <img alt='Choroplath Map' src={get(data, ['img'])}/>
                         <div className={'flex flex-row text-xs text-gray-700 p-1'}>
                             <label>Attribution:</label>
                             <div className={'flex flex-col pl-1'}>
-                                <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
-                                    { attributionData?.version } ({formatDate(attributionData?._modified_timestamp?.value)})
+                                <Link
+                                    to={`/${baseUrl}/source/${attributionData?.source_id}/versions/${attributionData?.view_id}`}>
+                                    {attributionData?.version} ({formatDate(attributionData?._modified_timestamp?.value)})
                                 </Link>
                             </div>
                         </div>
                     </div>
             }
         </div>
-    )           
+    )
 }
 
 

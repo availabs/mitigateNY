@@ -6,18 +6,22 @@ export const drawLegend = (layer, newCanvas, mbCanvas) => {
     context.drawImage(mbCanvas, 0, 0);
 
     let x = mbCanvas.width - 20 - 360,
-        y = 20;
+        y = 20,
+        h = layer.legend.title ? 80 : 50;
     context.fillStyle = 'white'
-    context.roundRect(x, y, 370, 50, 5);
+    context.roundRect(x, y, 370, h, 5);
     context.fill();
-    // context.fillRect(x, y, 370, 50);
 
-    context.fillStyle = '#232323'
-    const text = layer.legend.Title({layer});
+    context.font = "1rem Arial";
+    context.fillStyle = '#232323';
+    y += 20;
+
+    const text = layer.legend.title;
+    console.log('legend', text, layer.legend)
     context.fillText(text, x + 10, y, 320);
 
     x += 10
-    y += 10
+    y += 20
 
     const w = 350 / layer.legend.range.length;
     layer.legend.range.forEach((c, i) => {

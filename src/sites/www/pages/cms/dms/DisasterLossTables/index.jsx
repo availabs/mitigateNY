@@ -160,7 +160,7 @@ const Edit = ({value, onChange}) => {
                         className={'flex-row-reverse'}
                     />
                     <ButtonSelector
-                        label={'Select Type:'}
+                        label={'Type:'}
                         types={Object.keys(metaData)}
                         type={type}
                         setType={e => {

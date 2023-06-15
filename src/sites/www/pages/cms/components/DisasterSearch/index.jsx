@@ -82,6 +82,7 @@ export default ({
 
     const disasters = useMemo(() => {
         return  Object.values(get(falcorCache, [...disasterDetailsPath(ddsView), 'databyIndex'], {}))
+            .filter(d => typeof d['distinct disaster_number as disaster_number'] !== 'object')
             .map(d => (
                 {
                     key: d['distinct disaster_number as disaster_number'],
@@ -92,7 +93,7 @@ export default ({
     useEffect(() => {
         setSelected(disasters.filter(gd => value && gd.key === value))
     }, [disasters, value]);
-    console.log('d?', disasters)
+
     return (
         <div className={'flex justify-between'}>
             <label className={'shrink-0 pr-2 py-1 my-1'}>FEMA Disaster:</label>
