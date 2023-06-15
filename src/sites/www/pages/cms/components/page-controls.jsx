@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState } from 'react'
+import React, { useEffect, Fragment, useRef, useState } from 'react'
 import { Dialog, Transition, Switch } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import cloneDeep from 'lodash/cloneDeep'
@@ -21,8 +21,13 @@ export function PageControls({ item, dataItems, edit, status }) {
   const submit = useSubmit()
   const { pathname = '/edit' } = useLocation()
   const [showDelete, setShowDelete] = useState(false)
+  const [ statusMessage, setStatusMessage ] = useState(status?.message)
   const { baseUrl } = React.useContext(CMSContext)
   const NoOp = () => {}
+
+  useEffect(() => {
+    setStatusMessage(status?.message)
+  },[status])
 
   const duplicateItem = () => {
     const highestIndex = dataItems
@@ -120,9 +125,14 @@ export function PageControls({ item, dataItems, edit, status }) {
             </div>
           </div>
         }
-      <div>
-        {status ? <div>{JSON.stringify(status)}</div> : ''}
-      </div>
+      {statusMessage ?
+      <div className='fixed bottom-4 right-3 w-52 '>
+        
+        <div className='flex flex items-center text-sm text-gray-600 bg-green-100 rounded border border-green-500'>
+          <div className='flex-1 py-4 pl-4 pr-2'>{statusMessage}</div> 
+          <div className='pr-4'><i className='fa fa-times hover:text-green-300' onClick={(e) => setStatusMessage('')}/></div>
+        </div>
+      </div>: ''}
     </>
   )
 }
