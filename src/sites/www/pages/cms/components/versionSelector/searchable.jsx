@@ -79,9 +79,9 @@ export default ({
   }, [views, view_id]);
 
   return (
-    <div className={'flex justify-between'}>
-      <label className={'shrink-0 pr-2 py-1 my-1'}>Data Source Version:</label>
-      <div className={`flex flex row ${className} w-full shrink my-1`}>
+    <div className={'flex flex-row flex-wrap justify-between'}>
+      <label className={'shrink-0 pr-2 py-1 my-1 w-1/4'}>Data Source Version:</label>
+      <div className={`flex flex row ${className} w-3/4 shrink my-1`}>
         <i className={`fa fa-search font-light text-xl bg-white pr-2 pt-1 rounded-r-md`} />
         <AsyncTypeahead
             className={'w-full'}

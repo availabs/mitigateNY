@@ -1,9 +1,12 @@
 import React from "react";
-export const ButtonSelector = ({label, types, type, setType, size='small'}) => {
+export const ButtonSelector = ({label, types, type, setType, size='small', disabled, disabledTitle}) => {
     return (
-            <div className={'my-1 flex'}>
-                <div className={'p-2 pl-0'}>{label}</div>
+            <div className={`my-1 flex flex-rows flex-wrap`}
+                 title={disabled ? disabledTitle : null}
+            >
+                <div className={'p-2 pl-0 w-1/4'}>{label}</div>
                 <span className={`
+              
                 space-x-1 rounded-lg bg-slate-100 p-0.5
                 flex flex-row flex-wrap
                 shadow-sm 
@@ -15,7 +18,8 @@ export const ButtonSelector = ({label, types, type, setType, size='small'}) => {
                             key={i}
                             className={`
                             ${i !== 0 && `-ml-px`} 
-                           rounded-lg py-[0.4375rem] break-none
+                            ${disabled && `pointer-events-none`}
+                            rounded-lg py-[0.4375rem] break-none
                             ${(t?.value || t) === type ? `text-gray-900 bg-white shadow` : `text-gray-700`} hover:text-blue-500
                             min-w-[60px] min-h-[30px] uppercase
                             relative items-center px-2 text-xs items-center justify-center text-center 

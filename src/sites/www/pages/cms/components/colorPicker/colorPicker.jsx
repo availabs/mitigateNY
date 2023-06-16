@@ -14,16 +14,16 @@ export const RenderColorPicker = ({numColors = 9, setNumColors, shade, setShade,
         <div
             className={'p-2 pl-0 my-1 w-full flex flex-row place-middle'}
         >
-            <div className={'self-top flex flex-row flex-wrap'}>
+            <div className={'self-top flex flex-row flex-wrap w-1/4'}>
                 {
                     title && <span className={'self-center pt-1'}>{title}</span>
                 }
             </div>
-            <div className={'flex flex-row flex-wrap space-between'}>
+            <div className={'flex flex-row flex-wrap space-between w-3/4'}>
                 {
                     setNumColors &&
                     <div className={'self-center py-1 rounded-l-lg'}>
-                        <label className={'px-5 text-sm'}># Shades:</label>
+                        <label className={'pl-1 pr-5 text-sm'}># Shades:</label>
                         <input type={'number'} min={3} max={9} value={numColors}
                                onChange={e => {
                                    e.stopPropagation();

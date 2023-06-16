@@ -19,7 +19,7 @@ export const RenderColumnControls = (
             <div key={'shadow'} className={'shadow-md shadow-blue-100 p-1.5'}></div>
 
             <div className={'w-full pt-2 mt-3 flex flex-row text-sm'}>
-                <label className={'shrink-0 pr-2 py-2 my-1'}>Page Size</label>
+                <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Page Size</label>
                 <input
                     key={'pageSizeInput'}
                     className={'p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
@@ -32,7 +32,7 @@ export const RenderColumnControls = (
             </div>
 
             <div className={'w-full pt-2 mt-3 flex flex-row text-sm'}>
-                <label className={'shrink-0 pr-2 py-2 my-1'}> Display Columns: </label>
+                <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}> Display Columns: </label>
                 <select
                     key={'displayColsInput'}
                     value={' '}

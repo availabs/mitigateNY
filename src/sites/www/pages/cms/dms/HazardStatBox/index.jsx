@@ -21,7 +21,7 @@ const Edit = ({value, onChange}) => {
     const [hazard, setHazard] = useState(cachedData?.hazard || 'total');
     const [type, setType] = useState(cachedData?.type || 'card');
     const [status, setStatus] = useState(cachedData?.status);
-    const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
+    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
     const [isTotal, setIsTotal] = useState(cachedData?.isTotal || (hazard === 'total' && type === 'card'));
 
     const {falcor, falcorCache} = useFalcor();
@@ -203,7 +203,7 @@ const Edit = ({value, onChange}) => {
                         }}
                     />
                     <div className='flex justify-between'>
-                        <label className={'shrink-0 pr-2 py-1 my-1'}>Hazard Type:</label>
+                        <label className={'shrink-0 pr-2 py-1 my-1 w-1/4'}>Hazard Type:</label>
                         <select
                             className='w-full shrink my-1 p-2 bg-white rounded-md'
                             onChange={e => {

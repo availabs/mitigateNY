@@ -1,5 +1,6 @@
 export const metaData = {
     total_losses: {
+        title: 'Total Losses',
         type: 'disaster_loss_summary',
         columns: {
             'IHP Loss': 'ihp_loss',
@@ -11,11 +12,13 @@ export const metaData = {
         paintFn: (d) => d && +d.ihp_loss + +d.pa_loss + +d.sba_loss + +d.nfip_loss + +d.fema_crop_damage
     },
     ihp: {
+        title: 'IHP Losses',
         type: 'individuals_and_households_program_valid_registrations_v1',
         columns: ['rpfvl', 'ppfvl'],
         paintFn: (d) => d && d.rpfvl + d.ppfvl
     },
     pa: {
+        title: 'Project Amount',
         type: 'public_assistance_funded_projects_details_v1',
         geoColumn: `lpad(state_number_code::text, 2, '0') || lpad(county_code::text, 3, '0')`,
         columns: {
@@ -23,6 +26,7 @@ export const metaData = {
         }
     },
     sba: {
+        title: 'SBA Verified Loss',
         type: 'sba_disaster_loan_data_new',
         disasterNumberColumn: 'fema_disaster_number',
         columns: {
@@ -30,6 +34,7 @@ export const metaData = {
         }
     },
     nfip: {
+        title: 'NFIP Amount Paid',
         type: 'fima_nfip_claims_v1_enhanced',
         mapGeoidToName: true,
         columns: {
@@ -37,6 +42,7 @@ export const metaData = {
         }
     },
     usda: {
+        title: 'USDA Indemnity Amount',
         type: 'usda_crop_insurance_cause_of_loss_enhanced',
         columns: {
             'Indemnity Amount': 'indemnity_amount'

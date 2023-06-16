@@ -47,7 +47,7 @@ const Edit = ({value, onChange}) => {
     const [loading, setLoading] = useState(true);
     const [type, setType] = useState(cachedData?.type || 'declared');
     const [status, setStatus] = useState(cachedData?.status);
-    const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
+    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
     const [filters, setFilters] = useState(cachedData?.filters || {});
     const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
     const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);

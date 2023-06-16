@@ -2,7 +2,7 @@ import get from "lodash/get";
 import { LayerContainer } from "~/modules/avl-maplibre/src";
 import { getColorRange } from "~/modules/avl-components/src";
 import { fnum } from "~/utils/macros";
-import {drawLegend} from "../drawLegend.jsx";
+import {drawLegend} from "./drawLegend.jsx";
 
 class EALChoroplethOptions extends LayerContainer {
   constructor(props) {
@@ -140,7 +140,6 @@ class EALChoroplethOptions extends LayerContainer {
   // }
 
   handleMapFocus(map, props) {
-    console.log('mapFocus', props.mapFocus)
     if (props.mapFocus) {
       try {
           map.fitBounds(props.mapFocus)
@@ -153,7 +152,7 @@ class EALChoroplethOptions extends LayerContainer {
   }
 
   paintMap(map, props) {
-    let { geoColors = {}, domain = [], colors = [], title = '' } = this.props
+    let { geoColors = {}, domain = [], colors = [], title = '' } = props
     this.legend.domain = domain;
     this.legend.range = colors;
     this.legend.title = title
@@ -163,9 +162,10 @@ class EALChoroplethOptions extends LayerContainer {
 
   }
 
-  receiveProps(props, prev) {
-    this.paintMap(this.mapboxMap, props);
-    this.handleMapFocus(this.mapboxMap, props);
+  receiveProps(props, prev, map, falcor) {
+    console.log('props', props)
+    this.paintMap(map, props);
+    this.handleMapFocus(map, props);
   }
 
   // render(map, falcor) {

@@ -25,7 +25,7 @@ function SizeSelect ({size='1', setSize, onChange}) {
                 type="button"
                 tabIndex={-1}
                 onClick={() => {
-                    console.log('change',s.name)
+                    // console.log('change',s.name)
                     onChange(s.name) 
                 }}
               >
@@ -38,11 +38,11 @@ function SizeSelect ({size='1', setSize, onChange}) {
 } 
 
 function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove}) {
-    console.log('SectionEdit', value, attributes)
+    // console.log('SectionEdit', value, attributes)
     
     const updateAttribute = (k, v) => {
         if(!isEqual(value, {...value, [k]: v})) {
-            console.log('onChange', k, v)
+            // console.log('onChange', k, v)
             onChange({...value, [k]: v})
         }
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})

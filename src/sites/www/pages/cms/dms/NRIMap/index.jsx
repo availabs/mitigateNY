@@ -5,7 +5,6 @@ import {pgEnv} from "~/utils/";
 import {isJson} from "~/utils/macros.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch/index.jsx";
-import DisasterSearch from "../../components/DisasterSearch/index.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
 import {Link} from "react-router-dom";
@@ -16,6 +15,8 @@ import {scaleThreshold} from "d3-scale";
 import {getColorRange} from "../../../../../../pages/DataManager/utils/color-ranges.js";
 import ckmeans from '~/utils/ckmeans';
 import {RenderMap} from "../../components/Map/RenderMap.jsx";
+import {HazardSelector} from "./components/HazardSelector.jsx";
+import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
@@ -59,37 +60,32 @@ const Edit = ({value, onChange}) => {
 
     const ealSourceId = 343;
     const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
-    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || null);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
-    const [type, setType] = useState(cachedData?.type || 'total_losses');
+    const [hazard, setHazard] = useState(cachedData?.hazard || 'hail');
     const [typeId, setTypeId] = useState(cachedData?.typeId);
     const [data, setData] = useState(cachedData?.data);
+    const [attribute, setAttribute] = useState(cachedData?.attribute);
+    const [consequence, setConsequance] = useState(cachedData?.consequence);
     const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
     const [numColors, setNumColors] = useState(cachedData?.numColors || 9);
     const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
-    const [colors, setColors] = useState(cachedData?.colors ||  getColorRange(9, "Oranges", false));
+    const [colors, setColors] = useState(cachedData?.colors || getColorRange(9, "Oranges", false));
     const [title, setTitle] = useState(cachedData?.title);
 
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id],
-        geomColName = `substring(${metaData[type].geoColumn || 'geoid'}, 1, 5)`,
-        disasterNumberColName = metaData[type].disasterNumberColumn || 'disaster_number',
-        columns = Array.isArray(metaData[type]?.columns) ? metaData[type]?.columns : Object.values(metaData[type]?.columns),
+        geomColName = `stcofips`,
+        columns = [`${hazardsMeta[hazard]?.prefix}_${attribute}${consequence || ``}`],
         options = JSON.stringify({
-            aggregatedLen: true,
-            filter: false && geoid?.length === 5 ? {
-                [disasterNumberColName]: [disasterNumber],
-                [geomColName]: [geoid]
-            } : {[disasterNumberColName]: [disasterNumber]},
-            groupBy: [disasterNumberColName, geomColName]
+            filter: {[`substring(stcofips, 1, ${geoid?.length})`]: [geoid]},
         }),
         attributes = {
             geoid: `${geomColName} as geoid`,
             ...(columns || [])
-                .reduce((acc, curr) => ({...acc, [curr]: `sum(${curr}) as ${curr}`}), {})
+                .reduce((acc, curr) => ({...acc, [curr]: `${curr}`}), {})
         },
-        gromPath = view_id => ['dama', pgEnv, 'viewsbyId', view_id, 'options', options];
+        dataPath = view_id => ['dama', pgEnv, 'viewsbyId', view_id, 'options', options];
 
     const attributionPath = view_id => ['dama', pgEnv, 'views', 'byId', view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
 
@@ -97,9 +93,10 @@ const Edit = ({value, onChange}) => {
     useEffect(() => {
         // get required data, pass paint properties as prop.
         async function getData() {
-            if (!geoid || !disasterNumber) {
-                !geoid && setStatus('Please Select a Geography');
-                !disasterNumber && setStatus('Please Select a Disaster');
+            if (!geoid || !attribute || (attribute !== 'afreq' && !consequence)) {
+                !geoid && setStatus('Please Select a Geography.');
+                !attribute && setStatus('Please Select an Attribute.');
+                !consequence && setStatus('Please Select a Consequence.');
                 return Promise.resolve();
             } else {
                 setStatus(undefined)
@@ -111,7 +108,7 @@ const Edit = ({value, onChange}) => {
                 const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
 
                 const stateView = deps.find(dep => dep.type === "tl_state");
-                const typeId = deps.find(dep => dep.type === metaData[type]?.type);
+                const typeId = deps.find(dep => dep.type === 'nri');
 
                 if (!typeId) {
                     setLoading(false)
@@ -119,20 +116,20 @@ const Edit = ({value, onChange}) => {
                     return Promise.resolve();
                 }
                 setTypeId(typeId.view_id);
-                setTitle(metaData[type].title)
-                const geomRes = await falcor.get(
-                    [...gromPath(typeId.view_id), 'length'],
+                setTitle(metaData.title(hazardsMeta[hazard].name, attribute, consequence))
+                const dataRes = await falcor.get(
+                    [...dataPath(typeId.view_id), 'length'],
                     attributionPath(typeId.view_id)
                 );
 
-                const len = get(geomRes, ['json', ...gromPath(typeId.view_id), 'length']);
+                const len = get(dataRes, ['json', ...dataPath(typeId.view_id), 'length']);
 
-                await len && falcor.get([...gromPath(typeId.view_id), 'databyIndex', {
+                await len && falcor.get([...dataPath(typeId.view_id), 'databyIndex', {
                     from: 0,
                     to: len - 1
                 }, Object.values(attributes)])
                     .then(async res => {
-                        let data = Object.values(get(res, ['json', ...gromPath(typeId.view_id), 'databyIndex'], {}));
+                        let data = Object.values(get(res, ['json', ...dataPath(typeId.view_id), 'databyIndex'], {}));
                         data = [...Array(len).keys()].map(i => {
                             return Object.keys(attributes).reduce((acc, curr) => ({
                                 ...acc,
@@ -155,39 +152,41 @@ const Edit = ({value, onChange}) => {
                         const geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);
                         const geom = get(geomRes, ["json", ...geoPath(stateView), 0, geomColTransform]);
                         if (geom) {
-                            console.log('setting focus', get(JSON.parse(geom), 'bbox'))
                             setMapfocus(get(JSON.parse(geom), 'bbox'));
                         }
                     })
-
                 setLoading(false);
             })
         }
 
         getData()
-    }, [geoid, ealViewId, disasterNumber, type, numColors, shade, colors]);
+    }, [geoid, ealViewId, numColors, shade, colors, hazard, attribute, consequence]);
 
-    const {geoColors, domain} = getGeoColors({geoid, data, columns: columns, paintFn: metaData[type].paintFn, colors});
-    // const domain = getDomain(data, colors);
+    const {geoColors, domain} = getGeoColors({geoid, data, columns: columns, paintFn: metaData.paintFn, colors});
 
+    console.log('geoColos', Object.values(geoColors || {}).filter(g => g !== '#CCC'))
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
     const layerProps =
-        {
+        useMemo(() => ({
             ccl: {
-                view: metaData[type],
+                view: metaData,
                 data,
                 geoColors,
                 mapFocus,
                 domain,
                 colors,
                 title,
+                hazard,
+                attribute,
+                consequence,
                 change: e => onChange(JSON.stringify({
                     ...e,
-                    disasterNumber,
                     ealViewId,
                     geoid,
                     status,
-                    type,
+                    hazard,
+                    attribute,
+                    consequence,
                     typeId,
                     attributionData,
                     data,
@@ -198,7 +197,16 @@ const Edit = ({value, onChange}) => {
                     colors
                 }))
             }
-        };
+        }), [ealViewId, geoid, hazard, attribute, consequence, colors, data, geoColors]);
+    // console.log('layer props colors',
+    //     Object.values( layerProps.ccl.geoColors || {}).filter(g => g !== '#CCC'))
+    // geography selector
+    // bonus: geography level selector
+    // hazard selector // single or all
+    // attribute selector // freq, eal, exp, risks, riskr
+    // conseq selector // b, a, p, pe, t
+
+    // fetch <hazard_prefix>_<attribute>_<conseq> for the selected geography
 
     return (
         <div className='w-full'>
@@ -212,18 +220,29 @@ const Edit = ({value, onChange}) => {
                         className={'flex-row-reverse'}
                     />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
-                    <DisasterSearch
-                        view_id={ealViewId}
-                        value={disasterNumber}
-                        geoid={geoid}
-                        onChange={setDisasterNumber}
-                        className={'flex-row-reverse'}
+                    <HazardSelector hazard={hazard} setHazard={setHazard}/>
+                    <ButtonSelector
+                        label={'Attribute:'}
+                        types={
+                            Object.keys(metaData.attributes)
+                                .map(t => ({label: t.replace('_', ' '), value: metaData.attributes[t]}))
+                              }
+                        type={attribute}
+                        setType={e => {
+                            setAttribute(e);
+                            e === 'afreq' && setConsequance(null)
+                        }}
                     />
                     <ButtonSelector
-                        label={'Type:'}
-                        types={Object.keys(metaData).map(t => ({label: t.replace('_', ' '), value: t}))}
-                        type={type}
-                        setType={setType}
+                        label={'Consequence:'}
+                        types={
+                            Object.keys(metaData.consequences)
+                                .map(t => ({label: t.replace('_', ' '), value: metaData.consequences[t]}))
+                              }
+                        type={consequence}
+                        setType={setConsequance}
+                        disabled={attribute === 'afreq'}
+                        disabledTitle={'Frequency is independent of Consequence.'}
                     />
                     <RenderColorPicker
                         title={'Colors: '}
@@ -300,7 +319,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Map: FEMA Disaster Loss',
+    "name": 'Map: NRI',
     "type": 'Map',
     "EditComp": Edit,
     "ViewComp": View

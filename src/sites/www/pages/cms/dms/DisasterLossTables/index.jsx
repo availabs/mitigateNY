@@ -24,7 +24,7 @@ const Edit = ({value, onChange}) => {
     const [countyView, setCountyView] = useState();
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
-    const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
+    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
     const [type, setType] = useState(cachedData?.type || 'ihp');
     const [typeId, setTypeId] = useState(cachedData?.typeId);
     const [filters, setFilters] = useState(cachedData?.filters || {});
