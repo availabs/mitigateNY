@@ -2,13 +2,13 @@ import React, {useEffect, useState} from "react";
 import {useFalcor} from "~/modules/avl-falcor";
 import {hazardsMeta} from '~/utils/colors';
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
-import GeographySearch from "../../components/geographySearch/index.jsx";
+import GeographySearch from "../../components/geographySearch.jsx";
 import {isJson} from "../../../../../../utils/macros.jsx";
 import get from "lodash/get.js";
 import {pgEnv} from "~/utils";
 import {RenderGridOrBox} from "./components/RenderGridOrBox.jsx";
 import {Loading} from "../../../../../../utils/loading.jsx";
-import {ButtonSelector} from "../../components/buttonSelector/index.jsx";
+import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const Edit = ({value, onChange}) => {
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
@@ -257,7 +257,7 @@ const View = ({value}) => {
         JSON.parse(value)
 
     return (
-        <div className='relative w-full  py-2 px-8'>
+        <div className=''>
             <RenderGridOrBox {...data} baseUrl={'/'}/>
         </div>
     )

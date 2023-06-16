@@ -5,10 +5,10 @@ import {pgEnv} from "~/utils/";
 import {isJson} from "~/utils/macros.jsx";
 import {RenderDisastersTable} from "./components/RenderDisastersTable.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
-import GeographySearch from "../../components/geographySearch/index.jsx";
+import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
-import {ButtonSelector} from "../../components/buttonSelector/index.jsx";
-import {RenderColumnControls} from "../../components/columnControls/index.jsx";
+import {ButtonSelector} from "../../components/buttonSelector.jsx";
+import {RenderColumnControls} from "../../components/columnControls.jsx";
 
 const colNameMapping = {
     swd_population_damage: 'Population Damage',

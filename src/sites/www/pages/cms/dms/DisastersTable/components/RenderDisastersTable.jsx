@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {Table} from "~/modules/avl-components/src";
 import { fnum } from "~/utils/macros.jsx";
 import {hazardsMeta} from "~/utils/colors.jsx";
+import {Attribution} from "../../../components/attribution.jsx";
 
 const colAccessNameMapping = {
     'disaster_number': 'distinct disaster_number as disaster_number',
@@ -59,11 +60,7 @@ export const RenderDisastersTable = ({ type, data=[], columns=[], pageSize, sort
                     )
                 }
             </div>
-            <div className={'text-xs text-gray-700 pl-1'}>
-                <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
-                    Attribution: { attributionData?.version }
-                </Link>
-            </div>
+            <Attribution baseUrl={baseUrl} attributionData={attributionData} />
         </>
     )
 };

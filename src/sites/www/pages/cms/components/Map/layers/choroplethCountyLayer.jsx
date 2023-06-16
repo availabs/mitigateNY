@@ -163,7 +163,6 @@ class EALChoroplethOptions extends LayerContainer {
   }
 
   receiveProps(props, prev, map, falcor) {
-    console.log('props', props)
     this.paintMap(map, props);
     this.handleMapFocus(map, props);
   }

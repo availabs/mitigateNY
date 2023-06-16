@@ -1,6 +1,7 @@
 import React, {useMemo} from "react";
 import {fnumIndex} from "~/utils/macros.jsx";
 import {Link} from "react-router-dom";
+import {Attribution} from "../../../components/attribution.jsx";
 
 const blockClass = `w-full h-[90px] bg-white p-5 text-center flex flex-col`,
     blockLabelClass = `border-b-2`,
@@ -47,11 +48,7 @@ export const RenderDisasterLossStats = ({ totalLoss, ihpLoss, paLoss, sbaLoss, n
                    }</span>
                </div>
            </div>
-           <div className={'text-xs text-gray-700 pl-1'}>
-               <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
-                   Attribution: { attributionData?.version }
-               </Link>
-           </div>
+           <Attribution baseUrl={baseUrl} attributionData={attributionData} />
        </React.Fragment>
    )
 };

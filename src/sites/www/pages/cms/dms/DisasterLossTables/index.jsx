@@ -5,12 +5,12 @@ import { pgEnv } from "~/utils/";
 import { isJson } from "~/utils/macros.jsx";
 import { RenderDisasterLossTable } from "./components/RenderDisasterLossTable.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
-import GeographySearch from "../../components/geographySearch/index.jsx";
-import DisasterSearch from "../../components/DisasterSearch/index.jsx";
+import GeographySearch from "../../components/geographySearch.jsx";
+import DisasterSearch from "../../components/disasterSearch.jsx";
 import { Loading } from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
 import {RenderColumnControls} from "../../components/columnControls/";
-import {ButtonSelector} from "../../components/buttonSelector/index.jsx";
+import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -20,7 +20,7 @@ const Edit = ({value, onChange}) => {
 
     const ealSourceId = 343;
     const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
-    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || 4420);
+    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
     const [countyView, setCountyView] = useState();
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
@@ -46,11 +46,17 @@ const Edit = ({value, onChange}) => {
 
     useEffect( () => {
         async function getData(){
-            if(!geoid || !type){
-                setStatus('Please Select a Geography and a Type');
+            console.log('in useEffect', geoid, type, disasterNumber)
+            if(!geoid || !type || !disasterNumber){
+                !geoid && setStatus('Please Select a Geography.');
+                !type && setStatus('Please Select a Type.');
+                !disasterNumber && setStatus('Please Select a Disaster.');
+                setLoading(false);
+                return Promise.resolve()
             }else{
                 setStatus(undefined)
             }
+            console.log('in useEffect', geoid, type, disasterNumber, status, loading)
             setLoading(true);
             setStatus(undefined);
             setFilters({...filters,

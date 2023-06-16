@@ -6,7 +6,7 @@ import { isJson } from "~/utils/macros.jsx";
 import { RenderBarChart } from "./components/RenderBarChart.jsx";
 import { ProcessDataForMap } from "./utils";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
-import GeographySearch from "../../components/geographySearch/index.jsx";
+import GeographySearch from "../../components/geographySearch.jsx";
 import { Loading } from "~/utils/loading.jsx"
 
 const Edit = ({value, onChange}) => {

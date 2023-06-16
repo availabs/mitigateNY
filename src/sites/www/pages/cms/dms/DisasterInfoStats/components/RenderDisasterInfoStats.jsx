@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {Table} from "~/modules/avl-components/src";
 import { fnum } from "~/utils/macros.jsx";
 import {formatDate} from "~/utils/macros.jsx";
+import {Attribution} from "../../../components/attribution.jsx";
 
 const blockLabelClass = `border-b-2`,
     blockValueClass = `font-medium pt-2 text-xl`;
@@ -33,11 +34,7 @@ export const RenderDisasterInfoStats = ({ title, incidentType, declarationDate, 
 
                </div>
            </div>
-           <div className={'text-xs text-gray-700 pl-1'}>
-               <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
-                   Attribution: { attributionData?.version }
-               </Link>
-           </div>
+           <Attribution baseUrl={baseUrl} attributionData={attributionData} />
        </React.Fragment>
    )
 };

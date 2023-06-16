@@ -16,9 +16,5 @@ export const metaData = {
         Population: 'p',
         'Population $': 'pe',
         Total: 't'
-    },
-    columns: function (){
-        console.log('cols?', this.attributes, this.consequences)
-        return {}
-    },
+    }
 };

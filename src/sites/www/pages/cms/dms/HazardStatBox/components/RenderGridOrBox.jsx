@@ -4,6 +4,7 @@ import {hazardsMeta} from "../../../../../../../utils/colors.jsx";
 import {Link} from "react-router-dom";
 import {formatDate} from "../../../../../../../utils/macros.jsx";
 import get from "lodash/get.js";
+import {Attribution} from "../../../components/attribution.jsx";
 
 export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTotal, type, geoid, attributionData, baseUrl}) => (
     <React.Fragment>
@@ -12,7 +13,7 @@ export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTota
                         <div className={`grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-6  gap-2 mt-10`}>
                                 {
                                         Object.keys(hazardsMeta)
-                                            .sort((a, b) => a.localeCompare(b))
+                                            .sort((a, b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name))
                                             .map(key => (
                                                 <RenderHazardStatBox
                                                     hazard={key}
@@ -46,17 +47,6 @@ export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTota
                             eal={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.eal}
                         />
             }
-            <div className={'flex flex-row text-xs text-gray-700 p-1'}>
-                    <label>Attribution:</label>
-                    <div className={'flex flex-col pl-1'}>
-                            {
-                                    attributionData?.map(d => (
-                                        <Link to={`/${baseUrl}/source/${ d?.source_id }/versions/${d?.view_id}`}>
-                                                { d?.version } ({formatDate(d?._modified_timestamp)})
-                                        </Link>
-                                    ))
-                            }
-                    </div>
-            </div>
+        <Attribution baseUrl={baseUrl} attributionData={attributionData} />
     </React.Fragment>
 )

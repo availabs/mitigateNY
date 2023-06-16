@@ -44,6 +44,7 @@ export const RenderHazardStatBox = ({
     const blockWrapper = {
         large: `flex flex-col justify-between shrink-0 ml-5 pt-2`, small: `flex flex-col`
     };
+    const valueClass = `font-medium text-gray-800 text-xs overflow-wrap`
     const svgBarHeight = {large: 30, small: 12};
     const svgBarRadius = {large: 20, small: 10};
     const fontSizeInner = {large: "14.5px", small: "12.5px"};
@@ -106,9 +107,9 @@ export const RenderHazardStatBox = ({
                     }
                 </div>
                 <div className={blockWrapper[size]}>
-                    <div className={blockClass[size]}><label
-                        className={'break-word w-[25px]'}>{isTotal ? `Estimated Annual Loss (EAL)` : `EAL`}</label>
-                        <span className={"font-medium text-gray-800"}>
+                    <div className={blockClass[size]}>
+                        <label className={'break-word w-[25px]'}>{isTotal ? `Estimated Annual Loss (EAL)` : `EAL`}</label>
+                        <span className={valueClass}>
                             ${fnumIndex(eal)}
                         </span>
                     </div>
@@ -131,7 +132,7 @@ export const RenderHazardStatBox = ({
                     }
                     {!isTotal &&
                         <div className={blockClass[size]}><label>Actual Loss</label>
-                            <span className={"font-medium text-gray-800"}>
+                            <span className={valueClass}>
                                 ${fnumIndex(actualLoss)}
                             </span>
                         </div>
@@ -139,12 +140,12 @@ export const RenderHazardStatBox = ({
                     {!isTotal &&
                         <>
                             <div className={blockClass[size]}><label>Exposure</label>
-                                <span className={"font-medium text-gray-800"}>
+                                <span className={valueClass}>
                                     ${fnumIndex(exposure)}
                                 </span>
                             </div>
                             <div className={blockClass[size]}><label>Frequency</label>
-                                <span className={"font-medium text-gray-800"}>
+                                <span className={valueClass}>
                                     {freqToText((frequency || 0)?.toFixed(2))}
                                 </span>
                             </div>

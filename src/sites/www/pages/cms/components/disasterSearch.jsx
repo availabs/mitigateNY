@@ -4,7 +4,7 @@ import get from "lodash/get";
 import {useEffect, useMemo, useState} from "react";
 import {useFalcor} from '~/modules/avl-falcor';
 import {pgEnv} from "~/utils/";
-import {range} from "../../../../../../utils/macros";
+import {range} from "../../../../../utils/macros.jsx";
 
 
 const handleSearch = (text, selected, setSelected) => {

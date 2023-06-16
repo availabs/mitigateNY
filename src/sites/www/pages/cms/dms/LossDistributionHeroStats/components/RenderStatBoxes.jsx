@@ -2,6 +2,7 @@ import { fnum } from "~/utils/macros.jsx";
 import React from "react";
 import get from "lodash/get";
 import {Link} from "react-router-dom";
+import {Attribution} from "../../../components/attribution.jsx";
 
 export const RenderStatBoxes = ({ total, numDeclaredEvents, numNonDeclaredEvents, attributionData, baseUrl }) => {
     const blockClass = `w-full bg-slate-100 p-5 text-center flex flex-col`,
@@ -47,11 +48,7 @@ export const RenderStatBoxes = ({ total, numDeclaredEvents, numNonDeclaredEvents
                 </div>
 
             </div>
-            <div className={'text-xs text-gray-700 pl-1'}>
-                <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
-                    Attribution: { attributionData?.version }
-                </Link>
-            </div>
+            <Attribution baseUrl={baseUrl} attributionData={attributionData} />
         </React.Fragment>
     );
 };

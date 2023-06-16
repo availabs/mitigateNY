@@ -5,8 +5,8 @@ import { pgEnv } from "~/utils/";
 import { isJson } from "~/utils/macros.jsx";
 import { RenderDisasterInfoStats } from "./components/RenderDisasterInfoStats.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
-import GeographySearch from "../../components/geographySearch/index.jsx";
-import DisasterSearch from "../../components/DisasterSearch/index.jsx";
+import GeographySearch from "../../components/geographySearch.jsx";
+import DisasterSearch from "../../components/disasterSearch.jsx";
 import { Loading } from "~/utils/loading.jsx";
 
 const colAccessNameMapping = {

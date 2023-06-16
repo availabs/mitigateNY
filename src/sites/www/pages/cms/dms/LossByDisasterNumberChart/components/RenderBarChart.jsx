@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import React from "react";
 import { BarGraph } from "~/modules/avl-graph/src/index.js";
 import { RenderLegend } from "./RenderLegend.jsx";
-import {ButtonSelector} from "../../../components/buttonSelector/index.jsx";
+import {ButtonSelector} from "../../../components/buttonSelector.jsx";
+import {Attribution} from "../../../components/attribution.jsx";
 
 const colNameMapping = {
     swd_population_damage: 'Population Damage',
@@ -74,11 +75,7 @@ export const RenderBarChart = ({ chartDataActiveView = [], disaster_numbers = []
                 }}
                 groupMode={"stacked"}
             />
-            <div className={'text-xs text-gray-700 p-1'}>
-                <Link to={`/${baseUrl}/source/${attributionData?.source_id}/versions/${attributionData?.view_id}`}>
-                    Attribution: {attributionData?.version}
-                </Link>
-            </div>
+            <Attribution baseUrl={baseUrl} attributionData={attributionData} />
         </div>
     )
 };

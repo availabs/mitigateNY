@@ -4,6 +4,7 @@ import {Table} from "../../../../../../../modules/avl-components/src/index.js";
 import {Link} from "react-router-dom";
 import {formatDate} from "~/utils/macros.jsx";
 import {cellFormat} from '../utils.jsx'
+import {Attribution} from "../../../components/attribution.jsx";
 
 export const RenderDisasterLossTable = ({ data, columns, pageSize, sortBy={}, title, striped, attributionData, baseUrl, type }) => {
     const sortColRaw = columns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
@@ -27,14 +28,7 @@ export const RenderDisasterLossTable = ({ data, columns, pageSize, sortBy={}, ti
                    )
                }
            </>
-           <div className={'flex flex-row text-xs text-gray-700 p-1'}>
-               <label>Attribution:</label>
-               <div className={'flex flex-col pl-1'}>
-                   <Link to={`/${baseUrl}/source/${ attributionData?.source_id }/versions/${attributionData?.view_id}`}>
-                       { attributionData?.version } ({formatDate(attributionData?._modified_timestamp?.value)})
-                   </Link>
-               </div>
-           </div>
+           <Attribution baseUrl={baseUrl} attributionData={attributionData} />
        </div>
    )
 };

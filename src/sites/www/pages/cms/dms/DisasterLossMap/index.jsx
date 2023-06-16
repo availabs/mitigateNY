@@ -4,18 +4,19 @@ import {useFalcor} from '~/modules/avl-falcor';
 import {pgEnv} from "~/utils/";
 import {isJson} from "~/utils/macros.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
-import GeographySearch from "../../components/geographySearch/index.jsx";
-import DisasterSearch from "../../components/DisasterSearch/index.jsx";
+import GeographySearch from "../../components/geographySearch.jsx";
+import DisasterSearch from "../../components/disasterSearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
 import {Link} from "react-router-dom";
 import {formatDate} from "../../../../../../utils/macros.jsx";
-import {ButtonSelector} from "../../components/buttonSelector/index.jsx";
-import {RenderColorPicker} from "../../components/colorPicker/colorPicker.jsx";
+import {ButtonSelector} from "../../components/buttonSelector.jsx";
+import {RenderColorPicker} from "../../components/colorPicker.jsx";
 import {scaleThreshold} from "d3-scale";
 import {getColorRange} from "../../../../../../pages/DataManager/utils/color-ranges.js";
 import ckmeans from '~/utils/ckmeans';
 import {RenderMap} from "../../components/Map/RenderMap.jsx";
+import {Attribution} from "../../components/attribution.jsx";
 
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
@@ -155,7 +156,6 @@ const Edit = ({value, onChange}) => {
                         const geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);
                         const geom = get(geomRes, ["json", ...geoPath(stateView), 0, geomColTransform]);
                         if (geom) {
-                            console.log('setting focus', get(JSON.parse(geom), 'bbox'))
                             setMapfocus(get(JSON.parse(geom), 'bbox'));
                         }
                     })
@@ -246,15 +246,7 @@ const Edit = ({value, onChange}) => {
                                         legend={{domain, range: colors, title}}
                                     />
                                 </div>
-                                <div className={'flex flex-row text-xs text-gray-700 p-1'}>
-                                    <label>Attribution:</label>
-                                    <div className={'flex flex-col pl-1'}>
-                                        <Link
-                                            to={`/${baseUrl}/source/${attributionData?.source_id}/versions/${attributionData?.view_id}`}>
-                                            {attributionData?.version} ({formatDate(attributionData?._modified_timestamp?.value)})
-                                        </Link>
-                                    </div>
-                                </div>
+                                <Attribution baseUrl={baseUrl} attributionData={attributionData} />
                             </React.Fragment>
                 }
             </div>
@@ -283,15 +275,7 @@ const View = ({value}) => {
                     <div className={'p-5 text-center'}>{data?.status}</div> :
                     <div className='h-80vh flex-1 flex flex-col'>
                         <img alt='Choroplath Map' src={get(data, ['img'])}/>
-                        <div className={'flex flex-row text-xs text-gray-700 p-1'}>
-                            <label>Attribution:</label>
-                            <div className={'flex flex-col pl-1'}>
-                                <Link
-                                    to={`/${baseUrl}/source/${attributionData?.source_id}/versions/${attributionData?.view_id}`}>
-                                    {attributionData?.version} ({formatDate(attributionData?._modified_timestamp?.value)})
-                                </Link>
-                            </div>
-                        </div>
+                        <Attribution baseUrl={baseUrl} attributionData={attributionData} />
                     </div>
             }
         </div>
