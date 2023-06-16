@@ -4,10 +4,12 @@ export const ButtonSelector = ({label, types, type, setType, size='small', disab
             <div className={`my-1 flex flex-rows flex-wrap`}
                  title={disabled ? disabledTitle : null}
             >
-                <div className={'p-2 pl-0 w-1/4'}>{label}</div>
+                {
+                    label && <div className={'p-2 pl-0 w-1/4'}>{label}</div>
+                }
                 <span className={`
               
-                space-x-1 rounded-lg bg-slate-100 p-0.5
+                space-x-1 rounded-lg bg-slate-100 py-0.5
                 flex flex-row flex-wrap
                 shadow-sm 
                 ${size === 'large' && `w-full`}`}>

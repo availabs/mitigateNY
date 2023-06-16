@@ -39,7 +39,7 @@ export const RenderHazardStatBox = ({
     const ealCol = isTotal ? "avail_eal_total" : "avail_eal";
 
     const blockClass = {
-        large: "flex flex-col pt-2 text-sm", small: "flex flex-row justify-between pt-2 text-xs"
+        large: "flex flex-col pt-2 text-sm", small: "flex flex-row flex-wrap justify-between pt-2 text-xs"
     };
     const blockWrapper = {
         large: `flex flex-col justify-between shrink-0 ml-5 pt-2`, small: `flex flex-col`

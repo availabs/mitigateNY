@@ -64,4 +64,4 @@ export const getSizeClass = (size, prevSize) => {
     return `lg:col-start-2 ${sizes[size]}`
 }
 
-export const sizeGridTemplate = {gridTemplateColumns: '1fr 190px 190px 190px 190px 190px 190px 1fr'}
+export const sizeGridTemplate = {gridTemplateColumns: '1fr repeat(6, minmax(100px, 190px)) 1fr'}

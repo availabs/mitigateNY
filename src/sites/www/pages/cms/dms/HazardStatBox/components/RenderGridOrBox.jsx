@@ -10,7 +10,7 @@ export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTota
     <React.Fragment>
             {
                     type === 'grid' ?
-                        <div className={`grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-6  gap-2 mt-10`}>
+                        <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 sxl:grid-cols-6 gap-2 mt-10`}>
                                 {
                                         Object.keys(hazardsMeta)
                                             .sort((a, b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name))

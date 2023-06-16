@@ -19,12 +19,12 @@ export const RenderColumnControls = (
             <div key={'shadow'} className={'shadow-md shadow-blue-100 p-1.5'}></div>
 
             <div className={'w-full pt-2 mt-3 flex flex-row text-sm'}>
-                <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Page Size</label>
+                <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Table Page Size</label>
                 <input
                     key={'pageSizeInput'}
                     className={'p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
                     type={"number"}
-                    placeholder={'Page Size'}
+                    placeholder={'Table Page Size'}
                     value={pageSize || 0}
                     onChange={e => e.target.value > 0 && setPageSize(e.target.value)}
                     onWheel={() => {}}
@@ -50,14 +50,16 @@ export const RenderColumnControls = (
 
 
 
-            <div className={'grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 place-items-stretch space-between my-1 text-sm'}>
+            <div className={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-stretch space-between my-1 text-sm'}>
                 {
                     cols
                         .filter(c => visibleCols.includes(c) || anchorCols.includes(c))
                         .map((c, i) => (
                             <div
                                 key={`col-settings-${c}`}
-                                className={'m-1 flex flex-col justify-between p-2 border border-dashed border-blue-300 rounded-md'}>
+                                className={
+                                'm-1 flex flex-col justify-between p-2 ' +
+                                    `border border-dashed border-blue-${anchorCols.includes(c) ? `500` : `300`} rounded-md`}>
                                 <div className={'font-normal w-full h-full flex flex-row justify-between'}>
                                     <label key={`label-${c}`} className={'mb-auto'}>{c}</label>
                                     {
