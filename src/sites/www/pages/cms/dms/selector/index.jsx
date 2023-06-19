@@ -17,6 +17,7 @@ import HazardStatBox from '../HazardStatBox';
 
 import get from "lodash/get"
 import isEqual from "lodash/isEqual"
+import {isJson} from "../../../../../../utils/macros.jsx";
 
 // register components here
 const ComponentRegistry = {
@@ -62,8 +63,19 @@ function EditComp (props) {
                 <select 
                     className='bg-slate-100 p-2 w-full border-b rounded-md'
                     value={value?.['element-type'] || 'lexical'}
-                    onChange={e => updateAttribute('element-type', e.target.value)}
+                    onChange={async e => {
+                        if(e.target.value === 'paste'){
+                            return navigator.clipboard.readText()
+                                .then(text => {
+                                    const copiedValue = isJson(text) && JSON.parse(text || '{}')
+                                    return copiedValue?.['element-type'] && onChange({...value, ...copiedValue})
+                                })
+                        }else {
+                            updateAttribute('element-type', e.target.value)
+                        }
+                    }}
                 >
+                    <option key={'paste'} value={'paste'}>Paste from Clipboard</option>
                     {Object.keys(ComponentRegistry).map(k => (
                         <option value={k} key={k}>{ComponentRegistry[k].name || k}</option>
                     ))}

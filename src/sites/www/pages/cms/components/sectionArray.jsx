@@ -91,7 +91,16 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove})
                     ><i className="fa-light fa-xmark text-2xl fa-fw" title="Cancel"/></button>
                 </div>
                 <div className='py-2'>
-                    <button 
+                    <button
+                        id={'btn-copy-component'}
+                        className={'' +
+                            'pl-6 py-0.5 text-md cursor-pointer flex items-center ' +
+                            'hover:text-blue-500 focus:text-green-400 text-slate-400'}
+                        onClick={() => navigator.clipboard.writeText(JSON.stringify(value?.['element'] || '{}'))}
+                    ><i className="fa-light fa-copy text-2xl fa-fw" title="Copy"/>  </button>
+                </div>
+                <div className='py-2'>
+                    <button
                         className={'pl-6 py-0.5 text-md cursor-pointer flex items-center hover:text-blue-500 text-slate-400'}
                         onClick={onSave}
                     ><i className="fa-light fa-floppy-disk text-2xl fa-fw" title="Save"/>  </button>
