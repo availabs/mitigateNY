@@ -23,7 +23,7 @@ const Edit = ({value, onChange}) => {
 
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(data?.status);
-    const [geoid, setGeoid] = useState(data?.geoid || '36001');
+    const [geoid, setGeoid] = useState(data?.geoid || '36');
     const [hazard, setHazard] = useState(data?.hazard || 'total');
     const [dataPath, setDataPath] = useState([]);
 

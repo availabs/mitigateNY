@@ -10,8 +10,6 @@ export const RenderDisasterLossTable = ({ data, columns, pageSize, sortBy={}, ti
     const sortColRaw = columns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
    return (
        <div className={'py-5 flex flex-col'}>
-           <label key={title} className={"text-sm float-left capitalize"}> {title} </label>
-           <>
                {
                    data?.length > 0 && columns?.length > 0 && (
                        <Table
@@ -27,7 +25,6 @@ export const RenderDisasterLossTable = ({ data, columns, pageSize, sortBy={}, ti
                        />
                    )
                }
-           </>
            <Attribution baseUrl={baseUrl} attributionData={attributionData} />
        </div>
    )

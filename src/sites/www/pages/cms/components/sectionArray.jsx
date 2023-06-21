@@ -55,7 +55,7 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove})
 
     return (
         <div>
-            <div className='flex flex-wrap border-y items-center'>
+            <div className='flex flex-wrap border-y justify-end'>
                 <div className='flex-1 '>
                     <TitleComp 
                         className='p-2 w-full font-sans font-medium text-md uppercase'
@@ -72,7 +72,7 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove})
                         onChange={(v) => updateAttribute('tags', v)}
                     />
                 </div>
-                <div>
+                <div className={'self-center'}>
                     <SizeSelect 
                         size={value?.['size']} 
                         onChange={v => updateAttribute('size',v)}
@@ -221,7 +221,7 @@ const Edit = ({Component, value, onChange, attr}) => {
     }
 
     return (
-        <div className={`mb-12 grid`} style={sizeGridTemplate} >
+        <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}>
             {values.map((v,i) => {
 
                 let prevSize = i > 0 ? values[i-1]?.size : "1"
@@ -273,7 +273,7 @@ const View = ({Component, value, attr}) => {
     if (!value || !value.map) { return '' }
     
     return (
-        <div className={`mb-12 grid`} style={sizeGridTemplate} >
+        <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}   >
         { 
             value.map((v,i) =>{
                 let prevSize = i > 0 ? value[i-1]?.size : "1"

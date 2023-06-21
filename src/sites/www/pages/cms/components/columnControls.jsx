@@ -26,7 +26,8 @@ export const RenderColumnControls = (
                     type={"number"}
                     placeholder={'Table Page Size'}
                     value={pageSize || 0}
-                    onChange={e => e.target.value > 0 && setPageSize(e.target.value)}
+                    defaultValue={5}
+                    onChange={e => setPageSize(e.target.value || 5)}
                     onWheel={() => {}}
                 />
             </div>
@@ -50,7 +51,7 @@ export const RenderColumnControls = (
 
 
 
-            <div className={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-stretch space-between my-1 text-sm'}>
+            <div className={'flex flex-row flex-wrap space-between my-1 text-sm'}>
                 {
                     cols
                         .filter(c => visibleCols.includes(c) || anchorCols.includes(c))

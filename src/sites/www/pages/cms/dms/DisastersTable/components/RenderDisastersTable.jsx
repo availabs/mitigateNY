@@ -45,7 +45,6 @@ export const RenderDisastersTable = ({ type, data=[], columns=[], pageSize, sort
     return (
         <>
             <div className={'py-5'}>
-                <label key={"nceiLossesTitle"} className={"text-lg capitalize"}> {type} Disasters </label>
                 {
                     data?.length > 0 && columns?.length > 0 && (
                         <Table
