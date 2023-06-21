@@ -20,7 +20,7 @@ const theme = {
 }
 
 export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...props},) {
-  console.log('children', dataItems)
+  // console.log('children', dataItems)
   const menuItems = React.useMemo(() => {
     let items = dataItemsNav(dataItems,baseUrl,edit)
     if(edit) {
