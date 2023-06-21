@@ -9,6 +9,7 @@ import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
+import {HazardSelector} from "../../components/hazardSelector.jsx";
 
 const colNameMapping = {
     swd_population_damage: 'Population Damage',
@@ -52,6 +53,7 @@ const Edit = ({value, onChange}) => {
     const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
     const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
+    const [hazard, setHazard] = useState(cachedData?.hazard || 'total');
 
     const fusionGeoCol = `substring(geoid, 1, ${geoid.length})`,
         fusionAttributes = {
@@ -103,13 +105,18 @@ const Edit = ({value, onChange}) => {
                 aggregatedLen: true,
                 filter: {
                     [fusionGeoCol]: [geoid],
-                    'disaster_number': [type === 'declared' ? 'not null' : 'null']
+                    'disaster_number': [type === 'declared' ? 'not null' : 'null'],
+                    ...hazard !== 'total' && {nri_category: [hazard]}
                 },
                 groupBy: [fusionGeoCol, 'EXTRACT(YEAR from coalesce(fema_incident_begin_date, swd_begin_date))', type === 'declared' ? 'disaster_number' : 'event_id',],
             }),
         fusionOptions =
             JSON.stringify({
-                filter: {[fusionGeoCol]: [geoid], 'disaster_number': [type === 'declared' ? 'not null' : 'null']},
+                filter: {
+                    [fusionGeoCol]: [geoid],
+                    'disaster_number': [type === 'declared' ? 'not null' : 'null'],
+                    ...hazard !== 'total' && {nri_category: [hazard]}
+                },
                 groupBy: [1, 2, 3],
                 orderBy: [
                     type === 'declared' ?
@@ -185,12 +192,12 @@ const Edit = ({value, onChange}) => {
         }
 
         getData()
-    }, [geoid, ealViewId, type]);
+    }, [geoid, ealViewId, type, hazard]);
 
     const disasterNames =
         useMemo(() =>
                 Object.values(get(falcorCache, [...disasterNamePath(disasterDecView, disasterNumbers)], {})),
-            [falcorCache, disasterDecView, disasterNumbers]);
+            [falcorCache, disasterDecView, disasterNumbers, hazard]);
     const data =
         useMemo(() =>
                 Object.values(get(falcorCache,
@@ -198,7 +205,7 @@ const Edit = ({value, onChange}) => {
                     {})
                 ),
             // .filter(a => typeof a['year'] !== 'object'),
-            [falcorCache, fusionViewId, fusionOptions, fusionAttributes]);
+            [falcorCache, fusionViewId, fusionOptions, fusionAttributes, hazard]);
 
     const columns = Object.keys(fusionAttributes)
         .filter(col => visibleCols.includes(col) || anchorCols.includes(col))
@@ -226,12 +233,12 @@ const Edit = ({value, onChange}) => {
                         status,
                         geoid,
                         pageSize, sortBy,
-                        type, data, columns, filters, visibleCols, fusionAttributes, disasterNames
+                        type, data, columns, filters, visibleCols, fusionAttributes, disasterNames, hazard
                     }))
             }
         },
         [attributionData, status, ealViewId, fusionViewId, geoid, pageSize, sortBy,
-            type, data, columns, filters, visibleCols, fusionAttributes, disasterNames]);
+            type, data, columns, filters, visibleCols, fusionAttributes, disasterNames, hazard]);
 
     return (
         <div className='w-full'>
@@ -253,6 +260,7 @@ const Edit = ({value, onChange}) => {
                             setFilters({})
                         }}
                     />
+                    <HazardSelector hazard={hazard} setHazard={setHazard} showTotal={true}/>
                     <RenderColumnControls
                         cols={Object.keys(fusionAttributes || {}).filter(c => fusionAttributes[c].visible !== false)}
                         anchorCols={anchorCols}

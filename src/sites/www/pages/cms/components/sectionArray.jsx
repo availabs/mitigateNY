@@ -55,7 +55,7 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove})
 
     return (
         <div>
-            <div className='flex border-y items-center h-[50px]'>
+            <div className='flex flex-wrap border-y items-center'>
                 <div className='flex-1 '>
                     <TitleComp 
                         className='p-2 w-full font-sans font-medium text-md uppercase'
@@ -78,35 +78,37 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove})
                         onChange={v => updateAttribute('size',v)}
                     />
                 </div>
-                <div className='py-2'>
-                    <button 
-                        className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
-                        onClick={onRemove}
-                    ><i className="fa-light fa-trash text-2xl fa-fw" title="Cancel"/></button>
-                </div>
-                <div className='py-2'>
-                    <button 
-                        className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
-                        onClick={onCancel}
-                    ><i className="fa-light fa-xmark text-2xl fa-fw" title="Cancel"/></button>
-                </div>
-                <div className='py-2'>
-                    <button
-                        id={'btn-copy-component'}
-                        className={'' +
-                            'pl-6 py-0.5 text-md cursor-pointer flex items-center ' +
-                            'hover:text-blue-500 focus:text-green-400 text-slate-400'}
-                        onClick={() => navigator.clipboard.writeText(JSON.stringify(value?.['element'] || '{}'))}
-                    ><i className="fa-light fa-copy text-2xl fa-fw" title="Copy"/>  </button>
-                </div>
-                <div className='py-2'>
-                    <button
-                        className={'pl-6 py-0.5 text-md cursor-pointer flex items-center hover:text-blue-500 text-slate-400'}
-                        onClick={onSave}
-                    ><i className="fa-light fa-floppy-disk text-2xl fa-fw" title="Save"/>  </button>
+                <div className={'flex flex-row flex-wrap'}>
+                    <div className='py-2'>
+                        <button
+                            className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
+                            onClick={onRemove}
+                        ><i className="fa-light fa-trash text-2xl fa-fw" title="Cancel"/></button>
+                    </div>
+                    <div className='py-2'>
+                        <button
+                            className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
+                            onClick={onCancel}
+                        ><i className="fa-light fa-xmark text-2xl fa-fw" title="Cancel"/></button>
+                    </div>
+                    <div className='py-2'>
+                        <button
+                            id={'btn-copy-component'}
+                            className={'' +
+                                'pl-6 py-0.5 text-md cursor-pointer flex items-center ' +
+                                'hover:text-blue-500 focus:text-green-400 text-slate-400'}
+                            onClick={() => navigator.clipboard.writeText(JSON.stringify(value?.['element'] || '{}'))}
+                        ><i className="fa-light fa-copy text-2xl fa-fw" title="Copy"/>  </button>
+                    </div>
+                    <div className='py-2'>
+                        <button
+                            className={'pl-6 py-0.5 text-md cursor-pointer flex items-center hover:text-blue-500 text-slate-400'}
+                            onClick={onSave}
+                        ><i className="fa-light fa-floppy-disk text-2xl fa-fw" title="Save"/>  </button>
+                    </div>
                 </div>
             </div>
-            <div>
+            <div className={'min-h-100'}>
                 <ElementComp 
                     value={value?.['element']} 
                     onChange={(v) => updateAttribute('element', v)}
