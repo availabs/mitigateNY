@@ -18,7 +18,7 @@ const colNameMapping = {
 
 const nonDeclaredDisastersColor = '#be00ff';
 
-export const RenderBarChart = ({ chartDataActiveView = [], attributionData, baseUrl, hazard }) => {
+export const RenderBarChart = ({ chartDataActiveView = [], attributionData, baseUrl, hazard, consequence = '_td' }) => {
     if(!chartDataActiveView?.length) return null;
 
     const [threshold, setThreshold] = React.useState('Max');
@@ -28,7 +28,8 @@ export const RenderBarChart = ({ chartDataActiveView = [], attributionData, base
     const keys =
         Object.keys(hazardsMeta)
             .filter(k => !hazard || hazard === 'total' || k === hazard)
-            .map(k => `${k}_td`);
+            .map(k => `${k}${consequence}`);
+
     const yearWiseTotals = chartDataActiveView.map(d => keys.reduce((a,c) => a + (+d[c] || 0) ,0));
     const maxValue = Math.max(...yearWiseTotals);
     const maxValueFormatted = +fnumIndex(maxValue, maxValue.toString().length).trim().split(' ')[0];
@@ -68,8 +69,7 @@ export const RenderBarChart = ({ chartDataActiveView = [], attributionData, base
                 }}
                 paddingInner={0.1}
                 colors={(value, ii, d, key) => {
-                    return key?.split('_')[0] === 'Non-declared Disasters' ? nonDeclaredDisastersColor :
-                        get(hazardsMeta, [d[`${key?.split('_')[0]}_nri_category`], 'color'], nonDeclaredDisastersColor)
+                    return get(hazardsMeta, [d[`${key?.split('_')[0]}_nri_category`], 'color'], nonDeclaredDisastersColor)
                 }}
                 hoverComp={{
                     HoverComp: HoverComp,

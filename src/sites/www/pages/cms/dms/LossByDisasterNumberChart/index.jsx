@@ -9,6 +9,7 @@ import VersionSelectorSearchable from "../../components/versionSelector/searchab
 import GeographySearch from "../../components/geographySearch.jsx";
 import { Loading } from "~/utils/loading.jsx"
 import {HazardSelector} from "../../components/hazardSelector.jsx";
+import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -26,6 +27,7 @@ const Edit = ({value, onChange}) => {
     const [status, setStatus] = useState(data?.status);
     const [geoid, setGeoid] = useState(data?.geoid || '36');
     const [hazard, setHazard] = useState(data?.hazard || 'total');
+    const [consequence, setConsequence] = useState(data?.consequence || '_td');
     const [dataPath, setDataPath] = useState([]);
 
     const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
@@ -115,9 +117,10 @@ const Edit = ({value, onChange}) => {
                     status,
                     geoid,
                     hazard,
-                    dataPath
+                    dataPath,
+                    consequence
                 })),
-        [chartDataActiveView, disaster_numbers, attributionData, status, ealViewId, fusionViewId, geoid, hazard, dataPath]);
+        [chartDataActiveView, disaster_numbers, attributionData, status, ealViewId, fusionViewId, geoid, hazard, dataPath, consequence]);
 
     return (
         <div className='w-full'>
@@ -127,6 +130,16 @@ const Edit = ({value, onChange}) => {
                     <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId} className={'flex-row-reverse'} />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
                     <HazardSelector hazard={hazard} setHazard={setHazard} showTotal={true}/>
+                    <ButtonSelector
+                        label={'Loss Type:'}
+                        types={[
+                            {value: '_pd', label: 'Buildings'},
+                            {value: '_cd', label: 'Crop'},
+                            {value: '_td', label: 'Total'}
+                        ]}
+                        type={consequence}
+                        setType={setConsequence}
+                    />
                 </div>
                 {
                     loading ? <Loading /> :
@@ -137,6 +150,7 @@ const Edit = ({value, onChange}) => {
                                     disaster_numbers={disaster_numbers}
                                     attributionData={attributionData}
                                     hazard={hazard}
+                                    consequence={consequence}
                                     baseUrl={baseUrl}
                                 />
                             </>
