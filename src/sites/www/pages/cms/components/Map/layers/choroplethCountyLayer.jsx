@@ -103,7 +103,7 @@ class EALChoroplethOptions extends LayerContainer {
             [feature.properties.geoid, ''],
             ...Object.keys(record || {})
               .filter(key => key !== 'geoid')
-              .map(key => [keyMapping(key), fnum(get(record, key))]),
+              .map(key => keyMapping(key) ? [keyMapping(key), fnum(get(record, key))] : [fnum(get(record, key))]),
             currentView?.paintFn ? ['Total', fnum(currentView.paintFn(record || {}) || 0)] : null
           ];
         return response;

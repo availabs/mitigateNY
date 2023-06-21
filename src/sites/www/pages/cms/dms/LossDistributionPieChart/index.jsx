@@ -8,6 +8,7 @@ import { ProcessDataForMap } from "./utils"
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 import { Loading } from "~/utils/loading.jsx"
+import {HazardSelector} from "../../components/hazardSelector.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -23,11 +24,11 @@ const Edit = ({value, onChange}) => {
 
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(data?.status);
-    const [geoid, setGeoid] = useState(data?.geoid || '36001');
+    const [geoid, setGeoid] = useState(data?.geoid || '36');
+    const [hazard, setHazard] = useState(data?.hazard || 'total');
+    const [dataPath, setDataPath] = useState([]);
 
     const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
-    const disasterNameAttributes = ['distinct disaster_number as disaster_number', 'declaration_title'],
-          disasterNamePath = (view_id) => ['dama', pgEnv,  "viewsbyId", view_id, "options"];
 
     useEffect( () => {
         async function getData(){
@@ -51,21 +52,29 @@ const Edit = ({value, onChange}) => {
 
                 setFusionViewId(fusionView.view_id)
 
-                const lossRes = await falcor.get(
-                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id, "byGeoid", geoid, ["lossByYearByDisasterNumber"]],
-                    ['dama', pgEnv, 'views', 'byId', fusionView.view_id, 'attributes', ['source_id', 'view_id', 'version']]
+                const dataPath = hazard !== 'total' ?
+                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id, "byGeoid", geoid,
+                        'hazards', JSON.stringify([hazard]),
+                        "lossByYearByDisasterNumber"] :
+                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id, "byGeoid", geoid,
+                        "lossByYearByDisasterNumber"];
+
+                setDataPath(dataPath);
+
+                await falcor.get(
+                    dataPath,
+                    ['dama', pgEnv, 'views', 'byId', fusionView.view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
                 );
                 setLoading(false);
             })
         }
 
         getData()
-    }, [geoid, ealViewId, geoid]);
+    }, [geoid, ealViewId, geoid, hazard]);
 
     const lossByYearByDisasterNumber =
             get(falcorCache,
-                ["fusion", pgEnv, "source", fusionSourceId, "view", fusionViewId, "byGeoid", geoid,
-                    "lossByYearByDisasterNumber", "value"], []),
+                [...dataPath, "value"], []),
         { total } = ProcessDataForMap(lossByYearByDisasterNumber);
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes'], {});
@@ -76,11 +85,12 @@ const Edit = ({value, onChange}) => {
                     attributionData,
                     ealViewId,
                     fusionViewId,
+                    hazard,
                     status,
                     geoid,
                     total
                 })),
-        [attributionData, status, ealViewId, fusionViewId, geoid, total]);
+        [attributionData, status, ealViewId, fusionViewId, geoid, total, hazard]);
 
     return (
         <div className='w-full'>
@@ -89,6 +99,7 @@ const Edit = ({value, onChange}) => {
                     Edit Controls
                     <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId} className={'flex-row-reverse'} />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
+                    <HazardSelector hazard={hazard} setHazard={setHazard} showTotal={true}/>
                 </div>
                 {
                     loading ? <Loading /> :

@@ -1,7 +1,7 @@
 import React from "react";
 import {hazardsMeta} from "~/utils/colors.jsx";
 
-export const HazardSelector = ({hazard, setHazard}) => {
+export const HazardSelector = ({hazard, setHazard, showTotal=false}) => {
     return (
         <div className='flex flex-row flwx-wrap justify-between'>
             <label className={'shrink-0 pr-2 py-1 my-1 w-1/4'}>Hazard Type:</label>
@@ -12,7 +12,7 @@ export const HazardSelector = ({hazard, setHazard}) => {
                 }}
                 value={hazard}
             >
-                {/*<option value='total'>Total</option>*/}
+                {showTotal && <option value='total'>Total</option>}
                 {
                     Object.keys(hazardsMeta).map((k, i) => {
                         return <option value={k}>{hazardsMeta[k].name}</option>

@@ -15,7 +15,7 @@ import {scaleThreshold} from "d3-scale";
 import {getColorRange} from "../../../../../../pages/DataManager/utils/color-ranges.js";
 import ckmeans from '~/utils/ckmeans';
 import {RenderMap} from "../../components/Map/RenderMap.jsx";
-import {HazardSelector} from "./components/HazardSelector.jsx";
+import {HazardSelector} from "../../components/hazardSelector.jsx";
 import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 import {Attribution} from "../../components/attribution.jsx";
 
@@ -61,6 +61,7 @@ const Edit = ({value, onChange}) => {
 
     const ealSourceId = 343;
     const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
+    const [dataSource, setDataSource] = useState(cachedData?.dataSource || 'avail_counties');
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
@@ -117,7 +118,7 @@ const Edit = ({value, onChange}) => {
                     return Promise.resolve();
                 }
                 setTypeId(typeId.view_id);
-                setTitle(metaData.title(hazardsMeta[hazard].name, attribute, consequence))
+                setTitle(metaData.title(hazardsMeta[hazard]?.name, attribute, consequence))
                 const dataRes = await falcor.get(
                     [...dataPath(typeId.view_id), 'length'],
                     attributionPath(typeId.view_id)
@@ -179,9 +180,11 @@ const Edit = ({value, onChange}) => {
                 hazard,
                 attribute,
                 consequence,
+                dataSource,
                 change: e => onChange(JSON.stringify({
                     ...e,
                     ealViewId,
+                    dataSource,
                     geoid,
                     status,
                     hazard,
@@ -207,12 +210,20 @@ const Edit = ({value, onChange}) => {
     // conseq selector // b, a, p, pe, t
 
     // fetch <hazard_prefix>_<attribute>_<conseq> for the selected geography
-
+    console.log('ds', dataSource)
     return (
         <div className='w-full'>
             <div className='relative'>
                 <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
                     Edit Controls
+                    {/*<ButtonSelector*/}
+                    {/*    label={'Data Source:'}*/}
+                    {/*    types={metaData.dataSources}*/}
+                    {/*    type={dataSource}*/}
+                    {/*    setType={e => {*/}
+                    {/*        setDataSource(e);*/}
+                    {/*    }}*/}
+                    {/*/>*/}
                     <VersionSelectorSearchable
                         source_id={ealSourceId}
                         view_id={ealViewId}

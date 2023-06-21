@@ -34,7 +34,7 @@ const DrawLegend = ({domain=[], range=[], title, type = 'threshold', format = '0
                     return (
                         <div className={`flex flex-col h-[${heightParent}]`} style={{width}}>
                             <div className={`h-[${heightChild}]`} style={{backgroundColor: r, width}}/>
-                            <div className={`h-[${heightChild}] text-xs text-right`} style={{width}}>{fmt(domain[i]).replace('G', 'T')}</div>
+                            <div className={`h-[${heightChild}] text-xs text-right`} style={{width}}>{fmt(domain[i]).replace('k', 'K').replace('G', 'B').replace('P', 'Q')}</div>
                         </div>
                     )
                 })

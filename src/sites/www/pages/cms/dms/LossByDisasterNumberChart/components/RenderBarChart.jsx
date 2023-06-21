@@ -17,7 +17,9 @@ const colNameMapping = {
     ofd_ttd: 'Declared Total',
 };
 
-export const RenderBarChart = ({ chartDataActiveView = [], disaster_numbers = [], attributionData, baseUrl }) => {
+const nonDeclaredDisastersColor = '#be00ff';
+
+export const RenderBarChart = ({ chartDataActiveView = [], disaster_numbers = [], attributionData, baseUrl, hazard }) => {
     if(!chartDataActiveView?.length) return null;
 
     const [threshold, setThreshold] = React.useState('Max');
@@ -45,7 +47,7 @@ export const RenderBarChart = ({ chartDataActiveView = [], disaster_numbers = []
         <div className={`w-full pt-10 my-1 block flex flex-col`} style={{height: "450px"}}>
             <label key={"nceiLossesTitle"} className={"text-lg pb-2"}> Loss by Disaster Number
             </label>
-            <RenderLegend/>
+            <RenderLegend hazard={hazard} nonDeclaredDisastersColor={nonDeclaredDisastersColor}/>
             <ButtonSelector types={[...ticks.map(t => fnumIndex(t, 0)), 'Max']}  type={threshold} setType={setThreshold}/>
             <BarGraph
                 key={"numEvents"}
@@ -66,7 +68,8 @@ export const RenderBarChart = ({ chartDataActiveView = [], disaster_numbers = []
                 }}
                 paddingInner={0.1}
                 colors={(value, ii, d, key) => {
-                    return key?.split('_')[0] === 'Non-declared Disasters' ? '#be00ff' : get(hazardsMeta, [d[`${key?.split('_')[0]}_nri_category`], 'color'], '#be00ff')
+                    return key?.split('_')[0] === 'Non-declared Disasters' ? nonDeclaredDisastersColor :
+                        get(hazardsMeta, [d[`${key?.split('_')[0]}_nri_category`], 'color'], nonDeclaredDisastersColor)
                 }}
                 hoverComp={{
                     HoverComp: HoverComp,

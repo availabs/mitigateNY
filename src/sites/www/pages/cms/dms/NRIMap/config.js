@@ -16,5 +16,9 @@ export const metaData = {
         Population: 'p',
         'Population $': 'pe',
         Total: 't'
-    }
+    },
+    dataSources: [
+        {label: 'NRI Counties', value: 'nri_counties'},
+        {label: 'AVAIL EAL Counties', value: 'avail_counties'}
+    ]
 };

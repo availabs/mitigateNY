@@ -9,8 +9,8 @@ const colNameMapping = {
     fusion_property_damage: 'Property Damage',
     fusion_crop_damage: 'Crop Damage',
     disaster_number: 'Disaster Number',
-    swd_ttd: 'Non Declared Events Total',
-    ofd_ttd: 'FEMA Declared Disaster Total',
+    swd_ttd: 'Non Declared Events Total ($)',
+    ofd_ttd: 'FEMA Declared Disaster Total ($)',
 };
 
 export const RenderPieChart = ({ data, attributionData, baseUrl }) => {
@@ -27,10 +27,10 @@ export const RenderPieChart = ({ data, attributionData, baseUrl }) => {
 
                             return (
                                 <div className={"flex px-2"} key={key}>
-                                    <div className={"rounded-full"}
+                                    <div className={"rounded-full self-center align-middle"}
                                          style={{
-                                             height: "20px",
-                                             width: "20px",
+                                             height: "15px",
+                                             width: "15px",
                                              backgroundColor: pieColors[key]
                                          }} />
                                     <span className={"pl-2"}>{colNameMapping[key]}</span>

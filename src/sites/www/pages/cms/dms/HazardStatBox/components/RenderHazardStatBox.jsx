@@ -53,7 +53,7 @@ export const RenderHazardStatBox = ({
 
     return (
         <div className={`border border-gray-200 p-5 ${eal ? `bg-white` : `bg-gray-100`}`}>
-            <div className={"w-full border-b-2 flex "} style={{borderColor: get(hazardsMeta, [hazard, "color"], "")}}>
+            <div className={"w-full border-b-2 flex flex-wrap"} style={{borderColor: get(hazardsMeta, [hazard, "color"], "")}}>
                 {!isTotal &&
                     <div className={"rounded-full mt-1 mr-2 mb-0"}
                          style={{

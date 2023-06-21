@@ -8,6 +8,7 @@ import { ProcessDataForMap } from "./utils";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 import { Loading } from "~/utils/loading.jsx"
+import {HazardSelector} from "../../components/hazardSelector.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -24,6 +25,8 @@ const Edit = ({value, onChange}) => {
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(data?.status);
     const [geoid, setGeoid] = useState(data?.geoid || '36001');
+    const [hazard, setHazard] = useState(data?.hazard || 'total');
+    const [dataPath, setDataPath] = useState([]);
 
     const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
     const disasterNameAttributes = ['distinct disaster_number as disaster_number', 'declaration_title'],
@@ -50,15 +53,24 @@ const Edit = ({value, onChange}) => {
                 }
 
                 setFusionViewId(fusionView.view_id)
+                const dataPath = hazard !== 'total' ?
+                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id, "byGeoid", geoid,
+                        'hazards', JSON.stringify([hazard]),
+                        "lossByYearByDisasterNumber"] :
+                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id, "byGeoid", geoid,
+                        "lossByYearByDisasterNumber"];
+
+                setDataPath(dataPath);
 
                 const lossRes = await falcor.get(
-                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id, "byGeoid", geoid, ["lossByYearByDisasterNumber"]],
+                    dataPath,
                     ['dama', pgEnv, 'views', 'byId', fusionView.view_id, 'attributes', ['source_id', 'view_id', 'version']]
                 );
+                console.log('lossRes', get(lossRes,
+                    ['json', ...dataPath], []), lossRes)
 
                 const disasterNumbers = get(lossRes,
-                    ['json', "fusion", pgEnv, "source", fusionSourceId, "view",
-                        fusionView.view_id, "byGeoid", geoid, "lossByYearByDisasterNumber"], [])
+                    ['json', ...dataPath], [])
                     .map(dns => dns.disaster_number)
                     ?.filter(dns => dns !== 'SWD')
                     .sort((a, b) => +a - +b);
@@ -75,7 +87,7 @@ const Edit = ({value, onChange}) => {
         }
 
         getData()
-    }, [geoid, ealViewId, geoid]);
+    }, [geoid, ealViewId, geoid, hazard]);
 
     const disasterNames =
         Object.values(get(falcorCache, [...disasterNamePath(disasterDecView)], {}))
@@ -86,9 +98,7 @@ const Edit = ({value, onChange}) => {
                 }, {});
 
     const lossByYearByDisasterNumber =
-            get(falcorCache,
-                ["fusion", pgEnv, "source", fusionSourceId, "view", fusionViewId, "byGeoid", geoid,
-                    "lossByYearByDisasterNumber", "value"], []),
+            get(falcorCache, [...dataPath, "value"], []),
         { processed_data: chartDataActiveView, disaster_numbers } =
                     ProcessDataForMap(lossByYearByDisasterNumber, disasterNames);
 
@@ -103,9 +113,11 @@ const Edit = ({value, onChange}) => {
                     ealViewId,
                     fusionViewId,
                     status,
-                    geoid
+                    geoid,
+                    hazard,
+                    dataPath
                 })),
-        [chartDataActiveView, disaster_numbers, attributionData, status, ealViewId, fusionViewId, geoid]);
+        [chartDataActiveView, disaster_numbers, attributionData, status, ealViewId, fusionViewId, geoid, hazard, dataPath]);
 
     return (
         <div className='w-full'>
@@ -114,6 +126,7 @@ const Edit = ({value, onChange}) => {
                     Edit Controls
                     <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId} className={'flex-row-reverse'} />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
+                    <HazardSelector hazard={hazard} setHazard={setHazard} showTotal={true}/>
                 </div>
                 {
                     loading ? <Loading /> :
@@ -123,6 +136,7 @@ const Edit = ({value, onChange}) => {
                                     chartDataActiveView={chartDataActiveView}
                                     disaster_numbers={disaster_numbers}
                                     attributionData={attributionData}
+                                    hazard={hazard}
                                     baseUrl={baseUrl}
                                 />
                             </>
