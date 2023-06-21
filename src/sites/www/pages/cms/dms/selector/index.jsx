@@ -45,9 +45,9 @@ function EditComp (props) {
         }
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
     }
-    // if(!value?.['element-type']) {
-    //     onChange({...value, 'element-type': 'lexical'})
-    // }
+    if(!value?.['element-type']) {
+        onChange({...value, 'element-type': 'lexical'})
+    }
     let DataComp = ComponentRegistry[get(value, "element-type", "lexical")].EditComp
 
 
