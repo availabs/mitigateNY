@@ -1,7 +1,6 @@
 import { hazardsMeta } from "~/utils/colors.jsx";
 import get from "lodash/get.js";
 import {fnum, fnumIndex, fnumToNumber, HoverComp, range} from "~/utils/macros.jsx";
-import { Link } from "react-router-dom";
 import React from "react";
 import { BarGraph } from "~/modules/avl-graph/src/index.js";
 import { RenderLegend } from "./RenderLegend.jsx";
@@ -19,14 +18,17 @@ const colNameMapping = {
 
 const nonDeclaredDisastersColor = '#be00ff';
 
-export const RenderBarChart = ({ chartDataActiveView = [], disaster_numbers = [], attributionData, baseUrl, hazard }) => {
+export const RenderBarChart = ({ chartDataActiveView = [], attributionData, baseUrl, hazard }) => {
     if(!chartDataActiveView?.length) return null;
 
     const [threshold, setThreshold] = React.useState('Max');
     const minYear = Math.min(...chartDataActiveView.map(d => d.year));
     const maxYear = Math.max(...chartDataActiveView.map(d => d.year));
 
-    const keys = disaster_numbers.map(dn => `${dn}_td`);
+    const keys =
+        Object.keys(hazardsMeta)
+            .filter(k => !hazard || hazard === 'total' || k === hazard)
+            .map(k => `${k}_td`);
     const yearWiseTotals = chartDataActiveView.map(d => keys.reduce((a,c) => a + (+d[c] || 0) ,0));
     const maxValue = Math.max(...yearWiseTotals);
     const maxValueFormatted = +fnumIndex(maxValue, maxValue.toString().length).trim().split(' ')[0];

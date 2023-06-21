@@ -7,6 +7,7 @@ import { dmsDataTypes } from "~/modules/dms/src"
 // import ColorBox from "../colorbox";
 import LossByDisasterNumberChart from "../LossByDisasterNumberChart";
 import LossDistributionPieChart from "../LossDistributionPieChart";
+import LossByHazardTypeChart from "../LossByHazardTypeChart/index.jsx";
 import LossDistributionHeroStats from "../LossDistributionHeroStats";
 import DisastersTable from "../DisastersTable/index.jsx";
 import DisasterInfoStats from "../DisasterInfoStats/index.jsx";
@@ -28,6 +29,7 @@ const ComponentRegistry = {
     "Table: Disaster Loss": DisasterLossTables,
     "Table: NRI": NRITable,
     "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
+    "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
     "Chart: Loss Distribution Pie Chart": LossDistributionPieChart,
     "Map: FEMA Disaster Loss": DisasterLossMap,
     "Map: NRI": NRIMap,
