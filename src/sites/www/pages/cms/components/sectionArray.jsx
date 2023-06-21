@@ -55,7 +55,7 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove})
 
     return (
         <div>
-            <div className='flex flex-wrap border-y items-center'>
+            <div className='flex flex-wrap border-y justify-end'>
                 <div className='flex-1 '>
                     <TitleComp 
                         className='p-2 w-full font-sans font-medium text-md uppercase'
