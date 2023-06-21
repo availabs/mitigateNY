@@ -65,7 +65,7 @@ const Edit = ({value, onChange}) => {
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
-    const [hazard, setHazard] = useState(cachedData?.hazard || 'hail');
+    const [hazard, setHazard] = useState(cachedData?.hazard);
     const [typeId, setTypeId] = useState(cachedData?.typeId);
     const [data, setData] = useState(cachedData?.data);
     const [attribute, setAttribute] = useState(cachedData?.attribute);

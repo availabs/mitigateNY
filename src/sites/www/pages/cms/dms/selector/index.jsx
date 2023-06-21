@@ -1,6 +1,7 @@
 import React from "react"
-
-import {Select} from "~/modules/avl-components/src"
+import get from "lodash/get"
+import isEqual from "lodash/isEqual"
+import {isJson} from "~/utils/macros.jsx";
 import { dmsDataTypes } from "~/modules/dms/src"
 
 // import ColorBox from "../colorbox";
@@ -14,10 +15,7 @@ import DisasterLossTables from "../DisasterLossTables/index.jsx";
 import DisasterLossMap from "../DisasterLossMap/index.jsx";
 import NRIMap from "../NRIMap/index.jsx";
 import HazardStatBox from '../HazardStatBox';
-
-import get from "lodash/get"
-import isEqual from "lodash/isEqual"
-import {isJson} from "../../../../../../utils/macros.jsx";
+import NRITable from "../NRITable/index.jsx";
 
 // register components here
 const ComponentRegistry = {
@@ -28,6 +26,7 @@ const ComponentRegistry = {
     "Hero Stats: Disaster Loss": DisasterLossStats,
     "Table: Disasters": DisastersTable,
     "Table: Disaster Loss": DisasterLossTables,
+    "Table: NRI": NRITable,
     "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
     "Chart: Loss Distribution Pie Chart": LossDistributionPieChart,
     "Map: FEMA Disaster Loss": DisasterLossMap,

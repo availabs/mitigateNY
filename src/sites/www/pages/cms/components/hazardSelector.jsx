@@ -12,9 +12,11 @@ export const HazardSelector = ({hazard, setHazard, showTotal=false}) => {
                 }}
                 value={hazard}
             >
-                {showTotal && <option value='total'>Total</option>}
+                {showTotal ? <option value='total'>Total</option> : <option value={null}>Select A Hazard Type</option>}
                 {
-                    Object.keys(hazardsMeta).map((k, i) => {
+                    Object.keys(hazardsMeta)
+                        .sort((a,b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name))
+                        .map((k, i) => {
                         return <option value={k}>{hazardsMeta[k].name}</option>
                     })
                 }
