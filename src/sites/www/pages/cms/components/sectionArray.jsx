@@ -108,7 +108,7 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove})
                     </div>
                 </div>
             </div>
-            <div className={'min-h-100'}>
+            <div>
                 <ElementComp 
                     value={value?.['element']} 
                     onChange={(v) => updateAttribute('element', v)}
