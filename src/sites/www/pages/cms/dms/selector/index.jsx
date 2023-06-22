@@ -37,7 +37,7 @@ const ComponentRegistry = {
 }
 
 function EditComp (props) {
-    const { value, onChange } = props
+    const { value, onChange, size } = props
     // console.log("selector props", props, value)
     
     const updateAttribute = (k, v) => {
@@ -86,6 +86,7 @@ function EditComp (props) {
                 <DataComp
                     value={value?.['element-data'] || ''}
                     onChange={v => updateAttribute('element-data', v)}
+                    size={size}
                 />
             </div>
         </div>

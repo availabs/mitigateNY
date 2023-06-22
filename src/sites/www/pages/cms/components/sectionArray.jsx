@@ -37,9 +37,9 @@ function SizeSelect ({size='1', setSize, onChange}) {
     )
 } 
 
-function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove}) {
+function SectionEdit ({value, onChange, attributes, size, onCancel, onSave, onRemove}) {
     // console.log('SectionEdit', value, attributes)
-    
+
     const updateAttribute = (k, v) => {
         if(!isEqual(value, {...value, [k]: v})) {
             // console.log('onChange', k, v)
@@ -112,6 +112,7 @@ function SectionEdit ({value, onChange, attributes, onCancel, onSave, onRemove})
                 <ElementComp 
                     value={value?.['element']} 
                     onChange={(v) => updateAttribute('element', v)}
+                    size={size}
                 />
             </div>
         </div>
@@ -224,11 +225,12 @@ const Edit = ({Component, value, onChange, attr}) => {
         <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}>
             {values.map((v,i) => {
 
-                let prevSize = i > 0 ? values[i-1]?.size : "1"
-                const size = (edit.index === i ? edit?.value?.size : v?.size) || "1"
-                
+                let prevSize = i > 0 ? values[i-1]?.size : null;
+                let prevPrevSize = i > 1 ? value[i-2]?.size : null;
+                const size = (edit.index === i ? edit?.value?.size : v?.size) || "1";
+
                 return (
-                    <div key={i} className={`${getSizeClass(size, prevSize)}`}>
+                    <div key={i} className={`${getSizeClass(size, prevSize, prevPrevSize)}`}>
                         {/* add to top */}
                         { edit.index === -1 && i === 0 ? 
                             <AddSectionButton onClick={() => setEditIndex(0)}/> : 
@@ -244,6 +246,7 @@ const Edit = ({Component, value, onChange, attr}) => {
                                 onCancel={cancel}
                                 onRemove={remove}
                                 attributes={attr.attributes}
+                                size={size}
                             />
                             : ''
                         }
@@ -276,13 +279,14 @@ const View = ({Component, value, attr}) => {
         <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}   >
         { 
             value.map((v,i) =>{
-                let prevSize = i > 0 ? value[i-1]?.size : "1"
-                const size = v?.size || "1"
+                let prevSize = i > 0 ? value[i-1]?.size : null;
+                let prevPrevSize = i > 1 ? value[i-2]?.size : null;
+                const size = v?.size || "1";
                 return (
-                    <div key={i} className={`${getSizeClass(size, prevSize)}`}> 
-                        <SectionView 
-                            attributes={attr.attributes} 
-                            key={i} 
+                    <div key={i} className={`${getSizeClass(size, prevSize, prevPrevSize)}`}>
+                        <SectionView
+                            attributes={attr.attributes}
+                            key={i}
                             value={v}
                         />
                     </div>

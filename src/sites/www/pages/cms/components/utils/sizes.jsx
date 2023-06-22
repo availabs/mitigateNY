@@ -49,7 +49,7 @@ export const sizeOptionsSVG = [
     {name: '1/2', icon: pageSplitIcons(50, 50)},
     {name: '1/3', icon: pageSplitIcons(40, 60)}
 ]
-export const getSizeClass = (size, prevSize) => {
+export const getSizeClass = (size, prevSize, prevPrevSize) => {
     if(["2"].includes(size)) { return sizes[size] }
 
     if(size === "2/3" && prevSize === '1/3' ) {
@@ -61,9 +61,15 @@ export const getSizeClass = (size, prevSize) => {
     if(size === "1/3" && prevSize === '2/3' ) {
         return `md:col-start-4 lg:col-start-6 ${sizes[size]}`
     }
-     if(size === "1/3" && prevSize === '1/3' ) {
+     if(size === "1/3" && !prevSize) {
+        return `md:col-start-2 lg:col-start-2 ${sizes[size]}`
+    }
+     if(size === "1/3" && prevSize === '1/3' && !prevPrevSize ) {
+        return `md:col-start-3 lg:col-start-4 ${sizes[size]}`
+    }
+     if(size === "1/3" && prevSize === '1/3' && prevPrevSize === '1/3' ) {
         return `md:col-start-4 lg:col-start-6 ${sizes[size]}`
-    } 
+    }
     return `lg:col-start-2 ${sizes[size]}`
 }
 

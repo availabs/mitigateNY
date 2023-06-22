@@ -1,15 +1,22 @@
 import * as d3scale from "d3-scale";
 import {format as d3format} from "d3-format";
-
+const widths = {
+    '1/3': 290,
+    '2/3': 370,
+    '1/2': 370,
+    '2': 370,
+    '1': 370,
+    [undefined]: 370
+}
 export const drawLegend = (layer, newCanvas, mbCanvas) => {
     const context = newCanvas.getContext("2d")
     context.drawImage(mbCanvas, 0, 0);
 
-    let x = mbCanvas.width - 20 - 360,
+    let x = mbCanvas.width - 29 - widths[layer?.size],
         y = 20,
         h = layer.legend.title ? 80 : 50;
     context.fillStyle = 'white'
-    context.roundRect(x, y, 370, h, 5);
+    context.roundRect(x, y, widths[layer?.size], h, 5);
     context.fill();
 
     if(layer.legend.title){
@@ -25,7 +32,7 @@ export const drawLegend = (layer, newCanvas, mbCanvas) => {
     x += 10
     y += 10
 
-    const w = 350 / layer.legend.range.length;
+    const w = widths[layer.size] / layer.legend.range.length;
     layer.legend.range.forEach((c, i) => {
         context.fillStyle = c;
         context.fillRect(x + i * w, y, w, 20);

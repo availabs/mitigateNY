@@ -3,8 +3,16 @@ import {AvlMap} from '~/modules/avl-maplibre/src';
 import {ChoroplethCountyFactory} from "./layers/choroplethCountyLayer.jsx";
 import {format as d3format} from "d3-format";
 import * as d3scale from "d3-scale";
+const widths = {
+    '1/3': 290,
+    '2/3': 370,
+    '1/2': 370,
+    '2': 370,
+    '1': 370,
+    [undefined]: 370
+}
+const DrawLegend = ({domain=[], range=[], title, type = 'threshold', format = '0.2s', size}) => {
 
-const DrawLegend = ({domain=[], range=[], title, type = 'threshold', format = '0.2s'}) => {
     let scale;
     switch (type) {
         case "quantile":
@@ -23,8 +31,9 @@ const DrawLegend = ({domain=[], range=[], title, type = 'threshold', format = '0
                 .range(range);
             break;
     }
+
     const fmt = (typeof format === "function") ? format : d3format(format);
-    const width = `${350 / range.length}px`,
+    const width = `${widths[size] / range.length}px`,
         heightParent = '40px',
         heightChild = '20px';
     return (
@@ -46,7 +55,7 @@ export const RenderMap = ({falcor, layerProps, legend}) => {
     const map_layers = useMemo(() => [ChoroplethCountyFactory()], []);
     return (
         <>
-            <div className={'relative w-[370px] bg-white float-right mt-[20px] m-5 -mb-[100px] rounded-md'}
+            <div className={`relative w-[${widths[legend?.size]}px] bg-white float-right mt-[20px] m-5 -mb-[100px] rounded-md`}
                  style={{zIndex: 10}}>
                 {
                     legend.title && <label className={'font-sm pl-2'}>{legend.title}</label>

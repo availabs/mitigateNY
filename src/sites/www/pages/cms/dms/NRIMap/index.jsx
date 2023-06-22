@@ -53,7 +53,8 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
     }
     return {geoColors, domain};
 }
-const Edit = ({value, onChange}) => {
+const Edit = ({value, onChange, size}) => {
+
     const {falcor, falcorCache} = useFalcor();
 
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
@@ -181,6 +182,7 @@ const Edit = ({value, onChange}) => {
                 attribute,
                 consequence,
                 dataSource,
+                size,
                 change: e => onChange(JSON.stringify({
                     ...e,
                     ealViewId,
@@ -210,7 +212,7 @@ const Edit = ({value, onChange}) => {
     // conseq selector // b, a, p, pe, t
 
     // fetch <hazard_prefix>_<attribute>_<conseq> for the selected geography
-    console.log('ds', dataSource)
+
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -273,7 +275,7 @@ const Edit = ({value, onChange}) => {
                                     <RenderMap
                                         falcor={falcor}
                                         layerProps={layerProps}
-                                        legend={{domain, range: colors, title}}
+                                        legend={{domain, range: colors, title, size}}
                                     />
                                 </div>
                                 <Attribution baseUrl={baseUrl} attributionData={attributionData} />

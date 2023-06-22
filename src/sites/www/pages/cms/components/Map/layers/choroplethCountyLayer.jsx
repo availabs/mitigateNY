@@ -126,7 +126,7 @@ class EALChoroplethOptions extends LayerContainer {
       context.drawImage(canvas, 0, 0);
 
 
-      drawLegend({legend: this.legend, filters: this.filters}, newCanvas, canvas);
+      drawLegend({legend: this.legend, filters: this.filters, size: this.props.size}, newCanvas, canvas);
       img = newCanvas.toDataURL();
       this.img = img;
       this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
