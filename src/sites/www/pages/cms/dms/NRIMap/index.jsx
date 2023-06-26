@@ -76,6 +76,7 @@ const Edit = ({value, onChange, size}) => {
     const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
     const [colors, setColors] = useState(cachedData?.colors || getColorRange(9, "Oranges", false));
     const [title, setTitle] = useState(cachedData?.title);
+    const [height, setHeight] = useState(cachedData?.height || 500);
 
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id],
         geomColName = `stcofips`,
@@ -182,6 +183,7 @@ const Edit = ({value, onChange, size}) => {
                 attribute,
                 consequence,
                 dataSource,
+                height,
                 size,
                 change: e => onChange(JSON.stringify({
                     ...e,
@@ -199,19 +201,11 @@ const Edit = ({value, onChange, size}) => {
                     mapFocus,
                     domain,
                     numColors,
-                    colors
+                    colors,
+                    height
                 }))
             }
-        }), [ealViewId, geoid, hazard, attribute, consequence, colors, data, geoColors]);
-    // console.log('layer props colors',
-    //     Object.values( layerProps.ccl.geoColors || {}).filter(g => g !== '#CCC'))
-    // geography selector
-    // bonus: geography level selector
-    // hazard selector // single or all
-    // attribute selector // freq, eal, exp, risks, riskr
-    // conseq selector // b, a, p, pe, t
-
-    // fetch <hazard_prefix>_<attribute>_<conseq> for the selected geography
+        }), [ealViewId, geoid, hazard, attribute, consequence, colors, data, geoColors, height]);
 
     return (
         <div className='w-full'>
@@ -245,6 +239,8 @@ const Edit = ({value, onChange, size}) => {
                             setAttribute(e);
                             e === 'afreq' && setConsequance(null)
                         }}
+                        disabled={!hazard}
+                        disabledTitle={'Please Select a Hazard.'}
                     />
                     <ButtonSelector
                         label={'Consequence:'}
@@ -266,12 +262,18 @@ const Edit = ({value, onChange, size}) => {
                         colors={colors}
                         setColors={setColors}
                     />
+                    <ButtonSelector
+                        label={'Size:'}
+                        types={[{label: 'Small', value: 500},{label: 'Medium', value: 700},{label: 'Large', value: 900}]}
+                        type={height}
+                        setType={e => {setHeight(e)}}
+                    />
                 </div>
                 {
                     loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <React.Fragment>
-                                <div className={`flex-none h-[500px] w-full p-1`}>
+                                <div className={`flex-none h-[${height}px] w-full p-1`}>
                                     <RenderMap
                                         falcor={falcor}
                                         layerProps={layerProps}

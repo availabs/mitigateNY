@@ -27,7 +27,7 @@ export const RenderDisastersTable = ({ type, data=[], columns=[], pageSize, sort
                         (value || []).map(h => hazardsMeta[h]?.name || h).join(', ') :
                         value;
                 value =
-                    ['Geoid', 'Year', 'Event Id', 'Disaster Number', 'Hazard Type', 'NRI Category', 'Deaths, Injuries'].includes(Header) ?
+                    ['County', 'Year', 'Event Id', 'Disaster Number', 'Hazard Type', 'NRI Category', 'Deaths, Injuries'].includes(Header) ?
                         value :
                         fnum(value || 0, true)
 

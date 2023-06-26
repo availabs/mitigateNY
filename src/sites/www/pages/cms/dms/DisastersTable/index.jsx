@@ -21,7 +21,7 @@ const colNameMapping = {
     nri_category: 'Hazard Type',
     swd_ttd: 'Non Declared Total',
     ofd_ttd: 'Declared Total',
-    geoid: 'Geoid',
+    county: 'County',
     year: 'Year'
 }
 
@@ -44,6 +44,7 @@ const Edit = ({value, onChange}) => {
 
     const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
     const [fusionViewId, setFusionViewId] = useState(cachedData?.fusionViewId || 657);
+    const [countyView, setCountyView] = useState();
 
     const [loading, setLoading] = useState(true);
     const [type, setType] = useState(cachedData?.type || 'declared');
@@ -57,9 +58,9 @@ const Edit = ({value, onChange}) => {
 
     const fusionGeoCol = `substring(geoid, 1, ${geoid.length})`,
         fusionAttributes = {
-            'Geoid': {
-                raw: `${fusionGeoCol} as geoid`,
-                visible: false
+            'County': {
+                raw: `geoid`,
+                // visible: false
             },
             'Year': {
                 raw: 'EXTRACT(YEAR from coalesce(fema_incident_begin_date, swd_begin_date)) as year',
@@ -99,7 +100,7 @@ const Edit = ({value, onChange}) => {
                 align: 'right',
             },
         },
-        anchorCols = ['Year', 'Disaster Number', 'Event Id'],
+        anchorCols = [],
         fusionLenOptions =
             JSON.stringify({
                 aggregatedLen: true,
@@ -132,6 +133,12 @@ const Edit = ({value, onChange}) => {
                 "options", JSON.stringify({filter: {disaster_number: disasterNumbers}}),
                 'databyIndex'];
 
+    const
+        geoNamesOptions = JSON.stringify({
+            ...geoid && { filter: { [`substring(geoid, 1, ${geoid?.length})`]: [geoid] } }
+        }),
+        geoNamesPath = view_id => ["dama", pgEnv, "viewsbyId", view_id, "options", geoNamesOptions];
+
     useEffect(() => {
         async function getData() {
             if (!geoid) {
@@ -154,6 +161,7 @@ const Edit = ({value, onChange}) => {
                 const fusionView = deps.find(d => d.type === "fusion");
                 const ddsDeps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"], [])
                     .find(d => d.type === "disaster_declarations_summaries_v2");
+                const countyView = deps.find(dep => dep.type === "tl_county");
 
                 if (!fusionView) {
                     setLoading(false)
@@ -161,7 +169,18 @@ const Edit = ({value, onChange}) => {
                     return Promise.resolve();
                 }
 
-                setFusionViewId(fusionView.view_id)
+                setFusionViewId(fusionView.view_id);
+                setCountyView(countyView.view_id);
+
+                const geoNameLenRes = await falcor.get([...geoNamesPath(countyView.view_id), "length"]);
+                const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView.view_id), "length"], 0);
+
+                if (geoNameLen) {
+                    await falcor.get([...geoNamesPath(countyView.view_id), "databyIndex", {
+                        from: 0,
+                        to: geoNameLen - 1
+                    }, ["geoid", "namelsad"]]);
+                }
 
                 const lenRes = await falcor.get([...fusionPath(fusionView.view_id), fusionLenOptions, 'length']);
                 const len = Math.min(get(lenRes, ['json', ...fusionPath(fusionView.view_id), fusionLenOptions, 'length'], 0), 1000),
@@ -169,6 +188,7 @@ const Edit = ({value, onChange}) => {
 
                 const lossRes = await falcor.get(
                     [...fusionPath(fusionView.view_id), fusionOptions, 'databyIndex', fusionIndices, Object.values(fusionAttributes).map(v => v.raw)],
+                    ['dama', pgEnv, 'views', 'byId', fusionView.view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
                 );
 
                 const disasterNumbers = [...new Set(Object.values(get(lossRes, ['json', ...fusionPath(fusionView.view_id), fusionOptions, 'databyIndex'], {}))
@@ -183,7 +203,6 @@ const Edit = ({value, onChange}) => {
                             from: 0,
                             to: disasterNumbers.length - 1
                         }, disasterNameAttributes],
-                        ['dama', pgEnv, 'views', 'byId', fusionView.view_id, 'attributes', ['source_id', 'view_id', 'version']]
                     );
                 }
 
@@ -198,6 +217,15 @@ const Edit = ({value, onChange}) => {
         useMemo(() =>
                 Object.values(get(falcorCache, [...disasterNamePath(disasterDecView, disasterNumbers)], {})),
             [falcorCache, disasterDecView, disasterNumbers, hazard]);
+
+    const geoNames = Object.values(get(falcorCache, [...geoNamesPath(countyView), "databyIndex"], {}));
+    const dataModifier = data => {
+        data.map(row => {
+            row[fusionAttributes.County.raw] = geoNames?.find(gn => gn.geoid === row[fusionAttributes.County.raw])?.namelsad || row[fusionAttributes.County.raw];
+        })
+        return data
+    };
+
     const data =
         useMemo(() =>
                 Object.values(get(falcorCache,
@@ -206,6 +234,7 @@ const Edit = ({value, onChange}) => {
                 ),
             // .filter(a => typeof a['year'] !== 'object'),
             [falcorCache, fusionViewId, fusionOptions, fusionAttributes, hazard]);
+    dataModifier(data);
 
     const columns = Object.keys(fusionAttributes)
         .filter(col => visibleCols.includes(col) || anchorCols.includes(col))

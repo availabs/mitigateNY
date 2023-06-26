@@ -52,7 +52,7 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
     }
     return {geoColors, domain};
 }
-const Edit = ({value, onChange}) => {
+const Edit = ({value, onChange, size}) => {
     const {falcor, falcorCache} = useFalcor();
 
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
@@ -72,6 +72,7 @@ const Edit = ({value, onChange}) => {
     const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
     const [colors, setColors] = useState(cachedData?.colors ||  getColorRange(9, "Oranges", false));
     const [title, setTitle] = useState(cachedData?.title);
+    const [height, setHeight] = useState(cachedData?.height || 500);
 
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id],
         geomColName = `substring(${metaData[type].geoColumn || 'geoid'}, 1, 5)`,
@@ -181,6 +182,8 @@ const Edit = ({value, onChange}) => {
                 domain,
                 colors,
                 title,
+                size,
+                height,
                 change: e => onChange(JSON.stringify({
                     ...e,
                     disasterNumber,
@@ -195,7 +198,8 @@ const Edit = ({value, onChange}) => {
                     mapFocus,
                     domain,
                     numColors,
-                    colors
+                    colors,
+                    height
                 }))
             }
         };
@@ -234,12 +238,18 @@ const Edit = ({value, onChange}) => {
                         colors={colors}
                         setColors={setColors}
                     />
+                    <ButtonSelector
+                        label={'Size:'}
+                        types={[{label: 'Small', value: 500},{label: 'Medium', value: 700},{label: 'Large', value: 900}]}
+                        type={height}
+                        setType={e => {setHeight(e)}}
+                    />
                 </div>
                 {
                     loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <React.Fragment>
-                                <div className={`flex-none h-[500px] w-full p-1`}>
+                                <div className={`flex-none h-[${height}px] w-full p-1`}>
                                     <RenderMap
                                         falcor={falcor}
                                         layerProps={layerProps}
