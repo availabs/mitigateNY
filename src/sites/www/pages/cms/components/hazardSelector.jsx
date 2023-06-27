@@ -17,7 +17,7 @@ export const HazardSelector = ({hazard, setHazard, showTotal=false}) => {
                     Object.keys(hazardsMeta)
                         .sort((a,b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name))
                         .map((k, i) => {
-                        return <option value={k}>{hazardsMeta[k].name}</option>
+                        return <option value={k} key={k}>{hazardsMeta[k].name}</option>
                     })
                 }
             </select>

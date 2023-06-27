@@ -26,6 +26,13 @@ class EALChoroplethOptions extends LayerContainer {
         "type": "vector",
         "url": "https://tiles.availabs.org/data/tl_2020_36_county.json"
       },
+    },
+    {
+      id: "tracts",
+      source: {
+        "type": "vector",
+        "url": "https://tiles.availabs.org/data/tl_2020_36_tract.json"
+      },
     }
   ];
 
@@ -36,7 +43,7 @@ class EALChoroplethOptions extends LayerContainer {
       "source-layer": "tl_2020_us_county",
       "type": "fill",
       "paint": {
-        "fill-color": '#8f680f'
+        "fill-color": '#969696'
       }
     },
     {
@@ -55,7 +62,33 @@ class EALChoroplethOptions extends LayerContainer {
         "line-color": "#000000",
         "line-opacity": 0.5
       }
-    }
+    },
+    {
+      "id": "tracts",
+      "source": "tracts",
+      "source-layer": "tl_2020_36_tract",
+      "type": "fill",
+      "paint": {
+        "fill-color": '#969696'
+      }
+    },
+    {
+      "id": "tracts-line",
+      "source": "tracts",
+      "source-layer": "tl_2020_36_tract",
+      "type": "line",
+      "paint": {
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          4, 1,
+          22, 1
+        ],
+        "line-color": "#000000",
+        "line-opacity": 0.5
+      }
+    },
   ];
 
   legend = {
@@ -68,7 +101,7 @@ class EALChoroplethOptions extends LayerContainer {
   };
 
   onHover = {
-    layers: ["counties"],
+    layers: ["counties", "tracts"],
     HoverComp: ({ data, layer }) => {
       return (
         <div style={{ maxHeight: "300px" }} className={`rounded relative px-1 overflow-auto scrollbarXsm bg-white`}>
@@ -152,14 +185,16 @@ class EALChoroplethOptions extends LayerContainer {
   }
 
   paintMap(map, props) {
-    let { geoColors = {}, domain = [], colors = [], title = '' } = props
+    let { geoColors = {}, domain = [], colors = [], title = '', geoLayer = 'counties' } = props
     this.legend.domain = domain;
     this.legend.range = colors;
-    this.legend.title = title
-    map.setFilter("counties", ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
-    map.setFilter("counties-line", ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
-    map.setPaintProperty("counties", "fill-color", ["get", ["get", "geoid"], ["literal", geoColors]]);
-
+    this.legend.title = title;
+    const hideLayer = geoLayer === 'counties' ? 'tracts' : 'counties';
+    map.setFilter(geoLayer, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
+    map.setFilter(`${geoLayer}-line`, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
+    map.setPaintProperty(geoLayer, "fill-color", ["get", ["get", "geoid"], ["literal", geoColors]]);
+    map.setLayoutProperty(hideLayer, 'visibility', 'none');
+    map.setLayoutProperty(`${hideLayer}-line`, 'visibility', 'none');
   }
 
   receiveProps(props, prev, map, falcor) {

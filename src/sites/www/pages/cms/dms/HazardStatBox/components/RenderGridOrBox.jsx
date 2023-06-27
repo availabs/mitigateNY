@@ -15,20 +15,22 @@ export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTota
                                         Object.keys(hazardsMeta)
                                             .sort((a, b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name))
                                             .map(key => (
-                                                <RenderHazardStatBox
-                                                    hazard={key}
-                                                    statePercentile={hazardPercentileArray.find(h => h.key === key)?.statePercentile}
-                                                    nationalPercentile={hazardPercentileArray.find(h => h.key === key)?.nationalPercentile}
-                                                    hazardPercentileArray={hazardPercentileArray}
-                                                    hazardPercentile={hazardPercentileArray.find(h => h.key === key)?.value}
-                                                    actualLoss={hazardPercentileArray.find(h => h.key === key)?.actualLoss}
-                                                    exposure={hazardPercentileArray.find(h => h.key === key)?.exposure}
-                                                    frequency={hazardPercentileArray.find(h => h.key === key)?.frequency}
-                                                    geoid={geoid}
-                                                    isTotal={false}
-                                                    size={size}
-                                                    eal={hazardPercentileArray.find(h => h.key === key)?.eal}
-                                                />
+                                                <div key={key}>
+                                                    <RenderHazardStatBox
+                                                        hazard={key}
+                                                        statePercentile={hazardPercentileArray.find(h => h.key === key)?.statePercentile}
+                                                        nationalPercentile={hazardPercentileArray.find(h => h.key === key)?.nationalPercentile}
+                                                        hazardPercentileArray={hazardPercentileArray}
+                                                        hazardPercentile={hazardPercentileArray.find(h => h.key === key)?.value}
+                                                        actualLoss={hazardPercentileArray.find(h => h.key === key)?.actualLoss}
+                                                        exposure={hazardPercentileArray.find(h => h.key === key)?.exposure}
+                                                        frequency={hazardPercentileArray.find(h => h.key === key)?.frequency}
+                                                        geoid={geoid}
+                                                        isTotal={false}
+                                                        size={size}
+                                                        eal={hazardPercentileArray.find(h => h.key === key)?.eal}
+                                                    />
+                                                </div>
                                             ))
                                 }
                         </div> :

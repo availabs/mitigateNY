@@ -41,7 +41,7 @@ export const RenderColorPicker = ({numColors = 9, setNumColors, shade, setShade,
                             <div className={'block flex flex-row p-2'}>
                                 {
                                     colors
-                                        .map(color => <div className={`h-[20px] w-[20px]`}
+                                        .map(color => <div className={`h-[20px] w-[20px]`} key={color}
                                                            style={{backgroundColor: color}}/>)
                                 }
                             </div>
@@ -53,6 +53,7 @@ export const RenderColorPicker = ({numColors = 9, setNumColors, shade, setShade,
                             shades.map(s =>
                                 <div
                                     className={'flex flex-row p-2'}
+                                    key={s}
                                     onClick={() => {
                                         setShade(s);
                                         setColors(getColorRange(numColors, s, false));
@@ -62,6 +63,7 @@ export const RenderColorPicker = ({numColors = 9, setNumColors, shade, setShade,
                                     {
                                         getColorRange(numColors, s, false)
                                             .map(color => <div className={`h-[20px] w-[20px]`}
+                                                               key={color}
                                                                style={{backgroundColor: color}}/>)
                                     }
                                 </div>
