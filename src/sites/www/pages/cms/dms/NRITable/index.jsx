@@ -10,6 +10,7 @@ import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
 import {HazardSelector} from "../../components/hazardSelector.jsx";
 import {metaData} from "./components/config.js";
+import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const Edit = ({value, onChange}) => {
     const {falcor, falcorCache} = useFalcor();
@@ -17,10 +18,10 @@ const Edit = ({value, onChange}) => {
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
     const baseUrl = '/';
 
-    const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
-    const [nriViewId, setnriViewId] = useState(cachedData?.nriViewId || 513);
-    const [countyView, setCountyView] = useState();
+    const [dataSource, setDataSource] = useState(cachedData?.dataSource || 'avail_counties');
+    const [dataSourceSRCId, setDataSourceSRCId] = useState(cachedData?.dataSourceSRCId);
+    const [dataSourceViewId, setDataSourceViewId] = useState(cachedData?.dataSourceViewId);
+    const [typeId, setTypeId] = useState(cachedData?.typeId);
 
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
@@ -31,31 +32,65 @@ const Edit = ({value, onChange}) => {
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
     const [hazard, setHazard] = useState(cachedData?.hazard);
 
-    const nriGeoCol = `substring(stcofips, 1, ${geoid.length})`,
-        nriAttributes = metaData.columns(hazard),
-        anchorCols = [nriAttributes.find(a => a.value === 'stcofips')?.label],
+    const countyView = metaData.dataSources.find(d => d.value === dataSource)?.geomView;
+
+    const nriGeoCol = metaData.dataSources.find(d => d.value === dataSource)?.geomCol,
+        nriAttributes = metaData.columns(hazard, dataSource),
+        anchorCols = [nriAttributes.find(a => a.value === 'stcofips' || a.value === 'tractfips')?.label],
         nriLenOptions =
             JSON.stringify({
                 aggregatedLen: false,
-                filter: {
-                    [nriGeoCol]: [geoid],
-                },
+                filter: {[`substring(${nriGeoCol}, 1, ${geoid?.length})`]: [geoid]},
             }),
         nriOptions =
             JSON.stringify({
-                filter: {
-                    [nriGeoCol]: [geoid],
-                }
+                filter: {[`substring(${nriGeoCol}, 1, ${geoid?.length})`]: [geoid]},
             }),
         nriPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options"];
 
     const
         geoNamesOptions = JSON.stringify({
-            ...geoid && { filter: { [`substring(geoid, 1, ${geoid?.length})`]: [geoid] } }
+            ...geoid && {filter: {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}}
         }),
         geoNamesPath = view_id => ["dama", pgEnv, "viewsbyId", view_id, "options", geoNamesOptions];
 
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
+
+    useEffect(() => {
+        const ealSourceId = 343;
+        const nriSourceId = 159;
+        const nriTractsSourceId = 346;
+
+        const dataSourceMapping = {
+            avail_counties: ealSourceId,
+            nri: nriSourceId,
+            nri_tracts: nriTractsSourceId
+        }
+        setDataSourceSRCId(dataSourceMapping[dataSource]);
+    }, [dataSource]);
+
+    useEffect(() => {
+        async function setView() {
+            setLoading(true)
+            if (dataSource === 'avail_counties') {
+                const dependencyRes = await falcor.get(dependencyPath(dataSourceViewId));
+                const deps = get(dependencyRes, ["json", ...dependencyPath(dataSourceViewId), "dependencies"]);
+                const typeId = deps.find(dep => dep.type === 'nri');
+
+                if (!typeId) {
+                    setLoading(false)
+                    setStatus('This component only supports EAL versions that use Fusion data.')
+                    return Promise.resolve();
+                }
+                setTypeId(typeId.view_id);
+            } else {
+                setTypeId(dataSourceViewId)
+            }
+            setLoading(false)
+        }
+
+        setView();
+    }, [dataSourceSRCId, dataSourceViewId]);
 
     useEffect(() => {
         async function getData() {
@@ -66,57 +101,50 @@ const Edit = ({value, onChange}) => {
             }
             setLoading(true);
             setStatus(undefined);
-            setFilters({...filters,
-                ...nriAttributes
-                    .filter(c => c.filter)
-                    .reduce((acc, curr) => ({...acc, [curr.label]: curr.filter}), {})}
+            setFilters({
+                    ...filters,
+                    ...nriAttributes
+                        .filter(c => c.filter)
+                        .reduce((acc, curr) => ({...acc, [curr.label]: curr.filter}), {})
+                }
             )
 
-            return falcor.get(dependencyPath(ealViewId)).then(async res => {
 
-                const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
+            if (!typeId) {
+                setLoading(false)
+                setStatus('This component only supports EAL versions that use nri data.')
+                return Promise.resolve();
+            }
 
-                const nriView = deps.find(d => d.type === "nri");
-                const countyView = deps.find(dep => dep.type === "tl_county");
+            const geoNameLenRes = await falcor.get([...geoNamesPath(countyView), "length"]);
+            const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView), "length"], 0);
 
-                if (!nriView) {
-                    setLoading(false)
-                    setStatus('This component only supports EAL versions that use nri data.')
-                    return Promise.resolve();
-                }
-
-                setnriViewId(nriView.view_id)
-                setCountyView(countyView.view_id);
-
-                const geoNameLenRes = await falcor.get([...geoNamesPath(countyView.view_id), "length"]);
-                const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView.view_id), "length"], 0);
-
-                if (geoNameLen) {
-                    await falcor.get([...geoNamesPath(countyView.view_id), "databyIndex", {
-                        from: 0,
-                        to: geoNameLen - 1
-                    }, ["geoid", "namelsad"]]);
-                }
+            if (geoNameLen) {
+                await falcor.get([...geoNamesPath(countyView), "databyIndex", {
+                    from: 0,
+                    to: geoNameLen - 1
+                }, ["geoid", "namelsad"]]);
+            }
 
 
-                const lenRes = await falcor.get([...nriPath(nriView.view_id), nriLenOptions, 'length']);
-                const len = Math.min(get(lenRes, ['json', ...nriPath(nriView.view_id), nriLenOptions, 'length'], 0), 1000),
-                    nriIndices = {from: 0, to: len - 1};
+            const lenRes = await falcor.get([...nriPath(typeId), nriLenOptions, 'length']);
+            const len = Math.min(get(lenRes, ['json', ...nriPath(typeId), nriLenOptions, 'length'], 0), 1000),
+                nriIndices = {from: 0, to: len - 1};
 
-                await falcor.get(
-                    [...nriPath(nriView.view_id), nriOptions, 'databyIndex', nriIndices, nriAttributes.map(v => v.value)],
-                    ['dama', pgEnv, 'views', 'byId', nriView.view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
-                );
+            await falcor.get(
+                [...nriPath(typeId), nriOptions, 'databyIndex', nriIndices, nriAttributes.map(v => v.value)],
+                ['dama', pgEnv, 'views', 'byId', typeId, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
+            );
 
-                setLoading(false);
-            })
+            setLoading(false);
+
         }
 
         getData()
-    }, [geoid, ealViewId, hazard]);
+    }, [geoid, hazard, dataSource, dataSourceSRCId, dataSourceViewId, typeId]);
 
     const geoNames = Object.values(get(falcorCache, [...geoNamesPath(countyView), "databyIndex"], {}));
-    const  dataModifier = data => {
+    const dataModifier = data => {
         data.map(row => {
             row.stcofips = geoNames?.find(gn => gn.geoid === row.stcofips)?.namelsad || row.stcofips;
         })
@@ -125,10 +153,10 @@ const Edit = ({value, onChange}) => {
     const data =
         useMemo(() =>
                 Object.values(get(falcorCache,
-                    [...nriPath(nriViewId), nriOptions, 'databyIndex'],
+                    [...nriPath(typeId), nriOptions, 'databyIndex'],
                     {})
                 ),
-            [falcorCache, nriViewId, nriOptions, nriAttributes, hazard]);
+            [falcorCache, typeId, nriOptions, nriAttributes, hazard]);
     dataModifier(data);
 
     const columns = nriAttributes
@@ -145,33 +173,47 @@ const Edit = ({value, onChange}) => {
         });
 
     const cols = metaData.columns(hazard);
-    console.log('columns', cols)
-    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', nriViewId, 'attributes'], {});
+
+    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
 
     useEffect(() => {
             if (!loading) {
                 onChange(JSON.stringify(
                     {
                         attributionData,
-                        ealViewId,
-                        nriViewId,
+                        typeId,
                         status,
                         geoid,
                         pageSize, sortBy,
-                        data, columns, filters, visibleCols, nriAttributes, hazard
+                        data, columns, filters, visibleCols, nriAttributes, hazard,
+                        dataSource, dataSourceSRCId, dataSourceViewId
                     }))
             }
         },
-        [attributionData, status, ealViewId, nriViewId, geoid, pageSize, sortBy,
-            data, columns, filters, visibleCols, nriAttributes, hazard]);
-    console.log('state', filters, visibleCols, columns, data)
+        [attributionData, status, typeId, geoid, pageSize, sortBy,
+            data, columns, filters, visibleCols, nriAttributes, hazard,
+            dataSource, dataSourceSRCId, dataSourceViewId
+        ]);
+
     return (
         <div className='w-full'>
             <div className='relative'>
                 <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
                     Edit Controls
-                    <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId}
-                                               className={'flex-row-reverse'}/>
+                    <ButtonSelector
+                        label={'Data Source:'}
+                        types={metaData.dataSources}
+                        type={dataSource}
+                        setType={e => {
+                            setDataSource(e);
+                        }}
+                    />
+                    <VersionSelectorSearchable
+                        source_id={dataSourceSRCId}
+                        view_id={dataSourceViewId}
+                        onChange={setDataSourceViewId}
+                        className={'flex-row-reverse'}
+                    />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
                     <HazardSelector hazard={hazard} setHazard={setHazard}/>
                     <RenderColumnControls

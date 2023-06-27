@@ -7,8 +7,6 @@ import VersionSelectorSearchable from "../../components/versionSelector/searchab
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
-import {Link} from "react-router-dom";
-import {formatDate} from "../../../../../../utils/macros.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 import {RenderColorPicker} from "../../components/colorPicker.jsx";
 import {scaleThreshold} from "d3-scale";
@@ -64,7 +62,6 @@ const Edit = ({value, onChange, size}) => {
     const [dataSourceViewId, setDataSourceViewId] = useState(cachedData?.dataSourceViewId);
     const [typeId, setTypeId] = useState(cachedData?.typeId);
 
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
@@ -196,7 +193,7 @@ const Edit = ({value, onChange, size}) => {
         }
 
         getData()
-    }, [geoid, ealViewId, numColors, shade, colors, hazard, attribute, consequence,
+    }, [geoid, numColors, shade, colors, hazard, attribute, consequence,
         dataSource, dataSourceSRCId, dataSourceViewId, typeId]);
 
     const {geoColors, domain} = getGeoColors({geoid, data, columns: columns, paintFn: metaData.paintFn, colors});
@@ -223,7 +220,6 @@ const Edit = ({value, onChange, size}) => {
                 size,
                 change: e => onChange(JSON.stringify({
                     ...e,
-                    ealViewId,
                     dataSource,
                     dataSourceSRCId,
                     dataSourceViewId,
@@ -244,7 +240,7 @@ const Edit = ({value, onChange, size}) => {
                     height
                 }))
             }
-        }), [ealViewId, geoid, hazard, attribute, consequence, colors, data, geoColors,
+        }), [geoid, hazard, attribute, consequence, colors, data, geoColors,
             height, dataSource, dataSourceSRCId, dataSourceViewId, typeId]);
 
     return (

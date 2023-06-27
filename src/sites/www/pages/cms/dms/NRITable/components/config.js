@@ -15,14 +15,35 @@ export const metaData = {
         Total: 't'
     },
     dataSources: [
-        {label: 'NRI Counties', value: 'nri_counties'},
-        {label: 'AVAIL EAL Counties', value: 'avail_counties'}
+        {label: 'NRI Counties', value: 'nri', geoLayer: 'counties', geomCol: 'stcofips', geomColLabel: 'County', geomView: 286},
+        {label: 'NRI Census Tracts', value: 'nri_tracts', geoLayer: 'tracts', geomCol: 'tractfips', geomColLabel: 'Tract',geomView: 286},
+        {label: 'Derive From EAL Version Dependency', value: 'avail_counties', geoLayer: 'counties', geomCol: 'stcofips',  geomColLabel: 'County', geomView: 286}
     ],
-    columns: function (hazard) {
+    columns: function (hazard, dataSource) {
         if (!hazard || hazard === 'total') return [];
 
-        return [
-            {value: 'stcofips', label: 'County', filter: 'text', width: '20%', isText: true},
+        const cols = [
+            {
+                value: 'stcofips',
+                label: 'County',
+                filter: 'text',
+                width: '20%',
+                isText: true
+            }];
+
+        if (dataSource === 'nri_tracts'){
+            cols.push(
+                {
+                    value: this.dataSources.find(d => d.value === dataSource)?.geomCol,
+                    label: 'Tract',
+                    filter: 'text',
+                    width: '20%',
+                    isText: true
+                }
+            )
+        }
+
+        cols.push(
             ...Object.keys(this.attributes)
                 .reduce((accA, currA) => {
                     let template = {
@@ -39,6 +60,9 @@ export const metaData = {
                             isDollar: true
                         }))
                     return currA === 'Frequency' ? [...accA, template] : [...accA, ...cols];
-                }, [])]
+                }, [])
+        )
+
+        return cols;
     }
 };
