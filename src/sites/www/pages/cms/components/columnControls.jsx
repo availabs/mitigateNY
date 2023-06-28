@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Switch } from '@headlessui/react';
 
 function classNames(...classes) {
@@ -14,6 +14,7 @@ export const RenderColumnControls = (
         pageSize, setPageSize,
         sortBy, setSortBy
 }) => {
+    const [tmpPageSize, setTmpPageSize] = useState(pageSize);
     return (
         <div>
             <div key={'shadow'} className={'shadow-md shadow-blue-100 p-1.5'}></div>
@@ -25,9 +26,11 @@ export const RenderColumnControls = (
                     className={'p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
                     type={"number"}
                     placeholder={'Table Page Size'}
-                    value={pageSize || 0}
-                    defaultValue={5}
-                    onChange={e => setPageSize(e.target.value || 5)}
+                    value={tmpPageSize}
+                    onChange={e => {
+                        setTmpPageSize(e.target.value);
+                        if (e.target.value > 0 ) setPageSize(e.target.value);
+                    }}
                     onWheel={() => {}}
                 />
             </div>
