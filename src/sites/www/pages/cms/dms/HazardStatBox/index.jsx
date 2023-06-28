@@ -9,6 +9,7 @@ import {pgEnv} from "~/utils";
 import {RenderGridOrBox} from "./components/RenderGridOrBox.jsx";
 import {Loading} from "../../../../../../utils/loading.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
+import {RenderColumnControls} from "../../components/columnControls.jsx";
 
 const Edit = ({value, onChange}) => {
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
@@ -28,6 +29,7 @@ const Edit = ({value, onChange}) => {
     const [nriIds, setNriIds] = useState({source_id: null, view_id: null});
     const [fusionViewId, setfusionViewId] = useState({source_id: null, view_id: null});
     const [deps, setDeps] = useState([ealViewId]);
+    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols);
 
     const freqCol =
             Object.keys(hazardsMeta)
@@ -77,6 +79,15 @@ const Edit = ({value, onChange}) => {
         fusionPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptions],
         fusionPathTotal = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptionsTotal];
 
+    const cols = [
+        {label: 'National Percentile Bar', forTotal: undefined},
+        {label: 'Loss Distribution Bar', forTotal: true},
+        {label: 'Hazard Percentile Bar', forTotal: false},
+        {label: 'Estimated Annual Loss (EAL)', forTotal: undefined},
+        {label: 'Actual Loss', forTotal: false},
+        {label: 'Exposure', forTotal: false},
+        {label: 'Frequency', forTotal: false},
+    ]
     React.useEffect(() => {
         async function getData() {
             if (!geoid) {
@@ -179,11 +190,12 @@ const Edit = ({value, onChange}) => {
                         fusionViewId,
                         status,
                         geoid,
-                        hazard, hazardPercentileArray, size, isTotal, type, attributionData
+                        hazard, hazardPercentileArray, size, isTotal, type, attributionData,
+                        visibleCols
                     }))
             }
         },
-        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData]);
+        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols]);
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -225,6 +237,11 @@ const Edit = ({value, onChange}) => {
                             }
                         </select>
                     </div>
+                    <RenderColumnControls
+                        cols={cols.filter(col => col.forTotal === isTotal || col.forTotal === undefined).map(col => col.label)}
+                        visibleCols={visibleCols}
+                        setVisibleCols={setVisibleCols}
+                    />
                 </div>
                 <div className='relative w-full p-1'>
                     {
@@ -232,6 +249,7 @@ const Edit = ({value, onChange}) => {
                             status ? <div className={'p-5 text-center'}>{status}</div> :
                                 <div>
                                     <RenderGridOrBox
+                                        visibleCols={visibleCols}
                                         hazard={hazard}
                                         hazardPercentileArray={hazardPercentileArray}
                                         size={size}
