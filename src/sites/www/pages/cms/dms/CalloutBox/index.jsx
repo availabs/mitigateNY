@@ -31,8 +31,7 @@ const Edit = ({value, onChange}) => {
                 <RenderColorPicker title={'Background: '}
                                    className={'w-full pt-2 mt-3 flex flex-row text-sm items-center'}
                                    color={bgColor} setColor={setBgColor}/>
-                <LexicalComp value={text} onChange={setText} bgColor={bgColor}/>
-
+                    <LexicalComp value={text} onChange={setText} bgColor={bgColor}/>
             </div>
         </div>
     )
@@ -51,7 +50,9 @@ const View = ({value}) => {
     console.log('value', value, data)
     const LexicalComp = dmsDataTypes.lexical.ViewComp;
     return (
-        <LexicalComp value={data?.text} bgColor={data?.bgColor} />
+        <div className={'pt-3'}>
+            <LexicalComp value={data?.text} bgColor={data?.bgColor} />
+        </div>
     )
 }
 
