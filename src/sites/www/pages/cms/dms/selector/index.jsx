@@ -17,10 +17,12 @@ import DisasterLossMap from "../DisasterLossMap/index.jsx";
 import NRIMap from "../NRIMap/index.jsx";
 import HazardStatBox from '../HazardStatBox';
 import NRITable from "../NRITable/index.jsx";
+import CalloutBox from "../CalloutBox/";
 
 // register components here
 const ComponentRegistry = {
     // "ColorBox": ColorBox,
+    "Card: Callout": CalloutBox,
     "Card: Hazard Risk": HazardStatBox,
     "Hero Stats: Loss Distribution": LossDistributionHeroStats,
     "Hero Stats: Disaster Info": DisasterInfoStats,
