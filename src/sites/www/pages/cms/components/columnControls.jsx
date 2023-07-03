@@ -68,6 +68,31 @@ const RenderFilterControls = ({column, filters, setFilters, anchorCols}) => {
     )
 }
 
+const RenderFilterValueControls = ({column, filterValue, setFilterValue}) => {
+    if (!setFilterValue) return null;
+    return (
+        <div className={'w-full pt-2 mt-3 flex flex-row text-sm'}>
+            <label className={'align-bottom shrink-0 pr-2 py-2 my-1'}> Filter by: </label>
+            <input
+                type={'text'}
+                className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+                value={filterValue[column]}
+                placeholder={'filter by'}
+                onChange={e => setFilterValue({...filterValue, ...{[column]: e.target.value}})}
+            />
+            {/*<select*/}
+            {/*    key={`filter-value-${column}`}*/}
+            {/*    className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}*/}
+            {/*    value={filterValue[column]}*/}
+            {/*    onChange={e => setFilters({...filters, ...{[column]: e.target.value}})}*/}
+            {/*>*/}
+            {/*    <option key={`filter-none-${column}`} value={' '}>None</option>*/}
+            {/*    <option key={`filter-text-${column}`} value={'text'}>Text</option>*/}
+            {/*</select>*/}
+        </div>
+    )
+}
+
 const RenderSortControls = ({column, sortBy, setSortBy}) => {
     if (!setSortBy) return null;
     return (
@@ -118,7 +143,7 @@ const RenderSortControls = ({column, sortBy, setSortBy}) => {
     )
 }
 
-const RenderColumnBoxes = ({cols, anchorCols, visibleCols, setVisibleCols, filters, setFilters, sortBy, setSortBy}) => (
+const RenderColumnBoxes = ({cols, anchorCols, visibleCols, setVisibleCols, filters, setFilters, filterValue, setFilterValue, sortBy, setSortBy}) => (
     <div className={'flex flex-row flex-wrap space-between my-1 text-sm'}>
         {
             cols
@@ -147,6 +172,9 @@ const RenderColumnBoxes = ({cols, anchorCols, visibleCols, setVisibleCols, filte
                         <RenderFilterControls column={col}
                                               anchorCols={anchorCols}
                                               filters={filters} setFilters={setFilters} />
+
+                        <RenderFilterValueControls column={col}
+                                              filterValue={filterValue} setFilterValue={setFilterValue} />
                         
                         <RenderSortControls column={col}
                                             sortBy={sortBy} setSortBy={setSortBy} />
@@ -163,9 +191,11 @@ export const RenderColumnControls = (
         anchorCols = [],
         visibleCols = [], setVisibleCols,
         filters = {}, setFilters,
+        filterValue = {}, setFilterValue,
         pageSize, setPageSize,
         sortBy, setSortBy
     }) => {
+
     return (
         <div>
             <div key={'shadow'} className={'shadow-md shadow-blue-100 p-1.5'}></div>
@@ -181,6 +211,7 @@ export const RenderColumnControls = (
                                anchorCols={anchorCols}
                                visibleCols={visibleCols} setVisibleCols={setVisibleCols}
                                filters={filters} setFilters={setFilters}
+                               filterValue={filterValue} setFilterValue={setFilterValue}
                                sortBy={sortBy} setSortBy={setSortBy} />
         </div>
     )

@@ -5,9 +5,21 @@ import {Link} from "react-router-dom";
 import {formatDate} from "~/utils/macros.jsx";
 import {cellFormat} from '../utils.jsx'
 import {Attribution} from "../../../components/attribution.jsx";
+import {metaData} from "../config.js";
 
-export const RenderDisasterLossTable = ({ data, columns, pageSize, sortBy={}, title, striped, attributionData, baseUrl, type }) => {
+const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
+
+export const RenderDisasterLossTable = ({ geoid, data, columns, pageSize, sortBy={}, filterValue = {}, striped, attributionData, baseUrl, type }) => {
     const sortColRaw = columns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
+    const filteredData = data.filter(row => {
+        return  !Object.keys(filterValue || {}).length ||
+            Object.keys(filterValue)
+                .reduce((acc, col) => {
+                    const rawCol = metaData[type]?.attributes(geoid)[col];
+                    const value = getNestedValue(row[rawCol]);
+                    return acc && value?.toString().toLowerCase().includes(filterValue[col]?.toLowerCase())
+                }, true)
+    })
    return (
        <div className={'py-5 flex flex-col'}>
                {
@@ -16,7 +28,7 @@ export const RenderDisasterLossTable = ({ data, columns, pageSize, sortBy={}, ti
                            columns={
                                columns.map(c =>( {...c, ...{Cell: cell => cellFormat(cell, type, c.Header)}}))
                        }
-                           data={data}
+                           data={filteredData}
                            initialPageSize={pageSize}
                            pageSize={pageSize}
                            striped={striped}

@@ -27,6 +27,7 @@ const Edit = ({value, onChange}) => {
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
     const [filters, setFilters] = useState(cachedData?.filters || {});
+    const [filterValue, setFilterValue] = useState(cachedData?.filterValue || {});
     const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
     const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
@@ -185,13 +186,13 @@ const Edit = ({value, onChange}) => {
                         status,
                         geoid,
                         pageSize, sortBy,
-                        data, columns, filters, visibleCols, nriAttributes, hazard,
+                        data, columns, filters, filterValue, visibleCols, nriAttributes, hazard,
                         dataSource, dataSourceSRCId, dataSourceViewId
                     }))
             }
         },
         [attributionData, status, typeId, geoid, pageSize, sortBy,
-            data, columns, filters, visibleCols, nriAttributes, hazard,
+            data, columns, filters, filterValue, visibleCols, nriAttributes, hazard,
             dataSource, dataSourceSRCId, dataSourceViewId
         ]);
 
@@ -223,6 +224,8 @@ const Edit = ({value, onChange}) => {
                         setVisibleCols={setVisibleCols}
                         filters={filters}
                         setFilters={setFilters}
+                        filterValue={filterValue}
+                        setFilterValue={setFilterValue}
                         pageSize={pageSize}
                         setPageSize={setPageSize}
                         sortBy={sortBy}
@@ -236,6 +239,8 @@ const Edit = ({value, onChange}) => {
                                 geoid={geoid}
                                 data={data}
                                 columns={columns}
+                                nriAttributes={nriAttributes}
+                                filterValue={filterValue}
                                 pageSize={pageSize}
                                 sortBy={sortBy}
                                 attributionData={attributionData}

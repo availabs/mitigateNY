@@ -24,7 +24,7 @@ const Edit = ({value, onChange}) => {
     }, [bgColor, text])
 
     const LexicalComp = dmsDataTypes.lexical.EditComp;
-    console.log('color, text', text)
+
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -47,7 +47,7 @@ const View = ({value}) => {
     let data = typeof value === 'object' ?
         value['element-data'] :
         JSON.parse(value)
-    console.log('value', value, data)
+
     const LexicalComp = dmsDataTypes.lexical.ViewComp;
     return (
         <div className={'pt-3'}>

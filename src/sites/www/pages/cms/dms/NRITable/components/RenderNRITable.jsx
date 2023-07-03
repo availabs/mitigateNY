@@ -12,7 +12,7 @@ const colAccessNameMapping = {
 
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
-export const RenderNRITable = ({ data=[], columns=[], pageSize, sortBy = {}, baseUrl, attributionData, geoid, striped }) => {
+export const RenderNRITable = ({ data=[], columns=[], nriAttributes, filterValue = {}, pageSize, sortBy = {}, baseUrl, attributionData, geoid, striped }) => {
     const updatedColumns = columns.map(c => {
         const Header = c.Header;
         return {
@@ -26,6 +26,16 @@ export const RenderNRITable = ({ data=[], columns=[], pageSize, sortBy = {}, bas
         }
     })
     const sortColRaw = updatedColumns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
+
+    const filteredData = data.filter(row =>
+        !Object.keys(filterValue || {}).length ||
+        Object.keys(filterValue)
+            .reduce((acc, col) => {
+                const rawColName = nriAttributes.find(c => c.label === col)?.value;
+                const value = getNestedValue(row[rawColName]);
+                return acc && value?.toString().toLowerCase().includes(filterValue[col]?.toLowerCase())
+            }, true)
+    )
     return (
         <>
             <div className={'py-5'}>
@@ -33,7 +43,7 @@ export const RenderNRITable = ({ data=[], columns=[], pageSize, sortBy = {}, bas
                     data?.length > 0 && columns?.length > 0 && (
                         <Table
                             columns={updatedColumns}
-                            data={data}
+                            data={filteredData}
                             initialPageSize={pageSize}
                             pageSize={pageSize}
                             striped={striped}
