@@ -26,6 +26,9 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                                                         actualLoss={hazardPercentileArray.find(h => h.key === key)?.actualLoss}
                                                         exposure={hazardPercentileArray.find(h => h.key === key)?.exposure}
                                                         frequency={hazardPercentileArray.find(h => h.key === key)?.frequency}
+                                                        numEvents={hazardPercentileArray.find(h => h.key === key)?.numEvents}
+                                                        deaths={hazardPercentileArray.find(h => h.key === key)?.deaths}
+                                                        injuries={hazardPercentileArray.find(h => h.key === key)?.injuries}
                                                         geoid={geoid}
                                                         isTotal={false}
                                                         size={size}
@@ -45,6 +48,9 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                             actualLoss={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.actualLoss}
                             exposure={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.exposure}
                             frequency={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.frequency}
+                            numEvents={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.numEvents}
+                            deaths={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.deaths}
+                            injuries={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.injuries}
                             geoid={geoid}
                             isTotal={isTotal}
                             size={size}

@@ -23,7 +23,7 @@ const palattes = [
 
 const colors = scaleQuantize().domain([0, 101]).range(palattes[2]);
 
-const freqToText = (f) => <span className={"pl-1"}>{f}<span className={"font-xs pl-1"}>events/yr</span></span>;
+const freqToText = (f, daily=false) => <span className={"pl-1"}>{f}<span className={"font-xs pl-1"}>events/{daily ? 'day' : 'yr'}</span></span>;
 
 export const RenderHazardStatBox = ({
                                         isTotal,
@@ -36,6 +36,9 @@ export const RenderHazardStatBox = ({
                                         eal,
                                         exposure,
                                         frequency,
+                                        numEvents,
+                                        deaths,
+                                        injuries,
                                         size,
                                         visibleCols
                                     }) => {
@@ -156,10 +159,39 @@ export const RenderHazardStatBox = ({
                                 </span>
                         </div>
                     }
-                    {!isTotal && visibleCols.includes('Frequency') &&
+                    {!isTotal && visibleCols.includes('# Events') &&
+                        <div className={blockClass[size]}><label># Events</label>
+                            <span className={valueClass}>
+                                    {fnumIndex(numEvents)}
+                                </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('Frequency (yearly)') &&
                         <div className={blockClass[size]}><label>Frequency</label>
                             <span className={valueClass}>
                                     {freqToText((frequency || 0)?.toFixed(2))}
+                                </span>
+                        </div>
+                    }
+
+                    {!isTotal && visibleCols.includes('Frequency (daily)') &&
+                        <div className={blockClass[size]}><label>Frequency</label>
+                            <span className={valueClass}>
+                                    {freqToText(((frequency || 0)/365)?.toFixed(2), true)}
+                                </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('Deaths') &&
+                        <div className={blockClass[size]}><label>Deaths</label>
+                            <span className={valueClass}>
+                                    {fnumIndex(deaths)}
+                                </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('Injuries') &&
+                        <div className={blockClass[size]}><label>Injuries</label>
+                            <span className={valueClass}>
+                                    {fnumIndex(injuries)}
                                 </span>
                         </div>
                     }

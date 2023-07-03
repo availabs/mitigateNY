@@ -3,7 +3,7 @@ import {hazardsMeta} from "~/utils/colors.jsx";
 export const metaData = {
     type: 'nri',
     attributes: {
-        Frequency: 'afreq',
+        'Frequency (yearly)': 'afreq',
         Exposure: 'exp',
         EAL: 'eal'
     },
@@ -59,7 +59,7 @@ export const metaData = {
                             label: `${c} ${template.label}`,
                             isDollar: true
                         }))
-                    return currA === 'Frequency' ? [...accA, template] : [...accA, ...cols];
+                    return currA === 'Frequency (yearly)' ? [...accA, template] : [...accA, ...cols];
                 }, [])
         )
 

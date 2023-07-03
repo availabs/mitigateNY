@@ -227,7 +227,7 @@ const Edit = ({value, onChange}) => {
         data.map(row => {
             const newRow = {...row};
             const nriCategories = getNestedValue(newRow[fusionAttributes["NRI Category"].raw]);
-            console.log('nri?', nriCategories, newRow)
+
             newRow[fusionAttributes.County.raw] = geoNames?.find(gn => gn.geoid === newRow[fusionAttributes.County.raw])?.namelsad || newRow[fusionAttributes.County.raw];
             newRow[fusionAttributes["NRI Category"].raw] = (nriCategories || []).map(h => hazardsMeta[h]?.name || h).join(', ')
 
@@ -352,7 +352,6 @@ const View = ({value}) => {
     let data = typeof value === 'object' ?
         value['element-data'] :
         JSON.parse(value)
-    console.log('data', data)
     return (
         <div className='relative w-full p-6'>
             {
