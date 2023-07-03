@@ -56,7 +56,7 @@ class EALChoroplethOptions extends LayerContainer {
           "interpolate",
           ["linear"],
           ["zoom"],
-          4, 1,
+          5, 0,
           22, 1
         ],
         "line-color": "#000000",

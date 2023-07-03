@@ -249,7 +249,7 @@ const Edit = ({value, onChange, size}) => {
                     loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <React.Fragment>
-                                <div className={`flex-none h-[${height}px] w-full p-1`}>
+                                <div className={`flex-none w-full p-1`} style={{height: `${height}px`}}>
                                     <RenderMap
                                         falcor={falcor}
                                         layerProps={layerProps}
