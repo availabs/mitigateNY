@@ -10,6 +10,7 @@ import {Loading} from "~/utils/loading.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
 import {HazardSelector} from "../../components/hazardSelector.jsx";
+import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 
 const colNameMapping = {
     swd_population_damage: 'Population Damage',
@@ -29,7 +30,7 @@ const colAccessNameMapping = {
     'disaster_number': 'distinct disaster_number as disaster_number',
 }
 
-const mapColName = col => colNameMapping[col.includes(' as ') ? col.split(' as ')[1] : col] || col;
+const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
 
 const Edit = ({value, onChange}) => {
@@ -51,6 +52,7 @@ const Edit = ({value, onChange}) => {
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
     const [filters, setFilters] = useState(cachedData?.filters || {});
+    const [filterValue, setFilterValue] = useState(cachedData?.filterValue || {});
     const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
     const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
@@ -65,13 +67,13 @@ const Edit = ({value, onChange}) => {
             'Year': {
                 raw: 'EXTRACT(YEAR from coalesce(fema_incident_begin_date, swd_begin_date)) as year',
                 align: 'right',
-                filter: 'text',
+                // filter: 'text',
                 width: '10%'
             },
             [type === 'declared' ? 'Disaster Number' : 'Event Id']: {
                 raw: type === 'declared' ? 'disaster_number' : 'event_id',
                 align: 'right',
-                filter: 'text',
+                // filter: 'text',
                 width: '40%'
             },
             'NRI Category': {
@@ -135,7 +137,7 @@ const Edit = ({value, onChange}) => {
 
     const
         geoNamesOptions = JSON.stringify({
-            ...geoid && { filter: { [`substring(geoid, 1, ${geoid?.length})`]: [geoid] } }
+            ...geoid && {filter: {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}}
         }),
         geoNamesPath = view_id => ["dama", pgEnv, "viewsbyId", view_id, "options", geoNamesOptions];
 
@@ -148,10 +150,12 @@ const Edit = ({value, onChange}) => {
             }
             setLoading(true);
             setStatus(undefined);
-            setFilters({...filters,
-                ...Object.keys(fusionAttributes)
-                    .filter(c => fusionAttributes[c].filter)
-                    .reduce((acc, curr) => ({...acc, [curr]: fusionAttributes[curr].filter}), {})}
+            setFilters({
+                    ...filters,
+                    ...Object.keys(fusionAttributes)
+                        .filter(c => fusionAttributes[c].filter)
+                        .reduce((acc, curr) => ({...acc, [curr]: fusionAttributes[curr].filter}), {})
+                }
             )
 
             return falcor.get(dependencyPath(ealViewId)).then(async res => {
@@ -219,22 +223,32 @@ const Edit = ({value, onChange}) => {
             [falcorCache, disasterDecView, disasterNumbers, hazard]);
 
     const geoNames = Object.values(get(falcorCache, [...geoNamesPath(countyView), "databyIndex"], {}));
-    const dataModifier = data => {
+    const dataModifier = data => useMemo(() =>
         data.map(row => {
-            row[fusionAttributes.County.raw] = geoNames?.find(gn => gn.geoid === row[fusionAttributes.County.raw])?.namelsad || row[fusionAttributes.County.raw];
-        })
-        return data
-    };
+            const newRow = {...row};
+            const nriCategories = getNestedValue(newRow[fusionAttributes["NRI Category"].raw]);
 
-    const data =
+            newRow[fusionAttributes.County.raw] = geoNames?.find(gn => gn.geoid === newRow[fusionAttributes.County.raw])?.namelsad || newRow[fusionAttributes.County.raw];
+            newRow[fusionAttributes["NRI Category"].raw] = (nriCategories || []).map(h => hazardsMeta[h]?.name || h).join(', ')
+
+            if(type === 'declared' && newRow[fusionAttributes['Disaster Number'].raw]?.length <= 4) {
+                newRow[fusionAttributes['Disaster Number'].raw] =
+                    get(disasterNames.find(dns => dns[colAccessNameMapping.disaster_number] === newRow[fusionAttributes['Disaster Number'].raw]),
+                        "declaration_title",
+                        "No Title") + ` (${newRow[fusionAttributes['Disaster Number'].raw]})`;
+            }
+            return newRow;
+        })
+    , [data]);
+
+    const originalData =
         useMemo(() =>
                 Object.values(get(falcorCache,
                     [...fusionPath(fusionViewId), fusionOptions, 'databyIndex'],
-                    {})
-                ),
-            // .filter(a => typeof a['year'] !== 'object'),
-            [falcorCache, fusionViewId, fusionOptions, fusionAttributes, hazard]);
-    dataModifier(data);
+                    {})),
+            [falcorCache, fusionViewId, fusionOptions, fusionAttributes, hazard, filterValue]);
+    const data = dataModifier(originalData);
+
 
     const columns = Object.keys(fusionAttributes)
         .filter(col => visibleCols.includes(col) || anchorCols.includes(col))
@@ -262,12 +276,12 @@ const Edit = ({value, onChange}) => {
                         status,
                         geoid,
                         pageSize, sortBy,
-                        type, data, columns, filters, visibleCols, fusionAttributes, disasterNames, hazard
+                        type, originalData, data, columns, filters, filterValue, visibleCols, fusionAttributes, disasterNames, hazard
                     }))
             }
         },
         [attributionData, status, ealViewId, fusionViewId, geoid, pageSize, sortBy,
-            type, data, columns, filters, visibleCols, fusionAttributes, disasterNames, hazard]);
+            type, originalData, data, columns, filters, filterValue, visibleCols, fusionAttributes, disasterNames, hazard]);
 
     return (
         <div className='w-full'>
@@ -297,6 +311,8 @@ const Edit = ({value, onChange}) => {
                         setVisibleCols={setVisibleCols}
                         filters={filters}
                         setFilters={setFilters}
+                        filterValue={filterValue}
+                        setFilterValue={setFilterValue}
                         pageSize={pageSize}
                         setPageSize={setPageSize}
                         sortBy={sortBy}
@@ -313,8 +329,8 @@ const Edit = ({value, onChange}) => {
                                 columns={columns}
                                 pageSize={pageSize}
                                 sortBy={sortBy}
+                                filterValue={filterValue}
                                 fusionAttributes={fusionAttributes}
-                                disasterNames={disasterNames}
                                 attributionData={attributionData}
                                 baseUrl={baseUrl}
                             />

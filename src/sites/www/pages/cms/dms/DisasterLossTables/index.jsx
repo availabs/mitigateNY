@@ -28,6 +28,7 @@ const Edit = ({value, onChange}) => {
     const [type, setType] = useState(cachedData?.type || 'ihp');
     const [typeId, setTypeId] = useState(cachedData?.typeId);
     const [filters, setFilters] = useState(cachedData?.filters || {});
+    const [filterValue, setFilterValue] = useState(cachedData?.filterValue || {});
     const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
     const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
@@ -46,7 +47,6 @@ const Edit = ({value, onChange}) => {
 
     useEffect( () => {
         async function getData(){
-            console.log('in useEffect', geoid, type, disasterNumber)
             if(!geoid || !type || !disasterNumber){
                 !geoid && setStatus('Please Select a Geography.');
                 !type && setStatus('Please Select a Type.');
@@ -56,7 +56,6 @@ const Edit = ({value, onChange}) => {
             }else{
                 setStatus(undefined)
             }
-            console.log('in useEffect', geoid, type, disasterNumber, status, loading)
             setLoading(true);
             setStatus(undefined);
             setFilters({...filters,
@@ -139,12 +138,12 @@ const Edit = ({value, onChange}) => {
                         attributionData,
                         disasterNumber,
                         pageSize, sortBy,
-                        data, columns, filters, visibleCols, type, typeId
+                        data, columns, filters, filterValue, visibleCols, type, typeId
                     }))
             }
         },
         [status, ealViewId, geoid, attributionData, disasterNumber, pageSize, sortBy,
-            data, columns, filters, visibleCols, type, typeId]);
+            data, columns, filters, filterValue, visibleCols, type, typeId]);
 
     return (
         <div className='w-full'>
@@ -182,6 +181,8 @@ const Edit = ({value, onChange}) => {
                         setVisibleCols={setVisibleCols}
                         filters={filters}
                         setFilters={setFilters}
+                        filterValue={filterValue}
+                        setFilterValue={setFilterValue}
                         pageSize={pageSize}
                         setPageSize={setPageSize}
                         sortBy={sortBy}
@@ -192,10 +193,12 @@ const Edit = ({value, onChange}) => {
                     loading ? <Loading /> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                                 <RenderDisasterLossTable
+                                    geoid={geoid}
                                     data={data}
                                     columns={columns}
                                     pageSize={pageSize}
                                     sortBy={sortBy}
+                                    filterValue={filterValue}
                                     title={type}
                                     type={type}
                                     attributionData={attributionData}

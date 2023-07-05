@@ -9,6 +9,7 @@ import {pgEnv} from "~/utils";
 import {RenderGridOrBox} from "./components/RenderGridOrBox.jsx";
 import {Loading} from "../../../../../../utils/loading.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
+import {RenderColumnControls} from "../../components/columnControls.jsx";
 
 const Edit = ({value, onChange}) => {
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
@@ -28,6 +29,7 @@ const Edit = ({value, onChange}) => {
     const [nriIds, setNriIds] = useState({source_id: null, view_id: null});
     const [fusionViewId, setfusionViewId] = useState({source_id: null, view_id: null});
     const [deps, setDeps] = useState([ealViewId]);
+    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols);
 
     const freqCol =
             Object.keys(hazardsMeta)
@@ -46,6 +48,16 @@ const Edit = ({value, onChange}) => {
                         ...acc,
                         [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_expt) as ${get(hazardsMeta, [hazard, "prefix"], "total")}_exp`
                     }
+                ), {}),
+        evntsCol =
+            Object.keys(hazardsMeta)
+                .reduce((acc, key) => (
+                    {
+                        ...acc,
+                        ...{
+                            [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_evnts) as ${get(hazardsMeta, [key, "prefix"], "total")}_evnts`
+                        }
+                    }
                 ), {});
 
     const npCol = isTotal ? "national_percent_total" : "national_percent_hazard",
@@ -61,8 +73,10 @@ const Edit = ({value, onChange}) => {
         nriPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", nriOptions];
     let
         actualLossCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) + sum(swd_population_damage) as actual_damage",
+        deathsCol = `sum(deaths_direct) + sum(deaths_indirect) as deaths`,
+        injuriesCol = `sum(injuries_direct) + sum(injuries_indirect) as injuries`,
         geoidCOl = `substring(geoid, 1, ${geoid.length})`,
-        fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol],
+        fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol, deathsCol, injuriesCol],
         fusionAttributesTotal = [`${geoidCOl} as geoid`, actualLossCol],
         fusionOptions = JSON.stringify({
             aggregatedLen: true,
@@ -77,6 +91,19 @@ const Edit = ({value, onChange}) => {
         fusionPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptions],
         fusionPathTotal = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptionsTotal];
 
+    const cols = [
+        {label: 'National Percentile Bar', forTotal: undefined},
+        {label: 'Loss Distribution Bar', forTotal: true},
+        {label: 'Hazard Percentile Bar', forTotal: false},
+        {label: 'Estimated Annual Loss (EAL)', forTotal: undefined},
+        {label: 'Actual Loss', forTotal: false},
+        {label: 'Exposure', forTotal: false},
+        {label: '# Events', forTotal: false},
+        {label: 'Frequency (yearly)', forTotal: false},
+        {label: 'Frequency (daily)', forTotal: false},
+        {label: 'Deaths', forTotal: false},
+        {label: 'Injuries', forTotal: false},
+    ]
     React.useEffect(() => {
         async function getData() {
             if (!geoid) {
@@ -126,7 +153,7 @@ const Edit = ({value, onChange}) => {
                     !isTotal && len ? [[...nriPath(nriView), "databyIndex", {
                         from: 0,
                         to: len - 1
-                    }, [...Object.values(freqCol), ...Object.values(expCol)]], fusionByIndexRoute, fusionTotalByIndexRoute, attributionRoute] : [];
+                    }, [...Object.values(freqCol), ...Object.values(expCol), ...Object.values(evntsCol)]], fusionByIndexRoute, fusionTotalByIndexRoute, attributionRoute] : [];
                 await falcor.get(...routes);
                 setLoading(false);
             });
@@ -166,8 +193,13 @@ const Edit = ({value, onChange}) => {
                         isTotal ? [...fusionPathTotal(fusionViewId), "databyIndex"] : [...fusionPath(fusionViewId), "databyIndex"],
                         {}))
                     .find(fc => fc.nri_category === d.nri_category) || {})[actualLossCol],
+                deaths: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[deathsCol],
+                injuries: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[injuriesCol],
                 exposure: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, expCol[d.nri_category]]),
-                frequency: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, freqCol[d.nri_category]], 0)
+                frequency: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, freqCol[d.nri_category]], 0),
+                numEvents: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, evntsCol[d.nri_category]], 0)
             }))
             .sort((a, b) => +b.value - +a.value);
 
@@ -179,11 +211,12 @@ const Edit = ({value, onChange}) => {
                         fusionViewId,
                         status,
                         geoid,
-                        hazard, hazardPercentileArray, size, isTotal, type, attributionData
+                        hazard, hazardPercentileArray, size, isTotal, type, attributionData,
+                        visibleCols
                     }))
             }
         },
-        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData]);
+        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols]);
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -225,6 +258,11 @@ const Edit = ({value, onChange}) => {
                             }
                         </select>
                     </div>
+                    <RenderColumnControls
+                        cols={cols.filter(col => col.forTotal === isTotal || col.forTotal === undefined).map(col => col.label)}
+                        visibleCols={visibleCols}
+                        setVisibleCols={setVisibleCols}
+                    />
                 </div>
                 <div className='relative w-full p-1'>
                     {
@@ -232,6 +270,7 @@ const Edit = ({value, onChange}) => {
                             status ? <div className={'p-5 text-center'}>{status}</div> :
                                 <div>
                                     <RenderGridOrBox
+                                        visibleCols={visibleCols}
                                         hazard={hazard}
                                         hazardPercentileArray={hazardPercentileArray}
                                         size={size}

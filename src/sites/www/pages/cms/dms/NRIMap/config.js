@@ -6,7 +6,7 @@ export const metaData = {
     },
     type: 'nri',
     attributes: {
-        Frequency: 'afreq',
+        'Frequency (yearly)': 'afreq',
         Exposure: 'exp',
         EAL: 'eal'
     },

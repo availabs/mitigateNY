@@ -6,8 +6,8 @@ import {formatDate} from "../../../../../../../utils/macros.jsx";
 import get from "lodash/get.js";
 import {Attribution} from "../../../components/attribution.jsx";
 
-export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTotal, type, geoid, attributionData, baseUrl}) => (
-    <React.Fragment>
+export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray= [], size, isTotal, type, geoid, attributionData, baseUrl}) => (
+    <>
             {
                     type === 'grid' ?
                         <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 sxl:grid-cols-6 gap-2 mt-10`}>
@@ -17,6 +17,7 @@ export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTota
                                             .map(key => (
                                                 <div key={key}>
                                                     <RenderHazardStatBox
+                                                        visibleCols={visibleCols}
                                                         hazard={key}
                                                         statePercentile={hazardPercentileArray.find(h => h.key === key)?.statePercentile}
                                                         nationalPercentile={hazardPercentileArray.find(h => h.key === key)?.nationalPercentile}
@@ -25,6 +26,9 @@ export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTota
                                                         actualLoss={hazardPercentileArray.find(h => h.key === key)?.actualLoss}
                                                         exposure={hazardPercentileArray.find(h => h.key === key)?.exposure}
                                                         frequency={hazardPercentileArray.find(h => h.key === key)?.frequency}
+                                                        numEvents={hazardPercentileArray.find(h => h.key === key)?.numEvents}
+                                                        deaths={hazardPercentileArray.find(h => h.key === key)?.deaths}
+                                                        injuries={hazardPercentileArray.find(h => h.key === key)?.injuries}
                                                         geoid={geoid}
                                                         isTotal={false}
                                                         size={size}
@@ -35,6 +39,7 @@ export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTota
                                 }
                         </div> :
                         <RenderHazardStatBox
+                            visibleCols={visibleCols}
                             hazard={hazard === 'total' ? '' : hazard}
                             statePercentile={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.statePercentile}
                             nationalPercentile={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.nationalPercentile}
@@ -43,6 +48,9 @@ export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTota
                             actualLoss={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.actualLoss}
                             exposure={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.exposure}
                             frequency={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.frequency}
+                            numEvents={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.numEvents}
+                            deaths={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.deaths}
+                            injuries={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.injuries}
                             geoid={geoid}
                             isTotal={isTotal}
                             size={size}
@@ -50,5 +58,5 @@ export const RenderGridOrBox = ({hazard, hazardPercentileArray= [], size, isTota
                         />
             }
         <Attribution baseUrl={baseUrl} attributionData={attributionData} />
-    </React.Fragment>
+    </>
 )

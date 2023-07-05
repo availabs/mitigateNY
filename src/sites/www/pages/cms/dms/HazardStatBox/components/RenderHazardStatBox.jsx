@@ -4,6 +4,7 @@ import React from "react";
 import {hazardsMeta} from "~/utils/colors.jsx";
 import {fnumIndex} from "~/utils/macros.jsx";
 import {scaleQuantize} from "d3-scale";
+import {components} from "react-select";
 
 const palattes = [
     ["#f5b899", "#f8b46f", "#fdd0a2", "#fdae6b",
@@ -22,7 +23,8 @@ const palattes = [
 
 const colors = scaleQuantize().domain([0, 101]).range(palattes[2]);
 
-const freqToText = (f) => <span className={"pl-1"}>{f}<span className={"font-xs pl-1"}>events/yr</span></span>;
+const freqToText = (f, daily=false) => <span className={"pl-1"}>{f}<span className={"font-xs pl-1"}>events/{daily ? 'day' : 'yr'}</span></span>;
+
 export const RenderHazardStatBox = ({
                                         isTotal,
                                         hazard,
@@ -34,7 +36,11 @@ export const RenderHazardStatBox = ({
                                         eal,
                                         exposure,
                                         frequency,
-                                        size
+                                        numEvents,
+                                        deaths,
+                                        injuries,
+                                        size,
+                                        visibleCols
                                     }) => {
     const ealCol = isTotal ? "avail_eal_total" : "avail_eal";
 
@@ -53,20 +59,22 @@ export const RenderHazardStatBox = ({
 
     return (
         <div className={`border border-gray-200 p-5 ${eal ? `bg-white` : `bg-gray-100`}`}>
-            <div className={"w-full border-b-2 flex flex-wrap"} style={{borderColor: get(hazardsMeta, [hazard, "color"], "")}}>
+            <div className={"w-full border-b-2 flex flex-wrap"}
+                 style={{borderColor: get(hazardsMeta, [hazard, "color"], "")}}>
                 {!isTotal &&
                     <div className={"rounded-full mt-1 mr-2 mb-0"}
                          style={{
                              height: "12px",
                              width: "12px",
                              backgroundColor: get(hazardsMeta, [hazard, "color"], "")
-                        }}
+                         }}
                     />}
                 {isTotal ? "Total" : hazardsMeta[hazard]?.name}
             </div>
             <div className={`w-full ${size === "large" ? `flex flex-row justify-between` : ``}`}>
                 <div className={"w-full pr-1"}>
                     {
+                        visibleCols.includes('National Percentile Bar') &&
                         <div className={"w-full pt-1"}>
                             <RenderSvgBar
                                 data={[{
@@ -82,12 +90,14 @@ export const RenderHazardStatBox = ({
                             />
                         </div>
                     }
-                    {isTotal &&
+
+                    {
+                        isTotal && visibleCols.includes('Loss Distribution Bar') &&
                         <div className={"w-full pt-4"}>
                             {
                                 <RenderSvgBar
-                                data={(hazardPercentileArray || [])
-                                    .map((h, hI) => ({
+                                    data={(hazardPercentileArray || [])
+                                        .map((h, hI) => ({
                                             label: '',
                                             value: h.label,
                                             showValue: true,
@@ -96,25 +106,30 @@ export const RenderHazardStatBox = ({
                                             color: h.color,
                                             width: h.value
                                         }))}
-                                width={statePercentile}
-                                height={svgBarHeight[size]}
-                                radius={svgBarRadius[size]}
-                                fontSizeInner={fontSizeInner[size]}
-                                fontSizeOuter={fontSizeOuter[size]}
-                            />
+                                    width={statePercentile}
+                                    height={svgBarHeight[size]}
+                                    radius={svgBarRadius[size]}
+                                    fontSizeInner={fontSizeInner[size]}
+                                    fontSizeOuter={fontSizeOuter[size]}
+                                />
                             }
-                    </div>
+                        </div>
                     }
                 </div>
                 <div className={blockWrapper[size]}>
-                    <div className={blockClass[size]}>
-                        <label className={'break-word w-[25px]'}>{isTotal ? `Estimated Annual Loss (EAL)` : `EAL`}</label>
-                        <span className={valueClass}>
-                            ${fnumIndex(eal)}
-                        </span>
-                    </div>
+                    {
+                        visibleCols.includes('Estimated Annual Loss (EAL)') &&
+                        <div className={blockClass[size]}>
+                            <label className={'break-word w-[25px]'}>
+                                {isTotal ? `Estimated Annual Loss (EAL)` : `EAL`}
+                            </label>
+                            <span className={valueClass}>
+                                ${fnumIndex(eal)}
+                            </span>
+                        </div>
+                    }
 
-                    {!isTotal &&
+                    {!isTotal && visibleCols.includes('Hazard Percentile Bar') &&
                         <div className={"w-full -mt-4"}>
                             <RenderSvgBar
                                 data={[{
@@ -130,26 +145,55 @@ export const RenderHazardStatBox = ({
                             />
                         </div>
                     }
-                    {!isTotal &&
+                    {!isTotal && visibleCols.includes('Actual Loss') &&
                         <div className={blockClass[size]}><label>Actual Loss</label>
                             <span className={valueClass}>
                                 ${fnumIndex(actualLoss)}
                             </span>
                         </div>
                     }
-                    {!isTotal &&
-                        <>
-                            <div className={blockClass[size]}><label>Exposure</label>
-                                <span className={valueClass}>
+                    {!isTotal && visibleCols.includes('Exposure') &&
+                        <div className={blockClass[size]}><label>Exposure</label>
+                            <span className={valueClass}>
                                     ${fnumIndex(exposure)}
                                 </span>
-                            </div>
-                            <div className={blockClass[size]}><label>Frequency</label>
-                                <span className={valueClass}>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('# Events') &&
+                        <div className={blockClass[size]}><label># Events</label>
+                            <span className={valueClass}>
+                                    {fnumIndex(numEvents)}
+                                </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('Frequency (yearly)') &&
+                        <div className={blockClass[size]}><label>Frequency</label>
+                            <span className={valueClass}>
                                     {freqToText((frequency || 0)?.toFixed(2))}
                                 </span>
-                            </div>
-                        </>
+                        </div>
+                    }
+
+                    {!isTotal && visibleCols.includes('Frequency (daily)') &&
+                        <div className={blockClass[size]}><label>Frequency</label>
+                            <span className={valueClass}>
+                                    {freqToText(((frequency || 0)/365)?.toFixed(2), true)}
+                                </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('Deaths') &&
+                        <div className={blockClass[size]}><label>Deaths</label>
+                            <span className={valueClass}>
+                                    {fnumIndex(deaths)}
+                                </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('Injuries') &&
+                        <div className={blockClass[size]}><label>Injuries</label>
+                            <span className={valueClass}>
+                                    {fnumIndex(injuries)}
+                                </span>
+                        </div>
                     }
                 </div>
             </div>

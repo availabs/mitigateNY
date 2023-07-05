@@ -56,7 +56,7 @@ class EALChoroplethOptions extends LayerContainer {
           "interpolate",
           ["linear"],
           ["zoom"],
-          4, 1,
+          5, 0,
           22, 1
         ],
         "line-color": "#000000",
@@ -82,11 +82,11 @@ class EALChoroplethOptions extends LayerContainer {
           "interpolate",
           ["linear"],
           ["zoom"],
-          4, 1,
+          5, 0,
           22, 1
         ],
-        "line-color": "#000000",
-        "line-opacity": 0.5
+        "line-color": "#252525",
+        "line-opacity": 0.3
       }
     },
   ];
