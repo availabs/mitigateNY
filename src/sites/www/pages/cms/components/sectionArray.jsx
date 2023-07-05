@@ -55,7 +55,7 @@ function SectionEdit ({value, onChange, attributes, size, onCancel, onSave, onRe
 
     return (
         <div>
-            <div className='flex flex-wrap border-y justify-end'>
+            <div className='flex flex-wrap border-y justify-end items-center'>
                 <div className='flex-1 '>
                     <TitleComp 
                         className='p-2 w-full font-sans font-medium text-md uppercase'
@@ -72,7 +72,7 @@ function SectionEdit ({value, onChange, attributes, size, onCancel, onSave, onRe
                         onChange={(v) => updateAttribute('tags', v)}
                     />
                 </div>
-                <div className={'self-center'}>
+                <div className={'self-center pl-2'}>
                     <SizeSelect 
                         size={value?.['size']} 
                         onChange={v => updateAttribute('size',v)}

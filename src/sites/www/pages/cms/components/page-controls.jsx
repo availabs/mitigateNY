@@ -2,10 +2,10 @@ import React, { useEffect, Fragment, useRef, useState } from 'react'
 import { Dialog, Transition, Switch } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import cloneDeep from 'lodash/cloneDeep'
-
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import { useSubmit, useLocation } from "react-router-dom";
 import {json2DmsForm, getUrlSlug, toSnakeCase} from './nav'
-
+import 'react-toastify/dist/ReactToastify.css';
 import { CMSContext } from './layout'
 
 const theme = {
@@ -27,6 +27,18 @@ export function PageControls({ item, dataItems, edit, status }) {
 
   useEffect(() => {
     setStatusMessage(status?.message)
+    toast.success(status?.message, {
+      toastId: 'page-update-success',
+      position: "bottom-right",
+      autoClose: 5000,
+      transition: Slide,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    })
   },[status])
 
   const duplicateItem = () => {
@@ -125,14 +137,7 @@ export function PageControls({ item, dataItems, edit, status }) {
             </div>
           </div>
         }
-      {statusMessage ?
-      <div className='fixed bottom-4 right-3 w-52 '>
-        
-        <div className='flex flex items-center text-sm text-gray-600 bg-green-100 rounded border border-green-500'>
-          <div className='flex-1 py-4 pl-4 pr-2'>{statusMessage}</div> 
-          <div className='pr-4'><i className='fa fa-times hover:text-green-300' onClick={(e) => setStatusMessage('')}/></div>
-        </div>
-      </div>: ''}
+          <ToastContainer />
     </>
   )
 }
