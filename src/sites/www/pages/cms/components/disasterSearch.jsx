@@ -13,12 +13,13 @@ const handleSearch = (text, selected, setSelected) => {
 
 const onChangeFilter = (selected, setSelected, view_id, views, navigate, onChange) => {
     const id = get(selected, [0, 'key']);
-    if (id) {
+    console.log('changed', id)
+    // if (id) {
         setSelected(selected);
         onChange && onChange(id)
-    } else {
-        setSelected([])
-    }
+    // } else {
+    //     setSelected([])
+    // }
 }
 
 const renderMenu = (results, menuProps, labelKey, ...props) => {
@@ -40,7 +41,8 @@ export default ({
                     view_id,
                     value,
                     geoid,
-                    onChange
+                    onChange,
+                    showAll = false
                 }) => {
     const navigate = useNavigate();
     const {falcor, falcorCache} = useFalcor();
@@ -81,13 +83,16 @@ export default ({
     }, [falcor, view_id, geoid, pgEnv]);
 
     const disasters = useMemo(() => {
-        return  Object.values(get(falcorCache, [...disasterDetailsPath(ddsView), 'databyIndex'], {}))
+        return  [
+            ...showAll ? [{key: undefined, label: 'All Disasters'}] : [],
+            ...Object.values(get(falcorCache, [...disasterDetailsPath(ddsView), 'databyIndex'], {}))
             .filter(d => typeof d['distinct disaster_number as disaster_number'] !== 'object')
             .map(d => (
                 {
                     key: d['distinct disaster_number as disaster_number'],
                     label:`${d.declaration_title} (${d['distinct disaster_number as disaster_number']})`
                 }))
+        ]
     }, [falcorCache, view_id, geoid, ddsView, pgEnv]);
 
     useEffect(() => {

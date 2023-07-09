@@ -33,7 +33,7 @@ const Edit = ({value, onChange}) => {
     const
         geoIdCol = geoid?.length === 2 ? "substring(geoid, 1, 2)" : geoid?.length === 5 ? "geoid" : `'all'`,
         disasterDetailsAttributes = {
-            disaster_number: "disaster_number",
+    // ...disasterNumber && {disaster_number: "disaster_number"},
             geoid: `${geoIdCol} as geoid`,
             fema_property_damage: "sum(fema_property_damage) as fema_property_damage",
             ihp_loss: "sum(ihp_loss) as ihp_loss",
@@ -43,16 +43,19 @@ const Edit = ({value, onChange}) => {
             fema_crop_damage: "sum(fema_crop_damage) as fema_crop_damage"
         },
         disasterDetailsOptions = JSON.stringify({
-            filter: geoid ? { disaster_number: [disasterNumber], [geoIdCol]: [geoid] } : { disaster_number: [disasterNumber] },
+            filter: {
+                ...geoid && {[geoIdCol]: [geoid]},
+                ...disasterNumber && {disaster_number: [disasterNumber]}
+            },
             exclude: {fema_incident_begin_date: ['null']},
-            groupBy: [1, 2]
+            groupBy: [1]
         }),
         disasterDetailsPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", disasterDetailsOptions];
 
     useEffect( () => {
         async function getData(){
-            if(!geoid|| !disasterNumber){
-                setStatus('Please Select a Geography and a Disaster.');
+            if(!geoid){
+                setStatus('Please Select a Geography.');
                 return Promise.resolve();
             }else{
                 setStatus(undefined)
@@ -74,7 +77,7 @@ const Edit = ({value, onChange}) => {
 
                 await falcor.get(
                     [...disasterDetailsPath(dlsDeps.view_id), "databyIndex", { from: 0, to: 0 }, Object.values(disasterDetailsAttributes)],
-                    ['dama', pgEnv, 'views', 'byId', dlsDeps.view_id, 'attributes', ['source_id', 'view_id', 'version']]
+                    ['dama', pgEnv, 'views', 'byId', dlsDeps.view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
                 );
 
                 setLoading(false);
@@ -122,6 +125,7 @@ const Edit = ({value, onChange}) => {
                         value={disasterNumber}
                         geoid={geoid}
                         onChange={setDisasterNumber}
+                        showAll={true}
                         className={'flex-row-reverse'}
                     />
                 </div>

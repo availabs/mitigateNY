@@ -42,15 +42,15 @@ const Edit = ({value, onChange}) => {
 
     const attributionPath = ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
 
-    const geoOptions = JSON.stringify(metaData[type]?.options(disasterNumber, geoid)),
+    const geoOptions = JSON.stringify(metaData[type]?.options({disasterNumber, geoid})),
         geoPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options"];
 
     useEffect( () => {
         async function getData(){
-            if(!geoid || !type || !disasterNumber){
+            if(!geoid || !type ){
                 !geoid && setStatus('Please Select a Geography.');
                 !type && setStatus('Please Select a Type.');
-                !disasterNumber && setStatus('Please Select a Disaster.');
+                // !disasterNumber && setStatus('Please Select a Disaster.');
                 setLoading(false);
                 return Promise.resolve()
             }else{
@@ -59,7 +59,7 @@ const Edit = ({value, onChange}) => {
             setLoading(true);
             setStatus(undefined);
             setFilters({...filters,
-            ...{[Object.keys(metaData[type]?.attributes(geoid) || {})[0]]: 'text'}})
+            ...{[Object.keys(metaData[type]?.attributes({geoid, disasterNumber}) || {})[0]]: 'text'}})
             return falcor.get(dependencyPath(ealViewId)).then(async res => {
 
                 const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
@@ -76,8 +76,12 @@ const Edit = ({value, onChange}) => {
                         to: geoNameLen - 1
                     }, ["geoid", "namelsad"]]);
                 }
-
-                const typeId = deps.find(dep => dep.type === metaData[type]?.type);
+                const tmpHMGPViews = {
+                    'hmgp summaries': 725,
+                    'hmgp projects': 728,
+                    'hmgp properties': 729
+                }
+                const typeId = tmpHMGPViews[type] ? {view_id: tmpHMGPViews[type]} : deps.find(dep => dep.type === metaData[type]?.type);
 
                 if(!typeId) {
                     setLoading(false)
@@ -92,7 +96,7 @@ const Edit = ({value, onChange}) => {
                 if(!len) setLoading(false);
 
                 await falcor.get(
-                    [...geoPath(typeId.view_id), geoOptions, 'databyIndex', indices, Object.values(metaData[type]?.attributes(geoid))],
+                    [...geoPath(typeId.view_id), geoOptions, 'databyIndex', indices, Object.values(metaData[type]?.attributes({geoid, disasterNumber}))],
                     attributionPath
                 );
 
@@ -108,7 +112,9 @@ const Edit = ({value, onChange}) => {
     const geoNames = Object.values(get(falcorCache, [...geoNamesPath(countyView), "databyIndex"], {}));
     const  dataModifier = data => {
         data.map(row => {
-            row.geoid = geoNames?.find(gn => gn.geoid === row.geoid)?.namelsad || row.geoid;
+            const geoidCol = metaData[type].geoidCol || 'geoid';
+            const geoName = geoNames?.find(gn => gn.geoid === row[geoidCol])?.namelsad;
+            row[geoidCol] =  geoName || row[geoidCol];
         })
         return data
     };
@@ -116,10 +122,10 @@ const Edit = ({value, onChange}) => {
 
     metaData[type]?.mapGeoidToName && dataModifier && dataModifier(data);
 
-    let columns = Object.keys(metaData[type]?.attributes(geoid) || {})
+    let columns = Object.keys(metaData[type]?.attributes({geoid, disasterNumber}) || {})
         .filter(col => visibleCols?.includes(col) || metaData[type]?.anchorCols?.includes(col))
         .map((col, i) => {
-            const mappedName = metaData[type]?.attributes(geoid)[col];
+            const mappedName = metaData[type]?.attributes({geoid, disasterNumber})[col];
             return {
                 Header:  col,
                 accessor: mappedName,
@@ -127,7 +133,7 @@ const Edit = ({value, onChange}) => {
                 filter: filters[col]
             }
         })
-
+    console.log('dn?', disasterNumber)
     useEffect(() => {
             if(!loading){
                 onChange(JSON.stringify(
@@ -162,6 +168,7 @@ const Edit = ({value, onChange}) => {
                         value={disasterNumber}
                         geoid={geoid}
                         onChange={setDisasterNumber}
+                        showAll={true}
                         className={'flex-row-reverse'}
                     />
                     <ButtonSelector
@@ -175,7 +182,7 @@ const Edit = ({value, onChange}) => {
                         }}
                     />
                     <RenderColumnControls
-                        cols={Object.keys(metaData[type]?.attributes(geoid) || {})}
+                        cols={Object.keys(metaData[type]?.attributes({geoid, disasterNumber}) || {})}
                         anchorCols={metaData[type]?.anchorCols}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
