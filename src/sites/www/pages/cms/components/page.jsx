@@ -96,14 +96,16 @@ export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem
         </div>
       </div>
       <div className='w-52 hidden xl:block'>
-        <div className='w-52 fixed hidden xl:block'> 
+        <div className='w-52 fixed hidden xl:block h-screen'> 
           <PageControls 
             item={item} 
             dataItems={dataItems}
             edit={true}
             status={status}
           />
+          <div className='h-[calc(100%_-_18rem)] overflow-y-auto'>
           {item?.sidebar === 'show' ? <SideNav {...inPageNav} /> : ''}
+          </div>
         </div>
       </div>
       

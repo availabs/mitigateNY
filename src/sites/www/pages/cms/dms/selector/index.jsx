@@ -35,7 +35,10 @@ const ComponentRegistry = {
     "Chart: Loss Distribution Pie Chart": LossDistributionPieChart,
     "Map: FEMA Disaster Loss": DisasterLossMap,
     "Map: NRI": NRIMap,
-    "lexical": dmsDataTypes.lexical
+    "lexical": {
+        name: 'Rich Text',
+        ...dmsDataTypes.lexical
+    }
 }
 
 function EditComp (props) {
