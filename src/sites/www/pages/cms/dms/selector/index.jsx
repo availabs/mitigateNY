@@ -24,18 +24,18 @@ const ComponentRegistry = {
     // "ColorBox": ColorBox,
     "Card: Callout": CalloutBox,
     "Card: Hazard Risk": HazardStatBox,
-    "Card: Declared vs Non-Declared Loss": LossDistributionHeroStats,
-    "Card: FEMA Disaster Info": DisasterInfoStats,
-    "Card: FEMA Disaster Loss Summary": DisasterLossStats,
+    "Hero Stats: Loss Distribution": LossDistributionHeroStats,
+    "Hero Stats: Disaster Info": DisasterInfoStats,
+    "Hero Stats: Disaster Loss": DisasterLossStats,
     "Table: Disasters": DisastersTable,
-    "Table: FEMA Disaster Loss by Program": DisasterLossTables,
+    "Table: Disaster Loss": DisasterLossTables,
     "Table: NRI": NRITable,
-    "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
+    "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
     "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
-    "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
+    "Chart: Loss Distribution Pie Chart": LossDistributionPieChart,
     "Map: FEMA Disaster Loss": DisasterLossMap,
     "Map: NRI": NRIMap,
-    "Rich Text": dmsDataTypes.lexical
+    "lexical": dmsDataTypes.lexical
 }
 
 function EditComp (props) {
@@ -49,9 +49,9 @@ function EditComp (props) {
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
     }
     if(!value?.['element-type']) {
-        onChange({...value, 'element-type': 'Rich Text'})
+        onChange({...value, 'element-type': 'lexical'})
     }
-    let DataComp = ComponentRegistry[get(value, "element-type", "Rich Text")].EditComp
+    let DataComp = ComponentRegistry[get(value, "element-type", "lexical")].EditComp
 
 
     // ComponentRegistry[get(value, "element-type", null)] ?
@@ -65,7 +65,7 @@ function EditComp (props) {
                 {/*Selector Edit*/}
                 <select 
                     className='bg-slate-100 p-2 w-full border-b rounded-md'
-                    value={value?.['element-type'] || 'Rich Text'}
+                    value={value?.['element-type'] || 'lexical'}
                     onChange={async e => {
                         if(e.target.value === 'paste'){
                             return navigator.clipboard.readText()
@@ -98,8 +98,8 @@ function EditComp (props) {
 function ViewComp ({value}) {
     // if (!value) return false
 
-    let Comp = ComponentRegistry[get(value, "element-type", 'Rich Text')] ?
-        ComponentRegistry[get(value, "element-type", "Rich Text")].ViewComp :
+    let Comp = ComponentRegistry[get(value, "element-type", 'lexical')] ?
+        ComponentRegistry[get(value, "element-type", "lexical")].ViewComp :
         () => <div> Component {value["element-type"]} Not Registered </div>
 
     return (
