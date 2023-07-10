@@ -29,7 +29,8 @@ const Edit = ({value, onChange}) => {
     const [nriIds, setNriIds] = useState({source_id: null, view_id: null});
     const [fusionViewId, setfusionViewId] = useState({source_id: null, view_id: null});
     const [deps, setDeps] = useState([ealViewId]);
-    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols);
+    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
+    const [severeEventThreshold, setSevereEventsThreshold] = useState(cachedData.severeEventThreshold || 1_000_000)
 
     const freqCol =
             Object.keys(hazardsMeta)
@@ -73,10 +74,12 @@ const Edit = ({value, onChange}) => {
         nriPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", nriOptions];
     let
         actualLossCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) + sum(swd_population_damage) as actual_damage",
+        numSevereEventsCol = `SUM(CASE WHEN coalesce(fusion_property_damage, 0) + coalesce(fusion_crop_damage, 0) + coalesce(swd_population_damage, 0) >= ${severeEventThreshold} THEN 1 ELSE 0 END) as num_severe_events`,
+        numFEMADeclaredCol = `array_length(array_remove(array_agg(distinct disaster_number), null), 1) as num_fema_declared`,
         deathsCol = `sum(deaths_direct) + sum(deaths_indirect) as deaths`,
         injuriesCol = `sum(injuries_direct) + sum(injuries_indirect) as injuries`,
         geoidCOl = `substring(geoid, 1, ${geoid.length})`,
-        fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol, deathsCol, injuriesCol],
+        fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol, numSevereEventsCol, numFEMADeclaredCol, deathsCol, injuriesCol],
         fusionAttributesTotal = [`${geoidCOl} as geoid`, actualLossCol],
         fusionOptions = JSON.stringify({
             aggregatedLen: true,
@@ -86,6 +89,7 @@ const Edit = ({value, onChange}) => {
         fusionOptionsTotal = JSON.stringify({
             aggregatedLen: true,
             filter: isTotal ? {[geoidCOl]: [geoid]} : {[geoidCOl]: [geoid]},
+            exclude: {['EXTRACT(YEAR from coalesce(fema_incident_begin_date, swd_begin_date))']: ['null']},
             groupBy: [geoidCOl]
         }),
         fusionPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptions],
@@ -101,6 +105,8 @@ const Edit = ({value, onChange}) => {
         {label: '# Events', forTotal: false},
         {label: 'Frequency (yearly)', forTotal: false},
         {label: 'Frequency (daily)', forTotal: false},
+        {label: '# Severe Events', forTotal: false},
+        {label: '# FEMA Declared Disasters', forTotal: false},
         {label: 'Deaths', forTotal: false},
         {label: 'Injuries', forTotal: false},
     ]
@@ -160,7 +166,7 @@ const Edit = ({value, onChange}) => {
         }
 
         getData();
-    }, [ealViewId, geoid, hazard, type, falcorCache]);
+    }, [ealViewId, geoid, hazard, type, falcorCache, severeEventThreshold]);
 
     const size =
         type === 'card' && hazard !== 'total' ? 'small' :
@@ -193,6 +199,10 @@ const Edit = ({value, onChange}) => {
                         isTotal ? [...fusionPathTotal(fusionViewId), "databyIndex"] : [...fusionPath(fusionViewId), "databyIndex"],
                         {}))
                     .find(fc => fc.nri_category === d.nri_category) || {})[actualLossCol],
+                numSevereEvents: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[numSevereEventsCol],
+                numFEMADeclared: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[numFEMADeclaredCol],
                 deaths: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
                     .find(fc => fc.nri_category === d.nri_category) || {})[deathsCol],
                 injuries: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
@@ -211,12 +221,12 @@ const Edit = ({value, onChange}) => {
                         fusionViewId,
                         status,
                         geoid,
-                        hazard, hazardPercentileArray, size, isTotal, type, attributionData,
+                        hazard, hazardPercentileArray, size, isTotal, type, attributionData, severeEventThreshold,
                         visibleCols
                     }))
             }
         },
-        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols]);
+        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols, severeEventThreshold]);
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -263,6 +273,22 @@ const Edit = ({value, onChange}) => {
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
                     />
+
+                    {
+                        visibleCols.includes('# Severe Events') && (
+                            <div className={'w-full pt-2 mt-3 flex flex-row text-sm'}>
+                                <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Severe Events Threshold</label>
+                                <input
+                                    className={'p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+                                    type={'number'}
+                                    value={severeEventThreshold}
+                                    onChange={e => setSevereEventsThreshold(e.target.value)}
+                                    onWheel={() => {}}
+                                    placeholder={'Enter Threshold'}
+                                />
+                            </div>
+                        )
+                    }
                 </div>
                 <div className='relative w-full p-1'>
                     {

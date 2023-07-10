@@ -27,6 +27,8 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                                                         exposure={hazardPercentileArray.find(h => h.key === key)?.exposure}
                                                         frequency={hazardPercentileArray.find(h => h.key === key)?.frequency}
                                                         numEvents={hazardPercentileArray.find(h => h.key === key)?.numEvents}
+                                                        numSevereEvents={hazardPercentileArray.find(h => h.key === key)?.numSevereEvents}
+                                                        numFEMADeclared={hazardPercentileArray.find(h => h.key === key)?.numFEMADeclared}
                                                         deaths={hazardPercentileArray.find(h => h.key === key)?.deaths}
                                                         injuries={hazardPercentileArray.find(h => h.key === key)?.injuries}
                                                         geoid={geoid}
@@ -49,6 +51,8 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                             exposure={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.exposure}
                             frequency={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.frequency}
                             numEvents={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.numEvents}
+                            numSevereEvents={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.numSevereEvents}
+                            numFEMADeclared={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.numFEMADeclared}
                             deaths={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.deaths}
                             injuries={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.injuries}
                             geoid={geoid}

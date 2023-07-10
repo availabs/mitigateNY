@@ -37,6 +37,8 @@ export const RenderHazardStatBox = ({
                                         exposure,
                                         frequency,
                                         numEvents,
+                                        numSevereEvents,
+                                        numFEMADeclared,
                                         deaths,
                                         injuries,
                                         size,
@@ -163,6 +165,20 @@ export const RenderHazardStatBox = ({
                         <div className={blockClass[size]}><label># Events</label>
                             <span className={valueClass}>
                                     {fnumIndex(numEvents)}
+                                </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('# Severe Events') &&
+                        <div className={blockClass[size]}><label># Severe Events</label>
+                            <span className={valueClass}>
+                                    {fnumIndex(numSevereEvents)}
+                                </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('# FEMA Declared Disasters') &&
+                        <div className={blockClass[size]}><label># FEMA Declared Disasters</label>
+                            <span className={valueClass}>
+                                    {fnumIndex(numFEMADeclared)}
                                 </span>
                         </div>
                     }
