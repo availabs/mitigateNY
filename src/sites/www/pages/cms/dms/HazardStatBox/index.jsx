@@ -84,6 +84,7 @@ const Edit = ({value, onChange}) => {
         fusionOptions = JSON.stringify({
             aggregatedLen: true,
             filter: isTotal ? {[geoidCOl]: [geoid]} : {[geoidCOl]: [geoid]},
+            exclude: {['EXTRACT(YEAR from coalesce(fema_incident_begin_date, swd_begin_date))']: ['null']},
             groupBy: [geoidCOl, "nri_category"]
         }),
         fusionOptionsTotal = JSON.stringify({
