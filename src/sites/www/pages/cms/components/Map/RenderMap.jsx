@@ -3,6 +3,8 @@ import {AvlMap} from '~/modules/avl-maplibre/src';
 import {ChoroplethCountyFactory} from "./layers/choroplethCountyLayer.jsx";
 import {format as d3format} from "d3-format";
 import * as d3scale from "d3-scale";
+import {d3Formatter, fnumIndex} from "../../../../../../utils/macros.jsx";
+
 const widths = {
     '1/3': 290,
     '2/3': 370,
@@ -11,8 +13,7 @@ const widths = {
     '1': 370,
     [undefined]: 370
 }
-const DrawLegend = ({domain=[], range=[], title, type = 'threshold', format = '0.2s', size}) => {
-
+const DrawLegend = ({domain=[], range=[], title, type = 'quantile', format = '0.2s', size}) => {
     let scale;
     switch (type) {
         case "quantile":
@@ -32,22 +33,29 @@ const DrawLegend = ({domain=[], range=[], title, type = 'threshold', format = '0
             break;
     }
 
-    const fmt = (typeof format === "function") ? format : d3format(format);
-    const width = `${widths[size] / range.length}px`,
-        heightParent = '40px',
-        heightChild = '20px';
+    const fmt = (typeof format === "function") ? format : d3Formatter(format);
+
+    const RenderLegendBox = ({value, color, fmt, className}) => {
+        const width = `${widths[size] / (range.length + 1)}px`,
+            heightParent = '40px',
+            heightChild = '20px';
+        return (
+            <div className={`flex flex-col h-[${heightParent}] ${className}`} style={{width}}>
+                <div className={`h-[${heightChild}]`} style={{backgroundColor: color, width}}/>
+                <div className={`h-[${heightChild}] text-xs text-right`} style={{width}}>
+                    { fmt ? fmt(value) : value }
+                </div>
+            </div>
+        )
+    }
     return (
         <div className={'flex flex-row justify-center inline-block align-middle pt-2.5'}>
             {
                 range.map((r, i) => {
-                    return (
-                        <div className={`flex flex-col h-[${heightParent}]`} style={{width}}>
-                            <div className={`h-[${heightChild}]`} style={{backgroundColor: r, width}}/>
-                            <div className={`h-[${heightChild}] text-xs text-right`} style={{width}}>{fmt(domain[i]).replace('k', 'K').replace('G', 'B').replace('P', 'Q')}</div>
-                        </div>
-                    )
+                    return <RenderLegendBox value={domain[i]} color={r} fmt={fmt}/>
                 })
             }
+            <RenderLegendBox value={'N/A'} color={'#CCC'} className={'ml-1'}/>
         </div>
     )
 }

@@ -24,7 +24,7 @@ export const RenderColorPicker = ({numColors = 9, setNumColors, shade, setShade,
                     setNumColors &&
                     <div className={'self-center py-1 rounded-l-lg'}>
                         <label className={'pl-1 pr-5 text-sm'}># Shades:</label>
-                        <input type={'number'} min={3} max={9} value={numColors}
+                        <input type={'number'} min={1} max={9} value={numColors}
                                onChange={e => {
                                    e.stopPropagation();
                                    setNumColors(e.target.value);
@@ -56,12 +56,13 @@ export const RenderColorPicker = ({numColors = 9, setNumColors, shade, setShade,
                                     key={s}
                                     onClick={() => {
                                         setShade(s);
-                                        setColors(getColorRange(numColors, s, false));
+                                        setColors(getColorRange(Math.max(numColors, 3), s, false).slice(0, +numColors));
                                         setOpen(false);
                                     }}
                                 >
                                     {
-                                        getColorRange(numColors, s, false)
+                                        getColorRange(Math.max(numColors, 3), s, false)
+                                            .slice(0, +numColors)
                                             .map(color => <div className={`h-[20px] w-[20px]`}
                                                                key={color}
                                                                style={{backgroundColor: color}}/>)

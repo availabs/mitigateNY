@@ -1,4 +1,5 @@
 import get from "lodash/get";
+import {format as d3format} from "d3-format";
 
 export const isJson = (str)  => {
     try {
@@ -54,15 +55,30 @@ export const HoverComp = ({ data, keys, indexFormat, keyFormat, valueFormat }) =
     );
 };
 
+export const d3Formatter = (format = '0.2', currency = false) => {
+    const prefix = currency ? '$' : '';
+    const suffix = d =>
+        d >= 1_000_000_000_000_000 ? 'Q' :
+            d >= 1_000_000_000_000 ? 'T' :
+                d >= 1_000_000_000 ? 'B' :
+                    d >= 1_000_000 ? 'M' :
+                        d >= 1_000 ? 'K' : '';
+    const cleanup = d => +d < 1 ? +d3format('0.1r')(+d) : d3format(format)(+d).toString().replace(/[a-z]*[A-Z]*/g, '');
+
+    return d => `${prefix} ${cleanup(d)}${suffix(d)}`;
+}
+
 export const fnumIndex = (d, fractions = 2, currency = false) => {
-        if (d >= 1000000000000) {
-            return `${currency ? '$' : ``} ${(d / 1000000000000).toFixed(fractions)} T`;
-        } else if (d >= 1000000000) {
-            return `${currency ? '$' : ``} ${(d / 1000000000).toFixed(fractions)} B`;
-        } else if (d >= 1000000) {
-            return `${currency ? '$' : ``} ${(d / 1000000).toFixed(fractions)} M`;
-        } else if (d >= 1000) {
-            return `${currency ? '$' : ``} ${(d / 1000).toFixed(fractions)} K`;
+        if (d >= 1_000_000_000_000_000) {
+            return `${currency ? '$' : ``} ${(d / 1_000_000_000_000_000).toFixed(fractions)} Q`;
+        }else if (d >= 1_000_000_000_000) {
+            return `${currency ? '$' : ``} ${(d / 1_000_000_000_000).toFixed(fractions)} T`;
+        } else if (d >= 1_000_000_000) {
+            return `${currency ? '$' : ``} ${(d / 1_000_000_000).toFixed(fractions)} B`;
+        } else if (d >= 1_000_000) {
+            return `${currency ? '$' : ``} ${(d / 1_000_000).toFixed(fractions)} M`;
+        } else if (d >= 1_000) {
+            return `${currency ? '$' : ``} ${(d / 1_000).toFixed(fractions)} K`;
         } else {
             return typeof d === "object" ? `` : `${currency ? '$' : ``} ${parseInt(d)}`;
         }
@@ -73,10 +89,11 @@ export const fnumToNumber = (d) => {
     const [number, letter] = d.replace('$', '').trim().split(' ');
 
     const multipliers = {
-        k: 1000,
+        k: 1_000,
         m: 1_000_000,
         b: 1_000_000_000,
-        t: 1_000_000_000_000
+        t: 1_000_000_000_000,
+        q: 1_000_000_000_000_000
     }
 
     return +number * multipliers[letter.toLowerCase() || 1];

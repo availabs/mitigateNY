@@ -1,8 +1,8 @@
 import get from "lodash/get";
 import { LayerContainer } from "~/modules/avl-maplibre/src";
 import { getColorRange } from "~/modules/avl-components/src";
-import { fnum } from "~/utils/macros";
 import {drawLegend} from "./drawLegend.jsx";
+import {d3Formatter} from "../../../../../../../utils/macros.jsx";
 
 class EALChoroplethOptions extends LayerContainer {
   constructor(props) {
@@ -130,14 +130,15 @@ class EALChoroplethOptions extends LayerContainer {
     callback: (layerId, features, lngLat) => {
       return features.reduce((a, feature) => {
         let { view: currentView, data } = this.props;
+        const fmt = d3Formatter('0.2s');
         const keyMapping = key => Array.isArray(currentView?.columns) ? key : Object.keys(currentView?.columns || {}).find(k => currentView.columns[k] === key);
         let record = data.find(d => d.geoid === feature.properties.geoid),
           response = [
             [feature.properties.geoid, ''],
             ...Object.keys(record || {})
               .filter(key => key !== 'geoid')
-              .map(key => keyMapping(key) ? [keyMapping(key), fnum(get(record, key))] : [fnum(get(record, key))]),
-            currentView?.paintFn ? ['Total', fnum(currentView.paintFn(record || {}) || 0)] : null
+              .map(key => keyMapping(key) ? [keyMapping(key), fmt(get(record, key))] : [fmt(get(record, key))]),
+            currentView?.paintFn ? ['Total', fmt(currentView.paintFn(record || {}) || 0)] : null,
           ];
         return response;
       }, []);
