@@ -41,8 +41,8 @@ export function PageView ({item, dataItems, attributes}) {
       </div>
         {item?.sidebar === 'show' ? 
           (<div className='w-48 hidden xl:block'>
-            <div className='w-48 fixed hidden xl:block'> 
-              <SideNav {...inPageNav} /> 
+            <div className='w-48 fixed hidden xl:block max-h-[500px] overflow-y-auto'>
+              <SideNav {...inPageNav} />
             </div>
           </div>)
         : ''}
@@ -103,7 +103,7 @@ export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem
             edit={true}
             status={status}
           />
-          {item?.sidebar === 'show' ? <SideNav {...inPageNav} /> : ''}
+          {item?.sidebar === 'show' ? <div className={'max-h-[500px] overflow-y-auto'}><SideNav {...inPageNav} /></div> : ''}
         </div>
       </div>
       

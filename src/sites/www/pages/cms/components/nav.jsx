@@ -11,7 +11,7 @@ import { CMSContext } from './layout'
 
 const theme = {
   nav: {
-    container: 'w-[264px] fixed z-0 hidden lg:block overflow-hidden',
+    container: 'w-[264px] max-h-[800px] fixed z-0 hidden lg:block overflow-x-hidden overflow-y-auto',
     navItemContainer: 'h-full border-l pt-3',
     navItem: ({ isActive, isPending }) =>
       `block px-4 py-2 font-light ${isActive ?
@@ -160,6 +160,7 @@ export default function Nav ({item, dataItems, edit}) {
         onChange={onDragEnd}
         maxDepth={2}
         renderItem={({ item }) => {
+          console.log('item', item)
           let Comp  = item.Comp
           return <Comp />
         }}
