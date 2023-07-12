@@ -10,7 +10,7 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
     <>
             {
                     type === 'grid' ?
-                        <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 sxl:grid-cols-6 gap-2 mt-10`}>
+                        <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 gap-2 mt-10`}>
                                 {
                                         Object.keys(hazardsMeta)
                                             .sort((a, b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name))
@@ -59,6 +59,7 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                             isTotal={isTotal}
                             size={size}
                             eal={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.eal}
+                            isGrid={false}
                         />
             }
         <Attribution baseUrl={baseUrl} attributionData={attributionData} />

@@ -42,17 +42,17 @@ export const RenderHazardStatBox = ({
                                         deaths,
                                         injuries,
                                         size,
-                                        visibleCols
+                                        visibleCols,
+                                        isGrid = true
                                     }) => {
-    const ealCol = isTotal ? "avail_eal_total" : "avail_eal";
 
     const blockClass = {
-        large: "flex flex-col pt-2 text-sm", small: "flex flex-row flex-wrap justify-between pt-2 text-xs"
+        large: "flex flex-col pt-2 text-sm", small: `flex ${isGrid ? `flex-col` : `flex-col`} flex-wrap justify-between pt-2 text-xs`
     };
     const blockWrapper = {
-        large: `flex flex-col justify-between shrink-0 ml-5 pt-2`, small: `flex flex-col`
+        large: `flex flex-col justify-between shrink-0 ml-5 pt-2`, small: `flex flex-col divide-y  ${isGrid ? `text-center` : `text-center`}`
     };
-    const valueClass = `font-medium text-gray-800 text-xs overflow-wrap`
+    const valueClass = `font-medium text-gray-800 ${isGrid ? `text-sm` : `text-xl`} overflow-wrap`
     const svgBarHeight = {large: 30, small: 12};
     const svgBarRadius = {large: 20, small: 10};
     const fontSizeInner = {large: "14.5px", small: "12.5px"};
@@ -60,7 +60,7 @@ export const RenderHazardStatBox = ({
 
 
     return (
-        <div className={`border border-gray-200 p-5 ${eal ? `bg-white` : `bg-gray-100`}`}>
+        <div className={`border border-gray-200 text-gray-900 rounded-lg p-5 ${eal ? `bg-gray-50` : `bg-gray-200`}`}>
             <div className={"w-full border-b-2 flex flex-wrap"}
                  style={{borderColor: get(hazardsMeta, [hazard, "color"], "")}}>
                 {!isTotal &&
@@ -78,9 +78,12 @@ export const RenderHazardStatBox = ({
                     {
                         visibleCols.includes('National Percentile Bar') &&
                         <div className={"w-full pt-1"}>
+                            <div className={blockWrapper[size]}>
+                                <label className={blockClass[size]}>Risk</label>
+                            </div>
                             <RenderSvgBar
                                 data={[{
-                                    label: "Risk",
+                                    label: "",
                                     value: (nationalPercentile)?.toFixed(2),
                                     color: colors(nationalPercentile),
                                     width: nationalPercentile
@@ -122,31 +125,29 @@ export const RenderHazardStatBox = ({
                     {
                         visibleCols.includes('Estimated Annual Loss (EAL)') &&
                         <div className={blockClass[size]}>
-                            <label className={'break-word w-[25px]'}>
+                            <label className={isTotal ? 'break-word w-[25px]' : ''}>
                                 {isTotal ? `Estimated Annual Loss (EAL)` : `EAL`}
                             </label>
                             <span className={valueClass}>
                                 ${fnumIndex(eal)}
                             </span>
+                            {!isTotal && visibleCols.includes('Hazard Percentile Bar') &&
+                                <RenderSvgBar
+                                    data={[{
+                                        label: "",
+                                        value: `${hazardPercentile}%`,
+                                        color: hazardsMeta[hazard]?.color,
+                                        width: hazardPercentile
+                                    }]}
+                                    height={svgBarHeight[size]}
+                                    radius={svgBarRadius[size]}
+                                    fontSizeInner={fontSizeInner[size]}
+                                    fontSizeOuter={fontSizeOuter[size]}
+                                />
+                            }
                         </div>
                     }
 
-                    {!isTotal && visibleCols.includes('Hazard Percentile Bar') &&
-                        <div className={"w-full -mt-4"}>
-                            <RenderSvgBar
-                                data={[{
-                                    label: "",
-                                    value: `${hazardPercentile}%`,
-                                    color: hazardsMeta[hazard]?.color,
-                                    width: hazardPercentile
-                                }]}
-                                height={svgBarHeight[size]}
-                                radius={svgBarRadius[size]}
-                                fontSizeInner={fontSizeInner[size]}
-                                fontSizeOuter={fontSizeOuter[size]}
-                            />
-                        </div>
-                    }
                     {!isTotal && visibleCols.includes('Actual Loss') &&
                         <div className={blockClass[size]}><label>Actual Loss</label>
                             <span className={valueClass}>

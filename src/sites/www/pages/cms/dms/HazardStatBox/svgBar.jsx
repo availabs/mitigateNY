@@ -1,12 +1,14 @@
 import React from "react";
 
 function Bars({ data, height, radius, fontSizeOuter, fontSizeInner }) {
+    const boolLabel = data.find(d => d.label);
+    const y = boolLabel ? 12 : 0;
   return (
     <>
       <rect
-        key={`bar-bg}`}
+        key={`bar-bg`}
         x={0}
-        y={12}
+        y={y}
         width={`100%`}
         height={height}
         rx={radius}
@@ -19,7 +21,7 @@ function Bars({ data, height, radius, fontSizeOuter, fontSizeInner }) {
             <rect
               key={`bar-${label}`}
               x={0}
-              y={12}
+              y={y}
               width={`${x + +width}%`}
               height={height}
               rx={radius}
@@ -47,7 +49,7 @@ function Bars({ data, height, radius, fontSizeOuter, fontSizeInner }) {
                 // strokeLinejoin="miter"
                 // strokeMiterlimit="4"
                     x={valueFloat === 'left' ? 10 : `${x + +width - value.toString().length - 1}%`}
-                    y={(height / 2) + 15.5}
+                    y={y + 4 + height / 2}
                     textAnchor="right"
                     textRendering="auto"
                     fontStyle="normal" fontVariant="normal" fontWeight="bold"
