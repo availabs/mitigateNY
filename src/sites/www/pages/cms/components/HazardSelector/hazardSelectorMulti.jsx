@@ -7,9 +7,10 @@ const handleSearch = (text, selected, setSelected) => {
     if (selected) setSelected([])
 }
 
-const onChangeFilter = (selected, setSelected, onChange) => {
-    const value = selected.map(s => s.key);
-    setSelected(selected);
+const onChangeFilter = (selected, setSelected, onChange, hazards) => {
+    let value = selected.map(s => s.key);
+    value = value.includes('all') ? hazards.map(h => h.key).filter(k => k && k !== 'all') : value.includes(null) ? [] : value;
+    setSelected(value.includes('all') ? hazards.filter(h => h.key && h.key !== 'all') : value.includes(null) ? [] : selected);
     onChange && onChange(value);
 }
 
@@ -51,9 +52,12 @@ export default ({
     const [selected, setSelected] = useState([]);
 
 
-    const hazards = Object.keys(hazardsMeta)
+    const hazards = [
+        ...showAll ? [{key: 'all', label: 'Select All'}, {key: null, label: 'Clear All'}] : [],
+        ...Object.keys(hazardsMeta)
         .sort((a,b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name))
         .map((k, i) => ({key: k, label: hazardsMeta[k].name}))
+    ]
 
     useEffect(() => {
         if (!value) return;
@@ -77,7 +81,7 @@ export default ({
                     options={hazards}
                     labelKey={(option) => `${option?.label}`}
                     defaultSelected={selected}
-                    onChange={(selected) => onChangeFilter(selected, setSelected, onChange)}
+                    onChange={(selected) => onChangeFilter(selected, setSelected, onChange, hazards)}
                     selected={selected}
                     inputProps={{className: 'flex flex-row flex-wrap'}}
                     renderMenu={renderMenu}

@@ -255,6 +255,7 @@ const Edit = ({value, onChange}) => {
                                 value={hazard === 'total' || !hazard ? Object.keys(hazardsMeta) : Array.isArray(hazard) ? hazard : [hazard]}
                                 onChange={setHazard}
                                 className={'flex-row-reverse'}
+                                showAll={true}
                             /> :
                             <HazardSelectorSimple
                                 hazard={hazard}
