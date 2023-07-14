@@ -10,6 +10,8 @@ import {RenderGridOrBox} from "./components/RenderGridOrBox.jsx";
 import {Loading} from "../../../../../../utils/loading.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
+import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
+import HazardSelectorMulti from "../../components/HazardSelector/hazardSelectorMulti.jsx";
 
 const Edit = ({value, onChange}) => {
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
@@ -228,6 +230,7 @@ const Edit = ({value, onChange}) => {
             }
         },
         [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols, severeEventThreshold]);
+
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -246,29 +249,22 @@ const Edit = ({value, onChange}) => {
                             setType(e);
                         }}
                     />
-                    <div className='flex justify-between'>
-                        <label className={'shrink-0 pr-2 py-1 my-1 w-1/4'}>Hazard Type:</label>
-                        <select
-                            className='w-full shrink my-1 p-2 bg-white rounded-md'
-                            onChange={e => {
-                                setIsTotal(e.target.value === 'total')
-                                setHazard(e.target.value)
-                            }}
-                            disabled={type === 'grid'}
-                            value={hazard}
-                        >
-                            {
-                                type === 'grid' ?
-                                    <option value={' '}>Not Applicable</option> :
-                                    <option value='total'>Total</option>
-                            }
-                            { type === 'card' &&
-                                Object.keys(hazardsMeta).map((k, i) => {
-                                    return <option value={k}>{hazardsMeta[k].name}</option>
-                                })
-                            }
-                        </select>
-                    </div>
+                    {
+                        type === 'grid' ?
+                            <HazardSelectorMulti
+                                value={hazard === 'total' || !hazard ? Object.keys(hazardsMeta) : Array.isArray(hazard) ? hazard : [hazard]}
+                                onChange={setHazard}
+                                className={'flex-row-reverse'}
+                            /> :
+                            <HazardSelectorSimple
+                                hazard={hazard}
+                                setHazard={e => {
+                                    setIsTotal(e === 'total')
+                                    setHazard(e)
+                                }}
+                                showTotal={true}
+                                />
+                    }
                     <RenderColumnControls
                         cols={cols.filter(col => col.forTotal === isTotal || col.forTotal === undefined).map(col => col.label)}
                         visibleCols={visibleCols}
@@ -278,13 +274,13 @@ const Edit = ({value, onChange}) => {
                     {
                         visibleCols.includes('# Severe Events') && (
                             <div className={'w-full pt-2 mt-3 flex flex-row text-sm'}>
-                                <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Severe Events Threshold</label>
+                                <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Severe Events Threshold:</label>
                                 <input
                                     className={'p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
                                     type={'number'}
                                     value={severeEventThreshold}
                                     onChange={e => setSevereEventsThreshold(e.target.value)}
-                                    onWheel={() => {}}
+                                    onWheel={(e) => e.target.blur()}
                                     placeholder={'Enter Threshold'}
                                 />
                             </div>

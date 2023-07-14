@@ -8,7 +8,7 @@ import VersionSelectorSearchable from "../../components/versionSelector/searchab
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
-import {HazardSelector} from "../../components/hazardSelector.jsx";
+import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {metaData} from "./components/config.js";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
@@ -216,7 +216,7 @@ const Edit = ({value, onChange}) => {
                         className={'flex-row-reverse'}
                     />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
-                    <HazardSelector hazard={hazard} setHazard={setHazard}/>
+                    <HazardSelectorSimple hazard={hazard} setHazard={setHazard}/>
                     <RenderColumnControls
                         cols={nriAttributes.map(a => a.label)}
                         anchorCols={anchorCols}

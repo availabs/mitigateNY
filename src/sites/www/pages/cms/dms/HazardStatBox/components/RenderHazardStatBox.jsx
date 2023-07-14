@@ -23,7 +23,7 @@ const palattes = [
 
 const colors = scaleQuantize().domain([0, 101]).range(palattes[2]);
 
-const freqToText = (f, daily=false) => <span className={"pl-1"}>{f}<span className={"font-xs pl-1"}>events/{daily ? 'day' : 'yr'}</span></span>;
+const freqToText = (f, daily=false) => <span className={"pl-1"}>{f}<span className={"text-xs pl-1"}>events/{daily ? 'day' : 'yr'}</span></span>;
 
 export const RenderHazardStatBox = ({
                                         isTotal,
@@ -47,7 +47,7 @@ export const RenderHazardStatBox = ({
                                     }) => {
 
     const blockClass = {
-        large: "flex flex-col pt-2 text-sm", small: `flex ${isGrid ? `flex-col` : `flex-col`} flex-wrap justify-between pt-2 text-xs`
+        large: "flex flex-col pt-2 text-sm", small: `flex ${isGrid ? `flex-col` : `flex-col`} flex-wrap justify-between pt-2 ${isGrid ? `text-xs` : `text-sm`}`
     };
     const blockWrapper = {
         large: `flex flex-col justify-between shrink-0 ml-5 pt-2`, small: `flex flex-col divide-y  ${isGrid ? `text-center` : `text-center`}`
@@ -60,14 +60,14 @@ export const RenderHazardStatBox = ({
 
 
     return (
-        <div className={`border border-gray-200 text-gray-900 rounded-lg p-5 ${eal ? `bg-gray-50` : `bg-gray-200`}`}>
-            <div className={"w-full border-b-2 flex flex-wrap"}
+        <div className={`border border-gray-200 text-gray-900 rounded-lg p-5 ${eal ? `bg-slate-100` : `bg-slate-200`}`}>
+            <div className={`w-full border-b-4 rounded flex flex-wrap items-center font-medium tracking-wide uppercase ${isGrid ? `text-base` : `text-lg`}`}
                  style={{borderColor: get(hazardsMeta, [hazard, "color"], "")}}>
                 {!isTotal &&
-                    <div className={"rounded-full mt-1 mr-2 mb-0"}
+                    <div className={"rounded-full mr-2 mb-0"}
                          style={{
-                             height: "12px",
-                             width: "12px",
+                             height: "15px",
+                             width: "15px",
                              backgroundColor: get(hazardsMeta, [hazard, "color"], "")
                          }}
                     />}

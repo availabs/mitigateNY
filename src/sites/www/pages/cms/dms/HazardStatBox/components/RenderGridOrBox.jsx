@@ -13,6 +13,7 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                         <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 gap-2 mt-10`}>
                                 {
                                         Object.keys(hazardsMeta)
+                                            .filter(h => !hazard ||  !Array.isArray(hazard) || !hazard.length || hazard.includes(h))
                                             .sort((a, b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name))
                                             .map(key => (
                                                 <div key={key}>

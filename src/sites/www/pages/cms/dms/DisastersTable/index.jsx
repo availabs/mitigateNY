@@ -9,7 +9,7 @@ import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
-import {HazardSelector} from "../../components/hazardSelector.jsx";
+import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 
 const colNameMapping = {
@@ -303,7 +303,7 @@ const Edit = ({value, onChange}) => {
                             setFilters({})
                         }}
                     />
-                    <HazardSelector hazard={hazard} setHazard={setHazard} showTotal={true}/>
+                    <HazardSelectorSimple hazard={hazard} setHazard={setHazard} showTotal={true}/>
                     <RenderColumnControls
                         cols={Object.keys(fusionAttributes || {}).filter(c => fusionAttributes[c].visible !== false)}
                         anchorCols={anchorCols}

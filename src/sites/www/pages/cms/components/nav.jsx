@@ -105,7 +105,7 @@ export default function Nav ({item, dataItems, edit}) {
     Promise.all(updates.map((item) => {
       submit(json2DmsForm(item), { method: "post", action: pathname })
     })).then(values => {
-      console.log('updating nav', values)
+      // console.log('updating nav', values)
     })
 
   }, []);
@@ -160,7 +160,7 @@ export default function Nav ({item, dataItems, edit}) {
         onChange={onDragEnd}
         maxDepth={2}
         renderItem={({ item }) => {
-          console.log('item', item)
+          // console.log('item', item)
           let Comp  = item.Comp
           return <Comp />
         }}

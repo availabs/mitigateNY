@@ -8,7 +8,7 @@ import { ProcessDataForMap } from "./utils";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 import { Loading } from "~/utils/loading.jsx"
-import {HazardSelector} from "../../components/hazardSelector.jsx";
+import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
@@ -103,7 +103,7 @@ const Edit = ({value, onChange}) => {
                     Edit Controls
                     <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId} className={'flex-row-reverse'} />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
-                    <HazardSelector hazard={hazard} setHazard={setHazard} showTotal={true}/>
+                    <HazardSelectorSimple hazard={hazard} setHazard={setHazard} showTotal={true}/>
                 </div>
                 {
                     loading ? <Loading /> :
