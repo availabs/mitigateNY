@@ -16,7 +16,7 @@ export const hazardsMeta = {
     // reds
     'wildfire': {color: '#ff1a40', name: 'Wildfire', prefix: 'wfir', consequences: ['b', 'p', 'pe', 'a', 't']},
     'heatwave': {color: '#ff571a', name: 'Extreme Heat', prefix: 'hwav', consequences: ['b', 'p', 'pe', 'a', 't']},
-    // 'volcano': {color: '#FF8066', name: 'Volcano', prefix: 'vlcn', consequences: ['b', 'p', 'pe', 't']},
+    'volcano': {color: '#FF8066', name: 'Volcano', prefix: 'vlcn', consequences: ['b', 'p', 'pe', 't']},
 
     // earthy yellows/browns/
     'landslide': {color: '#786028', name: 'Landslide', prefix: 'lnds', consequences: ['b', 'p', 'pe', 't']},

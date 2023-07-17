@@ -2,7 +2,7 @@ import React from "react"
 import get from "lodash/get"
 import isEqual from "lodash/isEqual"
 import {isJson} from "~/utils/macros.jsx";
-import { dmsDataTypes } from "~/modules/dms/src"
+import {dmsDataTypes} from "~/modules/dms/src"
 
 // import ColorBox from "../colorbox";
 import LossByDisasterNumberChart from "../LossByDisasterNumberChart";
@@ -18,7 +18,15 @@ import NRIMap from "../NRIMap/index.jsx";
 import HazardStatBox from '../HazardStatBox';
 import NRITable from "../NRITable/index.jsx";
 import CalloutBox from "../CalloutBox/";
+import FilterableSearch from "../../components/FilterableSearch.jsx";
 
+const icons = {
+    card: 'fa-thin fa-credit-card',
+    table: 'fa-thin fa-table',
+    graph: 'fa-thin fa-chart-column',
+    map: 'fa-thin fa-map',
+    'rich text': 'fa-thin fa-text'
+}
 // register components here
 const ComponentRegistry = {
     // "ColorBox": ColorBox,
@@ -35,54 +43,92 @@ const ComponentRegistry = {
     "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
     "Map: FEMA Disaster Loss": DisasterLossMap,
     "Map: NRI": NRIMap,
-    "lexical": dmsDataTypes.lexical
+    "Rich Text": dmsDataTypes.lexical
 }
 
-function EditComp (props) {
-    const { value, onChange, size } = props
+function EditComp(props) {
+    const {value, onChange, size} = props
     // console.log("selector props", props, value)
-    
+
     const updateAttribute = (k, v) => {
-        if(!isEqual(value, {...value, [k]: v})){
+        if (!isEqual(value, {...value, [k]: v})) {
             onChange({...value, [k]: v})
         }
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
     }
-    if(!value?.['element-type']) {
-        onChange({...value, 'element-type': 'lexical'})
+    if (!value?.['element-type']) {
+        onChange({...value, 'element-type': 'Rich Text'})
     }
-    let DataComp = ComponentRegistry[get(value, "element-type", "lexical")].EditComp
+    let DataComp = ComponentRegistry[get(value, "element-type", "Rich Text")].EditComp
 
 
     // ComponentRegistry[get(value, "element-type", null)] ?
     //      :
     //     () => <div> Component {value?.["element-type"]} Not Registered </div>
 
-    
+
     return (
         <div className="w-full">
             <div className="relative my-1">
                 {/*Selector Edit*/}
-                <select 
-                    className='bg-slate-100 p-2 w-full border-b rounded-md'
-                    value={value?.['element-type'] || 'lexical'}
+                <FilterableSearch
+                    className={'flex-row-reverse'}
+                    placeholder={'Search for a Component'}
+                    options={
+                        Object.keys(ComponentRegistry).map(k => (
+                            {
+                                key: k, label: ComponentRegistry[k].name || k
+                            }
+                        ))
+                    }
+                    value={value?.['element-type'] || 'Rich Text'}
                     onChange={async e => {
-                        if(e.target.value === 'paste'){
+                        if (e === 'paste') {
                             return navigator.clipboard.readText()
                                 .then(text => {
                                     const copiedValue = isJson(text) && JSON.parse(text || '{}')
                                     return copiedValue?.['element-type'] && onChange({...value, ...copiedValue})
                                 })
-                        }else {
-                            updateAttribute('element-type', e.target.value)
+                        } else {
+                            updateAttribute('element-type', e)
                         }
                     }}
-                >
-                    <option key={'paste'} value={'paste'}>Paste from Clipboard</option>
-                    {Object.keys(ComponentRegistry).map(k => (
-                        <option value={k} key={k}>{ComponentRegistry[k].name || k}</option>
-                    ))}
-                </select>
+                    filters={[
+                        {
+                            icon: 'fa-thin fa-paste',
+                            label: 'Paste',
+                            value: 'paste'
+                        },
+                        ...[...new Set(Object.keys(ComponentRegistry).map(key => key.split(':')[0]))]
+                            .map(c => (
+                                {
+                                    icon: `${icons[c.toLowerCase()] || c.toLowerCase()}`,
+                                    label: c,
+                                    filterText: c
+                                }
+                            ))
+                    ]}
+                />
+                {/*<select*/}
+                {/*    className='bg-slate-100 p-2 w-full border-b rounded-md'*/}
+                {/*    value={value?.['element-type'] || 'Rich Text'}*/}
+                {/*    onChange={async e => {*/}
+                {/*        if (e.target.value === 'paste') {*/}
+                {/*            return navigator.clipboard.readText()*/}
+                {/*                .then(text => {*/}
+                {/*                    const copiedValue = isJson(text) && JSON.parse(text || '{}')*/}
+                {/*                    return copiedValue?.['element-type'] && onChange({...value, ...copiedValue})*/}
+                {/*                })*/}
+                {/*        } else {*/}
+                {/*            updateAttribute('element-type', e.target.value)*/}
+                {/*        }*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <option key={'paste'} value={'paste'}>Paste from Clipboard</option>*/}
+                {/*    {Object.keys(ComponentRegistry).map(k => (*/}
+                {/*        <option value={k} key={k}>{ComponentRegistry[k].name || k}</option>*/}
+                {/*    ))}*/}
+                {/*</select>*/}
             </div>
             <div>
                 <DataComp
@@ -95,16 +141,16 @@ function EditComp (props) {
     )
 }
 
-function ViewComp ({value}) {
+function ViewComp({value}) {
     // if (!value) return false
 
-    let Comp = ComponentRegistry[get(value, "element-type", 'lexical')] ?
-        ComponentRegistry[get(value, "element-type", "lexical")].ViewComp :
+    let Comp = ComponentRegistry[get(value, "element-type", 'Rich Text')] ?
+        ComponentRegistry[get(value, "element-type", "Rich Text")].ViewComp :
         () => <div> Component {value["element-type"]} Not Registered </div>
 
     return (
         <div className="relative w-full">
-           <Comp value={value?.['element-data'] || ''} />
+            <Comp value={value?.['element-data'] || ''}/>
         </div>
     )
 }
