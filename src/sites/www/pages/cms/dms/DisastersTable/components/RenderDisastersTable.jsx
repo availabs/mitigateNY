@@ -32,10 +32,7 @@ export const RenderDisastersTable = ({
             Cell: cell => {
                 let value = getNestedValue(cell.value);
 
-                value =
-                    ['County', 'Year', 'Event Id', 'Disaster Number', 'Hazard Type', 'NRI Category', 'Deaths, Injuries'].includes(Header) ?
-                        value :
-                        fnum(value || 0, true)
+                value = c.type === 'text' ? value : fnum(value || 0, true);
 
                 return Header === "Disaster Number" ?
                     <Link to={`/disaster/${cell.row.original.disaster_number}/geography/${geoid}`}>
@@ -57,6 +54,7 @@ export const RenderDisastersTable = ({
                 return acc && value?.toString().toLowerCase().includes(filterValue[col]?.toLowerCase())
             }, true)
     )
+
     return (
         <>
             <div className={'py-5'}>
