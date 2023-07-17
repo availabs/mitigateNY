@@ -251,7 +251,7 @@ const Edit = ({value, onChange}) => {
                         }}
                     />
                     <ButtonSelector
-                        label={'Component Type:'}
+                        label={'Component Style:'}
                         types={['compact', 'full']}
                         type={style}
                         setType={setStyle}
