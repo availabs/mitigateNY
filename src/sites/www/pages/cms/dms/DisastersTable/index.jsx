@@ -62,6 +62,13 @@ const Edit = ({value, onChange}) => {
 
     const fusionGeoCol = `substring(geoid, 1, ${geoid.length})`,
         fusionAttributes = {
+            [type === 'declared' ? 'Disaster Number' : 'Event Id']: {
+                raw: type === 'declared' ? 'disaster_number' : 'event_id',
+                align: 'right',
+                // filter: 'text',
+                width: [type === 'declared' ? '40%' : '10%'],
+                type: 'text'
+            },
             'County': {
                 raw: `geoid`,
                 type: 'text'
@@ -71,13 +78,6 @@ const Edit = ({value, onChange}) => {
                 align: 'right',
                 // filter: 'text',
                 width: '10%',
-                type: 'text'
-            },
-            [type === 'declared' ? 'Disaster Number' : 'Event Id']: {
-                raw: type === 'declared' ? 'disaster_number' : 'event_id',
-                align: 'right',
-                // filter: 'text',
-                width: '40%',
                 type: 'text'
             },
             'NRI Category': {

@@ -42,15 +42,18 @@ export const RenderHazardStatBox = ({
                                         deaths,
                                         injuries,
                                         size,
+                                        style,
                                         visibleCols,
                                         isGrid = true
                                     }) => {
 
     const blockClass = {
-        large: "flex flex-col pt-2 text-sm", small: `flex ${isGrid ? `flex-col` : `flex-col`} flex-wrap justify-between pt-2 ${isGrid ? `text-xs` : `text-sm`}`
+        large: "flex flex-col pt-2 text-sm",
+        small: `flex ${style === 'full' ? `flex-row` : `flex-col`} flex-wrap justify-between pt-2 ${isGrid ? `text-xs` : `text-sm`}`
     };
     const blockWrapper = {
-        large: `flex flex-col justify-between shrink-0 ml-5 pt-2`, small: `flex flex-col divide-y  ${isGrid ? `text-center` : `text-center`}`
+        large: `flex flex-col justify-between shrink-0 ml-5 pt-2`,
+        small: `flex flex-col divide-y  ${isGrid ? `text-center` : `text-center`}`
     };
     const valueClass = `font-medium text-gray-800 ${isGrid ? `text-sm` : `text-xl`} overflow-wrap`
     const svgBarHeight = {large: 30, small: 12};

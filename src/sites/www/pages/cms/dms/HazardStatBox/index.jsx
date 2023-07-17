@@ -23,6 +23,7 @@ const Edit = ({value, onChange}) => {
     const [loading, setLoading] = useState(true);
     const [hazard, setHazard] = useState(cachedData?.hazard || 'total');
     const [type, setType] = useState(cachedData?.type || 'card');
+    const [style, setStyle] = useState(cachedData?.style || 'compact');
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
     const [isTotal, setIsTotal] = useState(cachedData?.isTotal || (hazard === 'total' && type === 'card'));
@@ -225,11 +226,11 @@ const Edit = ({value, onChange}) => {
                         status,
                         geoid,
                         hazard, hazardPercentileArray, size, isTotal, type, attributionData, severeEventThreshold,
-                        visibleCols
+                        visibleCols, style
                     }))
             }
         },
-        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols, severeEventThreshold]);
+        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols, severeEventThreshold, style]);
 
     return (
         <div className='w-full'>
@@ -249,6 +250,13 @@ const Edit = ({value, onChange}) => {
                             setType(e);
                         }}
                     />
+                    <ButtonSelector
+                        label={'Component Type:'}
+                        types={['compact', 'full']}
+                        type={style}
+                        setType={setStyle}
+                    />
+
                     {
                         type === 'grid' ?
                             <HazardSelectorMulti
@@ -298,6 +306,7 @@ const Edit = ({value, onChange}) => {
                                         hazard={hazard}
                                         hazardPercentileArray={hazardPercentileArray}
                                         size={size}
+                                        style={style}
                                         isTotal={isTotal}
                                         type={type}
                                         attributionData={attributionData}

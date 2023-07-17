@@ -6,7 +6,7 @@ import {formatDate} from "../../../../../../../utils/macros.jsx";
 import get from "lodash/get.js";
 import {Attribution} from "../../../components/attribution.jsx";
 
-export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray= [], size, isTotal, type, geoid, attributionData, baseUrl}) => (
+export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray= [], size, style, isTotal, type, geoid, attributionData, baseUrl}) => (
     <>
             {
                     type === 'grid' ?
@@ -35,6 +35,7 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                                                         geoid={geoid}
                                                         isTotal={false}
                                                         size={size}
+                                                        style={style}
                                                         eal={hazardPercentileArray.find(h => h.key === key)?.eal}
                                                     />
                                                 </div>
@@ -59,6 +60,7 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                             geoid={geoid}
                             isTotal={isTotal}
                             size={size}
+                            style={style}
                             eal={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.eal}
                             isGrid={false}
                         />
