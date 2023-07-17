@@ -233,14 +233,14 @@ const ppdaf = () => {
                 subMenuParentWrapper: `flex flex-col w-full`
             },
             flyout: {
-                indicatorIcon: 'far fa-angle-down pl-2 pt-1',
+                indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
                 indicatorIconOpen: 'fal fa-angle-down pl-2',
                 subMenuWrapper: `absolute ml-${sizes[size].width - 8}`,
                 subMenuParentWrapper: `flex flex-row`,
                 subMenuWrapperTop: `absolute top-full`,
             },
             row: {
-                indicatorIcon: 'far fa-angle-down pl-2 pt-1',
+                indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
                 indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
                 subMenuWrapper: `absolute ml-${sizes[size].width - 8}`,
                 subMenuParentWrapper: `flex flex-row`,
