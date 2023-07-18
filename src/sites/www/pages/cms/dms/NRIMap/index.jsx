@@ -13,13 +13,13 @@ import {scaleThreshold} from "d3-scale";
 import {getColorRange} from "../../../../../../pages/DataManager/utils/color-ranges.js";
 import ckmeans from '~/utils/ckmeans';
 import {RenderMap} from "../../components/Map/RenderMap.jsx";
-import {HazardSelector} from "../../components/hazardSelector.jsx";
+import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 import {Attribution} from "../../components/attribution.jsx";
 
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
-    return data?.length && range?.length ? ckmeans(data, Math.min(data?.length, range?.length)).map(d => parseInt(d)) : [];
+    return data?.length && range?.length ? ckmeans(data, Math.min(data?.length, range?.length)) : [];
 }
 const getColorScale = (data, colors) => {
     const domain = getDomain(data, colors)
@@ -47,7 +47,6 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
         const value = paintFn ? paintFn(record) : record[columns?.[0]];
         geoColors[record.geoid] = value ? colorScale(value) : '#CCC';
     })
-
     return {geoColors, domain};
 }
 const Edit = ({value, onChange, size}) => {
@@ -263,7 +262,7 @@ const Edit = ({value, onChange, size}) => {
                         className={'flex-row-reverse'}
                     />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
-                    <HazardSelector hazard={hazard} setHazard={setHazard}/>
+                    <HazardSelectorSimple hazard={hazard} setHazard={setHazard}/>
                     <ButtonSelector
                         label={'Attribute:'}
                         types={

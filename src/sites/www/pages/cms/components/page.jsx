@@ -107,6 +107,7 @@ export function PageEdit ({item, dataItems, updateAttribute ,attributes, setItem
           <div className='h-[calc(100%_-_18rem)] overflow-y-auto'>
           {item?.sidebar === 'show' ? <SideNav {...inPageNav} /> : ''}
           </div>
+
         </div>
       </div>
       

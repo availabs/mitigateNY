@@ -23,8 +23,7 @@ const RenderPageSizeControl = ({pageSize, setPageSize}) => {
                     setTmpPageSize(e.target.value);
                     if (e.target.value > 0) setPageSize(e.target.value);
                 }}
-                onWheel={() => {
-                }}
+                onWheel={e => e.target.blur()}
             />
         </div>
     )
@@ -78,7 +77,18 @@ const RenderFilterValueControls = ({column, filterValue, setFilterValue}) => {
                 className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
                 value={filterValue[column]}
                 placeholder={'filter by'}
-                onChange={e => setFilterValue({...filterValue, ...{[column]: e.target.value}})}
+                onChange={e => {
+                    const tmpVal = JSON.parse(JSON.stringify(filterValue));
+                    if(!e.target.value) delete tmpVal[column];
+                    const newValue = e.target.value ?
+                        {
+                            ...tmpVal,
+                            ...{[column]: e.target.value ? e.target.value : undefined}
+                        } : tmpVal;
+
+                    setFilterValue(newValue)
+                }
+            }
             />
             {/*<select*/}
             {/*    key={`filter-value-${column}`}*/}

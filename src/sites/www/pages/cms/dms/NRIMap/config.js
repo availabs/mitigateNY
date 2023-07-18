@@ -20,6 +20,6 @@ export const metaData = {
     dataSources: [
         {label: 'NRI Counties', value: 'nri', geoLayer: 'counties', geomCol: 'stcofips', geomView: 285},
         {label: 'NRI Census Tracts', value: 'nri_tracts', geoLayer: 'tracts', geomCol: 'tractfips', geomView: 285},
-        {label: 'Derive From EAL Version Dependency', value: 'avail_counties', geoLayer: 'counties', geomCol: 'stcofips', geomView: 285}
+        {label: 'AVAIL EAL', value: 'avail_counties', geoLayer: 'counties', geomCol: 'stcofips', geomView: 285}
     ]
 };

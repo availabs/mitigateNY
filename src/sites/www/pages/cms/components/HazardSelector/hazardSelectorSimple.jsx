@@ -1,7 +1,7 @@
 import React from "react";
 import {hazardsMeta} from "~/utils/colors.jsx";
 
-export const HazardSelector = ({hazard, setHazard, showTotal=false}) => {
+export const HazardSelectorSimple = ({hazard, setHazard, showTotal=false}) => {
     return (
         <div className='flex flex-row flwx-wrap justify-between'>
             <label className={'shrink-0 pr-2 py-1 my-1 w-1/4'}>Hazard Type:</label>

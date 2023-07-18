@@ -20,7 +20,7 @@ import {Attribution} from "../../components/attribution.jsx";
 
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
-    return data?.length && range?.length ? ckmeans(data, Math.min(data?.length, range?.length)).map(d => parseInt(d)) : [];
+    return data?.length && range?.length ? ckmeans(data, Math.min(data?.length, range?.length)) : [];
 }
 const getColorScale = (data, colors) => {
     const domain = getDomain(data, colors)

@@ -10,6 +10,8 @@ import {RenderGridOrBox} from "./components/RenderGridOrBox.jsx";
 import {Loading} from "../../../../../../utils/loading.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
+import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
+import HazardSelectorMulti from "../../components/HazardSelector/hazardSelectorMulti.jsx";
 
 const Edit = ({value, onChange}) => {
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
@@ -21,6 +23,7 @@ const Edit = ({value, onChange}) => {
     const [loading, setLoading] = useState(true);
     const [hazard, setHazard] = useState(cachedData?.hazard || 'total');
     const [type, setType] = useState(cachedData?.type || 'card');
+    const [style, setStyle] = useState(cachedData?.style || 'compact');
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
     const [isTotal, setIsTotal] = useState(cachedData?.isTotal || (hazard === 'total' && type === 'card'));
@@ -29,7 +32,8 @@ const Edit = ({value, onChange}) => {
     const [nriIds, setNriIds] = useState({source_id: null, view_id: null});
     const [fusionViewId, setfusionViewId] = useState({source_id: null, view_id: null});
     const [deps, setDeps] = useState([ealViewId]);
-    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols);
+    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
+    const [severeEventThreshold, setSevereEventsThreshold] = useState(cachedData.severeEventThreshold || 1_000_000)
 
     const freqCol =
             Object.keys(hazardsMeta)
@@ -73,19 +77,23 @@ const Edit = ({value, onChange}) => {
         nriPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", nriOptions];
     let
         actualLossCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) + sum(swd_population_damage) as actual_damage",
+        numSevereEventsCol = `SUM(CASE WHEN coalesce(fusion_property_damage, 0) + coalesce(fusion_crop_damage, 0) + coalesce(swd_population_damage, 0) >= ${severeEventThreshold} THEN 1 ELSE 0 END) as num_severe_events`,
+        numFEMADeclaredCol = `COALESCE(array_length(array_remove(array_agg(distinct disaster_number), null), 1), 0) as num_fema_declared`,
         deathsCol = `sum(deaths_direct) + sum(deaths_indirect) as deaths`,
         injuriesCol = `sum(injuries_direct) + sum(injuries_indirect) as injuries`,
         geoidCOl = `substring(geoid, 1, ${geoid.length})`,
-        fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol, deathsCol, injuriesCol],
+        fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol, numSevereEventsCol, numFEMADeclaredCol, deathsCol, injuriesCol],
         fusionAttributesTotal = [`${geoidCOl} as geoid`, actualLossCol],
         fusionOptions = JSON.stringify({
             aggregatedLen: true,
             filter: isTotal ? {[geoidCOl]: [geoid]} : {[geoidCOl]: [geoid]},
+            exclude: {['EXTRACT(YEAR from coalesce(fema_incident_begin_date, swd_begin_date))']: ['null']},
             groupBy: [geoidCOl, "nri_category"]
         }),
         fusionOptionsTotal = JSON.stringify({
             aggregatedLen: true,
             filter: isTotal ? {[geoidCOl]: [geoid]} : {[geoidCOl]: [geoid]},
+            exclude: {['EXTRACT(YEAR from coalesce(fema_incident_begin_date, swd_begin_date))']: ['null']},
             groupBy: [geoidCOl]
         }),
         fusionPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptions],
@@ -101,6 +109,8 @@ const Edit = ({value, onChange}) => {
         {label: '# Events', forTotal: false},
         {label: 'Frequency (yearly)', forTotal: false},
         {label: 'Frequency (daily)', forTotal: false},
+        {label: '# Severe Events', forTotal: false},
+        {label: '# FEMA Declared Disasters', forTotal: false},
         {label: 'Deaths', forTotal: false},
         {label: 'Injuries', forTotal: false},
     ]
@@ -160,7 +170,7 @@ const Edit = ({value, onChange}) => {
         }
 
         getData();
-    }, [ealViewId, geoid, hazard, type, falcorCache]);
+    }, [ealViewId, geoid, hazard, type, falcorCache, severeEventThreshold]);
 
     const size =
         type === 'card' && hazard !== 'total' ? 'small' :
@@ -193,6 +203,10 @@ const Edit = ({value, onChange}) => {
                         isTotal ? [...fusionPathTotal(fusionViewId), "databyIndex"] : [...fusionPath(fusionViewId), "databyIndex"],
                         {}))
                     .find(fc => fc.nri_category === d.nri_category) || {})[actualLossCol],
+                numSevereEvents: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[numSevereEventsCol],
+                numFEMADeclared: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[numFEMADeclaredCol],
                 deaths: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
                     .find(fc => fc.nri_category === d.nri_category) || {})[deathsCol],
                 injuries: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
@@ -211,12 +225,13 @@ const Edit = ({value, onChange}) => {
                         fusionViewId,
                         status,
                         geoid,
-                        hazard, hazardPercentileArray, size, isTotal, type, attributionData,
-                        visibleCols
+                        hazard, hazardPercentileArray, size, isTotal, type, attributionData, severeEventThreshold,
+                        visibleCols, style
                     }))
             }
         },
-        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols]);
+        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols, severeEventThreshold, style]);
+
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -235,34 +250,51 @@ const Edit = ({value, onChange}) => {
                             setType(e);
                         }}
                     />
-                    <div className='flex justify-between'>
-                        <label className={'shrink-0 pr-2 py-1 my-1 w-1/4'}>Hazard Type:</label>
-                        <select
-                            className='w-full shrink my-1 p-2 bg-white rounded-md'
-                            onChange={e => {
-                                setIsTotal(e.target.value === 'total')
-                                setHazard(e.target.value)
-                            }}
-                            disabled={type === 'grid'}
-                            value={hazard}
-                        >
-                            {
-                                type === 'grid' ?
-                                    <option value={' '}>Not Applicable</option> :
-                                    <option value='total'>Total</option>
-                            }
-                            { type === 'card' &&
-                                Object.keys(hazardsMeta).map((k, i) => {
-                                    return <option value={k}>{hazardsMeta[k].name}</option>
-                                })
-                            }
-                        </select>
-                    </div>
+                    <ButtonSelector
+                        label={'Component Style:'}
+                        types={['compact', 'full']}
+                        type={style}
+                        setType={setStyle}
+                    />
+
+                    {
+                        type === 'grid' ?
+                            <HazardSelectorMulti
+                                value={hazard === 'total' || !hazard ? Object.keys(hazardsMeta) : Array.isArray(hazard) ? hazard : [hazard]}
+                                onChange={setHazard}
+                                className={'flex-row-reverse'}
+                                showAll={true}
+                            /> :
+                            <HazardSelectorSimple
+                                hazard={hazard}
+                                setHazard={e => {
+                                    setIsTotal(e === 'total')
+                                    setHazard(e)
+                                }}
+                                showTotal={true}
+                                />
+                    }
                     <RenderColumnControls
                         cols={cols.filter(col => col.forTotal === isTotal || col.forTotal === undefined).map(col => col.label)}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
                     />
+
+                    {
+                        visibleCols.includes('# Severe Events') && (
+                            <div className={'w-full pt-2 mt-3 flex flex-row text-sm'}>
+                                <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Severe Events Threshold:</label>
+                                <input
+                                    className={'p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+                                    type={'number'}
+                                    value={severeEventThreshold}
+                                    onChange={e => setSevereEventsThreshold(e.target.value)}
+                                    onWheel={(e) => e.target.blur()}
+                                    placeholder={'Enter Threshold'}
+                                />
+                            </div>
+                        )
+                    }
                 </div>
                 <div className='relative w-full p-1'>
                     {
@@ -274,6 +306,7 @@ const Edit = ({value, onChange}) => {
                                         hazard={hazard}
                                         hazardPercentileArray={hazardPercentileArray}
                                         size={size}
+                                        style={style}
                                         isTotal={isTotal}
                                         type={type}
                                         attributionData={attributionData}

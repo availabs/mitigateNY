@@ -2,7 +2,7 @@ import React from "react"
 import get from "lodash/get"
 import isEqual from "lodash/isEqual"
 import {isJson} from "~/utils/macros.jsx";
-import { dmsDataTypes } from "~/modules/dms/src"
+import {dmsDataTypes} from "~/modules/dms/src"
 
 // import ColorBox from "../colorbox";
 import LossByDisasterNumberChart from "../LossByDisasterNumberChart";
@@ -18,21 +18,29 @@ import NRIMap from "../NRIMap/index.jsx";
 import HazardStatBox from '../HazardStatBox';
 import NRITable from "../NRITable/index.jsx";
 import CalloutBox from "../CalloutBox/";
+import FilterableSearch from "../../components/FilterableSearch.jsx";
 
+const icons = {
+    card: 'fa-thin fa-credit-card',
+    table: 'fa-thin fa-table',
+    graph: 'fa-thin fa-chart-column',
+    map: 'fa-thin fa-map',
+    'lexical': 'fa-thin fa-text'
+}
 // register components here
 const ComponentRegistry = {
     // "ColorBox": ColorBox,
     "Card: Callout": CalloutBox,
     "Card: Hazard Risk": HazardStatBox,
-    "Hero Stats: Loss Distribution": LossDistributionHeroStats,
-    "Hero Stats: Disaster Info": DisasterInfoStats,
-    "Hero Stats: Disaster Loss": DisasterLossStats,
+    "Card: Declared vs Non-Declared Loss": LossDistributionHeroStats,
+    "Card: FEMA Disaster Info": DisasterInfoStats,
+    "Card: FEMA Disaster Loss Summary": DisasterLossStats,
     "Table: Disasters": DisastersTable,
-    "Table: Disaster Loss": DisasterLossTables,
+    "Table: FEMA Disaster Loss by Program": DisasterLossTables,
     "Table: NRI": NRITable,
-    "Chart: Loss by Disaster Number": LossByDisasterNumberChart,
+    "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
     "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
-    "Chart: Loss Distribution Pie Chart": LossDistributionPieChart,
+    "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
     "Map: FEMA Disaster Loss": DisasterLossMap,
     "Map: NRI": NRIMap,
     "lexical": {
@@ -41,51 +49,69 @@ const ComponentRegistry = {
     }
 }
 
-function EditComp (props) {
-    const { value, onChange, size } = props
+function EditComp(props) {
+    const {value, onChange, size} = props
     // console.log("selector props", props, value)
-    
+
     const updateAttribute = (k, v) => {
-        if(!isEqual(value, {...value, [k]: v})){
+        if (!isEqual(value, {...value, [k]: v})) {
             onChange({...value, [k]: v})
         }
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
     }
-    if(!value?.['element-type']) {
+    if (!value?.['element-type']) {
         onChange({...value, 'element-type': 'lexical'})
     }
-    let DataComp = ComponentRegistry[get(value, "element-type", "lexical")].EditComp
+    let DataComp = (ComponentRegistry[get(value, "element-type", "lexical")] || ComponentRegistry['lexical']).EditComp 
 
 
     // ComponentRegistry[get(value, "element-type", null)] ?
     //      :
     //     () => <div> Component {value?.["element-type"]} Not Registered </div>
 
-    
+
     return (
         <div className="w-full">
             <div className="relative my-1">
                 {/*Selector Edit*/}
-                <select 
-                    className='bg-slate-100 p-2 w-full border-b rounded-md'
+                <FilterableSearch
+                    className={'flex-row-reverse'}
+                    placeholder={'Search for a Component...'}
+                    options={
+                        Object.keys(ComponentRegistry).map(k => (
+                            {
+                                key: k, label: ComponentRegistry[k].name || k
+                            }
+                        ))
+                    }
                     value={value?.['element-type'] || 'lexical'}
                     onChange={async e => {
-                        if(e.target.value === 'paste'){
+                        if (e === 'paste') {
                             return navigator.clipboard.readText()
                                 .then(text => {
                                     const copiedValue = isJson(text) && JSON.parse(text || '{}')
                                     return copiedValue?.['element-type'] && onChange({...value, ...copiedValue})
                                 })
-                        }else {
-                            updateAttribute('element-type', e.target.value)
+                        } else {
+                            updateAttribute('element-type', e)
                         }
                     }}
-                >
-                    <option key={'paste'} value={'paste'}>Paste from Clipboard</option>
-                    {Object.keys(ComponentRegistry).map(k => (
-                        <option value={k} key={k}>{ComponentRegistry[k].name || k}</option>
-                    ))}
-                </select>
+                    filters={[
+                        {
+                            icon: 'fa-thin fa-paste',
+                            label: 'Paste',
+                            value: 'paste'
+                        },
+                        ...[...new Set(Object.keys(ComponentRegistry).map(key => key.split(':')[0]))]
+                            .map(c => (
+                                {
+                                    icon: `${icons[c.toLowerCase()] || c.toLowerCase()}`,
+                                    label: c,
+                                    filterText: c
+                                }
+                            ))
+                    ]}
+                />
             </div>
             <div>
                 <DataComp
@@ -98,7 +124,7 @@ function EditComp (props) {
     )
 }
 
-function ViewComp ({value}) {
+function ViewComp({value}) {
     // if (!value) return false
 
     let Comp = ComponentRegistry[get(value, "element-type", 'lexical')] ?
@@ -107,7 +133,7 @@ function ViewComp ({value}) {
 
     return (
         <div className="relative w-full">
-           <Comp value={value?.['element-data'] || ''} />
+            <Comp value={value?.['element-data'] || ''}/>
         </div>
     )
 }

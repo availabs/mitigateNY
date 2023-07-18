@@ -40,6 +40,7 @@ const Edit = ({value, onChange}) => {
             pa_loss: "sum(pa_loss) as pa_loss",
             sba_loss: "sum(sba_loss) as sba_loss",
             nfip_loss: "sum(nfip_loss) as nfip_loss",
+            hmgp_funding: "sum(hmgp_funding) as hmgp_funding",
             fema_crop_damage: "sum(fema_crop_damage) as fema_crop_damage"
         },
         disasterDetailsOptions = JSON.stringify({
@@ -94,6 +95,7 @@ const Edit = ({value, onChange}) => {
     const sbaLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.sba_loss], 0);
     const nfipLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.nfip_loss], 0);
     const usdaLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.fema_crop_damage], 0);
+    const hmgpFunding = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.hmgp_funding], 0);
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', disasterLossView, 'attributes'], {});
 
@@ -107,11 +109,11 @@ const Edit = ({value, onChange}) => {
                         status,
                         geoid,
                         disasterNumber,
-                        totalLoss, ihpLoss, paLoss, sbaLoss, nfipLoss, usdaLoss
+                        totalLoss, ihpLoss, paLoss, sbaLoss, nfipLoss, usdaLoss, hmgpFunding
                     }))
             }
         },
-        [status, ealViewId, attributionData, geoid, disasterNumber, totalLoss, ihpLoss, paLoss, sbaLoss, nfipLoss, usdaLoss]);
+        [status, ealViewId, attributionData, geoid, disasterNumber, totalLoss, ihpLoss, paLoss, sbaLoss, nfipLoss, usdaLoss, hmgpFunding]);
 
     return (
         <div className='w-full'>
@@ -139,6 +141,7 @@ const Edit = ({value, onChange}) => {
                                     sbaLoss={sbaLoss}
                                     nfipLoss={nfipLoss}
                                     usdaLoss={usdaLoss}
+                                    hmgpFunding={hmgpFunding}
                                     attributionData={attributionData}
                                     baseUrl={baseUrl}
                                 />
