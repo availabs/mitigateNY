@@ -1,4 +1,4 @@
-export const PROJECT_NAME = "NPMRDS";
+export const PROJECT_NAME = "hazard_mitigation";
 
 let API_HOST = "https://graph.availabs.org";
 let AUTH_HOST = "https://availauth.availabs.org";

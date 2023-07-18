@@ -41,12 +41,13 @@ export function PageView ({item, dataItems, attributes}) {
       </div>
         {item?.sidebar === 'show' ? 
           (<div className='w-48 hidden xl:block'>
-            <div className='w-48 fixed hidden xl:block'> 
-              <SideNav {...inPageNav} /> 
+            <div className='w-48 fixed hidden xl:block h-screen'> 
+              <div className='h-[calc(100%_-_5rem)] overflow-y-auto'>
+                <SideNav {...inPageNav} /> 
+              </div>
             </div>
           </div>)
         : ''}
-      {/*<PageControls />*/}
     </div>    
   ) 
 }
