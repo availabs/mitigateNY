@@ -27,6 +27,7 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                                                         actualLoss={hazardPercentileArray.find(h => h.key === key)?.actualLoss}
                                                         exposure={hazardPercentileArray.find(h => h.key === key)?.exposure}
                                                         frequency={hazardPercentileArray.find(h => h.key === key)?.frequency}
+                                                        frequencySum={hazardPercentileArray.reduce((acc, h) => acc + +h.frequency, 0)}
                                                         numEvents={hazardPercentileArray.find(h => h.key === key)?.numEvents}
                                                         numSevereEvents={hazardPercentileArray.find(h => h.key === key)?.numSevereEvents}
                                                         numFEMADeclared={hazardPercentileArray.find(h => h.key === key)?.numFEMADeclared}

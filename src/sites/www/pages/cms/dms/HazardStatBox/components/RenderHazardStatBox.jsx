@@ -23,7 +23,13 @@ const palattes = [
 
 const colors = scaleQuantize().domain([0, 101]).range(palattes[2]);
 
-const freqToText = (f, daily=false) => <span className={"pl-1"}>{f}<span className={"text-xs pl-1"}>events/{daily ? 'day' : 'yr'}</span></span>;
+const freqToText = (f, suffix='%') =>
+    <span className={"pl-1"}>
+        {f}
+        <span className={"text-xs pl-1"}>
+            {suffix === '%' ? '%' : `events/${suffix === 'daily' ? 'day' : 'yr'}`}
+        </span>
+    </span>;
 
 export const RenderHazardStatBox = ({
                                         isTotal,
@@ -36,6 +42,7 @@ export const RenderHazardStatBox = ({
                                         eal,
                                         exposure,
                                         frequency,
+                                        frequencySum,
                                         numEvents,
                                         numSevereEvents,
                                         numFEMADeclared,
@@ -189,7 +196,7 @@ export const RenderHazardStatBox = ({
                     {!isTotal && visibleCols.includes('Frequency (yearly)') &&
                         <div className={blockClass[size]}><label>Frequency</label>
                             <span className={valueClass}>
-                                    {freqToText((frequency || 0)?.toFixed(2))}
+                                    {freqToText((frequency || 0)?.toFixed(2), 'yearly')}
                                 </span>
                         </div>
                     }
@@ -197,7 +204,14 @@ export const RenderHazardStatBox = ({
                     {!isTotal && visibleCols.includes('Frequency (daily)') &&
                         <div className={blockClass[size]}><label>Frequency</label>
                             <span className={valueClass}>
-                                    {freqToText(((frequency || 0)/365)?.toFixed(2), true)}
+                                    {freqToText(((frequency || 0)/365)?.toFixed(2), 'daily')}
+                                </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('Frequency (%)') &&
+                        <div className={blockClass[size]}><label>Frequency</label>
+                            <span className={valueClass}>
+                                    {freqToText(frequency ? (frequency / frequencySum * 100)?.toFixed(2) : 0, '%')}
                                 </span>
                         </div>
                     }
