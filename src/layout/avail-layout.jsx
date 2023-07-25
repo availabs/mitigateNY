@@ -51,7 +51,7 @@ let paddingSizes = {
 
 const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 	const theme = useTheme()
-	console.log('title', title)
+	// console.log('title', title)
 	const sideNavOptions = {
 		size: sideNav.size || 'none',
 		color: sideNav.color || 'dark',

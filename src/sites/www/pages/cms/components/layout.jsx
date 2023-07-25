@@ -36,7 +36,7 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
   const level = detectNavLevel(dataItems, baseUrl);
 
   const inPageNav = getInPageNav(dataItems, baseUrl);
-  console.log('ipn', inPageNav)
+  // console.log('ipn', inPageNav)
   return (
     <Layout topNav={{menuItems, position: 'fixed' }} sideNav={edit ? props.sideNav : inPageNav}>
       <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
