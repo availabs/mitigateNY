@@ -1,9 +1,9 @@
-import React, {useMemo} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {AvlMap} from '~/modules/avl-maplibre/src';
 import {ChoroplethCountyFactory} from "./layers/choroplethCountyLayer.jsx";
-import {format as d3format} from "d3-format";
 import * as d3scale from "d3-scale";
-import {d3Formatter, fnumIndex} from "../../../../../../utils/macros.jsx";
+import {d3Formatter} from "~/utils/macros.jsx";
+import {CirclesFactory} from "./layers/circlesLayer.jsx";
 
 const widths = {
     '1/3': 290,
@@ -13,7 +13,17 @@ const widths = {
     '1': 370,
     [undefined]: 370
 }
-const DrawLegend = ({domain=[], range=[], title, type = 'quantile', format = '0.2s', size}) => {
+const DrawLegend = ({
+                        domain=[],
+                        range=[],
+                        title,
+                        type = 'quantile',
+                        format = '0.2s',
+                        size,
+                        show = true
+}) => {
+    if(!show) return null;
+
     let scale;
     switch (type) {
         case "quantile":
@@ -49,27 +59,35 @@ const DrawLegend = ({domain=[], range=[], title, type = 'quantile', format = '0.
         )
     }
     return (
-        <div className={'flex flex-row justify-center inline-block align-middle pt-2.5'}>
+        <div className={`relative w-[${widths[size]}px] bg-white float-right mt-[20px] m-5 -mb-[100px] rounded-md`}
+             style={{zIndex: 10}}>
             {
-                range.map((r, i) => {
-                    return <RenderLegendBox value={domain[i]} color={r} fmt={fmt}/>
-                })
+                title && <label className={'font-sm pl-2'}>{title}</label>
             }
-            <RenderLegendBox value={'N/A'} color={'#CCC'} className={'ml-1'}/>
+            <div className={'flex flex-row justify-center inline-block align-middle pt-2.5'}>
+                {
+                    range.map((r, i) => {
+                        return <RenderLegendBox value={domain[i]} color={r} fmt={fmt}/>
+                    })
+                }
+                <RenderLegendBox value={'N/A'} color={'#CCC'} className={'ml-1'}/>
+            </div>
         </div>
     )
 }
-export const RenderMap = ({falcor, layerProps, legend}) => {
-    const map_layers = useMemo(() => [ChoroplethCountyFactory()], []);
+export const RenderMap = ({falcor, layerProps, legend, layer='Choropleth'}) => {
+    const layers = {
+        Choropleth: ChoroplethCountyFactory,
+        Circles: CirclesFactory
+    }
+
+    const mapLayers = React.useRef(
+        [ChoroplethCountyFactory(), CirclesFactory()]
+    );
+
     return (
         <>
-            <div className={`relative w-[${widths[legend?.size]}px] bg-white float-right mt-[20px] m-5 -mb-[100px] rounded-md`}
-                 style={{zIndex: 10}}>
-                {
-                    legend.title && <label className={'font-sm pl-2'}>{legend.title}</label>
-                }
-                <DrawLegend {...legend} />
-            </div>
+            <DrawLegend {...legend} />
             <AvlMap
                 falcor={falcor}
                 mapOptions={{
@@ -93,7 +111,7 @@ export const RenderMap = ({falcor, layerProps, legend}) => {
                         }]
 
                 }}
-                layers={map_layers}
+                layers={mapLayers.current}
                 layerProps={layerProps}
                 CustomSidebar={() => <div/>}
             />

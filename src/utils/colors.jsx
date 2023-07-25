@@ -22,7 +22,7 @@ export const hazardsMeta = {
     },
     'coldwave': {
         color: '#badbdb',
-        name: 'Coldwave',
+        name: 'Extreme Cold',
         prefix: 'cwav',
         consequences: ['b', 'p', 'pe', 'a', 't'],
         icon: 'fa-sharp fa-thin fa-temperature-snow'

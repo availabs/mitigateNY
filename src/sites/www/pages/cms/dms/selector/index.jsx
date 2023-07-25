@@ -19,6 +19,7 @@ import HazardStatBox from '../HazardStatBox';
 import NRITable from "../NRITable/index.jsx";
 import CalloutBox from "../CalloutBox/";
 import FilterableSearch from "../../components/FilterableSearch.jsx";
+import FusionEventsMap from "../FusionEventsMap/index.jsx";
 
 const icons = {
     card: 'fa-thin fa-credit-card',
@@ -41,6 +42,7 @@ const ComponentRegistry = {
     "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
     "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
     "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
+    "Map: Fusion Events Map": FusionEventsMap,
     "Map: FEMA Disaster Loss": DisasterLossMap,
     "Map: NRI": NRIMap,
     "lexical": {
