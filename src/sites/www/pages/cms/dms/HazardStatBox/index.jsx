@@ -109,6 +109,7 @@ const Edit = ({value, onChange}) => {
         {label: '# Events', forTotal: false},
         {label: 'Frequency (yearly)', forTotal: false},
         {label: 'Frequency (daily)', forTotal: false},
+        {label: 'Frequency (%)', forTotal: false},
         {label: '# Severe Events', forTotal: false},
         {label: '# FEMA Declared Disasters', forTotal: false},
         {label: 'Deaths', forTotal: false},

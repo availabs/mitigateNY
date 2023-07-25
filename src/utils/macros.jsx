@@ -99,7 +99,7 @@ export const fnumToNumber = (d) => {
     return +number * multipliers[letter.toLowerCase() || 1];
 }
 
-export const fnum = (number, currency = false) => (currency ? '$ ' : '') + parseInt(number).toLocaleString();
+export const fnum = (number, currency = false) => `${currency ? '$ ' : ''} ${isNaN(number) ? 0 : parseInt(number).toLocaleString()}`;
 
 export const formatDate = (dateString) => {
     const options = {
