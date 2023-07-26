@@ -199,14 +199,12 @@ class EALChoroplethOptions extends LayerContainer {
   }
 
   receiveProps(props, prev, map, falcor) {
-    console.log('painting choropleth')
     this.paintMap(map, props);
     this.handleMapFocus(map, props);
   }
 
-  render(map, falcor) {
-    console.log('rendering choropleth', this.props)
-  }
+  // render(map, falcor) {
+  // }
 }
 
 export const ChoroplethCountyFactory = (options = {}) => new EALChoroplethOptions(options);

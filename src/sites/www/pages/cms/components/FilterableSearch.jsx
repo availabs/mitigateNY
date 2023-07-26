@@ -91,7 +91,6 @@ export default ({
             options.filter(o => !filter || o?.label?.toLowerCase().includes(filter.toLowerCase()))
         )
     }, [options, filter])
-    console.log('filter', selected)
 
     return (
         <div className={'flex justify-between'}>

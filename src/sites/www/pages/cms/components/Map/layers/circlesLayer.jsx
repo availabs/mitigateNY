@@ -3,6 +3,7 @@ import { LayerContainer } from "~/modules/avl-maplibre/src";
 import { getColorRange } from "~/modules/avl-components/src";
 // import {drawLegend} from "./drawLegend.jsx";
 import {d3Formatter} from "../../../../../../../utils/macros.jsx";
+import {drawLegend} from "./drawLegend.jsx";
 
 class CirclesOptions extends LayerContainer {
   constructor(props) {
@@ -160,7 +161,9 @@ class CirclesOptions extends LayerContainer {
 
   init(map, falcor, props) {
     map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904]);
+    // map.on('styledata', () => console.log('styling'));
     map.on('idle', (e) => {
+      console.log('idle')
       const canvas = document.querySelector("canvas.maplibregl-canvas"),
           newCanvas = document.createElement("canvas");
 
@@ -169,7 +172,10 @@ class CirclesOptions extends LayerContainer {
       newCanvas.width = canvas.width;
       newCanvas.height = canvas.height;
 
-      const context = newCanvas.getContext("2d")
+      const context = newCanvas.getContext("2d");
+      context.beginPath();
+      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+      context.beginPath();
       context.drawImage(canvas, 0, 0);
 
 
@@ -208,14 +214,12 @@ class CirclesOptions extends LayerContainer {
   }
 
   receiveProps(props, prev, map, falcor) {
-    console.log('props circles')
     this.paintMap(map, props);
     this.handleMapFocus(map, props);
   }
 
-  render(map, falcor) {
-    console.log('rendering circles', this.props)
-  }
+  // render(map, falcor) {
+  // }
 }
 
 export const CirclesFactory = (options = {}) => new CirclesOptions(options);

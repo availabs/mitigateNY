@@ -15,6 +15,7 @@ import DisasterLossStats from "../DisasterLossStats/index.jsx";
 import DisasterLossTables from "../DisasterLossTables/index.jsx";
 import DisasterLossMap from "../DisasterLossMap/index.jsx";
 import NRIMap from "../NRIMap/index.jsx";
+import GeneralTable from "../GeneralTable/index.jsx"
 import HazardStatBox from '../HazardStatBox';
 import NRITable from "../NRITable/index.jsx";
 import CalloutBox from "../CalloutBox/";
@@ -39,6 +40,7 @@ const ComponentRegistry = {
     "Table: Disasters": DisastersTable,
     "Table: FEMA Disaster Loss by Program": DisasterLossTables,
     "Table: NRI": NRITable,
+    "Table: General": GeneralTable,
     "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
     "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
     "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
@@ -104,7 +106,7 @@ function EditComp(props) {
                             label: 'Paste',
                             value: 'paste'
                         },
-                        ...[...new Set(Object.keys(ComponentRegistry).map(key => key.split(':')[0]))]
+                        ...[...new Set(Object.keys(ComponentRegistry).map(key => (ComponentRegistry[key].name || key).split(':')[0]))]
                             .map(c => (
                                 {
                                     icon: `${icons[c.toLowerCase()] || c.toLowerCase()}`,
