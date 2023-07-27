@@ -75,14 +75,14 @@ const DrawLegend = ({
         </div>
     )
 }
-export const RenderMap = ({falcor, layerProps, legend, layer='Choropleth'}) => {
-    const layers = {
+export const RenderMap = ({falcor, layerProps, legend, layers=['Choropleth']}) => {
+    const layersMap = {
         Choropleth: ChoroplethCountyFactory,
         Circles: CirclesFactory
     }
 
     const mapLayers = React.useRef(
-        [ChoroplethCountyFactory(), CirclesFactory()]
+        layers.map(l => layersMap[l]())
     );
 
     return (

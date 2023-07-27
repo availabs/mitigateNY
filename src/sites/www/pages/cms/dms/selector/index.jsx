@@ -15,7 +15,8 @@ import DisasterLossStats from "../DisasterLossStats/index.jsx";
 import DisasterLossTables from "../DisasterLossTables/index.jsx";
 import DisasterLossMap from "../DisasterLossMap/index.jsx";
 import NRIMap from "../NRIMap/index.jsx";
-import GeneralTable from "../GeneralTable/index.jsx"
+import SocialVulnerabilityTable from "../SocialVulnerabilityTable/index.jsx"
+import SocialVulnerabilityMap from "../SocialVulnerabilityMap/index.jsx"
 import HazardStatBox from '../HazardStatBox';
 import NRITable from "../NRITable/index.jsx";
 import CalloutBox from "../CalloutBox/";
@@ -40,13 +41,14 @@ const ComponentRegistry = {
     "Table: Disasters": DisastersTable,
     "Table: FEMA Disaster Loss by Program": DisasterLossTables,
     "Table: NRI": NRITable,
-    "Table: General": GeneralTable,
+    "Table: Social Vulnerability": SocialVulnerabilityTable,
     "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
     "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
     "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
     "Map: Fusion Events Map": FusionEventsMap,
     "Map: FEMA Disaster Loss": DisasterLossMap,
     "Map: NRI": NRIMap,
+    "Map: Social Vulnerability": SocialVulnerabilityMap,
     "lexical": {
         name: 'Rich Text',
         ...dmsDataTypes.lexical

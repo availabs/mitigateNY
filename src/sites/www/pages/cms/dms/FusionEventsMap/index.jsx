@@ -375,7 +375,7 @@ const Edit = ({value, onChange, size}) => {
                                         falcor={falcor}
                                         layerProps={layerProps}
                                         legend={{domain, range: colors, title, show: type !== 'Circles'}}
-                                        layer={type}
+                                        layers={[type]}
                                     />
                                 </div>
                                 <Attribution baseUrl={baseUrl} attributionData={attributionData}/>

@@ -190,10 +190,19 @@ class EALChoroplethOptions extends LayerContainer {
     this.legend.domain = domain;
     this.legend.range = colors;
     this.legend.title = title;
+
     const hideLayer = geoLayer === 'counties' ? 'tracts' : 'counties';
+
+    console.log('??', geoColors, domain, colors, geoLayer, hideLayer)
+
+
+    map.setLayoutProperty(geoLayer, 'visibility', 'visible');
+    map.setLayoutProperty(`${geoLayer}-line`, 'visibility', 'visible');
+
     map.setFilter(geoLayer, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
     map.setFilter(`${geoLayer}-line`, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
     map.setPaintProperty(geoLayer, "fill-color", ["get", ["get", "geoid"], ["literal", geoColors]]);
+
     map.setLayoutProperty(hideLayer, 'visibility', 'none');
     map.setLayoutProperty(`${hideLayer}-line`, 'visibility', 'none');
   }
