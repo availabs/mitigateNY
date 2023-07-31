@@ -16,6 +16,7 @@ import DisasterLossTables from "../DisasterLossTables/index.jsx";
 import DisasterLossMap from "../DisasterLossMap/index.jsx";
 import NRIMap from "../NRIMap/index.jsx";
 import SocialVulnerabilityTable from "../SocialVulnerabilityTable/index.jsx"
+import SocialVulnerabilitySummaryTable from "../SocialVulnerabilitySummaryTable/index.jsx"
 import SocialVulnerabilityMap from "../SocialVulnerabilityMap/index.jsx"
 import HazardStatBox from '../HazardStatBox';
 import NRITable from "../NRITable/index.jsx";
@@ -42,6 +43,7 @@ const ComponentRegistry = {
     "Table: FEMA Disaster Loss by Program": DisasterLossTables,
     "Table: NRI": NRITable,
     "Table: Social Vulnerability": SocialVulnerabilityTable,
+    "Table: Social Vulnerability Summary": SocialVulnerabilitySummaryTable,
     "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
     "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
     "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
