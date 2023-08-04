@@ -68,9 +68,9 @@ const Edit = ({value, onChange, size}) => {
     const [typeId, setTypeId] = useState(cachedData?.typeId);
     const [data, setData] = useState(cachedData?.data);
     const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
-    const [numColors, setNumColors] = useState(cachedData?.numColors || 9);
+    const [numColors, setNumColors] = useState(cachedData?.numColors || 5);
     const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
-    const [colors, setColors] = useState(cachedData?.colors ||  getColorRange(9, "Oranges", false));
+    const [colors, setColors] = useState(cachedData?.colors ||  getColorRange(5, "Oranges", false));
     const [title, setTitle] = useState(cachedData?.title);
     const [height, setHeight] = useState(cachedData?.height || 500);
 

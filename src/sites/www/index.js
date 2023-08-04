@@ -1,6 +1,9 @@
+import { useFalcor } from '~/modules/avl-falcor';
+import { useAuth } from "~/modules/ams/src";
+
 import CMS from './pages/cms'
 
-import DataManager from "~/pages/DataManager"
+import DamaRoutes from "~/pages/DataManager"
 
 import Admin, { authMenuConfig } from "./pages/admin"
 import Playground from './pages/admin/playground'
@@ -14,7 +17,15 @@ import Forms from './pages/admin/forms/index'
 const Routes = [
   // -- Admin Routes -- //
   Admin,
-  ...DataManager('/cenrep','hazmit_dama',false,{},authMenuConfig),
+  ...DamaRoutes({
+    baseUrl:'/cenrep',
+    defaultPgEnv : "hazmit_dama",
+    auth : false,
+    components : {},
+    navSettigs : {},
+    useFalcor,
+    useAuth
+  }),
   Playground,
   Forms,
   // -- Front End Routes -- //

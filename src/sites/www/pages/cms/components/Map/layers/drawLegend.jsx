@@ -22,7 +22,7 @@ export const drawLegend = (layer, newCanvas, mbCanvas) => {
     context.fill();
 
     if(layer.legend.title){
-        context.font = layer?.size === '1/3' ? "0.8rem Arial" : "1rem Arial";
+        context.font = layer?.size === '1/3' ? "1rem Arial" : "1rem Arial";
         context.fillStyle = '#232323';
         y += 20;
 
@@ -72,7 +72,7 @@ export const drawLegend = (layer, newCanvas, mbCanvas) => {
     x += 3;
     y += 33;
     context.fillStyle = '#232323'
-    context.font = layer?.size === '1/3' ? "8px Arial" : "11px Arial";
+    context.font = layer?.size === '1/3' ? "10px Arial" : "11px Arial";
     context.textAlign = "right";
     layer.legend.range.forEach((c, i) => {
         const text = format(scale?.invertExtent(c)[1]);
