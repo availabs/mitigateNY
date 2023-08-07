@@ -121,25 +121,25 @@ export const metaData = {
         numCols: ["# Claims"],
         anchorCols: ['County']
     },
-    'hmgp summaries': {
-        type: 'hazard_mitigation_grant_program_disaster_summaries_v2',
-        attributes: () => ({
-           'Disaster Number': 'disaster_number',
-            'Disaster Type': 'disaster_type',
-            'Incident Type': 'incident_type',
-            'Title': 'title',
-            'State': 'state',
-            'Obligated Total Amount': 'obligated_total_amount',
-        }),
-        options: ({disasterNumber, geoid}) => ({
-            filter: {
-                ...disasterNumber && {"disaster_number": [disasterNumber]},
-            },
-        }),
-        textCols: ['Disaster Number', 'Disaster Type', 'Incident Type', 'Title', 'State'],
-        numCols: [],
-        anchorCols: []
-    },
+    // 'hmgp summaries': {
+    //     type: 'hazard_mitigation_grant_program_disaster_summaries_v2',
+    //     attributes: () => ({
+    //        'Disaster Number': 'disaster_number',
+    //         'Disaster Type': 'disaster_type',
+    //         'Incident Type': 'incident_type',
+    //         'Title': 'title',
+    //         'State': 'state',
+    //         'Obligated Total Amount': 'obligated_total_amount',
+    //     }),
+    //     options: ({disasterNumber, geoid}) => ({
+    //         filter: {
+    //             ...disasterNumber && {"disaster_number": [disasterNumber]},
+    //         },
+    //     }),
+    //     textCols: ['Disaster Number', 'Disaster Type', 'Incident Type', 'Title', 'State'],
+    //     numCols: [],
+    //     anchorCols: []
+    // },
     'hmgp projects': {
         type: 'hazard_mitigation_assistance_projects_v3',
         mapGeoidToName: true,
@@ -147,6 +147,11 @@ export const metaData = {
         attributes: () => ({
             'Disaster Number': 'disaster_number',
             'County': `LPAD(state_number_code, 2, '0') || LPAD(county_code, 3, '0') as geoid`,
+            'Project Type': `array_to_string(array_agg(distinct project_type), ', ') as project_type`,
+            'Status': `array_to_string(array_agg(distinct status), ', ') as status`,
+            'Recipients': `array_to_string(array_agg(distinct recipient), ', ') as recipients`,
+            '# Final Properties': `sum(number_of_final_properties) as num_final_properties`,
+            'Benefit Cost Ratio': `sum(benefit_cost_ratio) as benefit_cost_ratio`,
             'Project Amount': 'sum(project_amount) as project_amount',
             'Federal Share Obligated': 'sum(federal_share_obligated) as federal_share_obligated',
             'Net Value Benefits': 'sum(net_value_benefits) as net_value_benefits',
@@ -159,28 +164,28 @@ export const metaData = {
             },
             groupBy: ['disaster_number', 'state_number_code', 'county_code']
         }),
-        textCols: ['Disaster Number', 'County'],
-        numCols: [],
+        textCols: ['Disaster Number', 'County', 'Project Type', 'Recipients', 'Status'],
+        numCols: ['# Final Properties', 'Benefit Cost Ratio'],
         anchorCols: []
     },
-    'hmgp properties': {
-        type: 'hazard_mitigation_assistance_mitigated_properties_v3',
-        attributes: () => ({
-            'Disaster Number': 'disaster_number',
-            'State': 'ARRAY_AGG(distinct state) as state',
-            'County': 'ARRAY_AGG(distinct county order by county) as county',
-            'City': 'ARRAY_AGG(distinct city order by city) as city',
-            'Actual Amount Paid': 'sum(actual_amount_paid) as actual_amount_paid'
-        }),
-        options: ({disasterNumber, geoid}) => ({
-            aggregatedLen: true,
-            filter: {
-                ...disasterNumber && {"disaster_number": [disasterNumber]},
-            },
-            groupBy: ['disaster_number']
-        }),
-        textCols: ['Disaster Number', 'State', 'County', 'City'],
-        numCols: [],
-        anchorCols: []
-    },
+    // 'hmgp properties': {
+    //     type: 'hazard_mitigation_assistance_mitigated_properties_v3',
+    //     attributes: () => ({
+    //         'Disaster Number': 'disaster_number',
+    //         'State': 'ARRAY_AGG(distinct state) as state',
+    //         'County': 'ARRAY_AGG(distinct county order by county) as county',
+    //         'City': 'ARRAY_AGG(distinct city order by city) as city',
+    //         'Actual Amount Paid': 'sum(actual_amount_paid) as actual_amount_paid'
+    //     }),
+    //     options: ({disasterNumber, geoid}) => ({
+    //         aggregatedLen: true,
+    //         filter: {
+    //             ...disasterNumber && {"disaster_number": [disasterNumber]},
+    //         },
+    //         groupBy: ['disaster_number']
+    //     }),
+    //     textCols: ['Disaster Number', 'State', 'County', 'City'],
+    //     numCols: [],
+    //     anchorCols: []
+    // },
 };

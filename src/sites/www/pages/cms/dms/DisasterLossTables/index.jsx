@@ -133,7 +133,7 @@ const Edit = ({value, onChange}) => {
                 filter: filters[col]
             }
         })
-    console.log('dn?', disasterNumber)
+
     useEffect(() => {
             if(!loading){
                 onChange(JSON.stringify(
