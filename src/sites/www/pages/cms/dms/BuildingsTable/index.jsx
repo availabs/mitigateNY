@@ -48,10 +48,9 @@ const Edit = ({value, onChange}) => {
     const category = 'Buildings';
 
     const options = JSON.stringify({
-        aggregatedLen: Boolean(groupBy.length),
+        // aggregatedLen: Boolean(groupBy.length),
         filter: {...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]}},
-        groupBy: groupBy,
-        orderBy: [1]
+        // groupBy: groupBy,
     });
     const lenPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
     const dataPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
@@ -59,7 +58,7 @@ const Edit = ({value, onChange}) => {
     const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
           attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
 
-    const columnsToFetch = visibleCols.map(vc => fn[vc] || vc);
+    // const columnsToFetch = useMemo(() => visibleCols.map(vc => vc), [visibleCols, fn]);
 
     useEffect(() => {
         async function getData() {
@@ -88,21 +87,20 @@ const Edit = ({value, onChange}) => {
                 setLoading(false);
                 return;
             }
-
-            if(!isValid({groupBy, fn, columnsToFetch})){
-                setStatus('Please make appropriate grouping selections.');
-                setLoading(false);
-                return;
-            }
+            //
+            // if(!isValid({groupBy, fn, columnsToFetch})){
+            //     setStatus('Please make appropriate grouping selections.');
+            //     setLoading(false);
+            //     return;
+            // }
 
             setLoading(true);
             setStatus(undefined);
             await falcor.get(lenPath);
             const len = Math.min(get(falcor.getCache(), lenPath, 0), 1000);
 
-            console.log('data fetching', columnsToFetch.length, [...dataPath, {from: 0, to: len - 1}, columnsToFetch])
-            const dataRes = await falcor.get([...dataPath, {from: 0, to: len - 1}, columnsToFetch]);
-            console.log('dataRes', get(dataRes, ['json', ...dataPath]))
+            // console.log('data fetching', columnsToFetch.length, [...dataPath, {from: 0, to: len - 1}, visibleCols])
+            await falcor.get([...dataPath, {from: 0, to: len - 1}, visibleCols]);
             await falcor.get([...attributionPath, attributionAttributes]);
 
             setLoading(false);
@@ -110,17 +108,10 @@ const Edit = ({value, onChange}) => {
         }
 
         getData()
-    }, [dataSource, version, geoid, visibleCols, columnsToFetch, fn, groupBy, geoAttribute]);
+    }, [dataSource, version, geoid, visibleCols, fn, groupBy, geoAttribute]);
 
-    const data = useMemo(() => {
-        console.log('?????/', dataPath, columnsToFetch)
-            return Object.values(get(falcorCache, dataPath, {}))
-                .map(row => columnsToFetch.reduce((acc, ctf) => {
-                    acc[ctf] = row[ctf];
-                    return acc;
-                }, {}))
-        },
-        [falcorCache, dataPath, fn]);
+    const data = Object.values(get(falcorCache, dataPath, {}));
+
     const attributionData = get(falcorCache, attributionPath, {});
     console.log('data', data)
     const columns =
@@ -129,7 +120,7 @@ const Edit = ({value, onChange}) => {
         .map(col => {
             return {
                 Header: col.name,
-                accessor: fn[col.name] || col.name,
+                accessor: col.name, //fn[col.name] || col.name,
                 align: col.align || 'right',
                 width: col.width || '15%',
                 filter: col.filter || filters[col.name],
