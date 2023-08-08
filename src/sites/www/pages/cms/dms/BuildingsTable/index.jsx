@@ -3,7 +3,7 @@ import get from "lodash/get";
 import {useFalcor} from '~/modules/avl-falcor';
 import {pgEnv} from "~/utils/";
 import {isJson} from "~/utils/macros.jsx";
-import {RenderSocialVulnerabilityTable} from "./components/RenderSocialVulnerabilityTable.jsx";
+import {RenderBuildingsTable} from "./components/RenderBuildingsTable.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
@@ -48,9 +48,9 @@ const Edit = ({value, onChange}) => {
     const category = 'Buildings';
 
     const options = JSON.stringify({
-        // aggregatedLen: Boolean(groupBy.length),
+        aggregatedLen: Boolean(groupBy.length),
         filter: {...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]}},
-        // groupBy: groupBy,
+        groupBy: groupBy,
     });
     const lenPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
     const dataPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
@@ -87,12 +87,12 @@ const Edit = ({value, onChange}) => {
                 setLoading(false);
                 return;
             }
-            //
-            // if(!isValid({groupBy, fn, columnsToFetch})){
-            //     setStatus('Please make appropriate grouping selections.');
-            //     setLoading(false);
-            //     return;
-            // }
+
+            if(!isValid({groupBy, fn, columnsToFetch: visibleCols.map(vc => fn[vc] ? fn[vc] : vc)})){
+                setStatus('Please make appropriate grouping selections.');
+                setLoading(false);
+                return;
+            }
 
             setLoading(true);
             setStatus(undefined);
@@ -100,7 +100,8 @@ const Edit = ({value, onChange}) => {
             const len = Math.min(get(falcor.getCache(), lenPath, 0), 1000);
 
             // console.log('data fetching', columnsToFetch.length, [...dataPath, {from: 0, to: len - 1}, visibleCols])
-            await falcor.get([...dataPath, {from: 0, to: len - 1}, visibleCols]);
+            const dataRes = await falcor.get([...dataPath, {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
+            console.log('dataRes', get(dataRes, ['json', ...dataPath]))
             await falcor.get([...attributionPath, attributionAttributes]);
 
             setLoading(false);
@@ -110,21 +111,30 @@ const Edit = ({value, onChange}) => {
         getData()
     }, [dataSource, version, geoid, visibleCols, fn, groupBy, geoAttribute]);
 
-    const data = Object.values(get(falcorCache, dataPath, {}));
-
+    const data = useMemo(() => {
+        console.log('?????/', dataPath)
+            return Object.values(get(falcorCache, dataPath, {}))
+                // .map(row =>
+                //     columnsToFetch.reduce((acc, ctf) => {
+                //     acc[ctf] = row[ctf];
+                //     return acc;
+                // }, {}))
+        },
+        [falcorCache, dataPath, fn]);
     const attributionData = get(falcorCache, attributionPath, {});
-    console.log('data', data)
+
     const columns =
         (dataSources.find(ds => ds.source_id === dataSource)?.metadata || [])
         .filter(col => visibleCols.includes(col.name))
         .map(col => {
             return {
                 Header: col.name,
-                accessor: col.name, //fn[col.name] || col.name,
+                accessor: fn[col.name] || col.name,
                 align: col.align || 'right',
                 width: col.width || '15%',
                 filter: col.filter || filters[col.name],
-                ...col
+                ...col,
+                type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
             }
         });
 
@@ -212,7 +222,7 @@ const Edit = ({value, onChange}) => {
                 {
                     loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
-                            <RenderSocialVulnerabilityTable
+                            <RenderBuildingsTable
                                 geoid={geoid}
                                 data={data}
                                 columns={columns}
@@ -245,7 +255,7 @@ const View = ({value}) => {
             {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
-                    <RenderSocialVulnerabilityTable {...data} baseUrl={'/'}/>
+                    <RenderBuildingsTable {...data} baseUrl={'/'}/>
             }
         </div>
     )

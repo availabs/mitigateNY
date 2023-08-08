@@ -12,7 +12,7 @@ const colAccessNameMapping = {
 
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
-export const RenderSocialVulnerabilityTable = ({
+export const RenderBuildingsTable = ({
                                        data=[],
                                        columns=[],
                                        filterValue = {},
