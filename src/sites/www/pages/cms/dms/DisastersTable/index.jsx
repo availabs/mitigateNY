@@ -60,7 +60,7 @@ const Edit = ({value, onChange}) => {
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
     const [hazard, setHazard] = useState(cachedData?.hazard || 'total');
 
-    const fusionGeoCol = `substring(geoid, 1, ${geoid.length})`,
+    const fusionGeoCol = 'geoid',
         fusionAttributes = {
             [type === 'declared' ? 'Disaster Number' : 'Event Id']: {
                 raw: type === 'declared' ? 'disaster_number' : 'event_id',
@@ -129,7 +129,7 @@ const Edit = ({value, onChange}) => {
             JSON.stringify({
                 aggregatedLen: true,
                 filter: {
-                    [fusionGeoCol]: [geoid],
+                    [`substring(${fusionGeoCol}, 1, ${geoid.length})`]: [geoid],
                     'disaster_number': [type === 'declared' ? 'not null' : 'null'],
                     ...hazard !== 'total' && {nri_category: [hazard]}
                 },
@@ -138,7 +138,7 @@ const Edit = ({value, onChange}) => {
         fusionOptions =
             JSON.stringify({
                 filter: {
-                    [fusionGeoCol]: [geoid],
+                    [`substring(${fusionGeoCol}, 1, ${geoid.length})`]: [geoid],
                     'disaster_number': [type === 'declared' ? 'not null' : 'null'],
                     ...hazard !== 'total' && {nri_category: [hazard]}
                 },
@@ -217,7 +217,7 @@ const Edit = ({value, onChange}) => {
                 const lenRes = await falcor.get([...fusionPath(fusionView.view_id), fusionLenOptions, 'length']);
                 const len =
                         Math.min(get(lenRes,
-                            ['json', ...fusionPath(fusionView.view_id), fusionLenOptions, 'length'], 0), 100),
+                            ['json', ...fusionPath(fusionView.view_id), fusionLenOptions, 'length'], 0), 1000),
                     fusionIndices = {from: 0, to: len - 1};
 
                 const lossRes = await falcor.get(
