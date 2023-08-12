@@ -43,13 +43,19 @@ const Edit = ({value, onChange}) => {
     const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
     const [groupBy, setGroupBy] = useState(cachedData?.groupBy || []);
+    const [notNull, setNotNull] = useState(cachedData?.notNull || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
 
     const category = 'Buildings';
 
     const options = JSON.stringify({
         aggregatedLen: Boolean(groupBy.length),
-        filter: {...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]}},
+        filter: {
+            ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
+        },
+        exclude: {
+            ...notNull.length && notNull.reduce((acc, col) => ({...acc, [col]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
+        },
         groupBy: groupBy,
     });
     const lenPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
@@ -109,16 +115,10 @@ const Edit = ({value, onChange}) => {
         }
 
         getData()
-    }, [dataSource, version, geoid, visibleCols, fn, groupBy, geoAttribute]);
+    }, [dataSource, version, geoid, visibleCols, fn, groupBy, notNull, geoAttribute]);
 
     const data = useMemo(() => {
-        console.log('?????/', dataPath)
             return Object.values(get(falcorCache, dataPath, {}))
-                // .map(row =>
-                //     columnsToFetch.reduce((acc, ctf) => {
-                //     acc[ctf] = row[ctf];
-                //     return acc;
-                // }, {}))
         },
         [falcorCache, dataPath, fn]);
     const attributionData = get(falcorCache, attributionPath, {});
@@ -128,7 +128,7 @@ const Edit = ({value, onChange}) => {
         .filter(col => visibleCols.includes(col.name))
         .map(col => {
             return {
-                Header: col.name,
+                Header: col.display_name || col.name,
                 accessor: fn[col.name] || col.name,
                 align: col.align || 'right',
                 width: col.width || '15%',
@@ -145,13 +145,13 @@ const Edit = ({value, onChange}) => {
                         attributionData,
                         status,
                         geoid,
-                        pageSize, sortBy, groupBy, fn,
+                        pageSize, sortBy, groupBy, fn, notNull,
                         data, columns, filters, filterValue, visibleCols, geoAttribute,
                         dataSource, dataSources, version
                     }))
             }
         },
-        [attributionData, status, geoid, pageSize, sortBy, groupBy, fn,
+        [attributionData, status, geoid, pageSize, sortBy, groupBy, fn, notNull,
             data, columns, filters, filterValue, visibleCols, geoAttribute,
             dataSource, dataSources, version
         ]);
@@ -200,8 +200,10 @@ const Edit = ({value, onChange}) => {
                     <RenderColumnControls
                         cols={
                            (dataSources.find(ds => ds.source_id === dataSource)?.metadata || [])
+                               .filter(c => c.display?.length)
                                .map(c => c.name)
                         }
+                        metadata={dataSources.find(ds => ds.source_id === dataSource)?.metadata || []}
                         // anchorCols={anchorCols}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
@@ -217,6 +219,8 @@ const Edit = ({value, onChange}) => {
                         setFn={setFn}
                         sortBy={sortBy}
                         setSortBy={setSortBy}
+                        notNull={notNull}
+                        setNotNull={setNotNull}
                     />
                 </div>
                 {

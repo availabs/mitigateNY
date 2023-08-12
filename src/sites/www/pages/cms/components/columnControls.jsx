@@ -48,8 +48,8 @@ const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols}) =
     </div>
 );
 
-const RenderGroupControls = ({column, groupBy, setGroupBy, fn}) => {
-    if (!setGroupBy) return null;
+const RenderGroupControls = ({column, groupBy, setGroupBy, fn, metadata}) => {
+    if (!setGroupBy || !['meta-variable', 'geoid-variable'].includes(metadata.display)) return null;
 
     const isActive = groupBy.includes(column);
 
@@ -87,8 +87,47 @@ const RenderGroupControls = ({column, groupBy, setGroupBy, fn}) => {
     )
 }
 
-const RenderFnControls = ({column, fn, setFn, groupBy}) => {
-    if (!setFn) return null;
+const RenderNullControls = ({column, notNull, setNotNull}) => {
+    if (!setNotNull) return null;
+
+    const isActive = notNull.includes(column);
+
+    return (
+        <div className={'block w-full flex mt-1'}>
+            <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> Exclude N/A: </label>
+            <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
+                <Switch
+                    key={`notNull-${column}`}
+                    checked={notNull.includes(column)}
+                    onChange={e => isActive ? setNotNull(notNull.filter(gb => gb !== column)) : setNotNull([...notNull, column])}
+                    className={classNames(
+                        isActive ? 'bg-indigo-600' : 'bg-gray-200',
+                        `relative inline-flex 
+                         h-4 w-10 shrink
+                         cursor-pointer rounded-full border-2 border-transparent 
+                         transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
+                         focus:ring-indigo-600 focus:ring-offset-2`
+                    )}
+                >
+                    <span className="sr-only">toggle not null by</span>
+                    <span
+                        aria-hidden="true"
+                        className={classNames(
+                            isActive ? 'translate-x-5' : 'translate-x-0',
+                            `pointer-events-none inline-block 
+                            h-3 w-4
+                            transform rounded-full bg-white shadow ring-0 t
+                            ransition duration-200 ease-in-out`
+                        )}
+                    />
+                </Switch>
+            </div>
+        </div>
+    )
+}
+
+const RenderFnControls = ({column, fn, setFn, groupBy, metadata}) => {
+    if (!setFn || metadata?.display === 'calculated-column') return null;
 
     const functions = [
         {label: 'None', value: column},
@@ -235,11 +274,14 @@ const RenderColumnBoxes = ({
                                cols,
                                anchorCols,
                                visibleCols, setVisibleCols,
+                               // todo: manage order of column added. both in column controls, and table itself
                                filters, setFilters,
                                filterValue, setFilterValue,
-                               groupBy, setGroupBy,
+                               groupBy, setGroupBy, 
+                               notNull, setNotNull,
                                fn, setFn,
-                               sortBy, setSortBy
+                               sortBy, setSortBy,
+                               metadata
                            }) => (
     <div className={'flex flex-row flex-wrap space-between my-1 text-sm'}>
         {
@@ -273,13 +315,18 @@ const RenderColumnBoxes = ({
                                                    filterValue={filterValue} setFilterValue={setFilterValue}/>
 
                         <RenderGroupControls column={col}
-                                             groupBy={groupBy} setGroupBy={setGroupBy} fn={fn}/>
+                                             groupBy={groupBy} setGroupBy={setGroupBy} fn={fn}
+                                             metadata={metadata.find(md => md.name === col)}/>
 
                         <RenderFnControls column={col}
-                                             fn={fn} setFn={setFn} groupBy={groupBy}/>
+                                          fn={fn} setFn={setFn} groupBy={groupBy}
+                                          metadata={metadata.find(md => md.name === col)}/>
 
                         <RenderSortControls column={col}
                                             sortBy={sortBy} setSortBy={setSortBy}/>
+
+                        <RenderNullControls column={col}
+                                            notNull={notNull} setNotNull={setNotNull}/>
 
                     </div>
                 ))
@@ -290,11 +337,13 @@ const RenderColumnBoxes = ({
 export const RenderColumnControls = (
     {
         cols = [],
+        metadata = [],
         anchorCols = [],
         visibleCols = [], setVisibleCols,
         filters = {}, setFilters,
         filterValue = {}, setFilterValue,
         groupBy = [], setGroupBy,
+        notNull = [], setNotNull,
         fn = {}, setFn,
         sortBy = {}, setSortBy,
         pageSize, setPageSize
@@ -318,7 +367,9 @@ export const RenderColumnControls = (
                                filterValue={filterValue} setFilterValue={setFilterValue}
                                sortBy={sortBy} setSortBy={setSortBy}
                                groupBy={groupBy} setGroupBy={setGroupBy}
+                               notNull={notNull} setNotNull={setNotNull}
                                fn={fn} setFn={setFn}
+                               metadata={metadata}
             />
         </div>
     )

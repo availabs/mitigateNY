@@ -379,8 +379,10 @@ const ppdaf = () => {
                 transparent: `
                     border border-gray-300  text-gray-700 bg-white hover:text-gray-500
                     focus:outline-none focus:shadow-outline-blue focus:border-blue-300
-                    active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out
+                    active:text-gray-800 active:bg-gray-50 hover:bg-gray-100 hover:text-gray-900
+                    transition duration-150 ease-in-out
                     disabled:cursor-not-allowed
+                    rounded-sm
                 `,
                 primary: `
                     border border-transparent shadow
@@ -391,6 +393,7 @@ const ppdaf = () => {
 
             let sizes  = {
                 base: 'px-4 py-4 leading-5 font-medium',
+                xs: 'text-xs px-1 py-0 leading-5 font-thin',
                 sm: 'text-sm px-2 py-2 leading-5 font-medium',
                 lg: 'text-lg px-6 py-6 leading-5 font-medium',
                 xl: 'text-2xl px-12 py-8 leading-5 font-medium'
