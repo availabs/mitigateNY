@@ -160,18 +160,20 @@ const Edit = ({value, onChange}) => {
             [falcorCache, typeId, nriOptions, nriAttributes, hazard]);
     dataModifier(data);
 
-    const columns = nriAttributes
-        .filter(col => visibleCols.includes(col.label) || anchorCols.includes(col.label))
-        .map(col => {
-            return {
-                Header: col.label,
-                accessor: col.value,
-                align: col.align || 'right',
-                width: col.width || '15%',
-                filter: col.filter || filters[col.label],
-                ...col
-            }
-        });
+    const columns =
+        [...anchorCols, ...visibleCols]
+            .map(c => nriAttributes.find(nriA => nriA.label === c))
+            .filter(c => c)
+            .map(col => {
+                return {
+                    Header: col.label,
+                    accessor: col.value,
+                    align: col.align || 'right',
+                    width: col.width || '15%',
+                    filter: col.filter || filters[col.label],
+                    ...col
+                }
+            });
 
     const cols = metaData.columns(hazard);
 

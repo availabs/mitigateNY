@@ -320,19 +320,20 @@ const Edit = ({value, onChange}) => {
             [falcorCache, fusionViewId, fusionOptions, fusionAttributes, hazard, filterValue]);
     const data = dataModifier(originalData);
 
-    const columns = Object.keys(fusionAttributes)
-        .filter(col => fusionAttributes[col].visible !== false && (visibleCols.includes(col) || anchorCols.includes(col)))
-        .map(col => {
-            return {
-                Header: col,
-                accessor: fusionAttributes[col].raw,
-                rawHeader: fusionAttributes[col].raw,
-                type: fusionAttributes[col].type,
-                align: fusionAttributes[col].align || 'left',
-                width: fusionAttributes[col].width || '15%',
-                filter: fusionAttributes[col].filter || filters[col],
-            }
-        });
+    const columns =
+        [...anchorCols, ...visibleCols]
+            .filter(c => fusionAttributes[c].visible !== false)
+            .map(col => {
+                return {
+                    Header: col,
+                    accessor: fusionAttributes[col].raw,
+                    rawHeader: fusionAttributes[col].raw,
+                    type: fusionAttributes[col].type,
+                    align: fusionAttributes[col].align || 'left',
+                    width: fusionAttributes[col].width || '15%',
+                    filter: fusionAttributes[col].filter || filters[col],
+                }
+            });
 
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes'], {});

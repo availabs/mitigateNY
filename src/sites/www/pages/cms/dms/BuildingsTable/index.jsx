@@ -123,20 +123,22 @@ const Edit = ({value, onChange}) => {
         [falcorCache, dataPath, fn]);
     const attributionData = get(falcorCache, attributionPath, {});
 
+    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
     const columns =
-        (dataSources.find(ds => ds.source_id === dataSource)?.metadata || [])
-        .filter(col => visibleCols.includes(col.name))
-        .map(col => {
-            return {
-                Header: col.display_name || col.name,
-                accessor: fn[col.name] || col.name,
-                align: col.align || 'right',
-                width: col.width || '15%',
-                filter: col.filter || filters[col.name],
-                ...col,
-                type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
-            }
-        });
+        visibleCols
+            .map(c => metadata.find(md => md.name === c))
+            .filter(c => c)
+            .map(col => {
+                return {
+                    Header: col.display_name || col.name,
+                    accessor: fn[col.name] || col.name,
+                    align: col.align || 'right',
+                    width: col.width || '15%',
+                    filter: col.filter || filters[col.name],
+                    ...col,
+                    type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
+                }
+            });
 
     useEffect(() => {
             if (!loading) {

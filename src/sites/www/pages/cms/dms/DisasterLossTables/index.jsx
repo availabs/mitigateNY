@@ -122,17 +122,17 @@ const Edit = ({value, onChange}) => {
 
     metaData[type]?.mapGeoidToName && dataModifier && dataModifier(data);
 
-    let columns = Object.keys(metaData[type]?.attributes({geoid, disasterNumber}) || {})
-        .filter(col => visibleCols?.includes(col) || metaData[type]?.anchorCols?.includes(col))
-        .map((col, i) => {
-            const mappedName = metaData[type]?.attributes({geoid, disasterNumber})[col];
-            return {
-                Header:  col,
-                accessor: mappedName,
-                align: metaData[type]?.textCols?.includes(col) ? 'left' : 'right',
-                filter: filters[col]
-            }
-        })
+    let columns =
+        [...metaData[type]?.anchorCols, ...visibleCols]
+            .map((col, i) => {
+                const mappedName = metaData[type]?.attributes({geoid, disasterNumber})[col];
+                return {
+                    Header:  col,
+                    accessor: mappedName,
+                    align: metaData[type]?.textCols?.includes(col) ? 'left' : 'right',
+                    filter: filters[col]
+                }
+            });
 
     useEffect(() => {
             if(!loading){

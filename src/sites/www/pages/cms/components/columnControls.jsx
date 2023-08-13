@@ -274,7 +274,6 @@ const RenderColumnBoxes = ({
                                cols,
                                anchorCols,
                                visibleCols, setVisibleCols,
-                               // todo: manage order of column added. both in column controls, and table itself
                                filters, setFilters,
                                filterValue, setFilterValue,
                                groupBy, setGroupBy, 
@@ -285,8 +284,8 @@ const RenderColumnBoxes = ({
                            }) => (
     <div className={'flex flex-row flex-wrap space-between my-1 text-sm'}>
         {
-            cols
-                .filter(c => visibleCols.includes(c) || anchorCols.includes(c))
+            [...anchorCols, ...visibleCols]
+                .filter(c => cols.includes(c))
                 .map((col, i) => (
                     <div
                         key={`col-settings-${col}`}
