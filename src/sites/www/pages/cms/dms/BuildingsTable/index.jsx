@@ -12,11 +12,6 @@ import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelect
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
-    console.log('isValie', groupBy, fn, columnsToFetch,
-
-        columnsToFetch.filter(ctf => !ctf.includes(' as ')).length === groupBy.length,
-        columnsToFetch.filter(ctf => ctf.includes(' as ')).length === 0
-        )
     if(groupBy.length){
         return columnsToFetch.filter(ctf => !ctf.includes(' as ')).length === groupBy.length
     }else{
@@ -105,25 +100,46 @@ const Edit = ({value, onChange}) => {
             await falcor.get(lenPath);
             const len = Math.min(get(falcor.getCache(), lenPath, 0), 1000);
 
-            // console.log('data fetching', columnsToFetch.length, [...dataPath, {from: 0, to: len - 1}, visibleCols])
-            const dataRes = await falcor.get([...dataPath, {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
-            console.log('dataRes', get(dataRes, ['json', ...dataPath]))
+            await falcor.get([...dataPath, {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
             await falcor.get([...attributionPath, attributionAttributes]);
 
             setLoading(false);
-
         }
 
         getData()
     }, [dataSource, version, geoid, visibleCols, fn, groupBy, notNull, geoAttribute]);
 
+    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
+
+    const parseJson = str => {
+        try {
+            return JSON.parse(str);
+        }catch (e){
+            return {}
+        }
+    }
     const data = useMemo(() => {
+        const metaLookupCols = metadata.filter(md => visibleCols.includes(md.name) && md.display === 'meta-variable');
+
+        console.log('metadata', metadata, Object.values(get(falcorCache, dataPath, {})))
+        if(metaLookupCols.length){
             return Object.values(get(falcorCache, dataPath, {}))
+                .map(row => {
+                    metaLookupCols.forEach(mdC => {
+                        const currentLookup = parseJson(mdC.meta_lookup);
+                        console.log('current lookup', row[mdC.name], currentLookup)
+                        row[mdC.name] = currentLookup[row[mdC.name]] || row[mdC.name];
+                    })
+                    return row;
+                })
+        }
+
+        return Object.values(get(falcorCache, dataPath, {}))
+
         },
         [falcorCache, dataPath, fn]);
     const attributionData = get(falcorCache, attributionPath, {});
 
-    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
     const columns =
         visibleCols
             .map(c => metadata.find(md => md.name === c))
