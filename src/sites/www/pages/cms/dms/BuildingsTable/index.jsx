@@ -18,6 +18,15 @@ const isValid = ({groupBy, fn, columnsToFetch}) => {
         return columnsToFetch.filter(ctf => ctf.includes(' as ')).length === 0
     }
 }
+
+const parseJson = str => {
+    try {
+        return JSON.parse(str);
+    }catch (e){
+        return {}
+    }
+}
+
 const Edit = ({value, onChange}) => {
     const {falcor, falcorCache} = useFalcor();
 
@@ -40,6 +49,7 @@ const Edit = ({value, onChange}) => {
     const [groupBy, setGroupBy] = useState(cachedData?.groupBy || []);
     const [notNull, setNotNull] = useState(cachedData?.notNull || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
+    const [metaLookupByViewId, setMetaLookupByViewId] = useState({});
 
     const category = 'Buildings';
 
@@ -109,24 +119,77 @@ const Edit = ({value, onChange}) => {
         getData()
     }, [dataSource, version, geoid, visibleCols, fn, groupBy, notNull, geoAttribute]);
 
+    useEffect(() => {
+        // make this a general purpose util?
+        async function getMeta(){
+            const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
+            const metaViewIdLookupCols =
+                metadata?.filter(md => visibleCols.includes(md.name) && ['meta-variable', 'geoid-variable'].includes(md.display) && md.meta_lookup);
+
+            if(metaViewIdLookupCols?.length){
+                const data =
+                    await metaViewIdLookupCols
+                    .filter(md => parseJson(md.meta_lookup)?.view_id)
+                    .reduce(async (acc, md) => {
+                        const prev = await acc;
+                            const metaLookup = parseJson(md.meta_lookup);
+                            const options = JSON.stringify({
+                                aggregatedLen: metaLookup.aggregatedLen,
+                                filter: {
+                                    ...metaLookup?.geoAttribute && {[`substring(${metaLookup.geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
+                                    year: [2020]
+                                }
+                            });
+                            const attributes = metaLookup.attributes;
+                            const keyAttribute = metaLookup.keyAttribute;
+
+                            const lenPath = ['dama', pgEnv, 'viewsbyId', metaLookup.view_id, 'options', options, 'length'];
+
+                            const lenRes = await falcor.get(lenPath);
+                            const len = get(lenRes, ['json', ...lenPath], 0);
+
+                            if(!len) return Promise.resolve();
+
+                            const dataPath = ['dama', pgEnv, 'viewsbyId', metaLookup.view_id, 'options', options, 'databyIndex'];
+                            const dataRes = await falcor.get([...dataPath, {from: 0, to: len - 1}, attributes]);
+                            const data = Object.values(get(dataRes, ['json', ...dataPath], {}))
+                                .reduce((acc, d) => (
+                                    {
+                                        ...acc,
+                                        ...{[d[keyAttribute]]: {...attributes.reduce((acc, attr) => ({...acc, ...{[attr]: d[attr]}}), {})}}
+                                    }
+                                ), {})
+
+                            return {...prev, ...{[md.name]: data}};
+                        }, {});
+                setMetaLookupByViewId(data)
+            }
+        }
+
+        getMeta();
+    }, [dataSource, visibleCols]);
+
     const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
 
-    const parseJson = str => {
-        try {
-            return JSON.parse(str);
-        }catch (e){
-            return {}
-        }
-    }
     const data = useMemo(() => {
-        const metaLookupCols = metadata?.filter(md => visibleCols.includes(md.name) && md.display === 'meta-variable');
+        const metaLookupCols =
+            metadata?.filter(md =>
+                visibleCols.includes(md.name) &&
+                ['meta-variable', 'geoid-variable'].includes(md.display)
+            );
 
         if(metaLookupCols?.length){
             return Object.values(get(falcorCache, dataPath, {}))
                 .map(row => {
                     metaLookupCols.forEach(mdC => {
-                        const currentLookup = parseJson(mdC.meta_lookup);
-                        row[mdC.name] = currentLookup[row[mdC.name]] || row[mdC.name];
+                        const currentMetaLookup = parseJson(mdC.meta_lookup);
+
+                        if(currentMetaLookup?.view_id){
+                            const currentViewIdLookup = metaLookupByViewId[mdC.name] || [];
+                            row[mdC.name] = currentViewIdLookup[row[mdC.name]]?.name || row[mdC.name];
+                        }else{
+                            row[mdC.name] = currentMetaLookup[row[mdC.name]] || row[mdC.name];
+                        }
                     })
                     return row;
                 })
@@ -134,8 +197,8 @@ const Edit = ({value, onChange}) => {
 
         return Object.values(get(falcorCache, dataPath, {}))
 
-        },
-        [falcorCache, dataPath, fn]);
+        }, [falcorCache, metaLookupByViewId, metadata]);
+
     const attributionData = get(falcorCache, attributionPath, {});
 
     const columns =
