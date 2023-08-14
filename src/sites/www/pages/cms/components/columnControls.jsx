@@ -29,7 +29,7 @@ const RenderPageSizeControl = ({pageSize, setPageSize}) => {
     )
 };
 
-const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols}) => (
+const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols, metadata}) => (
     <div className={'w-full pt-2 mt-1 flex flex-row text-sm'}>
         <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}> Display Columns: </label>
         <select
@@ -42,7 +42,10 @@ const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols}) =
             {
                 cols
                     .filter(c => !visibleCols.includes(c) && !anchorCols.includes(c))
-                    .map(c => <option key={c} value={c}>{c}</option>)
+                    .map(c =>
+                        <option key={c} value={c}>
+                            { metadata.find(md => md.name === c)?.display_name || c }
+                        </option>)
             }
         </select>
     </div>
@@ -286,49 +289,54 @@ const RenderColumnBoxes = ({
         {
             [...anchorCols, ...visibleCols]
                 .filter(c => cols.includes(c))
-                .map((col, i) => (
-                    <div
-                        key={`col-settings-${col}`}
-                        className={
-                            'm-1 flex flex-col justify-between p-2 ' +
-                            `border border-dashed border-blue-${anchorCols.includes(col) ? `500` : `300`} rounded-md`}>
-                        <div className={'font-normal w-full h-full flex flex-row justify-between'}>
-                            <label key={`label-${col}`} className={'mb-auto'}>{col}</label>
-                            <button
-                                key={`cancel-${col}`}
-                                className={
-                                    anchorCols.includes(col) ? `hidden` :
-                                        `align-top mb-auto pt-1 hover:text-red-500 text-slate-40`
-                                }
-                                onClick={() => setVisibleCols(visibleCols.filter(v => v !== col))}
-                            >
-                                <i className={`fa-light fa-xmark fa-fw float-right`} title={'remove'}></i>
-                            </button>
+                .map((col, i) => {
+                    const currentMetaData = metadata.find(md => md.name === col);
+                    return (
+                        <div
+                            key={`col-settings-${col}`}
+                            className={
+                                'm-1 flex flex-col justify-between p-2 ' +
+                                `border border-dashed border-blue-${anchorCols.includes(col) ? `500` : `300`} rounded-md`}>
+                            <div className={'font-normal w-full h-full flex flex-row justify-between'}>
+                                <label key={`label-${col}`} className={'mb-auto'}>
+                                    {currentMetaData?.display_name || col}
+                                </label>
+                                <button
+                                    key={`cancel-${col}`}
+                                    className={
+                                        anchorCols.includes(col) ? `hidden` :
+                                            `align-top mb-auto pt-1 hover:text-red-500 text-slate-40`
+                                    }
+                                    onClick={() => setVisibleCols(visibleCols.filter(v => v !== col))}
+                                >
+                                    <i className={`fa-light fa-xmark fa-fw float-right`} title={'remove'}></i>
+                                </button>
+                            </div>
+
+                            <RenderFilterControls column={col}
+                                                  anchorCols={anchorCols}
+                                                  filters={filters} setFilters={setFilters}/>
+
+                            <RenderFilterValueControls column={col}
+                                                       filterValue={filterValue} setFilterValue={setFilterValue}/>
+
+                            <RenderGroupControls column={col}
+                                                 groupBy={groupBy} setGroupBy={setGroupBy} fn={fn}
+                                                 metadata={currentMetaData}/>
+
+                            <RenderFnControls column={col}
+                                              fn={fn} setFn={setFn} groupBy={groupBy}
+                                              metadata={currentMetaData}/>
+
+                            <RenderSortControls column={col}
+                                                sortBy={sortBy} setSortBy={setSortBy}/>
+
+                            <RenderNullControls column={col}
+                                                notNull={notNull} setNotNull={setNotNull}/>
+
                         </div>
-
-                        <RenderFilterControls column={col}
-                                              anchorCols={anchorCols}
-                                              filters={filters} setFilters={setFilters}/>
-
-                        <RenderFilterValueControls column={col}
-                                                   filterValue={filterValue} setFilterValue={setFilterValue}/>
-
-                        <RenderGroupControls column={col}
-                                             groupBy={groupBy} setGroupBy={setGroupBy} fn={fn}
-                                             metadata={metadata.find(md => md.name === col)}/>
-
-                        <RenderFnControls column={col}
-                                          fn={fn} setFn={setFn} groupBy={groupBy}
-                                          metadata={metadata.find(md => md.name === col)}/>
-
-                        <RenderSortControls column={col}
-                                            sortBy={sortBy} setSortBy={setSortBy}/>
-
-                        <RenderNullControls column={col}
-                                            notNull={notNull} setNotNull={setNotNull}/>
-
-                    </div>
-                ))
+                    )
+                })
         }
     </div>
 );
@@ -353,11 +361,14 @@ export const RenderColumnControls = (
             <div key={'shadow'} className={'shadow-md shadow-blue-100 p-1.5'}></div>
 
             <RenderPageSizeControl pageSize={pageSize}
-                                   setPageSize={setPageSize}/>
+                                   setPageSize={setPageSize}
+            />
 
             <RenderColumnSelector cols={cols}
                                   anchorCols={anchorCols}
-                                  visibleCols={visibleCols} setVisibleCols={setVisibleCols}/>
+                                  visibleCols={visibleCols} setVisibleCols={setVisibleCols}
+                                  metadata={metadata}
+            />
 
             <RenderColumnBoxes cols={cols}
                                anchorCols={anchorCols}
