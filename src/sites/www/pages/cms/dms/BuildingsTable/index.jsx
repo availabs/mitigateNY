@@ -119,15 +119,13 @@ const Edit = ({value, onChange}) => {
         }
     }
     const data = useMemo(() => {
-        const metaLookupCols = metadata.filter(md => visibleCols.includes(md.name) && md.display === 'meta-variable');
+        const metaLookupCols = metadata?.filter(md => visibleCols.includes(md.name) && md.display === 'meta-variable');
 
-        console.log('metadata', metadata, Object.values(get(falcorCache, dataPath, {})))
-        if(metaLookupCols.length){
+        if(metaLookupCols?.length){
             return Object.values(get(falcorCache, dataPath, {}))
                 .map(row => {
                     metaLookupCols.forEach(mdC => {
                         const currentLookup = parseJson(mdC.meta_lookup);
-                        console.log('current lookup', row[mdC.name], currentLookup)
                         row[mdC.name] = currentLookup[row[mdC.name]] || row[mdC.name];
                     })
                     return row;
