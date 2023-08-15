@@ -52,7 +52,7 @@ const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols, me
 );
 
 const RenderGroupControls = ({column, groupBy, setGroupBy, fn, metadata}) => {
-    if (!setGroupBy || !['meta-variable', 'geoid-variable'].includes(metadata.display)) return null;
+    if (!setGroupBy || !['meta-variable', 'geoid-variable'/*, 'calculated-column'*/].includes(metadata.display)) return null;
 
     const isActive = groupBy.includes(column);
 

@@ -12,10 +12,11 @@ import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelect
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
+    console.log('ctf', columnsToFetch)
     if(groupBy.length){
-        return columnsToFetch.filter(ctf => !ctf.includes(' as ')).length === groupBy.length
+        return columnsToFetch.filter(ctf => !ctf.includes('sum') || !ctf.includes('array_to_string')).length === groupBy.length
     }else{
-        return columnsToFetch.filter(ctf => ctf.includes(' as ')).length === 0
+        return columnsToFetch.filter(ctf => ctf.includes('sum') || ctf.includes('array_to_string')).length === 0
     }
 }
 
