@@ -12,11 +12,10 @@ import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelect
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
-    console.log('ctf', columnsToFetch)
     if(groupBy.length){
-        return columnsToFetch.filter(ctf => !ctf.includes('sum') || !ctf.includes('array_to_string')).length === groupBy.length
+        return columnsToFetch.filter(ctf => !ctf.includes('sum') && !ctf.includes('array_to_string')).length === groupBy.length
     }else{
-        return columnsToFetch.filter(ctf => ctf.includes('sum') || ctf.includes('array_to_string')).length === 0
+        return columnsToFetch.filter(ctf => ctf.includes('sum') && ctf.includes('array_to_string')).length === 0
     }
 }
 
@@ -198,7 +197,7 @@ const Edit = ({value, onChange}) => {
 
         return Object.values(get(falcorCache, dataPath, {}))
 
-        }, [falcorCache, metaLookupByViewId, metadata]);
+        }, [falcorCache, metaLookupByViewId, metadata, visibleCols]);
 
     const attributionData = get(falcorCache, attributionPath, {});
 
@@ -271,8 +270,7 @@ const Edit = ({value, onChange}) => {
                             <option value={undefined} key={''}>Please select a geography attribute</option>
                             {
                                 (dataSources.find(ds => ds.source_id === dataSource)?.metadata || [])
-                                    .filter(c => ['geo', 'geoid', 'fips', 'fp']
-                                        .reduce((acc, curr) => acc || c.name?.includes(curr), false))
+                                    .filter(c => c.display === 'geoid-variable')
                                     .map(c => <option  value={c.name} key={c.name}>{c.name}</option>)
                             }
                         </select>
