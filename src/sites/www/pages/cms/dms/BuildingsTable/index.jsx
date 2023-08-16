@@ -12,10 +12,20 @@ import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelect
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
+    const fns = columnsToFetch.map(ctf => ctf.split(' as')[0]);
+
     if(groupBy.length){
-        return columnsToFetch.filter(ctf => !ctf.includes('sum') && !ctf.includes('array_to_string')).length === groupBy.length
+        return fns.filter(ctf =>
+            !ctf.includes('sum') &&
+            !ctf.includes('array_to_string') &&
+            !ctf.includes('count')
+        ).length === groupBy.length
     }else{
-        return columnsToFetch.filter(ctf => ctf.includes('sum') && ctf.includes('array_to_string')).length === 0
+        return fns.filter(ctf =>
+            ctf.includes('sum') &&
+            ctf.includes('array_to_string') &&
+            ctf.includes('count')
+        ).length === 0
     }
 }
 
@@ -200,7 +210,7 @@ const Edit = ({value, onChange}) => {
         }, [falcorCache, metaLookupByViewId, metadata, visibleCols]);
 
     const attributionData = get(falcorCache, attributionPath, {});
-
+    // console.log('data?', data, Object.values(get(falcorCache, dataPath, {})))
     const columns =
         visibleCols
             .map(c => metadata.find(md => md.name === c))

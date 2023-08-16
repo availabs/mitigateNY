@@ -27,7 +27,7 @@ export const RenderBuildingsTable = ({
             ...c,
             Cell: cell => {
                 let value = getNestedValue(cell.value);
-                value = cell.column.type === 'string' ? value : fnum(value || 0, c.isDollar)
+                value = ['integer', 'number'].includes(cell.column.type) ?  fnum(value || 0, c.isDollar) : value
 
                 return( <div>{value}</div>);
             }

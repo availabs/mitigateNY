@@ -52,9 +52,10 @@ const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols, me
 );
 
 const RenderGroupControls = ({column, groupBy, setGroupBy, fn, metadata}) => {
-    if (!setGroupBy || !['meta-variable', 'geoid-variable'/*, 'calculated-column'*/].includes(metadata.display)) return null;
-
-    const isActive = groupBy.includes(column);
+    if (!setGroupBy || !['meta-variable', 'geoid-variable', 'calculated-column'].includes(metadata.display)) return null;
+    // remove calculated-column as it has transitioned to a 'type', instead of 'display'. when grouping by, remove 'as ..'
+    const groupableName = column.split(' as')[0];
+    const isActive = groupBy.includes(groupableName);
 
     return (
         <div className={'block w-full flex mt-1'}>
@@ -62,8 +63,8 @@ const RenderGroupControls = ({column, groupBy, setGroupBy, fn, metadata}) => {
             <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
                 <Switch
                     key={`groupby-${column}`}
-                    checked={groupBy.includes(column)}
-                    onChange={e => isActive ? setGroupBy(groupBy.filter(gb => gb !== column)) : setGroupBy([...groupBy, column])}
+                    checked={isActive}
+                    onChange={e => isActive ? setGroupBy(groupBy.filter(gb => gb !== groupableName)) : setGroupBy([...groupBy, groupableName])}
                     className={classNames(
                         isActive ? 'bg-indigo-600' : 'bg-gray-200',
                         `relative inline-flex 
@@ -132,18 +133,27 @@ const RenderNullControls = ({column, notNull, setNotNull}) => {
 const RenderFnControls = ({column, fn, setFn, groupBy, metadata}) => {
     if (!setFn || metadata?.display === 'calculated-column') return null;
 
+    const groupableName = column.split(' as')[0];
+    const nonGroupableTitle = column.split('as ')[1] || groupableName;
+
     const functions = [
         {label: 'None', value: column},
-        {label: 'List', value: `array_to_string(array_agg(distinct ${column}), ', ') as ${column}`},
-        {label: 'Sum', value: `sum(${column}) as ${column}`},
+        {label: 'List', value: `array_to_string(array_agg(distinct ${groupableName}), ', ') as ${nonGroupableTitle}`},
+        {label: 'Sum', value: `sum(${groupableName}) as ${nonGroupableTitle}`},
     ]
 
+    const alreadyAggregated = groupableName.includes('count') || groupableName.includes('sum');
+
+    const defaultFn =
+        alreadyAggregated ?
+            functions.find(f => f.label === 'None')?.value :
+            functions.find(f => f.label === 'List')?.value
     // clear set fn if groupBy is active
-    groupBy.includes(column) && fn[column] !== column && setFn({...fn, ...{[column]: column}});
+    groupBy.includes(groupableName) && fn[column] !== column && setFn({...fn, ...{[column]: column}});
 
     // set fn to list if not already selected on group by selected
-    groupBy.length && !groupBy.includes(column) && (fn[column] === column || !fn[column])&&
-    setFn({...fn, ...{[column]: functions.find(f => f.label === 'List')?.value}});
+    groupBy.length && !groupBy.includes(groupableName) && !alreadyAggregated && (fn[column] === column || !fn[column]) &&
+    setFn({...fn, ...{[column]: defaultFn}});
 
     // when all groupBy toggles are inactive, set fn to None
     !groupBy.length && fn[column] !== column && setFn({...fn, ...{[column]: column}})
