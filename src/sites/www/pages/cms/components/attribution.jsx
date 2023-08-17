@@ -9,14 +9,12 @@ export const Attribution = ({baseUrl = '/', attributionData}) => (
             {
                 (Array.isArray(attributionData) ? attributionData : [attributionData])
                     ?.map(d => (
-                        <div key={d?.view_id}>
                             <Link
                                 to={`/${baseUrl}/cenrep/source/${d?.source_id}/versions/${d?.view_id}`.replace('///', '/')}
-                                key={d?.view_id}
+                                key={`link-${d?.view_id}`}
                             >
                                 {d?.version} ({formatDate(d?._modified_timestamp?.value || d?._modified_timestamp)})
                             </Link>
-                        </div>
                     ))
             }
         </div>

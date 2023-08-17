@@ -1,4 +1,4 @@
-import React from "react"
+import {useEffect} from "react";
 import get from "lodash/get"
 import isEqual from "lodash/isEqual"
 import {isJson} from "~/utils/macros.jsx";
@@ -69,16 +69,14 @@ function EditComp(props) {
         }
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
     }
-    if (!value?.['element-type']) {
-        onChange({...value, 'element-type': 'lexical'})
-    }
-    let DataComp = (ComponentRegistry[get(value, "element-type", "lexical")] || ComponentRegistry['lexical']).EditComp 
 
+    useEffect(() => {
+        if (!value?.['element-type']) {
+            onChange({...value, 'element-type': 'lexical'})
+        }
+    }, []);
 
-    // ComponentRegistry[get(value, "element-type", null)] ?
-    //      :
-    //     () => <div> Component {value?.["element-type"]} Not Registered </div>
-
+    let DataComp = (ComponentRegistry[get(value, "element-type", "lexical")] || ComponentRegistry['lexical']).EditComp
 
     return (
         <div className="w-full">
@@ -94,7 +92,7 @@ function EditComp(props) {
                             }
                         ))
                     }
-                    value={value?.['element-type'] || 'lexical'}
+                    value={value?.['element-type']}
                     onChange={async e => {
                         if (e === 'paste') {
                             return navigator.clipboard.readText()

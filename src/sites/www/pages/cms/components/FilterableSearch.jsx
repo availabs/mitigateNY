@@ -41,6 +41,7 @@ const renderMenu = ({results, menuProps, labelKey, filter, filters, setFilter, o
                                 value ? onChange(value) : setFilter(isActive ? null : filterText)
                             return (
                                 <button
+                                    key={filterText}
                                     title={`Filter by: ${filterText}`}
                                     className={
                                         `py-1 px-2 my-0.5 
@@ -77,12 +78,12 @@ export default ({
                     placeholder = "Search..."
                 }) => {
     const [selected, setSelected] = useState([]);
-    const [filter, setFilter] = useState(null);
+    const [filter, setFilter] = useState('');
     const [filteredOptions, setFilteredOptions] = useState(options);
 
     useEffect(() => {
         if (!value) return;
-        const s = options.find(h => h === value);
+        const s = options.filter(h => h.key === value);
         setSelected(s)
     }, [value]);
 
