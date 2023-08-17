@@ -12,7 +12,7 @@ import Forms from './pages/admin/forms/index'
 // import Test from "./pages/Test"
 // import NymtcSurveyCrosswalk from "./pages/nymtcSurveyCrosswalk"
 
-//console.log('test 123', Forms)
+console.log('test 123', authMenuConfig)
 
 const Routes = [
   // -- Admin Routes -- //
@@ -20,9 +20,7 @@ const Routes = [
   ...DamaRoutes({
     baseUrl:'/cenrep',
     defaultPgEnv : "hazmit_dama",
-    auth : false,
-    components : {},
-    navSettigs : {},
+    navSettings: authMenuConfig,
     useFalcor,
     useAuth
   }),

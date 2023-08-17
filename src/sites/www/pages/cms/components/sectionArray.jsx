@@ -274,9 +274,9 @@ const Edit = ({Component, value, onChange, attr}) => {
 
 const View = ({Component, value, attr}) => {
     if (!value || !value.map) { return '' }
-    
     return (
         <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}   >
+        
         { 
             value.map((v,i) =>{
                 let prevSize = i > 0 ? value[i-1]?.size : null;

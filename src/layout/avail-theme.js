@@ -176,7 +176,7 @@ const ppdaf = () => {
 
     /* -----
          Top Nav Theme Components Minimal
-        ------*/
+    ------*/
     topnav: ({
         color='white',
         size='compact',
@@ -229,7 +229,7 @@ const ppdaf = () => {
             inline: {
                 // indicatorIcon: 'fa fa-angle-right pt-2.5',
                 // indicatorIconOpen: 'fal fa-angle-down pt-2.5',
-                subMenuWrapper: `pl-2 w-full`,
+                subMenuWrapper: `pl-2 w-full overflow-x-auto`,
                 subMenuParentWrapper: `flex flex-col w-full`
             },
             flyout: {
@@ -242,10 +242,10 @@ const ppdaf = () => {
             row: {
                 indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
                 indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
-                subMenuWrapper: `absolute ml-${sizes[size].width - 8}`,
+                subMenuWrapper: `absolute ml-${sizes[size].width - 8} overflow-x-auto`,
                 subMenuParentWrapper: `flex flex-row`,
                 subMenuWrapperChild: `divide-x`,
-                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-white`,
+                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-white overflow-x-auto scrollbar-sm`,
                 subMenuWrapperInactiveFlyout: `absolute top-12 bg-white shadow-lg z-10`,
                 subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
             },
@@ -261,7 +261,7 @@ const ppdaf = () => {
         menuOpenIcon: `fa-light fa-bars fa-fw`,
         menuCloseIcon: `fa-light fa-xmark fa-fw"`,
         navitemTop: `
-            w-fit group font-sans
+            w-fit group font-sans whitespace-nowrap
             ${sizes[size].topItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
             transition cursor-pointer
@@ -270,18 +270,17 @@ const ppdaf = () => {
         topmenuRightNavContainer: "hidden md:block h-full",
         topnavMobileContainer: "bg-slate-100",
         navitemTopActive:
-          ` w-fit group font-sans
+          ` w-fit group font-sans whitespace-nowrap
             ${sizes[size].activeItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
             transition cursor-pointer
           `,
-        mobileButton:
-          `${sizes[size].responsive} ${colors[color].contentBg} inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
-            ...subMenuStyles[subMenuStyle],
-            vars: {
-            colors,
-            sizes
-          }
+        mobileButton:`${sizes[size].responsive} ${colors[color].contentBg} inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
+        ...subMenuStyles[subMenuStyle],
+        vars: {
+          colors,
+          sizes
+        }
       }
 
     },

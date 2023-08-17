@@ -11,7 +11,7 @@ import { CMSContext } from './layout'
 
 const theme = {
   nav: {
-    container: 'w-[264px] fixed top-0 pt-12 h-screen z-0 hidden lg:block',
+    container: 'w-[264px] fixed h-screen z-0 hidden lg:block',
     navItemContainer: 'h-full border-l overflow-y-auto overflow-x-hidden pt-3 scrollbar-xs',
     navItem: ({ isActive, isPending }) =>
       `block px-4 py-2 font-light ${isActive ?

@@ -42,6 +42,10 @@ const siteConfig = {
       ),
       action: "list",
       path: "/*",
+      filter: {
+        mainNav: true, 
+        attributes:['title', 'index', 'url_slug', 'parent' ]
+      },
       children: [
         { 
           type: PageView,
@@ -62,6 +66,10 @@ const siteConfig = {
       action: "list",
       path: "/edit/*",
       authLevel: 5,
+      filter: {
+        mainNav: true, 
+        attributes:['title', 'index', 'url_slug', 'parent' ]
+      },
       children: [
         { 
           type: PageEdit,

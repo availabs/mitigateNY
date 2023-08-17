@@ -3,7 +3,7 @@ import {getCurrentDataItem} from "./navItems.js";
 export function getInPageNav(dataItems, baseUrl = '', edit = false) {
     const currentDI = getCurrentDataItem(dataItems, baseUrl);
 
-    const menuItems = currentDI?.sections?.reduce((acc, {title, element, ...props}) => {
+    const menuItems = (currentDI?.sections || []).reduce((acc, {title, element, ...props}) => {
 
         if (!element || !title) return acc;
         const lexicalNavElements = element['element-type'] === 'lexical' || !element['element-type'] ?
