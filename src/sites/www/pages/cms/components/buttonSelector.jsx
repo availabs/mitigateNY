@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 export const ButtonSelector = ({
                                    label,
@@ -10,6 +10,18 @@ export const ButtonSelector = ({
                                    disabled,
                                    disabledTitle
                                }) => {
+    useEffect(() => {
+        const initValue = types[0]?.value || types[0];
+        if(!initValue) return;
+
+        const initType = multi ? [initValue] : initValue;
+
+        (
+            !type ||
+            (Array.isArray(type) && !type.filter(t => t)?.length)
+        )
+        && setType(initType)
+    },[types])
     return (
         <div className={`my-1 flex flex-rows flex-wrap`}
              title={disabled ? disabledTitle : null}

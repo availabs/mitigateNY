@@ -9,7 +9,7 @@ import GeographySearch from "../../components/geographySearch.jsx";
 import DisasterSearch from "../../components/disasterSearch.jsx";
 import { Loading } from "~/utils/loading.jsx";
 import {metaData} from "./config.js";
-import {RenderColumnControls} from "../../components/columnControls/";
+import {RenderColumnControls} from "../../components/columnControls.jsx/";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const Edit = ({value, onChange}) => {

@@ -42,7 +42,7 @@ export const metaData = {
             exclude: {
                 dcc: ["A", "B", "Z"]
             },
-            groupBy: [!disasterNumber && ['disaster_number'], ...["county", 'damage_category']]
+            groupBy: !disasterNumber ? ['disaster_number', "county", 'damage_category'] : ["county", 'damage_category']
         }),
         textCols: ["Disaster Number", "County", "Damage Category"],
         numCols: ["# Projects"],
@@ -68,7 +68,10 @@ export const metaData = {
                 ...disasterNumber && {"fema_disaster_number": [disasterNumber]},
                 ...geoid && {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}
             },
-            groupBy: [geoid?.length === 5 ? "damaged_property_city_name" : "damaged_property_county_or_parish_name"]
+            groupBy: [
+                ...!disasterNumber ? ['fema_disaster_number'] : [],
+                ...[geoid?.length === 5 ? "damaged_property_city_name" : "damaged_property_county_or_parish_name"]
+            ]
         }),
         textCols: ["Disaster Number", "City", "County / Parish"],
         numCols: ["# Loans"],
@@ -92,7 +95,7 @@ export const metaData = {
                 ...disasterNumber && {"disaster_number": [disasterNumber]},
                 ...geoid && {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}
             },
-            groupBy: ['geoid']
+            groupBy: !disasterNumber ? ['disaster_number', 'geoid'] : ['geoid']
         }),
         textCols: ["Disaster Number", "County"],
         numCols: ["# Claims"],
@@ -115,7 +118,7 @@ export const metaData = {
                 ...disasterNumber && {"disaster_number": [disasterNumber]},
                 ...geoid && {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}
             },
-            groupBy: ['county_name']
+            groupBy: !disasterNumber ? ['disaster_number', 'county_name'] : ['county_name']
         }),
         textCols: ["Disaster Number", "County", 'Commodity Name'],
         numCols: ["# Claims"],
