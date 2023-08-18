@@ -99,6 +99,14 @@ const Edit = ({value, onChange}) => {
     }, []);
 
     useEffect(() => {
+        const geoAttribute =
+            (dataSources
+                .find(ds => ds.source_id === dataSource)?.metadata || [])
+                .find(c => c.display === 'geoid-variable');
+        geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
+    }, [dataSources, dataSource]);
+
+    useEffect(() => {
         async function getData() {
             if(!visibleCols?.length || !version || !dataSource) {
                 !dataSource && setStatus('Please select a Datasource.');
@@ -266,25 +274,7 @@ const Edit = ({value, onChange}) => {
                         className={'flex-row-reverse'}
                     />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
-                    <div className={`flex justify-between`}>
-                        <label
-                            className={`shrink-0 pr-2 py-1 my-1 w-1/4`}
-                        >
-                            Geo Attribute:
-                        </label>
-                        <select
-                            className={`bg-white w-full pl-3 rounded-md my-1`}
-                            value={geoAttribute}
-                            onChange={e => setGeoAttribute(e.target.value)}
-                        >
-                            <option value={undefined} key={''}>Please select a geography attribute</option>
-                            {
-                                (dataSources.find(ds => ds.source_id === dataSource)?.metadata || [])
-                                    .filter(c => c.display === 'geoid-variable')
-                                    .map(c => <option  value={c.name} key={c.name}>{c.name}</option>)
-                            }
-                        </select>
-                    </div>
+
                     <RenderColumnControls
                         cols={
                            (dataSources.find(ds => ds.source_id === dataSource)?.metadata || [])
