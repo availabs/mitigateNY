@@ -8,19 +8,16 @@ export const ButtonSelector = ({
                                    multi = false,
                                    size = 'small',
                                    disabled,
-                                   disabledTitle
+                                   disabledTitle,
+                                   autoSelect= true
                                }) => {
     useEffect(() => {
         const initValue = types[0]?.value || types[0];
-        if(!initValue) return;
+        if(!initValue || !autoSelect || disabled) return;
 
         const initType = multi ? [initValue] : initValue;
 
-        (
-            !type ||
-            (Array.isArray(type) && !type.filter(t => t)?.length)
-        )
-        && setType(initType)
+        (!type || (Array.isArray(type) && !type.filter(t => t)?.length)) && setType(initType)
     },[types])
     return (
         <div className={`my-1 flex flex-rows flex-wrap`}

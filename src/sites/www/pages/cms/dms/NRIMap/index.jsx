@@ -95,6 +95,7 @@ const Edit = ({value, onChange, size}) => {
         const nriSourceId = 159;
         const nriTractsSourceId = 346;
 
+        setLoading(true);
         const dataSourceMapping = {
             avail_counties: ealSourceId,
             nri: nriSourceId,
@@ -120,7 +121,7 @@ const Edit = ({value, onChange, size}) => {
             }else{
                 setTypeId(dataSourceViewId)
             }
-            setLoading(false)
+            // setLoading(false)
         }
 
         setView();
@@ -129,10 +130,11 @@ const Edit = ({value, onChange, size}) => {
     useEffect(() => {
         // get required data, pass paint properties as prop.
         async function getData() {
-            if (!geoid || !attribute || (attribute !== 'afreq' && !consequence)) {
-                !geoid && setStatus('Please Select a Geography.');
+            if (!geoid || !hazard || !attribute || (attribute !== 'afreq' && !consequence)) {
+                !consequence && setStatus('Please Select a Consequence.')
                 !attribute && setStatus('Please Select an Attribute.');
-                !consequence && setStatus('Please Select a Consequence.');
+                !hazard && setStatus('Please Select a Hazard.');
+                !geoid && setStatus('Please Select a Geography.');
                 return Promise.resolve();
             } else {
                 setStatus(undefined)
@@ -192,8 +194,11 @@ const Edit = ({value, onChange, size}) => {
         }
 
         getData()
-    }, [geoid, numColors, shade, colors, hazard, attribute, consequence,
-        dataSource, dataSourceSRCId, dataSourceViewId, typeId]);
+    }, [
+        typeId,
+        geoid, hazard, attribute, consequence,
+        numColors, shade, colors
+    ]);
 
     const {geoColors, domain} = getGeoColors({geoid, data, columns: columns, paintFn: metaData.paintFn, colors});
 
@@ -252,6 +257,10 @@ const Edit = ({value, onChange, size}) => {
                         types={metaData.dataSources}
                         type={dataSource}
                         setType={e => {
+                            setAttribute(undefined);
+                            setConsequance(undefined);
+                            setDataSourceViewId(undefined);
+                            setDataSourceSRCId(undefined);
                             setDataSource(e);
                         }}
                     />
@@ -285,8 +294,9 @@ const Edit = ({value, onChange, size}) => {
                         }
                         type={consequence}
                         setType={setConsequance}
-                        disabled={attribute === 'afreq'}
+                        disabled={attribute === 'afreq' || !attribute}
                         disabledTitle={'Frequency is independent of Consequence.'}
+                        autoSelect={false}
                     />
                     <RenderColorPicker
                         title={'Colors: '}
