@@ -324,6 +324,7 @@ const ppdaf = () => {
               sortIconDown: 'fas fa-sort-amount-down text-tigGray-300 opacity-75',
               sortIconUp: 'fas fa-sort-amount-up text-tigGray-300 opacity-75',
               sortIconIdeal: 'fa fa-sort-alt text-tigGray-300 opacity-25',
+              infoIcon: 'fas fa-info text-sm text-blue-300 hover:text-blue-500',
               vars: {
                   color: colors,
                   size: sizes

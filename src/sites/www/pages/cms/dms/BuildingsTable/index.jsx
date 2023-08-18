@@ -230,6 +230,7 @@ const Edit = ({value, onChange}) => {
                     align: col.align || 'right',
                     width: col.width || '15%',
                     filter: col.filter || filters[col.name],
+                    info: col.desc,
                     ...col,
                     type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
                 }
