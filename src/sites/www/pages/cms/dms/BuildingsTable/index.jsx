@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import get from "lodash/get";
 import {useFalcor} from '~/modules/avl-falcor';
 import {pgEnv} from "~/utils/";
@@ -107,6 +107,7 @@ const Edit = ({value, onChange}) => {
     }, [dataSources, dataSource]);
 
     useEffect(() => {
+        // gets 1000 rows
         async function getData() {
             if(!visibleCols?.length || !version || !dataSource) {
                 !dataSource && setStatus('Please select a Datasource.');
@@ -186,6 +187,23 @@ const Edit = ({value, onChange}) => {
 
         getMeta();
     }, [dataSource, visibleCols]);
+
+
+    // const fetchData = useCallback(async ({currentPage, pageSize}) => {
+    //     const from = currentPage * pageSize,
+    //         to = (currentPage * pageSize) + pageSize - 1;
+    //     console.log('called', currentPage, pageSize, from, to)
+    //
+    //     await falcor.get(lenPath);
+    //     const len = Math.min(get(falcor.getCache(), lenPath, 0), 1000);
+    //
+    //     const dataRes = await falcor.get([...dataPath, {from, to}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
+    //     const data = Object.values(get(dataRes, ['json', ...dataPath], {}))
+    //
+    //     console.log('returning', len, data)
+    //     return {length: len, data }
+    // }, [dataSource, version, geoid, visibleCols, fn, groupBy, notNull, geoAttribute]);
+
 
     const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
 
@@ -314,6 +332,7 @@ const Edit = ({value, onChange}) => {
                                 sortBy={sortBy}
                                 attributionData={attributionData}
                                 baseUrl={baseUrl}
+                                // fetchData={fetchData}
                             />
 
                 }

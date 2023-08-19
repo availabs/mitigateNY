@@ -20,7 +20,8 @@ export const RenderBuildingsTable = ({
                                        sortBy = {},
                                        baseUrl,
                                        attributionData,
-                                       striped
+                                       striped,
+                                         fetchData
 }) => {
     const updatedColumns = columns.map(c => {
         return {
@@ -46,19 +47,16 @@ export const RenderBuildingsTable = ({
     return (
         <>
             <div className={'py-5'}>
-                {
-                    data?.length > 0 && columns?.length > 0 && (
-                        <Table
-                            columns={updatedColumns}
-                            data={filteredData}
-                            initialPageSize={pageSize}
-                            pageSize={pageSize}
-                            striped={striped}
-                            sortBy={sortColRaw}
-                            sortOrder={Object.values(sortBy)?.[0] || 'asc'}
-                        />
-                    )
-                }
+                <Table
+                    columns={updatedColumns}
+                    data={filteredData}
+                    initialPageSize={pageSize}
+                    pageSize={pageSize}
+                    striped={striped}
+                    sortBy={sortColRaw}
+                    sortOrder={Object.values(sortBy)?.[0] || 'asc'}
+                    fetchData={fetchData}
+                />
             </div>
             <Attribution baseUrl={baseUrl} attributionData={attributionData} />
         </>
