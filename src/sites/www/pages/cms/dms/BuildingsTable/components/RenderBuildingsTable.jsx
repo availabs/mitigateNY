@@ -34,7 +34,7 @@ export const RenderBuildingsTable = ({
             }
         }
     })
-    const sortColRaw = updatedColumns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
+    const sortColRaw = updatedColumns.find(c => c.accessor === Object.keys(sortBy)?.[0])?.accessor;
 
     const filteredData = data.filter(row =>
         !Object.keys(filterValue || {}).length ||

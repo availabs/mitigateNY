@@ -54,7 +54,7 @@ const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols, me
 const RenderGroupControls = ({column, groupBy, setGroupBy, fn, metadata}) => {
     if (!setGroupBy || !['meta-variable', 'geoid-variable', 'calculated-column'].includes(metadata.display)) return null;
     // remove calculated-column as it has transitioned to a 'type', instead of 'display'. when grouping by, remove 'as ..'
-    const groupableName = column.split(' as')[0];
+    const groupableName = column.includes(' as') ? column.split(' as')[0] : column.split(' AS')[0];
     const isActive = groupBy.includes(groupableName);
 
     return (
@@ -133,8 +133,8 @@ const RenderNullControls = ({column, notNull, setNotNull}) => {
 const RenderFnControls = ({column, fn, setFn, groupBy, metadata}) => {
     if (!setFn || metadata?.display === 'calculated-column') return null;
 
-    const groupableName = column.split(' as')[0];
-    const nonGroupableTitle = column.split('as ')[1] || groupableName;
+    const groupableName = column.includes(' as') ? column.split(' as')[0] : column.split(' AS')[0];
+    const nonGroupableTitle = (column.includes(' as') ? column.split('as ')[1] : column.split('AS ')[1]) || groupableName;
 
     const functions = [
         {label: 'None', value: column},
@@ -231,8 +231,10 @@ const RenderFilterValueControls = ({column, filterValue, setFilterValue}) => {
     )
 }
 
-const RenderSortControls = ({column, sortBy, setSortBy}) => {
+const RenderSortControls = ({column, sortBy, setSortBy, fn}) => {
     if (!setSortBy) return null;
+    const fnColumn = fn[column] || column;
+
     return (
         <>
             <div className={'block shrink-0 w-full flex'}>
@@ -240,10 +242,10 @@ const RenderSortControls = ({column, sortBy, setSortBy}) => {
                 <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
                     <Switch
                         key={`sortby-${column}`}
-                        checked={sortBy?.[column] || false}
-                        onChange={e => setSortBy({[column]: e && 'asc'})}
+                        checked={sortBy?.[fnColumn] || false}
+                        onChange={e => setSortBy({[fnColumn]: e && 'asc'})}
                         className={classNames(
-                            sortBy?.[column] ? 'bg-indigo-600' : 'bg-gray-200',
+                            sortBy?.[fnColumn] ? 'bg-indigo-600' : 'bg-gray-200',
                             `relative inline-flex 
                                             h-4 w-10 
                                              cursor-pointer rounded-full border-2 border-transparent 
@@ -255,7 +257,7 @@ const RenderSortControls = ({column, sortBy, setSortBy}) => {
                         <span
                             aria-hidden="true"
                             className={classNames(
-                                sortBy?.[column] ? 'translate-x-5' : 'translate-x-0',
+                                sortBy?.[fnColumn] ? 'translate-x-5' : 'translate-x-0',
                                 `pointer-events-none inline-block 
                                                 h-3 w-4
                                                 transform rounded-full bg-white shadow ring-0 t
@@ -271,9 +273,9 @@ const RenderSortControls = ({column, sortBy, setSortBy}) => {
                 <select
                     key={`order-${column}`}
                     className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
-                    value={sortBy[column]}
-                    onChange={e => setSortBy({[column]: e.target.value})}
-                    disabled={!sortBy?.[column]}
+                    value={sortBy[fnColumn]}
+                    onChange={e => setSortBy({[fnColumn]: e.target.value})}
+                    disabled={!sortBy?.[fnColumn]}
                 >
                     <option key={`order-asc-${column}`} value={'asc'}>Ascending</option>
                     <option key={`order-desc-${column}`} value={'desc'}>Descending</option>
@@ -339,7 +341,7 @@ const RenderColumnBoxes = ({
                                               metadata={currentMetaData}/>
 
                             <RenderSortControls column={col}
-                                                sortBy={sortBy} setSortBy={setSortBy}/>
+                                                sortBy={sortBy} setSortBy={setSortBy} fn={fn}/>
 
                             <RenderNullControls column={col}
                                                 notNull={notNull} setNotNull={setNotNull}/>

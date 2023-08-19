@@ -186,7 +186,7 @@ const Edit = ({value, onChange}) => {
         }
 
         getMeta();
-    }, [dataSource, visibleCols]);
+    }, [dataSource, visibleCols, geoid]);
 
 
     // const fetchData = useCallback(async ({currentPage, pageSize}) => {
@@ -203,7 +203,6 @@ const Edit = ({value, onChange}) => {
     //     console.log('returning', len, data)
     //     return {length: len, data }
     // }, [dataSource, version, geoid, visibleCols, fn, groupBy, notNull, geoAttribute]);
-
 
     const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
 
@@ -236,7 +235,7 @@ const Edit = ({value, onChange}) => {
         }, [falcorCache, metaLookupByViewId, metadata, visibleCols]);
 
     const attributionData = get(falcorCache, attributionPath, {});
-    // console.log('data?', data, Object.values(get(falcorCache, dataPath, {})))
+
     const columns =
         visibleCols
             .map(c => metadata.find(md => md.name === c))
