@@ -6,6 +6,7 @@ import checkAuth  from "~/layout/checkAuth"
 import cmsFormat from "./actions.format.js"
 
 import { menuItems } from "../../index"
+import dmsFormsTheme from "../dmsFormsTheme"
 
 // registerDataType("selector", Selector)
 
@@ -109,14 +110,18 @@ const siteConfig = {
 }
 
 export default { 
-  ...dmsPageFactory(siteConfig, "/admin/forms/actions/",  withAuth),
+  ...dmsPageFactory(
+    siteConfig, 
+    "/admin/forms/actions/",  
+    withAuth,
+    dmsFormsTheme
+  ),
   name: "Actions",
   sideNav: {
     size: 'compact',
     color: 'white',
     menuItems
   },
-  authLevel: 5,
   // topNav: {
   //   size: "none"
   // }
