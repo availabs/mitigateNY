@@ -2,10 +2,7 @@ import React from "react"
 import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
 import {Link} from 'react-router-dom'
 import { withAuth } from "~/modules/ams/src" 
-//import Layout from "../../cms/components/layout"
 import checkAuth  from "~/layout/checkAuth"
-
-
 import cmsFormat from "./actions.format.js"
 
 import { menuItems } from "../../index"
@@ -77,10 +74,6 @@ const siteConfig = {
             }
           ]
         }
-        // filter: {
-        //   mainNav: true, 
-        //   attributes:['title', 'index', 'url_slug', 'parent' ]
-        // },
       },
       { 
         type: "dms-card",
