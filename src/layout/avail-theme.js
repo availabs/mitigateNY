@@ -371,7 +371,7 @@ const ppdaf = () => {
                     disabled:cursor-not-allowed
                 `,
                 cancel: `
-                    border border-red-300  text-red-700 bg-white hover:text-red-500
+                    text-red-700 bg-white hover:text-red-500
                     focus:outline-none focus:shadow-outline-blue focus:border-blue-300
                     active:text-red-800 active:bg-gray-50 transition duration-150 ease-in-out
                     disabled:cursor-not-allowed
@@ -382,21 +382,20 @@ const ppdaf = () => {
                     active:text-gray-800 active:bg-gray-50 hover:bg-gray-100 hover:text-gray-900
                     transition duration-150 ease-in-out
                     disabled:cursor-not-allowed
-                    rounded-sm
                 `,
                 primary: `
                     border border-transparent shadow
-                    text-sm leading-4 rounded-sm text-white bg-blue-600 hover:bg-blue-700
+                    text-sm leading-4 text-white bg-blue-600 hover:bg-blue-700
                     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`,
                 danger: ''
             }
 
             let sizes  = {
                 base: 'px-4 py-4 leading-5 font-medium',
-                xs: 'text-xs px-1 py-0 leading-5 font-thin',
-                sm: 'text-sm px-2 py-2 leading-5 font-medium',
-                lg: 'text-lg px-6 py-6 leading-5 font-medium',
-                xl: 'text-2xl px-12 py-8 leading-5 font-medium'
+                xs: 'text-xs px-1 py-0.5 leading-5 font-thin rounded-sm',
+                sm: 'text-sm px-2 py-2 leading-5 font-medium rounded-md',
+                lg: 'text-lg px-6 py-6 leading-5 font-medium rounded-md',
+                xl: 'text-2xl px-12 py-8 leading-5 font-medium rounded-lg'
             }
 
             let widths = {
