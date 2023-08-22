@@ -144,17 +144,18 @@ const RenderFnControls = ({column, fn, setFn, groupBy, metadata}) => {
 
 const RenderNullControls = ({column, notNull, setNotNull}) => {
     if (!setNotNull) return null;
+    const groupableName = column.includes(' as') ? column.split(' as')[0] : column.split(' AS')[0];
 
-    const isActive = notNull.includes(column);
+    const isActive = notNull.includes(groupableName);
 
     return (
         <div className={'block w-full flex mt-1'}>
             <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> Exclude N/A: </label>
             <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
                 <Switch
-                    key={`notNull-${column}`}
-                    checked={notNull.includes(column)}
-                    onChange={e => isActive ? setNotNull(notNull.filter(gb => gb !== column)) : setNotNull([...notNull, column])}
+                    key={`notNull-${groupableName}`}
+                    checked={notNull.includes(groupableName)}
+                    onChange={e => isActive ? setNotNull(notNull.filter(gb => gb !== groupableName)) : setNotNull([...notNull, groupableName])}
                     className={classNames(
                         isActive ? 'bg-indigo-600' : 'bg-gray-200',
                         `relative inline-flex 
