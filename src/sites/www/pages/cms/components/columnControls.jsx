@@ -52,8 +52,8 @@ const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols, me
 );
 
 const RenderGroupControls = ({column, groupBy, setGroupBy, fn, metadata}) => {
-    if (!setGroupBy || !['meta-variable', 'geoid-variable', 'calculated-column'].includes(metadata.display)) return null;
-    // remove calculated-column as it has transitioned to a 'type', instead of 'display'. when grouping by, remove 'as ..'
+    if (!setGroupBy || !['meta-variable', 'geoid-variable'].includes(metadata.display)) return null;
+    // when grouping by, remove 'as ..'
     const groupableName = column.includes(' as') ? column.split(' as')[0] : column.split(' AS')[0];
     const isActive = groupBy.includes(groupableName);
 
@@ -87,6 +87,57 @@ const RenderGroupControls = ({column, groupBy, setGroupBy, fn, metadata}) => {
                     />
                 </Switch>
             </div>
+        </div>
+    )
+}
+
+const RenderFnControls = ({column, fn, setFn, groupBy, metadata}) => {
+    if (!setFn || metadata?.display === 'calculated-column') return null;
+
+    const groupableName = column.includes(' as') ? column.split(' as')[0] : column.split(' AS')[0];
+    const nonGroupableTitle = (column.includes(' as') ? column.split('as ')[1] : column.split('AS ')[1]) || groupableName;
+
+    const functions = [
+        {label: 'None', value: column},
+        {label: 'List', value: `array_to_string(array_agg(distinct ${groupableName}), ', ') as ${nonGroupableTitle}`},
+        {label: 'Sum', value: `sum(${groupableName}) as ${nonGroupableTitle}`},
+    ]
+
+    const alreadyAggregated = groupableName.includes('count') || groupableName.includes('sum');
+
+    const defaultFn =
+        alreadyAggregated ?
+            functions.find(f => f.label === 'None')?.value :
+            (
+                functions.find(f => f.label === metadata?.defaultFn)?.value ||
+                functions.find(f => f.label === 'List')?.value
+            )
+    // clear set fn if groupBy is active
+    groupBy.includes(groupableName) && fn[column] !== column && setFn({...fn, ...{[column]: column}});
+
+    // set fn to list if not already selected on group by selected
+    groupBy.length &&
+    !groupBy.includes(groupableName) &&
+    !alreadyAggregated && (fn[column] === column || !fn[column]) &&
+    setFn({...fn, ...{[column]: defaultFn}});
+
+    // when all groupBy toggles are inactive, set fn to None
+    !groupBy.length && fn[column] !== column && setFn({...fn, ...{[column]: column}})
+
+    return (
+        <div className={'block w-full flex justify-between'}>
+            <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> Function: </label>
+            <select
+                key={`fn-${column}`}
+                className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+                value={fn[column]}
+                onChange={e => setFn({...fn, ...{[column]: e.target.value}})}
+                disabled={!groupBy.length}
+            >
+                {
+                    functions.map(fn => <option key={`fn-${column}-${fn.label}`} value={fn.value}> {fn.label} </option>)
+                }
+            </select>
         </div>
     )
 }
@@ -126,52 +177,6 @@ const RenderNullControls = ({column, notNull, setNotNull}) => {
                     />
                 </Switch>
             </div>
-        </div>
-    )
-}
-
-const RenderFnControls = ({column, fn, setFn, groupBy, metadata}) => {
-    if (!setFn || metadata?.display === 'calculated-column') return null;
-
-    const groupableName = column.includes(' as') ? column.split(' as')[0] : column.split(' AS')[0];
-    const nonGroupableTitle = (column.includes(' as') ? column.split('as ')[1] : column.split('AS ')[1]) || groupableName;
-
-    const functions = [
-        {label: 'None', value: column},
-        {label: 'List', value: `array_to_string(array_agg(distinct ${groupableName}), ', ') as ${nonGroupableTitle}`},
-        {label: 'Sum', value: `sum(${groupableName}) as ${nonGroupableTitle}`},
-    ]
-
-    const alreadyAggregated = groupableName.includes('count') || groupableName.includes('sum');
-
-    const defaultFn =
-        alreadyAggregated ?
-            functions.find(f => f.label === 'None')?.value :
-            functions.find(f => f.label === 'List')?.value
-    // clear set fn if groupBy is active
-    groupBy.includes(groupableName) && fn[column] !== column && setFn({...fn, ...{[column]: column}});
-
-    // set fn to list if not already selected on group by selected
-    groupBy.length && !groupBy.includes(groupableName) && !alreadyAggregated && (fn[column] === column || !fn[column]) &&
-    setFn({...fn, ...{[column]: defaultFn}});
-
-    // when all groupBy toggles are inactive, set fn to None
-    !groupBy.length && fn[column] !== column && setFn({...fn, ...{[column]: column}})
-
-    return (
-        <div className={'block w-full flex justify-between'}>
-            <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> Function: </label>
-            <select
-                key={`fn-${column}`}
-                className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
-                value={fn[column]}
-                onChange={e => setFn({...fn, ...{[column]: e.target.value}})}
-                disabled={!groupBy.length}
-            >
-                {
-                    functions.map(fn => <option key={`fn-${column}-${fn.label}`} value={fn.value}> {fn.label} </option>)
-                }
-            </select>
         </div>
     )
 }

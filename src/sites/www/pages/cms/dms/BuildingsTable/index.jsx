@@ -12,7 +12,7 @@ import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelect
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
-    const fns = columnsToFetch.map(ctf => ctf.split(' as')[0]);
+    const fns = columnsToFetch.map(ctf => ctf.includes(' AS') ? ctf.split(' AS')[0] : ctf.split(' as')[0]);
 
     if(groupBy.length){
         return fns.filter(ctf =>
@@ -22,8 +22,8 @@ const isValid = ({groupBy, fn, columnsToFetch}) => {
         ).length === groupBy.length
     }else{
         return fns.filter(ctf =>
-            ctf.includes('sum') &&
-            ctf.includes('array_to_string') &&
+            ctf.includes('sum') ||
+            ctf.includes('array_to_string') ||
             ctf.includes('count')
         ).length === 0
     }
@@ -63,7 +63,7 @@ const Edit = ({value, onChange}) => {
 
     const category = 'Buildings';
 
-    const options = JSON.stringify({
+    const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
         aggregatedLen: Boolean(groupBy.length),
         filter: {
             ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
@@ -73,8 +73,9 @@ const Edit = ({value, onChange}) => {
         },
         groupBy: groupBy,
     });
-    const lenPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
-    const dataPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
+
+    const lenPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
+    const dataPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
     const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
     const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
           attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
@@ -126,10 +127,14 @@ const Edit = ({value, onChange}) => {
 
             setLoading(true);
             setStatus(undefined);
-            await falcor.get(lenPath);
-            const len = Math.min(get(falcor.getCache(), lenPath, 0), 1000);
+            await falcor.get(lenPath(options({groupBy, notNull, geoAttribute, geoid})));
+            const len = Math.min(
+                get(falcor.getCache(), lenPath(options({groupBy, notNull, geoAttribute, geoid})), 0),
+                1000);
 
-            await falcor.get([...dataPath, {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
+            await falcor.get(
+                [...dataPath(options({groupBy, notNull, geoAttribute, geoid})),
+                {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
             await falcor.get([...attributionPath, attributionAttributes]);
 
             setLoading(false);
@@ -188,7 +193,6 @@ const Edit = ({value, onChange}) => {
         getMeta();
     }, [dataSource, visibleCols, geoid]);
 
-
     // const fetchData = useCallback(async ({currentPage, pageSize}) => {
     //     const from = currentPage * pageSize,
     //         to = (currentPage * pageSize) + pageSize - 1;
@@ -214,7 +218,7 @@ const Edit = ({value, onChange}) => {
             );
 
         if(metaLookupCols?.length){
-            return Object.values(get(falcorCache, dataPath, {}))
+            return Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {}))
                 .map(row => {
                     metaLookupCols.forEach(mdC => {
                         const currentMetaLookup = parseJson(mdC.meta_lookup);
@@ -230,9 +234,10 @@ const Edit = ({value, onChange}) => {
                 })
         }
 
-        return Object.values(get(falcorCache, dataPath, {}))
+        return Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {}))
 
-        }, [falcorCache, metaLookupByViewId, metadata, visibleCols]);
+        }, [falcorCache, metaLookupByViewId, metadata, visibleCols,
+                  groupBy, notNull, geoAttribute, geoid]);
 
     const attributionData = get(falcorCache, attributionPath, {});
 
