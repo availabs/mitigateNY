@@ -21,7 +21,7 @@ import AVL_THEME from "~/layout/avail-theme"
 
 import {
   enableAuth
-} from "./modules/ams/src"
+} from "~/modules/ams/src"
 
 import { 
   API_HOST,
