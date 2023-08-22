@@ -8,11 +8,11 @@ import DamaRoutes from "~/pages/DataManager"
 import Admin, { authMenuConfig } from "./pages/admin"
 import Playground from './pages/admin/playground'
 import Forms from './pages/admin/forms/index'
+import FormsActions from './pages/admin/forms/actions'
 
 // import Test from "./pages/Test"
 // import NymtcSurveyCrosswalk from "./pages/nymtcSurveyCrosswalk"
 
-console.log('test 123', authMenuConfig)
 
 const Routes = [
   // -- Admin Routes -- //
@@ -26,6 +26,7 @@ const Routes = [
   }),
   Playground,
   Forms,
+  FormsActions,
   // -- Front End Routes -- //
   CMS,
 ]
