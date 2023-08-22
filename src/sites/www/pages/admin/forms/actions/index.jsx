@@ -1,5 +1,6 @@
 import React from "react"
 import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
+import {Link} from 'react-router-dom'
 import { withAuth } from "~/modules/ams/src" 
 //import Layout from "../../cms/components/layout"
 import checkAuth  from "~/layout/checkAuth"
@@ -10,6 +11,16 @@ import cmsFormat from "./actions.format.js"
 import { menuItems } from "../../index"
 
 // registerDataType("selector", Selector)
+
+const Layout = ({children, title, baseUrl}) =>  (
+  <div className='bg-white h-full shadow max-w-6xl mx-auto px-6' >
+    <div className='flex items-center'>
+      <div className='text-2xl p-3 font-thin flex-1'>{title}</div>
+      <div> <Link to={baseUrl} className='text-white bg-blue-500 shadow hover:shadow-lg px-4 py-2'> Nav Link </Link> </div>
+    </div>
+    {children}
+  </div>
+)
 
 const siteConfig = {
   format: cmsFormat,
@@ -31,52 +42,76 @@ const siteConfig = {
   },
   children: [
     { 
-      type: 'dms-table',
-      action: "list",
-      path: "/",
-      options: {
-        columns: [
-            { type: 'link',
-                name: 'Name',
-                text: ':name',
-                to: '/action/:id',
-                filter: "fuzzyText"
-              },
-               {name:'type'}, {name:'description'}]
-      }
-      // filter: {
-      //   mainNav: true, 
-      //   attributes:['title', 'index', 'url_slug', 'parent' ]
-      // },
-    },
-    { 
-          type: "dms-card",
-          path: '/action/:id?',
-          action: 'view',
-          options: {
-            mapDataToProps: {
-              title: "item:data.name",
-              body: [
-                "item:data.description",
-              ],
-              footer: [
-                "item:updated_at"
-              ]
+      type: (props) => <Layout {...props} title={'Actions'} baseUrl={'/admin/forms/actions/'}/>,
+      path: '/*',
+      action: 'list',
+      children: [{ 
+        type: 'dms-table',
+        action: "list",
+        path: "/",
+        options: {
+          columns: [
+            { 
+            type: 'link',
+              name: 'Name',
+              text: ':name',
+              to: '/admin/forms/actions/:id',
+              filter: "fuzzyText"
             },
-          }
-          
-        },
-        { 
-          type: "dms-edit",
-          action: 'edit',
-          path: '/new',
-          redirect: '/admin/forms/actions'
-        },
-        { 
-          type: "dms-edit",
-          action: 'edit',
-          path: '/edit/:id?'
-        },
+            { type: 'data',
+              name: 'Type',
+              path: "type",
+            },
+            { type: 'data',
+              name: 'Descip.',
+              path: "description",
+            },
+              { type: 'date',
+              name: 'Updated',
+              path: "updated_at",
+            },
+            { type: 'link',
+              name: '',
+              to: '/admin/forms/actions/edit/:id',
+              text: "edit"
+            }
+          ]
+        }
+        // filter: {
+        //   mainNav: true, 
+        //   attributes:['title', 'index', 'url_slug', 'parent' ]
+        // },
+      },
+      { 
+        type: "dms-card",
+        path: '/:id?',
+        action: 'view',
+        options: {
+          mapDataToProps: {
+            title: "item:data.name",
+            body: [
+              "item:data.description",
+            ],
+            footer: [
+              "item:updated_at"
+            ]
+          },
+        }
+        
+      },
+      { 
+        type: "dms-edit",
+        action: 'edit',
+        path: '/new',
+        redirect: '/admin/forms/actions'
+      },
+      { 
+        type: "dms-edit",
+        action: 'edit',
+        path: '/edit/:id?'
+      }
+      ]
+    }
   ]
 }
 
@@ -88,7 +123,8 @@ export default {
     color: 'white',
     menuItems
   },
-  topNav: {
-    size: "none"
-  }
+  authLevel: 5,
+  // topNav: {
+  //   size: "none"
+  // }
 }

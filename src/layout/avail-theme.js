@@ -82,7 +82,7 @@ const ppdaf = () => {
           sideItemActive: "group flex px-3 py-1.5 text-[14px] font-light hover:bg-blue-50 text-slate-700  mx-2 ", //"border-r-4 border-blue-500 ",
           topItem: "flex items-center text-sm px-4 border-r h-12",
           icon: "group w-6 mr-2 text-blue-500 ",
-          iconActive: "group w-6 mr-2 text-white ",
+          iconActive: "group w-6 mr-2 text-blue-500 ",
           sideItemContent: 'group-hover:translate-x-1.5 transition-transform duration-300 ease-in-out',
         },
         full: {

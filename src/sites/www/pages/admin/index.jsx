@@ -57,22 +57,22 @@ export const menuItems = [
   {
     name: 'Capabilities',
     icon: 'far fa-warehouse-full fa-fw',
-    path: '/admin/forms/actions'
+    path: '/admin/forms/capabilities'
   },
   {
     name: 'Roles',
     icon: 'far fa-people-arrows',
-    path: '/admin/forms/actions'
+    path: '/admin/forms/roles'
   },
   {
     name: 'Zones',
     icon: 'far fa-vector-polygon',
-    path: '/admin/forms/actions'
+    path: '/admin/forms/zones'
   },
   {
     name: 'Agencies',
     icon: 'far fa-flag',
-    path: '/admin/forms/actions'
+    path: '/admin/forms/agencies'
   },
   {
     name: 'Tools', 
@@ -98,7 +98,8 @@ export const authMenuConfig = {
     menuItems
   },
   topNav: {
-    position: 'fixed'
+    position: 'fixed',
+    size: 'compact'
   },
 }
 
