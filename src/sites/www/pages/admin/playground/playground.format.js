@@ -9,9 +9,22 @@ const cmsSection = {
       required: false,
       default: "Untitled Section"
     },
+    { key: "level",
+      type: "select",
+      required: false,
+      default: "h1"
+    },
     { key: "tags",
       type: "text",
       required: false
+    },
+    { key: "requirements",
+      type: "text",
+      required: false
+    },
+    {
+      key: "size",
+      type: "text"
     },
     { key: "element",
       type: "selector",
@@ -19,6 +32,7 @@ const cmsSection = {
     }
   ] 
 }
+
 
 const cmsPageFormat = {
   app: "dms-site",

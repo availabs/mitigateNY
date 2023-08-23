@@ -13,14 +13,17 @@ const theme = {
     // content: 'border flex-1 bg-white'
   },
   navPadding: {
-    1: 'pt-0',
-    2: 'pt-12',
-    3: 'pt-24'
-  }
+    1: 'pt-0 ',
+    2: 'md:pt-12 pt-0',
+    3: 'md:pt-24 pt-0'
+  } 
 }
 
-export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...props},) {
-  // console.log('children', dataItems)
+export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...props}) {
+  const [open, setOpen] = React.useState(false)
+   const [historyOpen, setHistoryOpen] = React.useState(false)
+  console.log('siteLayout', open)
+  
   const menuItems = React.useMemo(() => {
     let items = dataItemsNav(dataItems,baseUrl,edit)
     if(edit) {
@@ -30,6 +33,12 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
         name: 'Add Page'
       })
     }
+    console.log('updated menuItems', 
+      items, 
+      dataItems
+        .filter(d => ['1412','1414'].includes(d.id))
+        .map(d => ({title:d.title, index:d.index}))
+    )
     return items
   }, [dataItems,edit])
 
@@ -40,7 +49,7 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
     <Layout topNav={{menuItems, position: 'fixed' }} sideNav={edit ? props.sideNav : inPageNav}>
       <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
         <div className={theme.layout.container}>
-          <CMSContext.Provider value={{baseUrl}}>
+          <CMSContext.Provider value={{baseUrl, open, setOpen, historyOpen, setHistoryOpen}}>
             {children}
           </CMSContext.Provider>
         </div>

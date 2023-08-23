@@ -25,11 +25,10 @@ function SizeSelect ({size='1', setSize, onChange}) {
                 type="button"
                 tabIndex={-1}
                 onClick={() => {
-                    // console.log('change',s.name)
                     onChange(s.name) 
                 }}
               >
-                {/*<i className={`${s.icon} `} />*/}
+                
                 {s.icon}
               </button>
         ))}
@@ -37,7 +36,7 @@ function SizeSelect ({size='1', setSize, onChange}) {
     )
 } 
 
-function SectionEdit ({value, onChange, attributes, size, onCancel, onSave, onRemove}) {
+function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, onRemove}) {
     // console.log('SectionEdit', value, attributes)
 
     const updateAttribute = (k, v) => {
@@ -50,61 +49,85 @@ function SectionEdit ({value, onChange, attributes, size, onCancel, onSave, onRe
     
 
     let TitleComp = attributes?.title?.EditComp
-    let TagsComp = attributes?.tags?.EditComp 
+    let LevelComp = attributes?.level?.EditComp
+    let TagsComp = attributes?.tags?.EditComp
+    let ReqsComp = attributes?.requirements?.EditComp 
     let ElementComp = attributes?.element?.EditComp
 
     return (
-        <div>
-            <div className='flex flex-wrap border-y justify-end items-center'>
-                <div className='flex-1 '>
-                    <TitleComp 
-                        className='p-2 w-full font-sans font-medium text-md uppercase'
-                        placeholder={'Section Title'}
-                        value={value?.['title']} 
-                        onChange={(v) => updateAttribute('title', v)}
-                    />
-                </div>
-                <div>
-                    <TagsComp 
-                        className='p-2'
-                        value={value?.['tags']}
-                        placeholder={'Add Tag...'} 
-                        onChange={(v) => updateAttribute('tags', v)}
-                    />
-                </div>
-                <div className={'self-center pl-2'}>
-                    <SizeSelect 
-                        size={value?.['size']} 
-                        onChange={v => updateAttribute('size',v)}
-                    />
-                </div>
-                <div className={'flex flex-row flex-wrap'}>
-                    <div className='py-2'>
-                        <button
-                            className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
-                            onClick={onRemove}
-                        ><i className="fa-light fa-trash text-2xl fa-fw" title="Cancel"/></button>
+        <div className={`${i === 0 ? '-mt-4' : 'pt-4'}`}>
+            <div className='flex flex-col'>
+                <div className='flex flex-wrap border-y justify-end items-center'>
+                    <div className='flex-1 '>{i}
+                        <TitleComp 
+                            className='p-2 w-full font-sans font-medium text-md uppercase'
+                            placeholder={'Section Title'}
+                            value={value?.['title']} 
+                            onChange={(v) => updateAttribute('title', v)}
+                        />
                     </div>
-                    <div className='py-2'>
-                        <button
-                            className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
-                            onClick={onCancel}
-                        ><i className="fa-light fa-xmark text-2xl fa-fw" title="Cancel"/></button>
+                    <div>
+                        <LevelComp 
+                            className='p-2 w-20'
+                            value={value?.['level']}
+                            placeholder={'Nav Level'} 
+                            onChange={(v) => updateAttribute('level', v)}
+                        />
                     </div>
-                    <div className='py-2'>
-                        <button
-                            id={'btn-copy-component'}
-                            className={'' +
-                                'pl-6 py-0.5 text-md cursor-pointer flex items-center ' +
-                                'hover:text-blue-500 focus:text-green-400 text-slate-400'}
-                            onClick={() => navigator.clipboard.writeText(JSON.stringify(value?.['element'] || '{}'))}
-                        ><i className="fa-light fa-copy text-2xl fa-fw" title="Copy"/>  </button>
+                    <div>
+                        <TagsComp 
+                            className='p-2 '
+                            value={value?.['tags']}
+                            placeholder={'Add Tag...'} 
+                            onChange={(v) => updateAttribute('tags', v)}
+                        />
                     </div>
-                    <div className='py-2'>
-                        <button
-                            className={'pl-6 py-0.5 text-md cursor-pointer flex items-center hover:text-blue-500 text-slate-400'}
-                            onClick={onSave}
-                        ><i className="fa-light fa-floppy-disk text-2xl fa-fw" title="Save"/>  </button>
+                    <div>
+                        <ReqsComp 
+                            className='p-2'
+                            value={value?.['requirements']}
+                            placeholder={'Add Reqs...'} 
+                            onChange={(v) => updateAttribute('requirements', v)}
+                        />
+                    </div>
+                </div>
+                <div className='flex flex-wrap border-y justify-end items-center'>
+                    
+                    <div className={'self-center pl-2'}>
+                        <SizeSelect 
+                            size={value?.['size']} 
+                            onChange={v => updateAttribute('size',v)}
+                        />
+                    </div>
+                    <div className='flex-1'/>
+                    <div className={'flex flex-row flex-wrap'}>
+                        <div className='py-2'>
+                            <button
+                                className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
+                                onClick={onRemove}
+                            ><i className="fa-light fa-trash text-2xl fa-fw" title="Cancel"/></button>
+                        </div>
+                        <div className='py-2'>
+                            <button
+                                className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
+                                onClick={onCancel}
+                            ><i className="fa-light fa-xmark text-2xl fa-fw" title="Cancel"/></button>
+                        </div>
+                        {/*<div className='py-2'>
+                            <button
+                                id={'btn-copy-component'}
+                                className={'' +
+                                    'pl-6 py-0.5 text-md cursor-pointer flex items-center ' +
+                                    'hover:text-blue-500 focus:text-green-400 text-slate-400'}
+                                onClick={() => navigator.clipboard.writeText(JSON.stringify(value?.['element'] || '{}'))}
+                            ><i className="fa-light fa-copy text-2xl fa-fw" title="Copy"/>  </button>
+                        </div>*/}
+                        <div className='py-2'>
+                            <button
+                                className={'pl-6 py-0.5 text-md cursor-pointer flex items-center hover:text-blue-500 text-slate-400'}
+                                onClick={onSave}
+                            ><i className="fa-light fa-floppy-disk text-2xl fa-fw" title="Save"/>  </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -119,16 +142,16 @@ function SectionEdit ({value, onChange, attributes, size, onCancel, onSave, onRe
     )
 }
 
-function SectionView ({value, attributes, edit, onEdit}) {
+function SectionView ({value,i, attributes, edit, onEdit}) {
     let TitleComp = attributes?.title?.ViewComp
     let TagsComp = attributes?.tags?.ViewComp 
     let ElementComp = attributes?.element?.ViewComp
 
     return (
-        <div>
+        <div className={`${i === 0 ? '-mt-4' : 'pt-4'}`}>
             {
                 (value?.['title'] || value?.['tags'] || edit) && (
-                    <div className={`flex border-y h-[50px] items-center mt-4`}>
+                    <div className={`flex h-[50px] items-center mt-4`}>
                         <div id={`#${value?.title?.replace(/ /g, '_')}`} className='flex-1 py-2 px-6 font-sans font-medium text-md uppercase scroll-mt-36'>
                             <TitleComp
                                 className='w-full'
@@ -165,7 +188,7 @@ function SectionView ({value, attributes, edit, onEdit}) {
 
 
 const AddSectionButton = ({onClick}) => (
-    <div className='flex'>
+    <div className='flex w-full'>
         <div className='flex-1'/>
         <div>
             <button 
@@ -210,9 +233,11 @@ const Edit = ({Component, value, onChange, attr}) => {
 
     const remove = () => {
         let cloneValue = cloneDeep(value)
+        
         if(edit.type === 'update') {
             cloneValue.splice(edit.index, 1)
         }
+        //console.log('value', value, cloneValue)
         cancel()
         onChange(cloneValue)
     }
@@ -234,7 +259,7 @@ const Edit = ({Component, value, onChange, attr}) => {
                         {/* add to top */}
                         { edit.index === -1 && i === 0 ? 
                             <AddSectionButton onClick={() => setEditIndex(0)}/> : 
-                                edit.index === -1 || i > 0 ? '' : <div className='h-[36px]' />
+                                edit.index === -1 || i > 0 ? '' : <div className='h-[42px]' />
                         }
 
                         {/* edit new or existing section */}
@@ -247,6 +272,7 @@ const Edit = ({Component, value, onChange, attr}) => {
                                 onRemove={remove}
                                 attributes={attr.attributes}
                                 size={size}
+                                i={i}
                             />
                             : ''
                         }
@@ -255,6 +281,7 @@ const Edit = ({Component, value, onChange, attr}) => {
                         { v !== '' && !(edit.index === i && edit.type === 'update') ? 
                             <SectionView 
                                 value={v} 
+                                i={i}
                                 attributes={attr.attributes}
                                 edit={true}
                                 onEdit={ edit.index === -1 ? (e) => update(i)  : null } 

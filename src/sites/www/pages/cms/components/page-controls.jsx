@@ -17,12 +17,12 @@ const theme = {
 
 
 
-export function PageControls({ item, dataItems, edit, status }) {
+export function PageControls({ item, dataItems, updateAttribute,attributes, edit, status, setItem }) {
   const submit = useSubmit()
   const { pathname = '/edit' } = useLocation()
   const [showDelete, setShowDelete] = useState(false)
   const [ statusMessage, setStatusMessage ] = useState(status?.message)
-  const { baseUrl } = React.useContext(CMSContext)
+  const { baseUrl, setOpen, setHistoryOpen} = React.useContext(CMSContext)
   const NoOp = () => {}
 
   useEffect(() => {
@@ -86,8 +86,11 @@ export function PageControls({ item, dataItems, edit, status }) {
   const toggleSidebar = async (value='') => {
     const newItem = cloneDeep(item)
     newItem.sidebar = value
+    updateAttribute('sidebar', value)
     submit(json2DmsForm(newItem), { method: "post", action: pathname })
   }
+
+   const TitleEdit = attributes['title'].EditComp
   
   //console.log('showDelete', showDelete)
   return (
@@ -106,6 +109,24 @@ export function PageControls({ item, dataItems, edit, status }) {
 
                 </span>
               </div>
+            </div>
+            <div className='pl-4 pb-4'>
+              <TitleEdit
+                className='w-full px-2 py-1 text font-medium text-slate-500 focus:outline-none border-slate-300 border-b-2 focus:border-blue-500'
+                value={item['title']} 
+                onChange={(v) => updateAttribute('title', v)}        
+                {...attributes['title']}
+              />
+            </div>
+            <div onClick={() => setOpen(true)}
+              className={theme.pageControls.controlItem}
+            >
+              {'☲ Edit Pages'}
+            </div>
+            <div onClick={() => setHistoryOpen(true)}
+              className={theme.pageControls.controlItem}
+            >
+              {'☲ History'}
             </div>
             <div onClick={insertSubPage}
               className={theme.pageControls.controlItem}

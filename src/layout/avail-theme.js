@@ -229,7 +229,7 @@ const ppdaf = () => {
             inline: {
                 // indicatorIcon: 'fa fa-angle-right pt-2.5',
                 // indicatorIconOpen: 'fal fa-angle-down pt-2.5',
-                subMenuWrapper: `pl-2 w-full overflow-x-auto`,
+                subMenuWrapper: `pl-2 w-full `,
                 subMenuParentWrapper: `flex flex-col w-full`
             },
             flyout: {
@@ -242,10 +242,10 @@ const ppdaf = () => {
             row: {
                 indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
                 indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
-                subMenuWrapper: `absolute ml-${sizes[size].width - 8} overflow-x-auto`,
+                subMenuWrapper: `absolute ml-${sizes[size].width - 8} `,
                 subMenuParentWrapper: `flex flex-row`,
                 subMenuWrapperChild: `divide-x`,
-                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-white overflow-x-auto scrollbar-sm`,
+                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-white`,
                 subMenuWrapperInactiveFlyout: `absolute top-12 bg-white shadow-lg z-10`,
                 subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
             },

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {Fragment, useState, useEffect} from 'react'
 import { NavLink, Link, useSubmit, useLocation } from "react-router-dom";
 import Nestable from './nestable';
 
@@ -9,9 +9,67 @@ import { CMSContext } from './layout'
 
 //export const baseUrl = ''
 
+
+import { Dialog, Transition } from '@headlessui/react'
+
+
+export default function NavExample ({items,dataItems, edit}) {
+  const { baseUrl, open, setOpen } = React.useContext(CMSContext)
+
+  return (
+    <Transition.Root show={open} as={Fragment}>
+      <Dialog as="div" className="relative z-20" onClose={setOpen}>
+        <div className="fixed inset-0" />
+
+        <div className="fixed inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+              <Transition.Child
+                as={Fragment}
+                enter="transform transition ease-in-out duration-500 sm:duration-700"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="transform transition ease-in-out duration-500 sm:duration-700"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
+              >
+                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+                    <div className="px-4 sm:px-6">
+                      <div className="flex items-start justify-between">
+                        <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
+                          Edit Pages
+                        </Dialog.Title>
+                        <div className="ml-3 flex h-7 items-center">
+                          <button
+                            type="button"
+                            className="relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none "
+                            onClick={() => setOpen(false)}
+                          >
+                            <span className="absolute -inset-2.5" />
+                            <span className="sr-only">Close panel</span>
+                            <i className="h-6 w-6 fa fa-close" aria-hidden="true" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                      <Nav items={items} dataItems={dataItems} edit={edit} />
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </div>
+      </Dialog>
+    </Transition.Root>
+  )
+}
+
 const theme = {
   nav: {
-    container: 'w-[264px] fixed h-screen z-0 hidden lg:block',
+    container: (open) => `${open ? `w-[294px]` : 'hidden' } w-full `,
     navItemContainer: 'h-full border-l overflow-y-auto overflow-x-hidden pt-3 scrollbar-xs',
     navItem: ({ isActive, isPending }) =>
       `block px-4 py-2 font-light ${isActive ?
@@ -28,7 +86,6 @@ const theme = {
 }
 
 function getChildNav(item, dataItems, baseUrl, edit) {
-  
   let children = dataItems
     .filter(d => d.parent === item.id)
     .sort((a,b) => a.index-b.index)
@@ -40,7 +97,6 @@ function getChildNav(item, dataItems, baseUrl, edit) {
     let item  = {
       id: d.id,
       Comp: () => (
-        
         <NavLink
           key={i}
           to={`${edit ? `${baseUrl}/edit` : baseUrl}/${d.url_slug || d.id}`} 
@@ -48,7 +104,6 @@ function getChildNav(item, dataItems, baseUrl, edit) {
         >
           {d.title}
         </NavLink>
-        
       )  
     }
     if(getChildNav(item,dataItems,baseUrl,edit)) {
@@ -59,10 +114,11 @@ function getChildNav(item, dataItems, baseUrl, edit) {
   
 }
 
-export default function Nav ({item, dataItems, edit}) {
+function Nav ({item, dataItems, edit}) {
   const submit = useSubmit()
   const { pathname = '/edit' } = useLocation()
-  const { baseUrl } = React.useContext(CMSContext)
+  const { baseUrl, open, setOpen } = React.useContext(CMSContext)
+  
   
   const onDragEnd = React.useCallback(result => {
     let dataItemsHash = dataItems.reduce((out,curr) => {
@@ -105,7 +161,7 @@ export default function Nav ({item, dataItems, edit}) {
     Promise.all(updates.map((item) => {
       submit(json2DmsForm(item), { method: "post", action: pathname })
     })).then(values => {
-      // console.log('updating nav', values)
+      console.log('updating nav', values)
     })
 
   }, []);
@@ -153,7 +209,7 @@ export default function Nav ({item, dataItems, edit}) {
   //console.log('items', items)
   return ( 
     <>
-    <div className={theme.nav.container}>
+    <div className={theme.nav.container(open)}>
       <div className={theme.nav.navItemContainer}>
       {edit ? <Nestable
         items={items}
@@ -170,7 +226,8 @@ export default function Nav ({item, dataItems, edit}) {
       {edit && <AddItemButton dataItems={dataItems}/>}
       </div>
     </div>
-    <div className='w-64 hidden lg:block'/>
+    {/*<div className={`${open ? `w-64` : 'w-0'} hidden lg:block`}/>*/}
+    
     </>
   )
 }

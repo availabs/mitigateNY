@@ -20,7 +20,7 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
                                 // .__lexicalKey_cgviu
                                 elmntToView?.scrollIntoView({ behavior: "smooth", block:'center' });
                             },
-                            className: `px-8 pb-1 text-sm text-slate-400 hover:text-slate-700 cursor-pointer border-l-2 ml-2
+                            className: `px-8 pb-1 text-sm text-slate-400 hover:text-slate-700 cursor-pointer border-r-2 mr-4
                             ${
                                 [...window.document.querySelectorAll(tag)]
                                     .find(headerElement => headerElement?.children[0]?.innerHTML === children[0]?.text)?.offsetParent 
@@ -38,7 +38,7 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
                     const elmntToView = window.document.getElementById(`#${title?.replace(/ /g, '_')}`);
                     elmntToView?.scrollIntoView({ behavior: "smooth" });
                 },
-                className: 'px-6 pt-2 pb-1 uppercase text-sm text-blue-400 hover:underline cursor-pointer border-l-2 ml-2'
+                className: 'px-6 pt-2 pb-1 uppercase text-sm text-blue-400 hover:underline cursor-pointer border-r-2 mr-4'
             },
             ...(lexicalNavElements || [])
         ]
