@@ -87,9 +87,9 @@ export function PageEdit ({
   const saveSection = (v) => {
     //console.log('saving section', )
     updateAttribute('sections', v)
-    const newItem = cloneDeep(item)
-    newItem.sections = v
-    submit(json2DmsForm(newItem), { method: "post", action: `${baseUrl}/edit/${newItem.url_slug}` })
+    //const newItem = cloneDeep(item)
+    //newItem.sections = v
+    //submit(json2DmsForm(newItem), { method: "post", action: `${baseUrl}/edit/${newItem.url_slug}` })
 
     // save section
   }
