@@ -108,7 +108,7 @@ const Edit = ({value, onChange}) => {
     }, [dataSources, dataSource]);
 
     useEffect(() => {
-        // gets 1000 rows
+        // gets 250 rows
         async function getData() {
             if(!visibleCols?.length || !version || !dataSource) {
                 !dataSource && setStatus('Please select a Datasource.');
@@ -130,7 +130,7 @@ const Edit = ({value, onChange}) => {
             await falcor.get(lenPath(options({groupBy, notNull, geoAttribute, geoid})));
             const len = Math.min(
                 get(falcor.getCache(), lenPath(options({groupBy, notNull, geoAttribute, geoid})), 0),
-                1000);
+                250);
 
             await falcor.get(
                 [...dataPath(options({groupBy, notNull, geoAttribute, geoid})),
@@ -199,7 +199,7 @@ const Edit = ({value, onChange}) => {
     //     console.log('called', currentPage, pageSize, from, to)
     //
     //     await falcor.get(lenPath);
-    //     const len = Math.min(get(falcor.getCache(), lenPath, 0), 1000);
+    //     const len = Math.min(get(falcor.getCache(), lenPath, 0), 250);
     //
     //     const dataRes = await falcor.get([...dataPath, {from, to}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
     //     const data = Object.values(get(dataRes, ['json', ...dataPath], {}))

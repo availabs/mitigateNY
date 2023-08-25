@@ -129,7 +129,7 @@ const Edit = ({value, onChange}) => {
 
 
             const lenRes = await falcor.get([...nriPath(typeId), nriLenOptions, 'length']);
-            const len = Math.min(get(lenRes, ['json', ...nriPath(typeId), nriLenOptions, 'length'], 0), 1000),
+            const len = Math.min(get(lenRes, ['json', ...nriPath(typeId), nriLenOptions, 'length'], 0), 250),
                 nriIndices = {from: 0, to: len - 1};
 
             await falcor.get(

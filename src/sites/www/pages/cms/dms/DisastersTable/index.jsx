@@ -217,7 +217,7 @@ const Edit = ({value, onChange}) => {
                 const lenRes = await falcor.get([...fusionPath(fusionView.view_id), fusionLenOptions, 'length']);
                 const len =
                         Math.min(get(lenRes,
-                            ['json', ...fusionPath(fusionView.view_id), fusionLenOptions, 'length'], 0), 1000),
+                            ['json', ...fusionPath(fusionView.view_id), fusionLenOptions, 'length'], 0), 250),
                     fusionIndices = {from: 0, to: len - 1};
 
                 const lossRes = await falcor.get(

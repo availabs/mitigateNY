@@ -4,24 +4,23 @@ const cmsPageFormat = {
   type: "forms-actions-test",
   // defaultSearch: `data ->> 'index' = '0' and data ->> 'parent' = ''`,
   // defaultSort: (d) => d.sort((a,b) => a.index - b.index || a.parent-b.parent),
+    sections: [
+        {title: 'Step 1', subtitle: 'General Action Information', id: '1'},
+        {title: 'Step 2', subtitle: 'Prioritization', id: '2'},
+        {title: 'Step 3', subtitle: 'Location', id: '3'},
+        {title: 'Step 4', subtitle: 'Application Details', id: '4'},
+        {title: 'Step 5', subtitle: 'Technical Information', id: '5'},
+        {title: 'Step 6', subtitle: 'Supplemental Info', id: '6'},
+        {title: 'Step 7', subtitle: 'Action Status ', id: '7'},
+    ],
   attributes: [
-    { key: "name",
-      type: "text",
-      required: true,
-      default: "Unnamed Action"
-    },
-    { key: "type",
-      type: "text",
-    },
-    { key: "description",
-      type: "text",
-    },
     {
         key: 'action_county',
         label: ' Action County',// which you would like to see on the form
         prompt: 'Select the county where the action takes place. If the action is located' +
             ' in a different county you can select it by clicking the dropdown.',
-        type: 'dropdown',
+        type: 'select',
+        options: [{value: '36001', label: 'Albany County'}, {value: '36003', label: 'Allegany County'}],
         meta: 'true',
         area: 'true',
         section: '1',
@@ -33,12 +32,13 @@ const cmsPageFormat = {
             ' For example; Sullivan County has adopted a hazard mitigation plan, the Town of Callicoon' +
             ' is the jurisdiction location of the specific action,' +
             ' such as acquiring emergency generators for critical facilities.',
-        type: 'dropdown',
+        type: 'select',
         meta: 'true',
         depend_on: 'action_county',
         area: 'true',
         section: '1',
         defaultValue: ['Countywide'],
+        placeholder: 'Action Jurisdiction'
     },
     {
         key: 'description_of_problem_being_mitigated',
@@ -52,13 +52,16 @@ const cmsPageFormat = {
         type: 'textarea',
         meta: 'false',
         expandable: 'true',
-        section: '1'
+        section: '1',
+        placeholder: 'Description of the Problem (Problem Statement)'
     },
     {
         key: 'associated_hazards',
-        label: 'Associated Hazard',
+        label: 'Associated Hazards',
         prompt: 'Identify the hazard(s) being addressed with this action.',
         type: 'multiselect',
+        // options: [{value: 'hurricane', label: 'h'}, {value: 'avalanche', label: 'a'}, {value: 'hail', label: 'ha'}],
+        options: ['hurricane', 'avalanche', 'hail'],
         meta: 'true',
         metaSource: 'meta_file',
        
@@ -92,9 +95,9 @@ const cmsPageFormat = {
         label: 'Is this action from the previous Hazard Mitigation Plan?',
         prompt: 'All actions from the previous plan must be reviewed during the Hazard Mitigation Plan update. You can provide a status update in the last tab of this form.',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '1'
     },
     {
@@ -104,7 +107,7 @@ const cmsPageFormat = {
             'The category you choose will limit the possible responses to question 4.' +
             'If you do not see the action type you are expecting in the dropdown for question 4 ' +
             'you may need to change the action category you’ve selected in question 3.',
-        type: 'dropdown',
+        type: 'select',
         disable_condition: '',
         meta: 'true',
         metaSource: 'meta_file',
@@ -117,10 +120,12 @@ const cmsPageFormat = {
             'The category you choose will limit the possible responses to question 4.' +
             'If you do not see the action type you are expecting in the dropdown for question 4 ' +
             'you may need to change the action category you’ve selected in question 3.',
-        type: 'dropdown',
+        type: 'select',
+        options: ['type 1', 'type 1'],
         disable_condition: '',
         meta: 'true',
         metaSource: 'meta_file',
+        section: '1'
     },
     {
         key: 'action_number',
@@ -186,7 +191,7 @@ const cmsPageFormat = {
         label: 'Is the Lead Agency/Department a:',
         prompt: 'Priority Information is Only Applicable to New Actions',
         type: 'dropdown_no_meta',
-        type_values: ['State Agency', 'Local Government', 'Tribal Entity', 'Private Non-Profit', 'Other'],
+        options: ['State Agency', 'Local Government', 'Tribal Entity', 'Private Non-Profit', 'Other'],
         meta: 'false',
         section: '1'
     },
@@ -195,7 +200,7 @@ const cmsPageFormat = {
         label: 'Estimated Cost Range',
         prompt: 'Select the cost range that most accurately reflects the costs associated with the action.',
         type: 'dropdown_no_meta',
-        type_values: ['<$100k', '$100K-$500K', '$500K-$1M', '$1M-$5M', '$5M-$10M', '$10M+'],
+        options: ['<$100k', '$100K-$500K', '$500K-$1M', '$1M-$5M', '$5M-$10M', '$10M+'],
         disable_condition: '',
         meta: 'false',
         section: '1'
@@ -262,7 +267,7 @@ const cmsPageFormat = {
         label: 'Priority Scoring: Probability of Acceptance by Population',
         prompt: 'Priority Information is Only Applicable to New Actions',
         type: 'radio',
-        type_values: ['(4) Likely to be endorsed by the entire population',
+        options: ['(4) Likely to be endorsed by the entire population',
             '(3) Of benefit only to those directly affected and would not adversely affect others',
             '(2) Would be somewhat controversial with special interest groups or a small percentage of the population',
             '(1) Would be strongly opposed by special interest groups or a significant percentage of the population',
@@ -276,7 +281,7 @@ const cmsPageFormat = {
         label: 'Priority Scoring: Funding Availability',
         prompt: 'Priority Information is Only Applicable to New Actions',
         type: 'radio',
-        type_values: ['(4) Little to no direct expenses',
+        options: ['(4) Little to no direct expenses',
             '(3) Can be funded by operating budget',
             '(2) Grant funding identified',
             '(1) Grant funding needed',
@@ -289,7 +294,7 @@ const cmsPageFormat = {
         label: 'Priority Scoring: Probability of Matching Funds',
         prompt: 'Priority Information is Only Applicable to New Actions',
         type: 'radio',
-        type_values: ['(4) Funding match is available or funding match not required',
+        options: ['(4) Funding match is available or funding match not required',
             '(2) Partial funding match available',
             '(0) No funding match available or funding match unknown'],
         meta: 'false',
@@ -300,7 +305,7 @@ const cmsPageFormat = {
         label: 'Priority Scoring: Benefit Cost Review',
         prompt: 'Priority Information is Only Applicable to New Actions',
         type: 'radio',
-        type_values: ['(4) Likely to meet Benefit Cost Review',
+        options: ['(4) Likely to meet Benefit Cost Review',
             '(2) Benefit Cost Review not required',
             '(0) Benefit Cost Review unknown'],
         meta: 'false',
@@ -311,7 +316,7 @@ const cmsPageFormat = {
         label: 'Priority Scoring: Environmental Benefit',
         prompt: 'Priority Information is Only Applicable to New Actions.',
         type: 'radio',
-        type_values: ['(4) Environmentally sound and relatively easy to implement; or no adverse impact on environment', '(3) Environmentally acceptable and not anticipated to be difficult to implement', '(2) Environmental concerns and somewhat difficult to implement because of complex requirements', '(1) Difficult to implement because of significantly complex requirements and environmental permitting', '(0) Very difficult to implement due to extremely complex requirements and environmental permitting problems'],
+        options: ['(4) Environmentally sound and relatively easy to implement; or no adverse impact on environment', '(3) Environmentally acceptable and not anticipated to be difficult to implement', '(2) Environmental concerns and somewhat difficult to implement because of complex requirements', '(1) Difficult to implement because of significantly complex requirements and environmental permitting', '(0) Very difficult to implement due to extremely complex requirements and environmental permitting problems'],
         meta: 'false',
         section: '2'
     },
@@ -367,9 +372,9 @@ const cmsPageFormat = {
             ' Critical facilities include; utilities, emergency services, governmental structures,' +
             ' bridges, transportation corridors, etc.',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '3'
     },
     {
@@ -377,9 +382,9 @@ const cmsPageFormat = {
         label: 'Is Project Structure(s) Located in SFHA?',
         prompt: 'This can be any project or building located in the Special Flood Hazard Area',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '3'
     },
     {
@@ -387,9 +392,9 @@ const cmsPageFormat = {
         label: 'Known Environmental/Historic Preservation/Protected Species Issues?',
         prompt: '',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '3'
     },
     {
@@ -405,9 +410,9 @@ const cmsPageFormat = {
         label: 'Has the ground at the project location been disturbed other than by agriculture?',
         prompt: 'Has there been any instances of development, clearing, or other ground altering activity',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '3'
     },
     {
@@ -415,9 +420,9 @@ const cmsPageFormat = {
         label: 'To your knowledge, have Indian or historic artifacts been found on or adjacent to the project area?',
         prompt: '',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '3'
     },
     {
@@ -425,9 +430,9 @@ const cmsPageFormat = {
         label: 'Does your project affect or is in close proximity to any buildings or structures 50 years or more in age?',
         prompt: '',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '3'
     },
     {
@@ -436,9 +441,9 @@ const cmsPageFormat = {
         prompt: 'Has a State Historic Preservation Office survey been conducted in the ' +
             'location of the action? If the survey is available, upload the PDF.',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '3'
     },
     {
@@ -493,9 +498,9 @@ const cmsPageFormat = {
         label: 'Does this action require input or designs from engineering professionals?',
         prompt: 'Does proposed action require input or designs from engineering professionals?',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '5'
     },
     
@@ -504,7 +509,7 @@ const cmsPageFormat = {
         label: 'Final Engineering Design Complete?',
         prompt: 'Is the final engineering design complete?',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
         section: '5',
     },
@@ -529,9 +534,9 @@ const cmsPageFormat = {
         label: 'Has a Benefit Cost Analysis been completed for this action?',
         prompt: 'Has a Benefit Cost Analysis been completed for this action.',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '5'
     },
     {
@@ -573,7 +578,7 @@ const cmsPageFormat = {
         prompt: 'Categories include: Safety & Security, Food/Water/Sheltering, Health & Medical,' +
             'Energy, Communications, Transportation, and Hazardous Material.',
         type: 'dropdown_no_meta',
-        type_values: ['Safety & Security', 'Food/Water/Sheltering', 'Health & Medical', 'Energy', 'Communications', 'Transportation', 'Hazardous Material'],
+        options: ['Safety & Security', 'Food/Water/Sheltering', 'Health & Medical', 'Energy', 'Communications', 'Transportation', 'Hazardous Material'],
         meta: 'false',
         section: '6'
     },
@@ -582,7 +587,7 @@ const cmsPageFormat = {
         label: 'Select the FEMA designated Mitigation Sector(s) associated with this action: ',
         prompt: 'Categories include: Emergency Management, Economic Development, Land Use Development, Housing, Health and Social Services, Infrastructure, Natural & Cultural Resources',
         type: 'dropdown_no_meta',
-        type_values: ['Emergency Management', 'Economic Development', 'Land Use Development', 'Housing', 'Health and Social Services', 'Infrastructure', 'Natural & Cultural Resources'],
+        options: ['Emergency Management', 'Economic Development', 'Land Use Development', 'Housing', 'Health and Social Services', 'Infrastructure', 'Natural & Cultural Resources'],
         meta: 'false',
         section: '6'
     },
@@ -591,7 +596,7 @@ const cmsPageFormat = {
         label: 'Select the Capability Type that this Action will be used and/or contribute to:',
         prompt: 'Categories include: Planning & Regulatory, Administrative & Technical, Financial, Education & Outreach',
         type: 'dropdown_no_meta',
-        type_values: ['Planning & Regulatory', 'Administrative & Technical', 'Financial', 'Education & Outreach'],
+        options: ['Planning & Regulatory', 'Administrative & Technical', 'Financial', 'Education & Outreach'],
         meta: 'false',
         section: '6'
     },
@@ -602,9 +607,9 @@ const cmsPageFormat = {
             ' “Repetitive Loss Structure. An NFIP-insured structure that has had at least 2 ' +
             'paid flood losses of more than $1,000 each in any 10-year period since 1978.” (FEMA)',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '6'
     },
     {
@@ -621,9 +626,9 @@ const cmsPageFormat = {
             ' with the cumulative amount of such claim payments exceed the fair market value of the' +
             ' insured building on the day before each loss.” (FEMA)',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '6'
     },
     {
@@ -631,9 +636,9 @@ const cmsPageFormat = {
         label: 'Does this action count toward CRS score?',
         prompt: '',
         type: 'radio',
-        type_values: ['yes', 'no', 'unknown'],
+        options: ['yes', 'no', 'unknown'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '6'
     },
     {
@@ -641,9 +646,9 @@ const cmsPageFormat = {
         label: 'Is Climate Adaptation?',
         prompt: 'What categories of the disaster cycle would the action be considered?',
         type: 'radio',
-        type_values: ['yes', 'no'],
+        options: ['yes', 'no'],
         meta: 'false',
-        inline: 'true',
+        inline: true,
         section: '6'
     },
     {
@@ -651,7 +656,7 @@ const cmsPageFormat = {
         label: 'Climate Smart Communities action type?',
         prompt: 'From the Climate Smart Community action type dropdown, select the category that best describes your action.',
         type: 'dropdown_no_meta',
-        type_values: [' '],
+        options: [' '],
         meta: 'false',
         section: '6'
     },

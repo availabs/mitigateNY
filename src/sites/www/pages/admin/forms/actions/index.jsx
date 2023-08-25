@@ -94,13 +94,13 @@ const siteConfig = {
         
       },
       { 
-        type: "dms-edit",
+        type: "dms-form-edit",
         action: 'edit',
         path: '/new',
         redirect: '/admin/forms/actions'
       },
       { 
-        type: "dms-edit",
+        type: "dms-form-edit",
         action: 'edit',
         path: '/edit/:id?'
       }
