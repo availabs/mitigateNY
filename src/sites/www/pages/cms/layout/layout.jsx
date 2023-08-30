@@ -21,8 +21,8 @@ const theme = {
 
 export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...props}) {
   const [open, setOpen] = React.useState(false)
-   const [historyOpen, setHistoryOpen] = React.useState(false)
-  console.log('siteLayout', open)
+  const [historyOpen, setHistoryOpen] = React.useState(false)
+  // console.log('siteLayout', open)
   
   const menuItems = React.useMemo(() => {
     let items = dataItemsNav(dataItems,baseUrl,edit)
@@ -33,12 +33,12 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
         name: 'Add Page'
       })
     }
-    console.log('updated menuItems', 
-      items, 
-      dataItems
-        .filter(d => ['1412','1414'].includes(d.id))
-        .map(d => ({title:d.title, index:d.index}))
-    )
+    // console.log('updated menuItems', 
+    //   items, 
+    //   dataItems
+    //     .filter(d => ['1412','1414'].includes(d.id))
+    //     .map(d => ({title:d.title, index:d.index}))
+    // )
     return items
   }, [dataItems,edit])
 

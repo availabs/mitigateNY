@@ -94,6 +94,7 @@ export function PageEdit ({
     // save section
   }
 
+  //console.log('page edit', attributes['sections'])
   const ContentEdit = attributes['sections'].EditComp
  
   return (

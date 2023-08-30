@@ -1,6 +1,6 @@
 import checkAuth  from "~/layout/checkAuth"
-import { PageView, PageEdit } from "./components/page"
-import Layout from "./components/layout"
+import { PageView, PageEdit } from "./layout/page"
+import Layout from "./layout/layout"
 import cmsFormat from "./cms.format.js"
 
 const siteConfig = {

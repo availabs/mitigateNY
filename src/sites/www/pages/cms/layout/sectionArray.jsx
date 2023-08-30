@@ -41,7 +41,6 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
 
     const updateAttribute = (k, v) => {
         if(!isEqual(value, {...value, [k]: v})) {
-            // console.log('onChange', k, v)
             onChange({...value, [k]: v})
         }
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
@@ -58,7 +57,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
         <div className={`${i === 0 ? '-mt-4' : 'pt-4'}`}>
             <div className='flex flex-col'>
                 <div className='flex flex-wrap border-y justify-end items-center'>
-                    <div className='flex-1 '>{i}
+                    <div className='flex-1 '>
                         <TitleComp 
                             className='p-2 w-full font-sans font-medium text-md uppercase'
                             placeholder={'Section Title'}

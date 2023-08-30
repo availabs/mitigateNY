@@ -1,20 +1,21 @@
-import React from "react"
 import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
+
 import { withAuth } from "~/modules/ams/src" 
-import Layout from "../../cms/layout/layout"
+
+import Selector from "../cms/dms/selector"
+
 import checkAuth  from "~/layout/checkAuth"
-import { PageView, PageEdit } from "../../cms/layout/page"
 
-import Selector from "../../cms/dms/selector"
+import { PageView, PageEdit } from "../cms/layout/page"
+import Layout from "../cms/layout/layout"
 
-import cmsFormat from "./playground.format.js"
-
-import { menuItems } from "../index"
+import devFormat from "./dev.format.js"
 
 registerDataType("selector", Selector)
 
-const siteConfig = {
-  format: cmsFormat,
+export default { 
+  ...dmsPageFactory({
+  format: devFormat,
   check: ({user}, activeConfig, navigate) =>  {
 
     const getReqAuth = (configs) => {
@@ -33,13 +34,10 @@ const siteConfig = {
   },
   children: [
     { 
-      type: (props) => (
-        <Layout 
+      type: (props) => <Layout 
         {...props}
-        sideNav={{size: 'miniPad'}} 
-        baseUrl={'/playground'}
-        />
-      ),
+        baseUrl={'/dev'}
+        />,
       action: "list",
       path: "/*",
       filter: {
@@ -55,14 +53,11 @@ const siteConfig = {
       ]
     },
     { 
-      type: (props) => (
-        <Layout 
-          {...props} 
-          edit={true} 
-          sideNav={{size: 'miniPad'}} 
-          baseUrl={'/playground'}
-        />
-      ),
+      type: (props) =>  <Layout 
+        {...props}
+        edit={true}
+        baseUrl={'/dev'}
+        />,
       action: "list",
       path: "/edit/*",
       authLevel: 5,
@@ -79,15 +74,10 @@ const siteConfig = {
       ]
     }
   ]
-}
-
-export default { 
-  ...dmsPageFactory(siteConfig, "/playground/",  withAuth),
-  name: "CMS",
+}, "/dev/",  withAuth),
+  name: "Dev",
   sideNav: {
-    size: 'mini',
-    color: 'white',
-    menuItems
+    size: "none"
   },
   topNav: {
     size: "none"

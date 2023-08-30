@@ -30,7 +30,7 @@ const pageSplitIcons = (size1=50, size2=50, height=20, width=30, lines=false) =>
               width={Math.floor(width * size1 / 100) - (size1 === 100 ? 0 : 6)} height={height} rx="1" ry="1"
               style={{fill:'white', stroke:'black', strokeWidth:1, opacity:0.5}} />
         <rect x={(width * size1 / 100) - 1} y="0"
-              width={Math.floor(width * size2 / 100) - 6} height={height} rx="1" ry="1"
+              width={Math.floor(width * size2 / 100) -  (size1 === 100 ? 0 : 6)} height={height} rx="1" ry="1"
               style={{fill:'white', stroke:'black', strokeWidth:1, opacity:0.5}} />
         <line
             x1={width}

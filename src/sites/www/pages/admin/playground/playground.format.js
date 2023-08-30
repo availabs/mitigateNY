@@ -1,4 +1,4 @@
-import SectionArray from '../../cms/components/sectionArray'
+import SectionArray from '../../cms/layout/sectionArray'
 
 const cmsSection = {
   app: "dms-site",

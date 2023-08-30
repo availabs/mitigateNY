@@ -1,8 +1,8 @@
-import SectionArray from './layout/sectionArray'
+import SectionArray from '../cms/layout/sectionArray'
 
 const cmsSection = {
   app: "dms-site",
-  type: "cms-section",
+  type: "dev-section",
   attributes: [
     { key: "title",
       type: "text",
@@ -35,7 +35,7 @@ const cmsSection = {
 
 const cmsPageFormat = {
   app: "dms-site",
-  type: "docs-page",
+  type: "dev-page",
   registerFormats: [cmsSection],
   defaultSearch: `data ->> 'index' = '0' and data ->> 'parent' = ''`,
   defaultSort: (d) => d.sort((a,b) => a.index - b.index || a.parent-b.parent),
@@ -74,7 +74,7 @@ const cmsPageFormat = {
       key: 'sections',
       type: 'dms-format',
       isArray: true,
-      format: 'dms-site+cms-section',
+      format: 'dms-site+dev-section',
       DisplayComp: SectionArray
     }
   ]

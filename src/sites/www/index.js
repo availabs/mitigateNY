@@ -2,6 +2,7 @@ import { useFalcor } from '~/modules/avl-falcor';
 import { useAuth } from "~/modules/ams/src";
 
 import CMS from './pages/cms'
+import Dev from './pages/dev'
 
 import DamaRoutes from "~/pages/DataManager"
 
@@ -28,6 +29,7 @@ const Routes = [
   FormsActions,
   // -- Front End Routes -- //
   CMS,
+  Dev,
 ]
 
 const site = {
