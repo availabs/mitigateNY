@@ -19,7 +19,8 @@ function defaultTheme () {
 			viewWrapper: 'overflow-hidden p-2'
 		},
 		select: {
-			input: 'px-2 py-1 w-full text-sm font-light border focus:border-blue-300 bg-white hover:bg-gray-100 transition ease-in'
+			input: 'px-2 py-1 w-full text-sm font-light border focus:border-blue-300 bg-white hover:bg-gray-100 transition ease-in',
+			error: 'text-xs text-red-300 font-light'
 		},
 		multiselect: {
 			inputWrapper: 'flex px-2 py-1 w-full text-sm font-light border focus:border-blue-300 bg-white hover:bg-gray-100 transition ease-in',
@@ -27,12 +28,14 @@ function defaultTheme () {
 			tokenWrapper: 'flex px-2 py-1 mx-1 bg-gray-100 hover:bg-gray-300 rounded-md transition ease-in',
 			removeIcon: 'fa fa-x px-1 text-xs text-red-300 hover:text-red-500 self-center transition ease-in',
 			menuWrapper: 'p-2 shadow-lg z-10',
-			menuItem: 'px-2 py-1 hover:bg-gray-300 hover:cursor-pointer transition ease-in'
+			menuItem: 'px-2 py-1 hover:bg-gray-300 hover:cursor-pointer transition ease-in',
+			error: 'text-xs text-red-300 font-light'
 		},
 		radio: {
 			wrapper: 'p-1 flex',
 			input: 'self-center p-1',
-			label: 'text-sm font-light p-1 self-center'
+			label: 'text-sm font-light p-1 self-center',
+			error: 'text-xs text-red-300 font-light'
 		},
 		card: {
 			wrapper: 'p-4',
