@@ -43,7 +43,12 @@ function defaultTheme () {
 			rowLabel: 'w-full text-sm font-light mb-2 capitalize',
 			rowContent: 'flex-1',
 			rowHeader: 'w-full flex flex-row justify-between',
-			infoIcon: 'p-2 fad fa-info text-blue-300 hover:text-blue-400'
+			infoIcon: 'p-2 fad fa-info text-blue-300 hover:text-blue-400',
+
+			btnWrapper: 'w-full flex justify-end',
+			continueBtn: 'p-2 m-1 bg-blue-300 hover:bg-blue-500 disabled:bg-gray-300 text-white rounded-md transition ease-in',
+			backBtn: 'p-2 m-1 bg-blue-300 hover:bg-blue-500 disabled:bg-gray-300 text-white rounded-md transition ease-in',
+			submitBtn: 'p-2 m-1 bg-blue-300 hover:bg-blue-500 text-white rounded-md transition ease-in',
 		},
 		form: {
 			tabpanelWrapper: 'flex',
@@ -53,7 +58,7 @@ function defaultTheme () {
 			icon: '',
 			tabTitle: 'text-xs font-bold',
 			tabSubtitle: 'text-sm font-light',
-			contentWrapper: 'flex'
+			contentWrapper: 'flex',
 		}
 	}
 }
