@@ -52,7 +52,7 @@ export const menuItems = [
   {
     name: 'Actions',
     icon: 'far fa-building fa-fw',
-    path: '/admin/forms/actions'
+    path: '/admin/forms/actions/list/0/10'
   },
   {
     name: 'Capabilities',

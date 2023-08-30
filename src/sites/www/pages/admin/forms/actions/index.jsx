@@ -1,12 +1,15 @@
-import React from "react"
+import React, {useState} from "react"
 import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
-import {Link} from 'react-router-dom'
-import { withAuth } from "~/modules/ams/src" 
+import { falcor } from "~/modules/avl-falcor"
+import { Table } from "~/modules/avl-components/src"
+import {Link, useNavigate, useParams} from 'react-router-dom'
+import { withAuth } from "~/modules/ams/src"
 import checkAuth  from "~/layout/checkAuth"
 import cmsFormat from "./actions.format.js"
 
 import { menuItems } from "../../index"
 import dmsFormsTheme from "../dmsFormsTheme"
+import get from "lodash/get.js";
 
 // registerDataType("selector", Selector)
 
@@ -20,6 +23,49 @@ const Layout = ({children, title, baseUrl}) =>  (
   </div>
 )
 
+const TableComp = ({data, columns, ...rest}) => {
+  const navigate = useNavigate();
+  const params = useParams();
+  const [length, setLength] = useState(0);
+
+  const app = "dms-site",
+        type = "forms-actions-test";
+
+  const lengthReq = ['dms', 'data', `${ app }+${ type }`, 'length' ];
+
+  (async function() {
+    await falcor.get(lengthReq).then(d => {
+      const newLen = +get(d, ['json', ...lengthReq], 0);
+      length !== newLen && setLength(newLen)
+    })
+  })();
+
+  let pageSize = 10
+
+  let fromIndex =
+      typeof rest?.filter?.fromIndex === 'function' ?
+          rest?.filter?.fromIndex(params['*']) :
+          (+rest.params?.[rest?.filter?.fromIndex] || 0);
+  let toIndex =
+      typeof rest?.filter?.toIndex === "function" ?
+          rest?.filter?.toIndex(params['*']) :
+          (+rest.params?.[rest?.filter?.toIndex] || length - 1);
+
+  let currentPage = fromIndex / pageSize;
+
+    return <Table data={data} // filter data from fromIndex
+                  columns={columns}
+                  manualPagination={true}
+                  numRecords={length}
+                  pageSize={pageSize}
+                  manualCurrentPage={currentPage}
+                  onPageChange={(p) => {
+                    const nextFromINdex = p * pageSize;
+                    const nextToIndex = nextFromINdex + pageSize;
+                    navigate(`/admin/forms/actions/list/${nextFromINdex}/${nextToIndex}`)
+                  }}
+    />
+}
 const siteConfig = {
   format: cmsFormat,
   check: ({user}, activeConfig, navigate) =>  {
@@ -32,74 +78,104 @@ const siteConfig = {
         }
         return Math.max(out, authLevel)
       },-1)
-    } 
+    }
 
     let requiredAuth = getReqAuth(activeConfig)
     checkAuth({user, authLevel:requiredAuth}, navigate)
-    
+
   },
   children: [
-    { 
-      type: (props) => <Layout {...props} title={'Actions'} baseUrl={'/admin/forms/actions/'}/>,
+    {
+      type: (props) => <Layout {...props} title={'Actions'} baseUrl={'/admin/forms/actions'}/>,
       path: '/*',
       action: 'list',
-      children: [{ 
-        type: 'dms-table',
+        filter: {
+            fromIndex: path => path.split('/')[2],
+            toIndex: path => path.split('/')[3],
+        },
+      children: [{
+        type: props =>
+            <TableComp
+                data={props.dataItems}
+                columns={[
+                    {
+                        Header: 'Action Name',
+                        accessor: 'action_name',
+                        type: 'link',
+                        name: 'Name',
+                        text: 'action_name',
+                        // path: ':action_name',
+                        to: '/admin/forms/actions/view/:id',
+                        filter: "fuzzyText",
+                      Cell: d => {
+                        return <Link to={`/admin/forms/actions/view/${d?.cell?.row?.original?.id}`} > {d?.cell?.row?.original?.action_name} </Link>
+                      }
+                    },
+                    {
+                      Header: 'Action Type',
+                      accessor: 'action_type',
+                      type: 'data',
+                      name: 'Type',
+                      path: "action_type",
+                    },
+                    {
+                      Header: 'Description',
+                      accessor: 'description',
+                      type: 'data',
+                      name: 'Description',
+                      path: "description_of_problem_being_mitigated",
+                    },
+                  {
+                    Header: ' ',
+                    accessor: 'edit',
+                    Cell: d => {
+                      return <Link to={`/admin/forms/actions/edit/${d?.cell?.row?.original?.id}`} > edit </Link>
+                    }
+                  }
+                    //   { type: 'date',
+                    //   name: 'Updated',
+                    //   path: "updated_at",
+                    // },
+                    // { type: 'link',
+                    //     name: '',
+                    //     to: '/admin/forms/actions/edit/:id',
+                    //     text: "edit"
+                    // }
+                ]}
+                {...props}
+            />,
+        // type: 'dms-table',
         action: "list",
-        path: "/",
-        options: {
-          columns: [
-            { 
-            type: 'link',
-              name: 'Name',
-              text: ':name',
-              to: '/admin/forms/actions/:id',
-              filter: "fuzzyText"
-            },
-            { type: 'data',
-              name: 'Type',
-              path: "type",
-            },
-            { type: 'data',
-              name: 'Descip.',
-              path: "description",
-            },
-              { type: 'date',
-              name: 'Updated',
-              path: "updated_at",
-            },
-            { type: 'link',
-              name: '',
-              to: '/admin/forms/actions/edit/:id',
-              text: "edit"
-            }
-          ]
-        }
+        path: "/list/:from?/:to?",
+        filter: {
+          fromIndex: 'from',
+          toIndex: 'to',
+        },
       },
-      { 
+      {
         type: "dms-card",
-        path: '/:id?',
+        path: '/view/:id?',
         action: 'view',
         options: {
           mapDataToProps: {
             title: "item:data.name",
             body: [
-              "item:data.description",
+              "item:data.description_of_problem_being_mitigated",
             ],
             footer: [
               "item:updated_at"
             ]
           },
         }
-        
+
       },
-      { 
+      {
         type: "dms-form-edit",
         action: 'edit',
         path: '/new',
         redirect: '/admin/forms/actions'
       },
-      { 
+      {
         type: "dms-form-edit",
         action: 'edit',
         path: '/edit/:id?'
@@ -109,10 +185,10 @@ const siteConfig = {
   ]
 }
 
-export default { 
+export default {
   ...dmsPageFactory(
-    siteConfig, 
-    "/admin/forms/actions/",  
+    siteConfig,
+    "/admin/forms/actions/",
     withAuth,
     dmsFormsTheme
   ),
