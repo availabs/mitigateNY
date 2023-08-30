@@ -11,6 +11,13 @@ const cmsSection = {
     },
     { key: "level",
       type: "select",
+      options: [
+        {value: '0', label: 'Hidden'},
+        {value: '1', label: 'H1'},
+        {value: '2', label: 'H2'},
+        {value: '3', label: 'H3'},
+        {value: '4', label: 'H4'}
+      ],
       required: false,
       default: "h1"
     },

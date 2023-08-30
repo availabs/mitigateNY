@@ -1,4 +1,5 @@
 import SectionArray from './layout/sectionArray'
+import femaReqs from './data/fema-requirement-tags'
 
 const cmsSection = {
   app: "dms-site",
@@ -11,15 +12,23 @@ const cmsSection = {
     },
     { key: "level",
       type: "select",
+      options: [
+        {value: '0', label: 'Hidden'},
+        {value: '1', label: 'H1'},
+        {value: '2', label: 'H2'},
+        {value: '3', label: 'H3'},
+        {value: '4', label: 'H4'}
+      ],
       required: false,
-      default: "h1"
+      default: "1"
     },
     { key: "tags",
       type: "text",
       required: false
     },
     { key: "requirements",
-      type: "text",
+      type: "multiselect",
+      options: femaReqs,
       required: false
     },
     {
