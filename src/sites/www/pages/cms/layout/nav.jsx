@@ -214,7 +214,7 @@ function Nav ({item, dataItems, edit}) {
       {edit ? <Nestable
         items={items}
         onChange={onDragEnd}
-        maxDepth={2}
+        maxDepth={4}
         renderItem={({ item }) => {
           // console.log('item', item)
           let Comp  = item.Comp

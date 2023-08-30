@@ -41,13 +41,12 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
 
     const updateAttribute = (k, v) => {
         if(!isEqual(value, {...value, [k]: v})) {
-            // console.log('onChange', k, v)
             onChange({...value, [k]: v})
         }
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
     }
     
-
+    
     let TitleComp = attributes?.title?.EditComp
     let LevelComp = attributes?.level?.EditComp
     let TagsComp = attributes?.tags?.EditComp
@@ -58,19 +57,21 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
         <div className={`${i === 0 ? '-mt-4' : 'pt-4'}`}>
             <div className='flex flex-col'>
                 <div className='flex flex-wrap border-y justify-end items-center'>
-                    <div className='flex-1 '>{i}
+                    <div className='flex-1 '>
                         <TitleComp 
                             className='p-2 w-full font-sans font-medium text-md uppercase'
                             placeholder={'Section Title'}
                             value={value?.['title']} 
+
                             onChange={(v) => updateAttribute('title', v)}
                         />
                     </div>
                     <div>
                         <LevelComp 
-                            className='p-2 w-20'
-                            value={value?.['level']}
-                            placeholder={'Nav Level'} 
+                            className='p-2 w-20 bg-white'
+                            value={value?.['level'] || 1}
+                            
+                            options={attributes.level.options}
                             onChange={(v) => updateAttribute('level', v)}
                         />
                     </div>
@@ -87,6 +88,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                             className='p-2'
                             value={value?.['requirements']}
                             placeholder={'Add Reqs...'} 
+                            options={attributes.requirements.options}
                             onChange={(v) => updateAttribute('requirements', v)}
                         />
                     </div>
@@ -142,7 +144,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
     )
 }
 
-function SectionView ({value,i, attributes, edit, onEdit}) {
+function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
     let TitleComp = attributes?.title?.ViewComp
     let TagsComp = attributes?.tags?.ViewComp 
     let ElementComp = attributes?.element?.ViewComp
@@ -164,7 +166,30 @@ function SectionView ({value,i, attributes, edit, onEdit}) {
                                 value={value?.['tags']}
                             />
                         </div>
+                        
+                        
                         { typeof onEdit === 'function' ?
+                            <>
+                            <div className='py-2'>
+                                <button
+                                    className={'pl-3 flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
+                                    onClick={ () => moveItem(i,-1) }
+                                >
+                                    <i className="fa-light fa-angle-up text-xl fa-fw" title="Edit"></i>
+                                    {/*☳ Edit*/}
+                                </button>
+
+                            </div>
+                            <div className='py-2'>
+                                <button
+                                    className={'pl-3  flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
+                                    onClick={ () =>  moveItem(i,1) }
+                                >
+                                    <i className="fa-light fa-angle-down text-xl fa-fw" title="Edit"></i>
+                                    {/*☳ Edit*/}
+                                </button>
+
+                            </div>
                             <div className='py-2'>
                                 <button
                                     className={'pl-6 py-0.5 flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
@@ -174,7 +199,9 @@ function SectionView ({value,i, attributes, edit, onEdit}) {
                                     {/*☳ Edit*/}
                                 </button>
 
-                            </div> : ''
+                            </div>
+                            </>
+                            : ''
                         }
                     </div>
                 )
@@ -246,6 +273,21 @@ const Edit = ({Component, value, onChange, attr}) => {
         setEdit({index: i, value:value[i],type:'update'})
     }
 
+    function moveItem(from, dir) {
+        let cloneValue = cloneDeep(value)
+        // remove `from` item and store it
+        let to = from + dir
+        
+        if(to < 0 || to >= cloneValue.length){
+            return
+        }
+        var f = cloneValue.splice(from, 1)[0];
+        // insert stored item into position `to`
+        cloneValue.splice(to, 0, f);
+        onChange(cloneValue)
+    }
+    
+
     return (
         <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}>
             {values.map((v,i) => {
@@ -282,6 +324,7 @@ const Edit = ({Component, value, onChange, attr}) => {
                             <SectionView 
                                 value={v} 
                                 i={i}
+                                moveItem={moveItem}
                                 attributes={attr.attributes}
                                 edit={true}
                                 onEdit={ edit.index === -1 ? (e) => update(i)  : null } 

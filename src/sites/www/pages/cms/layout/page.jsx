@@ -30,7 +30,7 @@ export function PageView ({item, dataItems, attributes}) {
       {item?.sidebar === 'show' ? 
           (<div className='w-64 hidden xl:block'>
             <div className='w-64 fixed hidden xl:block h-screen'> 
-              <div className='h-[calc(100%_-_5rem)] overflow-y-auto'>
+              <div className='h-[calc(100%_-_5rem)] overflow-y-auto overflow-x-hidden'>
                 <SideNav {...inPageNav} /> 
               </div>
             </div>
@@ -94,6 +94,7 @@ export function PageEdit ({
     // save section
   }
 
+  //console.log('page edit', attributes['sections'])
   const ContentEdit = attributes['sections'].EditComp
  
   return (
@@ -103,7 +104,7 @@ export function PageEdit ({
       {item?.sidebar === 'show' ? 
           (<div className='w-64 hidden xl:block'>
             <div className='w-64 fixed hidden xl:block h-screen'> 
-              <div className='h-[calc(100%_-_8rem)] overflow-y-auto'>
+              <div className='h-[calc(100%_-_8rem)] overflow-y-auto overflow-x-hidden'>
                 <SideNav {...inPageNav} /> 
               </div>
             </div>

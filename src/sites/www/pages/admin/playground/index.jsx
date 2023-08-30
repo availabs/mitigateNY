@@ -1,9 +1,9 @@
 import React from "react"
 import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
 import { withAuth } from "~/modules/ams/src" 
-import Layout from "../../cms/components/layout"
+import Layout from "../../cms/layout/layout"
 import checkAuth  from "~/layout/checkAuth"
-import { PageView, PageEdit } from "../../cms/components/page"
+import { PageView, PageEdit } from "../../cms/layout/page"
 
 import Selector from "../../cms/dms/selector"
 

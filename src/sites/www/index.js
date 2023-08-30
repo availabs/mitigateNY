@@ -3,6 +3,7 @@ import { useAuth } from "~/modules/ams/src";
 
 import CMS from './pages/cms'
 
+
 import DamaRoutes from "~/pages/DataManager"
 
 import Admin, { authMenuConfig } from "./pages/admin"
@@ -27,7 +28,7 @@ const Routes = [
   // -- Managed Data Routes -- //
   FormsActions,
   // -- Front End Routes -- //
-  CMS,
+  CMS
 ]
 
 const site = {

@@ -118,6 +118,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
                 {...attributes['title']}
               />
             </div>
+            <div className='pl-6 pb-2 text-gray-500 text-xs'>{item['id']}</div>
             <div onClick={() => setOpen(true)}
               className={theme.pageControls.controlItem}
             >
