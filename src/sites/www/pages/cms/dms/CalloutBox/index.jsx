@@ -16,8 +16,8 @@ const RenderColorPicker = ({title, className, color, setColor}) => (
 const Edit = ({value, onChange}) => {
     const cachedData = value && isJson(value) ? JSON.parse(value) : {}
     const emptyTextBlock = {text: '', size: '4xl', color: '000000'};
-    const [bgColor, setBgColor] = useState(cachedData?.bgColor || '#94cbff');
-    const [text, setText] = useState(cachedData?.text || emptyTextBlock);
+    const [bgColor, setBgColor] = useState(cachedData?.bgColor || 'rgba(0,0,0,0)');
+    const [text, setText] = useState(cachedData?.text || value || emptyTextBlock);
 
     useEffect(() => {
         onChange(JSON.stringify({bgColor, text}))
@@ -51,7 +51,7 @@ const View = ({value}) => {
     const LexicalComp = dmsDataTypes.lexical.ViewComp;
     return (
         <div className={'pt-3'}>
-            <LexicalComp value={data?.text} bgColor={data?.bgColor} />
+            <LexicalComp value={data?.text || value} bgColor={data?.bgColor} />
         </div>
     )
 }
@@ -59,6 +59,7 @@ const View = ({value}) => {
 
 export default {
     "name": 'Card: Callout',
+    "hideInSelector": true,
     "EditComp": Edit,
     "ViewComp": View
 }

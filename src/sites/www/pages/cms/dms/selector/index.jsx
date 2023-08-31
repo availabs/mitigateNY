@@ -54,8 +54,9 @@ const ComponentRegistry = {
     "Map: NRI": NRIMap,
     "Map: Social Vulnerability": SocialVulnerabilityMap,
     "lexical": {
+        ...CalloutBox,
         name: 'Rich Text',
-        ...dmsDataTypes.lexical
+        hideInSelector: false
     }
 }
 
@@ -86,7 +87,9 @@ function EditComp(props) {
                     className={'flex-row-reverse'}
                     placeholder={'Search for a Component...'}
                     options={
-                        Object.keys(ComponentRegistry).map(k => (
+                        Object.keys(ComponentRegistry)
+                            .filter(k => !ComponentRegistry[k].hideInSelector)
+                            .map(k => (
                             {
                                 key: k, label: ComponentRegistry[k].name || k
                             }
@@ -110,7 +113,10 @@ function EditComp(props) {
                             label: 'Paste',
                             value: 'paste'
                         },
-                        ...[...new Set(Object.keys(ComponentRegistry).map(key => (ComponentRegistry[key].name || key).split(':')[0]))]
+                        ...[...new Set(
+                            Object.keys(ComponentRegistry)
+                                .filter(k => !ComponentRegistry[k].hideInSelector)
+                                .map(key => (ComponentRegistry[key].name || key).split(':')[0]))]
                             .map(c => (
                                 {
                                     icon: `${icons[c.toLowerCase()] || c.toLowerCase()}`,
