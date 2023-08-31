@@ -88,7 +88,7 @@ const cmsPageFormat = {
             prompt: 'Select the current status of the project',
             type: 'select',
             options: [
-               'Not Started', 'In-progress', 'Completed', 'Discontinued', 'Delayed', 'Problem Statement ONLY', 'Action Description ONLY'
+                'Not Started', 'In-progress', 'Completed', 'Discontinued', 'Delayed', 'Problem Statement ONLY', 'Action Description ONLY'
             ],
             display_condition: '',
             meta: 'false',
@@ -302,6 +302,15 @@ const cmsPageFormat = {
             //defaultValue: ['Countywide'],
             //example: 'Demo example.'
         },
+        {
+            key: 'partners',
+            label: 'Partners',
+            prompt: 'Identify the Agency, Department, Office, etc. that will lead the effort and coordination necessary to implement this action.  Try to avoid just listing the jurisdiction.',
+            type: 'text',
+            section: '1',
+            //defaultValue: ['Countywide'],
+            //example: 'Demo example.'
+        },
         //action poc started
 
         {
@@ -321,6 +330,31 @@ const cmsPageFormat = {
             data_error: "Your email address is invalid",
             meta: 'false',
             section: '1'
+        },
+        {
+            key: 'contact_title_role',
+            label: 'Role',
+            prompt: '',
+            sub_type: '',
+            edit_type: 'dropdown',
+            display_type: 'text',
+            field_required: 'required', // optional if you want the field to be required
+            validation: "true",
+            meta: 'true',
+            meta_filter: {filter_key: 'roles', value: 'category'},
+            section: '1',
+            list_attribute: 'true'
+        },
+        {
+            key: 'contact_department',
+            label: 'Department(optional)',
+            prompt: '',
+            sub_type: '',
+            edit_type: 'text',
+            display_type: 'text',
+            meta: 'false',
+            section: '1',
+            list_attribute: 'true'
         },
         //action poc end
         {
@@ -389,8 +423,6 @@ const cmsPageFormat = {
             meta: 'false',
             section: '4'
         },
-
-
 
 
         {
@@ -494,6 +526,17 @@ const cmsPageFormat = {
         {
             key: 'is_action_addressing_climate_change',
             label: 'Is this action addressing Climate Change?',
+            prompt: '',
+            type: 'radio',
+            options: ['yes', 'no'],
+            display_condition: '',
+            meta: 'false',
+            section: '1',
+            field_required: 'required'
+        },
+        {
+            key: 'is_action_mitigating_climate_change',
+            label: 'Is this action mitigating Climate Change (i.e. ghg reduction)?',
             prompt: '',
             type: 'radio',
             options: ['yes', 'no'],
