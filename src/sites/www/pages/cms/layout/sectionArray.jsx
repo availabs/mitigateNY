@@ -1,7 +1,7 @@
 import React from "react"
 import isEqual from 'lodash/isEqual'
 import cloneDeep from 'lodash/cloneDeep'
-import {sizeOptions, getSizeClass, sizeGridTemplate, sizeOptionsSVG} from './utils/sizes.jsx'
+import {getSizeClass, sizeOptionsSVG} from './utils/sizes.jsx'
 
 
 function SizeSelect ({size='1', setSize, onChange}) {
@@ -286,18 +286,32 @@ const Edit = ({Component, value, onChange, attr}) => {
         cloneValue.splice(to, 0, f);
         onChange(cloneValue)
     }
-    
+    let runningColTotal = 8;
+
+    // each component should have md and lg col-start- class
+    // 1 row can fit different components totaling in size 1 OR one component with size 1 or 2
+    // col-start for md and lg depends upon previous components from the same row
+    // every time component size total reaches 1, row changes
 
     return (
-        <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}>
+        <div className={`mb-12 grid grid-cols-8 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}>
             {values.map((v,i) => {
-
-                let prevSize = i > 0 ? values[i-1]?.size : null;
-                let prevPrevSize = i > 1 ? value[i-2]?.size : null;
                 const size = (edit.index === i ? edit?.value?.size : v?.size) || "1";
+                const requiredSpace = sizeOptionsSVG.find(s => s.name === size)?.value;
+                const availableSpace = 6 - runningColTotal;
+
+                if(runningColTotal === 0){
+                    runningColTotal = requiredSpace
+                }else if(requiredSpace <= availableSpace){
+                    runningColTotal += requiredSpace
+                }else{
+                    runningColTotal = requiredSpace
+                }
+
+                const sizeClass = getSizeClass(size, requiredSpace, availableSpace, runningColTotal);
 
                 return (
-                    <div key={i} className={`${getSizeClass(size, prevSize, prevPrevSize)}`}>
+                    <div key={i} className={`${sizeClass}`}>
                         {/* add to top */}
                         { edit.index === -1 && i === 0 ? 
                             <AddSectionButton onClick={() => setEditIndex(0)}/> : 
@@ -344,16 +358,28 @@ const Edit = ({Component, value, onChange, attr}) => {
 
 const View = ({Component, value, attr}) => {
     if (!value || !value.map) { return '' }
+    let runningColTotal = 8;
     return (
         <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}   >
         
         { 
             value.map((v,i) =>{
-                let prevSize = i > 0 ? value[i-1]?.size : null;
-                let prevPrevSize = i > 1 ? value[i-2]?.size : null;
                 const size = v?.size || "1";
+                const requiredSpace = sizeOptionsSVG.find(s => s.name === size)?.value;
+                const availableSpace = 6 - runningColTotal;
+
+                if(runningColTotal === 0){
+                    runningColTotal = requiredSpace
+                }else if(requiredSpace <= availableSpace){
+                    runningColTotal += requiredSpace
+                }else{
+                    runningColTotal = requiredSpace
+                }
+
+                const sizeClass = getSizeClass(size, requiredSpace, availableSpace, runningColTotal);
+
                 return (
-                    <div key={i} className={`${getSizeClass(size, prevSize, prevPrevSize)}`}>
+                    <div key={i} className={`${sizeClass}`}>
                         <SectionView
                             attributes={attr.attributes}
                             key={i}

@@ -1,22 +1,4 @@
 import React from "react";
-
-
-export const sizeOptions = [
-    {name: '2', icon: 'fal fa-align-justify'},
-    {name: '1', icon: 'fal fa-align-center'},
-    {name: '2/3', icon: 'fal fa-align-left'},
-    {name: '1/2', icon: 'fal fa-align-right'},
-    {name: '1/3', icon: 'fal fa-indent'}
-]
-
-const sizes = {
-    "2": 'col-span-6 lg:col-span-8',
-    "1": 'col-span-6',
-    "2/3": 'col-span-6 md:col-span-4',
-    "1/2": 'col-span-6 md:col-span-3',
-    "1/3": 'col-span-6 md:col-span-2'
-}
-
 const pageSplitIcons = (size1=50, size2=50, height=20, width=30, lines=false) => (
     <svg width={width} height={height} >
         <line
@@ -42,35 +24,42 @@ const pageSplitIcons = (size1=50, size2=50, height=20, width=30, lines=false) =>
     </svg>
 )
 
-export const sizeOptionsSVG = [
-    {name: '2', icon: pageSplitIcons(100, 0)},
-    {name: '1', icon: pageSplitIcons(90, 0)},
-    {name: '2/3', icon: pageSplitIcons(60, 40)},
-    {name: '1/2', icon: pageSplitIcons(50, 50)},
-    {name: '1/3', icon: pageSplitIcons(40, 60)}
-]
-export const getSizeClass = (size, prevSize, prevPrevSize) => {
-    if(["2"].includes(size)) { return sizes[size] }
+// tested:::
+// 1/2 1/2 1/2 1/2 -- makes 2 rows
+// 1/3 1/3 1/3 -- makes 1 row
+// 1/3 1/3 1/3 1/3 -- makes 2 rows
+// 2/3 1/3 -- makes 1 row
+// 1/3 2/3 -- makes 1 row
+// 1/2 1/3 -- makes 1 row. the next 1/3 goes to a new row
 
-    if(size === "2/3" && prevSize === '1/3' ) {
-        return `md:col-start-3 lg:col-start-4 ${sizes[size]}`
+const spans = {
+    // spans should sum up to 6 at max
+    // only size 2 goes to 8 for lg:
+    // for smaller screens, everything spans to 6 cols
+    "1/3": 'col-span-6 md:col-span-2',
+    "1/2": 'col-span-6 md:col-span-3',
+    "2/3": 'col-span-6 md:col-span-4',
+    "1":   'col-span-6',
+    "2":   'col-span-6 lg:col-span-8',
+}
+
+export const sizeOptionsSVG = [
+    {name: '1/3', value: 2, icon: pageSplitIcons(40, 60)},
+    {name: '1/2', value: 3, icon: pageSplitIcons(50, 50)},
+    {name: '2/3', value: 4, icon: pageSplitIcons(60, 40)},
+    {name: '1', value: 6, icon: pageSplitIcons(90, 0)},
+    {name: '2', value: 8, icon: pageSplitIcons(100, 0)},
+]
+
+export const getSizeClass = (size, requiredSpace, availableSpace, runningColTotal) => {
+    if(["2"].includes(size)) {
+        return spans[size]
     }
-    if(size === "1/2" && prevSize === '1/2' ) {
-        return `md:col-start-2 lg:col-start-5 ${sizes[size]}`
-    }
-    if(size === "1/3" && prevSize === '2/3' ) {
-        return `md:col-start-4 lg:col-start-6 ${sizes[size]}`
-    }
-     if(size === "1/3" && !prevSize) {
-        return `md:col-start-2 lg:col-start-2 ${sizes[size]}`
-    }
-     if(size === "1/3" && prevSize === '1/3' && !prevPrevSize ) {
-        return `md:col-start-3 lg:col-start-4 ${sizes[size]}`
-    }
-     if(size === "1/3" && prevSize === '1/3' && prevPrevSize === '1/3' ) {
-        return `md:col-start-4 lg:col-start-6 ${sizes[size]}`
-    }
-    return `lg:col-start-2 ${sizes[size]}`
+
+    const mdCols = availableSpace < requiredSpace ? 2 : runningColTotal;
+
+    // for smaller screens, everything should col-start at 2nd column. making 1 row = 1 comp
+    return  `col-start-2 md:col-start-${mdCols} ${spans[size]}`
 }
 
 export const sizeGridTemplate = {gridTemplateColumns: '1fr repeat(6, minmax(100px, 190px)) 1fr'}
