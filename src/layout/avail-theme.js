@@ -245,7 +245,7 @@ const ppdaf = () => {
                 subMenuWrapper: `absolute ml-${sizes[size].width - 8} `,
                 subMenuParentWrapper: `flex flex-row`,
                 subMenuWrapperChild: `divide-x`,
-                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-white`,
+                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-slate-100`,
                 subMenuWrapperInactiveFlyout: `absolute top-12 bg-white shadow-lg z-10`,
                 subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
             },
@@ -268,7 +268,7 @@ const ppdaf = () => {
         `,
         //`px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center  border-transparent  leading-5 text-white hover:bg-white hover:text-darkblue-500 border-gray-200 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full`,
         topmenuRightNavContainer: "hidden md:block h-full",
-        topnavMobileContainer: "bg-slate-100",
+        topnavMobileContainer: "bg-slate-50",
         navitemTopActive:
           ` w-fit group font-sans whitespace-nowrap
             ${sizes[size].activeItem}
