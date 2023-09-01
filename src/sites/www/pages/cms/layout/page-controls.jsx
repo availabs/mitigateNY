@@ -53,6 +53,10 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
     newItem.title += ' Dup'
     newItem.index = highestIndex + 1
     newItem.url_slug = getUrlSlug(newItem, dataItems)
+    newItem.sections.forEach(s => {
+      delete s.ref
+      delete s.id
+    })
     
     submit(json2DmsForm(newItem), { method: "post", action: pathname })
   }

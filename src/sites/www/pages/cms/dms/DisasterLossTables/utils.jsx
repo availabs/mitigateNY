@@ -11,7 +11,7 @@ const valueFormat = ({ cell, textCols = [], isDollar = false }) => {
 export const cellFormat = (cell, type, col) => <div>
     {valueFormat({
         cell,
-        textCols: metaData[type]?.textCols,
-        isDollar: !metaData[type]?.numCols.includes(col)
+        textCols: metaData?.[type]?.textCols || [],
+        isDollar: !(metaData?.[type]?.numCols || []).includes(col)
     })}
 </div>
