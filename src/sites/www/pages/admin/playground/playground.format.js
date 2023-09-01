@@ -9,6 +9,10 @@ const cmsSection = {
       required: false,
       default: "Untitled Section"
     },
+    {
+      key: "helpText",
+      type: "lexical"
+    },
     { key: "level",
       type: "select",
       options: [

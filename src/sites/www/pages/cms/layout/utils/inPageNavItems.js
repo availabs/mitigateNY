@@ -13,7 +13,7 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
 
     const menuItems = (currentDI?.sections || []).reduce((acc, {title, element, level = '1', ...props}) => {
 
-        if (!element || !title || level === 0 ) return acc;
+        if (!element || level === '0' ) return acc;
         const lexicalNavElements = element['element-type'] === 'lexical' || !element['element-type'] ?
             element['element-data']?.root?.children?.reduce((acc, {type, tag, children}) => {
                 return type === 'heading' ?
@@ -26,7 +26,7 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
                                     [...window.document.querySelectorAll(tag)]
                                         .find(headerElement => headerElement?.children[0]?.innerHTML === children[0]?.text);
                                 // .__lexicalKey_cgviu
-                                elmntToView?.scrollIntoView({ behavior: "smooth", block:'center' });
+                                elmntToView?.scrollIntoView({ behavior: "smooth"});
                             },
                             className: `px-4 pb-1 text-sm text-slate-400 hover:text-slate-700 cursor-pointer border-r-2 mr-4
                             ${

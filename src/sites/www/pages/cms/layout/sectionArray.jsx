@@ -1,8 +1,8 @@
-import React from "react"
+import React, {Fragment} from "react"
 import isEqual from 'lodash/isEqual'
 import cloneDeep from 'lodash/cloneDeep'
 import {sizeOptions, getSizeClass, sizeGridTemplate, sizeOptionsSVG} from './utils/sizes.jsx'
-
+import { Popover, Transition } from '@headlessui/react'
 
 function SizeSelect ({size='1', setSize, onChange}) {
     
@@ -46,12 +46,13 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
         //console.log('updateAttribute', value, k, v, {...value, [k]: v})
     }
     
-    
+    //console.
     let TitleComp = attributes?.title?.EditComp
     let LevelComp = attributes?.level?.EditComp
     let TagsComp = attributes?.tags?.EditComp
     let ReqsComp = attributes?.requirements?.EditComp 
     let ElementComp = attributes?.element?.EditComp
+    let HelpComp = attributes?.helpText?.EditComp
 
     return (
         <div className={`${i === 0 ? '-mt-4' : 'pt-4'}`}>
@@ -104,10 +105,38 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                     <div className='flex-1'/>
                     <div className={'flex flex-row flex-wrap'}>
                         <div className='py-2'>
+                            <Popover className="relative">
+                              <Popover.Button 
+                                className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}>
+                                <i className="fa-light fa-question text-2xl fa-fw" title="Delete"/>
+                              </Popover.Button>
+                                <Transition
+                                  as={Fragment}
+                                  enter="transition ease-out duration-200"
+                                  enterFrom="opacity-0 translate-y-1"
+                                  enterTo="opacity-100 translate-y-0"
+                                  leave="transition ease-in duration-150"
+                                  leaveFrom="opacity-100 translate-y-0"
+                                  leaveTo="opacity-0 translate-y-1"
+                                >
+                                  <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
+                                    <div className="bg-white">
+                                        <HelpComp
+                                            value={value?.['helpText']} 
+                                            onChange={(v) => updateAttribute('helpText', v)}
+                                        />
+                                    </div>
+
+                                    
+                                  </Popover.Panel>
+                                </Transition>
+                            </Popover>
+                        </div>
+                        <div className='py-2'>
                             <button
                                 className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}
                                 onClick={onRemove}
-                            ><i className="fa-light fa-trash text-2xl fa-fw" title="Cancel"/></button>
+                            ><i className="fa-light fa-trash text-2xl fa-fw" title="Delete"/></button>
                         </div>
                         <div className='py-2'>
                             <button
@@ -148,6 +177,9 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
     let TitleComp = attributes?.title?.ViewComp
     let TagsComp = attributes?.tags?.ViewComp 
     let ElementComp = attributes?.element?.ViewComp
+    let HelpComp = attributes?.helpText?.ViewComp
+
+    //console.log('helpText', value?.['helpText'])
 
     return (
         <div className={`${i === 0 ? '-mt-4' : 'pt-4'}`}>
@@ -167,6 +199,36 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                             />
                         </div>
                         
+                            {value?.['helpText'] ? 
+                            (
+                            <div>
+                            <Popover className="relative">
+                              <Popover.Button 
+                                className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}>
+                                <i className="fa-light fa-question text-lg fa-fw" title="Delete"/>
+                              </Popover.Button>
+                                <Transition
+                                  as={Fragment}
+                                  enter="transition ease-out duration-200"
+                                  enterFrom="opacity-0 translate-y-1"
+                                  enterTo="opacity-100 translate-y-0"
+                                  leave="transition ease-in duration-150"
+                                  leaveFrom="opacity-100 translate-y-0"
+                                  leaveTo="opacity-0 translate-y-1"
+                                >
+                                  <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
+                                    <div className="bg-white">
+                                        <HelpComp
+                                            value={value?.['helpText']} 
+                                        />
+                                    </div>
+
+                                    
+                                  </Popover.Panel>
+                                </Transition>
+                                </Popover> 
+                            </div>)
+                            : ''}
                         
                         { typeof onEdit === 'function' ?
                             <>
