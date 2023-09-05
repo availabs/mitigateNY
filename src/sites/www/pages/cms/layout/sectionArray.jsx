@@ -58,7 +58,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
         <div className={`${i === 0 ? '-mt-5' : 'pt-4'}`}>
             <div className='flex flex-col'>
                 <div className='flex flex-wrap border-y justify-end items-center'>
-                    <div className='flex-1 '>
+                    <div className='flex-0 grow'>
                         <TitleComp 
                             className='p-2 w-full font-sans font-medium text-md uppercase'
                             placeholder={'Section Title'}
@@ -78,7 +78,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                     </div>
                     <div>
                         <TagsComp 
-                            className='p-2 '
+                            className='p-2 flex-0'
                             value={value?.['tags']}
                             placeholder={'Add Tag...'} 
                             onChange={(v) => updateAttribute('tags', v)}
@@ -86,7 +86,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                     </div>
                     <div>
                         <ReqsComp 
-                            className='p-2'
+                            className='p-2 flex-0'
                             value={value?.['requirements']}
                             placeholder={'Add Reqs...'} 
                             options={attributes.requirements.options}
@@ -373,7 +373,7 @@ const Edit = ({Component, value, onChange, attr}) => {
                 const sizeClass = getSizeClass(size, requiredSpace, availableSpace, runningColTotal);
 
                 return (
-                    <div key={i} className={`flex-wrap ${sizeClass}`}>
+                    <div key={i} className={`${sizeClass}`}>
                         {/* add to top */}
                         { edit.index === -1 && i === 0 ? 
                             <AddSectionButton onClick={() => setEditIndex(0)}/> : 
