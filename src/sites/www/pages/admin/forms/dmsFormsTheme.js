@@ -63,9 +63,9 @@ function defaultTheme () {
 
 			// view
 			sectionsWrapper: 'columns-2 gap-2',
-			sections: 'w-full h-fit hover:bg-blue-50 shadow-lg',
+			sections: 'w-full h-fit shadow-lg',
 			card: {
-				row: 'flex py-1 flex-row space-between p-2 mt-3 border-b',
+				row: 'flex py-1 flex-row  hover:bg-blue-50 space-between p-2 mt-3 border-b',
 				rowLabel: 'w-1/4 text-xs font-bold mb-2 capitalize',
 				rowContent: 'pl-2 w-3/4 text-sm',
 			}

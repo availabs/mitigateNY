@@ -124,13 +124,13 @@ const siteConfig = {
                                 name: 'Type',
                                 path: "action_type",
                             },
-                            {
-                                Header: 'Description',
-                                accessor: 'description',
-                                type: 'data',
-                                name: 'Description',
-                                path: "description_of_problem_being_mitigated",
-                            },
+                            // {
+                            //     Header: 'Description',
+                            //     accessor: 'description',
+                            //     type: 'data',
+                            //     name: 'Description',
+                            //     path: "description_of_problem_being_mitigated",
+                            // },
                             {
                                 Header: ' ',
                                 accessor: 'edit',
