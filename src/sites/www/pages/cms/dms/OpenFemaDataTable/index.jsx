@@ -3,7 +3,7 @@ import get from "lodash/get";
 import {useFalcor} from '~/modules/avl-falcor';
 import {pgEnv} from "~/utils/";
 import {isJson} from "~/utils/macros.jsx";
-import {RenderBuildingsTable} from "./components/RenderBuildingsTable.jsx";
+import {OpenFemaDataTable} from "./components/OpenFemaDataTable.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
@@ -61,7 +61,7 @@ const Edit = ({value, onChange}) => {
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [metaLookupByViewId, setMetaLookupByViewId] = useState({});
 
-    const category = 'Buildings';
+    const category = 'Open Fema Data';
 
     const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
         aggregatedLen: Boolean(groupBy.length),
@@ -104,7 +104,8 @@ const Edit = ({value, onChange}) => {
             (dataSources
                 .find(ds => ds.source_id === dataSource)?.metadata || [])
                 .find(c => c.display === 'geoid-variable');
-        geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
+        const name = geoAttribute?.name?.includes(' AS') ? geoAttribute?.name?.split(' AS')[0] : geoAttribute?.name?.split(' as')[0]
+        name && setGeoAttribute(name);
     }, [dataSources, dataSource]);
 
     useEffect(() => {
@@ -283,9 +284,12 @@ const Edit = ({value, onChange}) => {
                     Edit Controls
                     <ButtonSelector
                         label={'Data Source:'}
-                        types={dataSources.map(ds => ({label: ds.name, value: ds.source_id}))}
+                        types={
+                        dataSources.map(ds => ({label: ds.name, value: ds.source_id})
+                        )}
                         type={dataSource}
                         setType={e => {
+                            setVersion(undefined);
                             setVisibleCols([])
                             setDataSource(e);
                         }}
@@ -327,7 +331,7 @@ const Edit = ({value, onChange}) => {
                 {
                     loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
-                            <RenderBuildingsTable
+                            <OpenFemaDataTable
                                 geoid={geoid}
                                 data={data}
                                 columns={columns}
@@ -361,7 +365,7 @@ const View = ({value}) => {
             {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
-                    <RenderBuildingsTable {...data} baseUrl={'/'}/>
+                    <OpenFemaDataTable {...data} baseUrl={'/'}/>
             }
         </div>
     )
@@ -369,7 +373,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Table: Buildings',
+    "name": 'Table: Open Fema Data',
     "type": 'Table',
     "EditComp": Edit,
     "ViewComp": View

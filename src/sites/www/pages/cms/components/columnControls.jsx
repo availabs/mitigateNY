@@ -103,7 +103,7 @@ const RenderFnControls = ({column, fn, setFn, groupBy, metadata}) => {
         {label: 'Sum', value: `sum(${groupableName}) as ${nonGroupableTitle}`},
     ]
 
-    const alreadyAggregated = groupableName.includes('count') || groupableName.includes('sum');
+    const alreadyAggregated = groupableName.includes('count(') || groupableName.includes('sum(');
 
     const defaultFn =
         alreadyAggregated ?
