@@ -93,6 +93,7 @@ const siteConfig = {
             filter: {
                 fromIndex: path => path.split('/')[2],
                 toIndex: path => path.split('/')[3],
+                stopFullDataLoad: true
             },
             children: [{
                 type: props =>
@@ -179,6 +180,7 @@ const siteConfig = {
                 {
                     type: "dms-form-edit",
                     action: 'edit',
+                    filter: {stopFullDataLoad: true},
                     path: '/new',
                     redirect: '/admin/forms/actions'
                 },

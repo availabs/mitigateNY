@@ -130,7 +130,16 @@ const cmsPageFormat = {
             prompt: 'Identify the hazard(s) being addressed with this action.',
             type: 'multiselect',
             // options: [{value: 'hurricane', label: 'h'}, {value: 'avalanche', label: 'a'}, {value: 'hail', label: 'ha'}],
-            options: ['hurricane', 'avalanche', 'hail'],
+            options: [
+                'ALL (formal hazards only)',
+                'Avalanche', 'Coastal Hazards', 'Cold Wave',
+                'Drought', 'Earthquake', 'Flooding', 'Hail',
+                'Extreme Heat', 'Hurricane', 'Ice storm', 'Landslide',
+                'Lightning', 'Severe Storms', 'Snowstorm', 'Tornado',
+                'Tsunami/Seiche', 'Wildfire', 'Wind',
+                'Other - Pandemic', 'Other - Air Quality', 'Other - Water Quality',
+                'Other - [please describe]'
+            ],
             meta: 'true',
             metaSource: 'meta_file',
 
