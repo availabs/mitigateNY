@@ -7,7 +7,7 @@ import { dmsDataTypes } from "~/modules/dms/src"
 
 const RenderColorPicker = ({title, className, color, setColor}) => (
     <div className={className}>
-        <label className={'shrink-0 pr-2 w-1/4'}></label>
+        <label className={'shrink-0 pr-2 w-1/4'}>{title}</label>
         <input id={'background'} list="colors"
                className={'rounded-md shrink'}
                type={'color'} value={color} onChange={e => setColor(e.target.value)}/>
@@ -41,7 +41,7 @@ const Edit = ({value, onChange}) => {
         <div className='w-full'>
             <div className='relative'>
                 <RenderColorPicker title={'Background: '}
-                                   className={'w-full flex flex-row text-sm items-center border border-dashed'}
+                                   className={'w-full px-2 py-1 flex flex-row text-sm items-center border border-dashed'}
                                    color={bgColor} setColor={setBgColor}/>
                     <LexicalComp value={text} onChange={setText} bgColor={bgColor}/>
             </div>
