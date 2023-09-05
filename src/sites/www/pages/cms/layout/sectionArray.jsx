@@ -55,7 +55,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
     let HelpComp = attributes?.helpText?.EditComp
 
     return (
-        <div className={`${i === 0 ? '-mt-4' : 'pt-4'}`}>
+        <div className={`${i === 0 ? '-mt-5' : 'pt-4'}`}>
             <div className='flex flex-col'>
                 <div className='flex flex-wrap border-y justify-end items-center'>
                     <div className='flex-1 '>
@@ -70,7 +70,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                     <div>
                         <LevelComp 
                             className='p-2 w-20 bg-white'
-                            value={value?.['level'] || 1}
+                            value={value?.['level'] || '1'}
                             
                             options={attributes.level.options}
                             onChange={(v) => updateAttribute('level', v)}
@@ -182,7 +182,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
     //console.log('helpText', value?.['helpText'])
 
     return (
-        <div className={`${i === 0 ? '-mt-4' : 'pt-4'}`}>
+        <div className={`${i === 0 ? '-mt-5' : 'pt-4'}`}>
             {
                 (value?.['title'] || value?.['tags'] || edit) && (
                     <div className={`flex h-[50px] items-center mt-4`}>

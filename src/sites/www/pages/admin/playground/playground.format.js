@@ -1,48 +1,6 @@
 import SectionArray from '../../cms/layout/sectionArray'
+import {cmsSection} from '../../cms/cms.format.js'
 
-const cmsSection = {
-  app: "dms-site",
-  type: "cms-section",
-  attributes: [
-    { key: "title",
-      type: "text",
-      required: false,
-      default: "Untitled Section"
-    },
-    {
-      key: "helpText",
-      type: "lexical"
-    },
-    { key: "level",
-      type: "select",
-      options: [
-        {value: '0', label: 'Hidden'},
-        {value: '1', label: 'H1'},
-        {value: '2', label: 'H2'},
-        {value: '3', label: 'H3'},
-        {value: '4', label: 'H4'}
-      ],
-      required: false,
-      default: "h1"
-    },
-    { key: "tags",
-      type: "text",
-      required: false
-    },
-    { key: "requirements",
-      type: "text",
-      required: false
-    },
-    {
-      key: "size",
-      type: "text"
-    },
-    { key: "element",
-      type: "selector",
-      required: false,
-    }
-  ] 
-}
 
 
 const cmsPageFormat = {
