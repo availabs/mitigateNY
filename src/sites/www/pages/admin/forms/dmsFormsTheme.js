@@ -16,7 +16,7 @@ function defaultTheme () {
 		},
 		textarea: {
 			input: 'px-2 py-1 w-full text-sm font-light border focus:border-blue-300 focus:outline-none transition ease-in',
-			viewWrapper: 'whitespace-normal'
+			viewWrapper: 'whitespace-normal text-sm font-light'
 		},
 		select: {
 			input: 'px-2 py-1 w-full text-sm font-light border focus:border-blue-300 bg-white hover:bg-blue-100 transition ease-in',
@@ -55,18 +55,18 @@ function defaultTheme () {
 			tabpanelWrapper: 'flex',
 			tabWrapper: 'flex p-3 w-full',
 			tabActive: 'w-full p-1 border-b-2 flex flex-col text-center border-blue-300 transition ease-in',
-			tab: 'w-full p-1 border-b-2 flex flex-col text-center hover:bg-blue-300 transition ease-in',
+			tab: 'group w-full p-1 border-b-2 flex flex-col text-center hover:bg-blue-300 transition ease-in',
 			icon: '',
-			tabTitle: 'text-xs font-bold',
-			tabSubtitle: 'text-sm font-light',
+			tabTitle: 'text-xs font-bold text-blue-500 group-hover:text-white',
+			tabSubtitle: 'text-sm font-light text-blue-500 group-hover:text-white',
 			contentWrapper: 'flex',
 
 			// view
 			sectionsWrapper: 'columns-2 gap-2',
-			sections: 'w-full h-fit shadow-lg',
+			sections: 'w-full h-fit shadow-md pb-2 mb-4 border',
 			card: {
-				row: 'flex py-1 flex-row  hover:bg-blue-50 space-between p-2 mt-3 border-b',
-				rowLabel: 'w-1/4 text-xs font-bold mb-2 capitalize',
+				row: 'flex py-1 flex-row hover:bg-blue-50 space-between p-2 border-b',
+				rowLabel: 'w-1/4 text-xs text-gray-600 font-medium mb-2 capitalize',
 				rowContent: 'pl-2 w-3/4 text-sm',
 			}
 		}
