@@ -1,7 +1,7 @@
 import SectionArray from './layout/sectionArray'
 import femaReqs from './data/fema-requirement-tags'
 
-const cmsSection = {
+export const cmsSection = {
   app: "dms-site",
   type: "cms-section",
   attributes: [
