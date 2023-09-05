@@ -17,8 +17,8 @@ const Layout = ({children, title, baseUrl}) => (
     <div className='bg-white h-full shadow max-w-6xl mx-auto px-6'>
         <div className='flex items-center'>
             <div className='text-2xl p-3 font-thin flex-1'>{title}</div>
-            <div><Link to={baseUrl} className='text-white bg-blue-500 shadow hover:shadow-lg px-4 py-2'> Nav
-                Link </Link></div>
+            <div><Link to={`${baseUrl}/new`} className='text-white bg-blue-500 shadow hover:shadow-lg px-4 py-2'> Create New</Link></div>
+            <div><Link to={`${baseUrl}/list/0/10`} className='text-white bg-blue-500 shadow hover:shadow-lg px-4 py-2'> Actions Home </Link></div>
         </div>
         {children}
     </div>
@@ -99,10 +99,10 @@ const siteConfig = {
                     <TableComp
                         data={props.dataItems}
                         columns={[
-                            {
-                                Header: 'Local/State',
-                                accessor: 'idKey'
-                            },
+                            // {
+                            //     Header: 'Local/State',
+                            //     accessor: 'idKey'
+                            // },
                             {
                                 Header: 'Action Name',
                                 accessor: 'action_name',
@@ -160,7 +160,7 @@ const siteConfig = {
                 },
             },
                 {
-                    type: "dms-card",
+                    type: "dms-form-view",
                     path: '/view/:id?',
                     action: 'view',
                     options: {
