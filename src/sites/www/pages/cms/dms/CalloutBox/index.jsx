@@ -7,9 +7,21 @@ import { dmsDataTypes } from "~/modules/dms/src"
 
 const RenderColorPicker = ({title, className, color, setColor}) => (
     <div className={className}>
-        <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>{title}</label>
-        <input id={'background'} className={'my-1 rounded-md shrink'}
+        <label className={'shrink-0 pr-2 w-1/4'}></label>
+        <input id={'background'} list="colors"
+               className={'rounded-md shrink'}
                type={'color'} value={color} onChange={e => setColor(e.target.value)}/>
+        <datalist id="colors">
+            {
+                [
+                    // yellows
+                    '#fefce8', '#fef9c3', '#fef08a', '#fde047', '#facc15', '#eab308', '#ca8a04', '#a16207', '#854d0e', '#713f12',
+
+                    // blues
+                    '#eff6ff', '#dbeafe', '#bfdbfe', '#93c5fd', '#60a5fa', '#3b82f6', '#2563eb', '#1d4ed8', '#1e40af', '#1e3a8a'
+                ].map(c => <option>{c}</option>)
+            }
+        </datalist>
     </div>
 )
 
@@ -29,7 +41,7 @@ const Edit = ({value, onChange}) => {
         <div className='w-full'>
             <div className='relative'>
                 <RenderColorPicker title={'Background: '}
-                                   className={'w-full pt-2 mt-3 flex flex-row text-sm items-center'}
+                                   className={'w-full flex flex-row text-sm items-center border border-dashed'}
                                    color={bgColor} setColor={setBgColor}/>
                     <LexicalComp value={text} onChange={setText} bgColor={bgColor}/>
             </div>
