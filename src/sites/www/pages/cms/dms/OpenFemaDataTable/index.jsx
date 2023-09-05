@@ -290,7 +290,10 @@ const Edit = ({value, onChange}) => {
                         type={dataSource}
                         setType={e => {
                             setVersion(undefined);
-                            setVisibleCols([])
+                            setVisibleCols([]);
+                            setGeoAttribute(undefined);
+                            setFilters([]);
+                            setGroupBy([]);
                             setDataSource(e);
                         }}
                     />
