@@ -373,7 +373,7 @@ const Edit = ({Component, value, onChange, attr}) => {
                 const sizeClass = getSizeClass(size, requiredSpace, availableSpace, runningColTotal);
 
                 return (
-                    <div key={i} className={`${sizeClass}`}>
+                    <div key={i} className={`flex-wrap ${sizeClass}`}>
                         {/* add to top */}
                         { edit.index === -1 && i === 0 ? 
                             <AddSectionButton onClick={() => setEditIndex(0)}/> : 
