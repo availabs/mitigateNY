@@ -356,7 +356,7 @@ const Edit = ({Component, value, onChange, attr}) => {
     // every time component size total reaches 1, row changes
 
     return (
-        <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}>
+        <div className={`mb-12 grid sm:grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}>
             {values.map((v,i) => {
                 const size = (edit.index === i ? edit?.value?.size : v?.size) || "1";
                 const requiredSpace = sizeOptionsSVG.find(s => s.name === size)?.value;
@@ -422,7 +422,7 @@ const View = ({Component, value, attr}) => {
     if (!value || !value.map) { return '' }
     let runningColTotal = 8;
     return (
-        <div className={`mb-12 grid grid-cols-6 lg:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}   >
+        <div className={`mb-12 grid grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}   >
         
         { 
             value.map((v,i) =>{

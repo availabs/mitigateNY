@@ -36,11 +36,11 @@ const spans = {
     // spans should sum up to 6 at max
     // only size 2 goes to 8 for lg:
     // for smaller screens, everything spans to 6 cols
-    "1/3": 'col-span-6 md:col-span-2',
-    "1/2": 'col-span-6 md:col-span-3',
-    "2/3": 'col-span-6 md:col-span-4',
-    "1":   'col-span-6',
-    "2":   'col-span-6 lg:col-span-8',
+    "1/3": 'sm:col-span-6 md:col-span-2',
+    "1/2": 'sm:col-span-6 md:col-span-3',
+    "2/3": 'sm:col-span-6 md:col-span-4',
+    "1":   'sm:col-span-6 md:col-span-6',
+    "2":   'sm:col-span-6 lg:col-span-8',
 }
 
 export const sizeOptionsSVG = [
@@ -56,10 +56,8 @@ export const getSizeClass = (size, requiredSpace, availableSpace, runningColTota
         return spans[size]
     }
 
-    const mdCols = availableSpace < requiredSpace ? 2 : runningColTotal;
-
-    // for smaller screens, everything should col-start at 2nd column. making 1 row = 1 comp
-    return  `col-start-2 md:col-start-${mdCols} ${spans[size]}`
+   return  availableSpace < requiredSpace ?
+        `${spans[size]} col-start-2 md:col-start-2` : `${spans[size]} col-start-2 md:col-start-${runningColTotal}`;
 }
 
 export const sizeGridTemplate = {gridTemplateColumns: '1fr repeat(6, minmax(100px, 190px)) 1fr'}
