@@ -161,7 +161,7 @@ const Edit = ({value, onChange}) => {
                                 aggregatedLen: metaLookup.aggregatedLen,
                                 filter: {
                                     ...metaLookup?.geoAttribute && {[`substring(${metaLookup.geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
-                                    year: [2020]
+                                    ...(metaLookup?.filter || {})
                                 }
                             });
                             const attributes = metaLookup.attributes;
