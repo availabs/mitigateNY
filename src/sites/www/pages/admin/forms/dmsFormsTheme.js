@@ -63,9 +63,10 @@ function defaultTheme () {
 
 			// view
 			sectionsWrapper: 'columns-2 gap-2',
-			sections: 'w-full h-fit shadow-md pb-2 mb-4 border',
+			sections: 'w-full h-fit shadow-md mb-4 border',
 			card: {
-				row: 'flex py-1 flex-row hover:bg-blue-50 space-between p-2 border-b',
+				wrapper: 'divide-y-2',
+				row: 'flex py-1 flex-row hover:bg-blue-50 space-between p-2',
 				rowLabel: 'w-1/4 text-xs text-gray-600 font-medium mb-2 capitalize',
 				rowContent: 'pl-2 w-3/4 text-sm',
 			}
