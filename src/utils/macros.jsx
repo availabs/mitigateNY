@@ -20,7 +20,7 @@ export const HoverComp = ({ data, keys, indexFormat, keyFormat, valueFormat }) =
             </div>
             {keys.slice()
                 // .filter(k => get(data, ["data", k], 0) > 0)
-                .filter(key => data.key === key)
+                .filter(key => data.key === key || get(data, ["data", key], 0) > 0)
                 .reverse().map(key => (
                     <div key={key} className={`
             flex items-center px-2 border-2 rounded transition

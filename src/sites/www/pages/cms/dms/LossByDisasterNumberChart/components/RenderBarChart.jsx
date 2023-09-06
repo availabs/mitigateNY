@@ -46,7 +46,7 @@ export const RenderBarChart = ({ chartDataActiveView = [], disaster_numbers = []
     return (
         <div className={`w-full pt-10 my-1 block flex flex-col`} style={{height: "450px"}}>
             <RenderLegend hazard={hazard} nonDeclaredDisastersColor={nonDeclaredDisastersColor}/>
-            <ButtonSelector types={[...ticks.map(t => fnumIndex(t, 0)), 'Max']}  type={threshold} setType={setThreshold}/>
+            <ButtonSelector types={[...ticks.map(t => fnumIndex(t, 0)), 'Max']}  type={threshold} setType={setThreshold} size={'large'}/>
             <BarGraph
                 key={"numEvents"}
                 data={chartDataActiveView}
