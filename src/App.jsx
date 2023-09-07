@@ -1,8 +1,7 @@
 import React, {useMemo} from 'react';
 import {
   createBrowserRouter,
-  RouterProvider,
-  useNavigate
+  RouterProvider
 } from "react-router-dom";
 
 // import { Messages } from '~/modules/avl-components/src'
@@ -35,9 +34,7 @@ const App = (props) => {
   
   return (
     <>
-      <RouterProvider 
-        router={createBrowserRouter(WrappedRoutes)} 
-      />
+      <RouterProvider router={createBrowserRouter(WrappedRoutes)} />
       <Messages />
     </>
   )
