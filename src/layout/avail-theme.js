@@ -231,23 +231,23 @@ const ppdaf = () => {
                 // indicatorIconOpen: 'fal fa-angle-down pt-2.5',
                 subMenuWrapperChild: ``,
                 subMenuWrapper: `pl-2 w-full `,
-                subMenuParentWrapper: `flex flex-col w-full border-2 border-pink-500 `
+                subMenuParentWrapper: `flex flex-col w-full  `
             },
             flyout: {
                 indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
                 indicatorIconOpen: 'fal fa-angle-down pl-2',
                 subMenuWrapper: `absolute ml-${sizes[size].width - 8} `,
-                subMenuParentWrapper: `flex flex-row border-2 `,
-                subMenuWrapperTop: `absolute top-full border-2 `,
+                subMenuParentWrapper: `flex flex-row  `,
+                subMenuWrapperTop: `absolute top-full  `,
             },
             row: {
                 indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
                 indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
                 subMenuWrapper: `absolute bg-white ml-${sizes[size].width - 8}`,
-                subMenuParentWrapper: `flex flex-row overflow-x-auto border-2 border-pink-500`,
+                subMenuParentWrapper: `flex flex-row  `,
                 subMenuWrapperChild: `divide-x overflow-x-auto`,
                 subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-white normal-case`,
-                subMenuWrapperInactiveFlyout: `absolute top-12 bg-white shadow-lg z-10 p-4`,
+                subMenuWrapperInactiveFlyout: `absolute normal-case top-12 bg-white shadow-lg z-10 p-2`,
                 subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
             },
         }
