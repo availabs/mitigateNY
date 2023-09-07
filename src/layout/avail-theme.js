@@ -36,7 +36,7 @@ const ppdaf = () => {
               highlightColor: `text-blue-800`,
             },
             transparent: {
-              contentBg: `bg-neutral-100`,
+              contentBg: ``,
               contentBgAccent: `bg-neutral-100`,
               accentColor: `${accent}-600`,
               accentBg: `hover:bg-${accent}-400`,
