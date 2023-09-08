@@ -86,6 +86,10 @@ const Edit = ({value, onChange}) => {
                 width: '20%',
                 type: 'text'
             },
+            'Start Date': {
+                raw: "min(coalesce(fema_incident_begin_date, swd_begin_date)) as start_date",
+                type: 'text'
+            },
             'Deaths, Injuries': {
                 raw: "'deaths:' || (coalesce(sum(deaths_direct), 0) + coalesce(sum(deaths_indirect), 0))::text || ', injuries:' || (coalesce(sum(injuries_direct), 0) + coalesce(sum(injuries_indirect), 0))::text as population_damage_numbers",
                 type: 'text'
