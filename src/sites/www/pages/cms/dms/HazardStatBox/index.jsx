@@ -103,7 +103,7 @@ const Edit = ({value, onChange}) => {
         {label: 'National Percentile Bar', forTotal: undefined},
         {label: 'Loss Distribution Bar', forTotal: true},
         {label: 'Hazard Percentile Bar', forTotal: false},
-        {label: 'Estimated Annual Loss (EAL)', forTotal: undefined},
+        {label: 'Expected Annual Loss (EAL)', forTotal: undefined},
         {label: 'Actual Loss', forTotal: false},
         {label: 'Exposure', forTotal: false},
         {label: '# Events', forTotal: false},

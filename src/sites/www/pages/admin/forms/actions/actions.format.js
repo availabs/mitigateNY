@@ -1,3 +1,5 @@
+import {geoMeta} from "./geoMeta.js";
+
 const cmsPageFormat = {
     app: "dms-site",
     type: "forms-actions-test",
@@ -35,10 +37,18 @@ const cmsPageFormat = {
             prompt: 'Select the county where the action takes place. If the action is located' +
                 ' in a different county you can select it by clicking the dropdown.',
             type: 'select',
-            options: [{value: '36001', label: 'Albany County'}, {value: '36003', label: 'Allegany County'}],
+            options: geoMeta.filter(g => g.value.length === 5),
             meta: 'true',
+            meta_lookup: {
+                view_id: 750,
+                geoAttribute: 'geoid',
+                keyAttribute: 'geoid',
+                attributes: ['geoid', 'name'],
+                filter: {year: [2020]}
+            },
             area: 'true',
             section: '1',
+            geoVariable: true
         },
         {
             key: 'action_jurisdiction',
@@ -48,10 +58,19 @@ const cmsPageFormat = {
                 ' is the jurisdiction location of the specific action,' +
                 ' such as acquiring emergency generators for critical facilities.',
             type: 'select',
+            options: geoMeta.filter(g => g.value.length <= 10),
             meta: 'true',
-            depend_on: 'action_county',
+            meta_lookup: {
+                view_id: 750,
+                geoAttribute: 'geoid',
+                keyAttribute: 'geoid',
+                attributes: ['geoid', 'name'],
+                filter: {year: [2020]}
+            },
             area: 'true',
             section: '1',
+            geoVariable: true,
+            depend_on: 'action_county',
             defaultValue: ['Countywide'],
             placeholder: 'Action Jurisdiction'
         },

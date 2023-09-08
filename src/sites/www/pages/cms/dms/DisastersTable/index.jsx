@@ -17,7 +17,7 @@ const colNameMapping = {
     fusion_property_damage: 'Property Damage',
     fusion_crop_damage: 'Crop Damage',
     total_fusion_damage: 'Total Loss',
-    disaster_number: 'Disaster Number',
+    disaster_number: 'Disaster Name / Number',
     event_id: 'Event Id',
     nri_category: 'Hazard Type',
     swd_ttd: 'Non Declared Total',
@@ -62,7 +62,7 @@ const Edit = ({value, onChange}) => {
 
     const fusionGeoCol = 'geoid',
         fusionAttributes = {
-            [type === 'declared' ? 'Disaster Number' : 'Event Id']: {
+            [type === 'declared' ? 'Disaster Name / Number' : 'Event Id']: {
                 raw: type === 'declared' ? 'disaster_number' : 'event_id',
                 align: 'right',
                 // filter: 'text',
@@ -293,11 +293,11 @@ const Edit = ({value, onChange}) => {
             newRow[fusionAttributes.County.raw] = geoNames?.find(gn => gn.geoid === newRow[fusionAttributes.County.raw])?.namelsad || newRow[fusionAttributes.County.raw];
             newRow[fusionAttributes["NRI Category"].raw] = (nriCategories || []).map(h => hazardsMeta[h]?.name || h).join(', ')
 
-            if(type === 'declared' && newRow[fusionAttributes['Disaster Number'].raw]?.length <= 4) {
-                newRow[fusionAttributes['Disaster Number'].raw] =
-                    get(disasterNames.find(dns => dns[colAccessNameMapping.disaster_number] === newRow[fusionAttributes['Disaster Number'].raw]),
+            if(type === 'declared' && newRow[fusionAttributes['Disaster Name / Number'].raw]?.length <= 4) {
+                newRow[fusionAttributes['Disaster Name / Number'].raw] =
+                    get(disasterNames.find(dns => dns[colAccessNameMapping.disaster_number] === newRow[fusionAttributes['Disaster Name / Number'].raw]),
                         "declaration_title",
-                        "No Title") + ` (${newRow[fusionAttributes['Disaster Number'].raw]})`;
+                        "No Title") + ` (${newRow[fusionAttributes['Disaster Name / Number'].raw]})`;
             }
 
             if(type === 'non-declared' && !(newRow.event_narrative || newRow.episode_narrative)){

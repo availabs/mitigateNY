@@ -25,6 +25,7 @@ import CalloutBox from "../CalloutBox/";
 import FilterableSearch from "../../components/FilterableSearch.jsx";
 import FusionEventsMap from "../FusionEventsMap/index.jsx";
 import OpenFemaDataTable from "../OpenFemaDataTable/index.jsx";
+import ActionsTable from "../ActionsTable/";
 
 const icons = {
     card: 'fa-thin fa-credit-card',
@@ -48,6 +49,7 @@ const ComponentRegistry = {
     "Table: Social Vulnerability Summary": SocialVulnerabilitySummaryTable,
     "Table: Buildings": BuildingsTable,
     "Table: Open Fema Data": OpenFemaDataTable,
+    "Table: Actions": ActionsTable,
     "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
     "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
     "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
