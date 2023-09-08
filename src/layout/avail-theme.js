@@ -36,7 +36,7 @@ const ppdaf = () => {
               highlightColor: `text-blue-800`,
             },
             transparent: {
-              contentBg: `bg-neutral-100`,
+              contentBg: ``,
               contentBgAccent: `bg-neutral-100`,
               accentColor: `${accent}-600`,
               accentBg: `hover:bg-${accent}-400`,
@@ -204,11 +204,11 @@ const ppdaf = () => {
       }
       let sizes = {
         compact: {
-          menu: `hidden md:flex flex-1 ${menu === 'left' ? '' : 'justify-end'} divide-x-2`,
+          menu: `hidden uppercase md:flex flex-1 ${menu === 'left' ? '' : 'justify-end'} divide-x-2`,
           sideItem: "flex  mx-6 pr-4 py-2 text-sm font-light hover:pl-4",
-          topItem: `flex font-medium uppercase items-center text-sm px-4 h-12 ${colors[color].textColor} ${colors[color].borderColor}
+          topItem: `flex font-medium tracking-widest items-center text-[14px] px-4 h-12 ${colors[color].textColor} ${colors[color].borderColor}
             ${colors[color].accentBg} hover:${colors[color].highlightColor}`,
-          activeItem: `flex font-medium uppercase bg-white items-center text-sm px-4 h-12 ${colors[color].textColor} ${colors[color].borderColor}
+          activeItem: `flex font-medium  tracking-widest bg-white items-center text-[14px] px-4 h-12 ${colors[color].highlightColor} ${colors[color].borderColor}
             ${colors[color].accentBg} hover:${colors[color].highlightColor}`,
           icon: "mr-3 text-lg",
           responsive: 'md:hidden'
@@ -229,24 +229,25 @@ const ppdaf = () => {
             inline: {
                 // indicatorIcon: 'fa fa-angle-right pt-2.5',
                 // indicatorIconOpen: 'fal fa-angle-down pt-2.5',
+                subMenuWrapperChild: ``,
                 subMenuWrapper: `pl-2 w-full `,
-                subMenuParentWrapper: `flex flex-col w-full`
+                subMenuParentWrapper: `flex flex-col w-full  `
             },
             flyout: {
                 indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
                 indicatorIconOpen: 'fal fa-angle-down pl-2',
-                subMenuWrapper: `absolute ml-${sizes[size].width - 8}`,
-                subMenuParentWrapper: `flex flex-row`,
-                subMenuWrapperTop: `absolute top-full`,
+                subMenuWrapper: `absolute ml-${sizes[size].width - 8} `,
+                subMenuParentWrapper: `flex flex-row  `,
+                subMenuWrapperTop: `absolute top-full  `,
             },
             row: {
                 indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
                 indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
-                subMenuWrapper: `absolute ml-${sizes[size].width - 8} `,
-                subMenuParentWrapper: `flex flex-row`,
-                subMenuWrapperChild: `divide-x`,
-                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-slate-100`,
-                subMenuWrapperInactiveFlyout: `absolute top-12 bg-white shadow-lg z-10`,
+                subMenuWrapper: `absolute bg-white ml-${sizes[size].width - 8}`,
+                subMenuParentWrapper: `flex flex-row  `,
+                subMenuWrapperChild: `divide-x overflow-x-auto`,
+                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-white normal-case`,
+                subMenuWrapperInactiveFlyout: `absolute normal-case top-12 bg-white shadow-lg z-10 p-2`,
                 subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
             },
         }
@@ -273,7 +274,7 @@ const ppdaf = () => {
           ` w-fit group font-sans whitespace-nowrap
             ${sizes[size].activeItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
-            transition cursor-pointer
+            transition cursor-pointer 
           `,
         mobileButton:`${sizes[size].responsive} ${colors[color].contentBg} inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
         ...subMenuStyles[subMenuStyle],

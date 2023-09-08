@@ -26,6 +26,7 @@ const siteConfig = {
       type: Layout,
       action: "list",
       path: "/*",
+      lazyLoad: true,
       filter: {
         mainNav: true, 
         attributes:['title', 'index', 'url_slug', 'parent' ]
@@ -34,15 +35,17 @@ const siteConfig = {
         { 
           type: PageView,
           path: "/*",
-          action: "view"
+          action: "view",
+
         },
       ]
     },
     { 
-      type: (props) => <Layout {...props} edit={true}/>,
+      type: (props) => <Layout {...props} edit={true} />,
       action: "list",
       path: "/edit/*",
       authLevel: 5,
+      lazyLoad: true,
       filter: {
         mainNav: true, 
         attributes:['title', 'index', 'url_slug', 'parent' ]

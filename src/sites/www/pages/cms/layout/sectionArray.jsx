@@ -217,7 +217,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                                   leaveTo="opacity-0 translate-y-1"
                                 >
                                   <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
-                                    <div className="bg-white">
+                                    <div className="bg-white border border-blue-200">
                                         <HelpComp
                                             value={value?.['helpText']}
                                         />
