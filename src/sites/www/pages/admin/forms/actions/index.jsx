@@ -180,7 +180,7 @@ const siteConfig = {
                 {
                     type: "dms-form-edit",
                     action: 'edit',
-                    filter: {stopFullDataLoad: true},
+                    filter: {type: 'new'},
                     path: '/new',
                     redirect: '/admin/forms/actions'
                 },

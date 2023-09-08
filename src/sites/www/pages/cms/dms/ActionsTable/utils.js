@@ -1,7 +1,14 @@
 import get from "lodash/get.js";
 
-export async function getMeta({actionsConfig, setMetaLookupByViewId, pgEnv, falcor, geoid}){
-    const metaViewIdLookupCols = actionsConfig.attributes.filter(md => md.geoVariable && md.meta_lookup);
+export async function getMeta({actionsConfig, metaLookupByViewId={}, setMetaLookupByViewId, visibleCols, pgEnv, falcor, geoid}){
+    const metaViewIdLookupCols =
+        actionsConfig.attributes
+            .filter(md =>
+                visibleCols.includes(md.label) &&
+                md.geoVariable &&
+                md.meta_lookup &&
+                !metaLookupByViewId[md.label]
+            );
     if(metaViewIdLookupCols?.length){
         const data =
             await metaViewIdLookupCols
@@ -38,7 +45,7 @@ export async function getMeta({actionsConfig, setMetaLookupByViewId, pgEnv, falc
 
                     return {...prev, ...{[md.label]: data}};
                 }, {});
-        setMetaLookupByViewId(data);
+        setMetaLookupByViewId({...metaLookupByViewId, ...data});
     }
 }
 

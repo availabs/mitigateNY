@@ -60,11 +60,13 @@ const Edit = ({value, onChange}) => {
     useEffect(() => {
         getMeta({
             actionsConfig,
+            metaLookupByViewId,
             setMetaLookupByViewId,
+            visibleCols,
             pgEnv,
             falcor,
             geoid});
-    }, [geoid]);
+    }, [geoid, visibleCols]);
 
     useEffect(() => {
         // gets 250 rows
