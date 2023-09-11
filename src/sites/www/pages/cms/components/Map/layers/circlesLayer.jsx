@@ -18,7 +18,7 @@ class CirclesOptions extends LayerContainer {
       id: "counties",
       source: {
         "type": "vector",
-        "url": "https://tiles.availabs.org/data/tl_2020_36_county.json"
+        "url": "https://dama-dev.availabs.org/tiles/data/hazmit_dama_s365_v778_1694455888142.json"
       },
     },
     {
@@ -44,7 +44,7 @@ class CirclesOptions extends LayerContainer {
     {
       "id": "counties",
       "source": "counties",
-      "source-layer": "tl_2020_us_county",
+      "source-layer": "s365_v778",
       "type": "fill",
       "paint": {
         "fill-color": '#d0d0ce'
@@ -53,7 +53,7 @@ class CirclesOptions extends LayerContainer {
     {
       "id": "counties-line",
       "source": "counties",
-      "source-layer": "tl_2020_us_county",
+      "source-layer": "s365_v778",
       "type": "line",
       paint: {
         "line-width": [

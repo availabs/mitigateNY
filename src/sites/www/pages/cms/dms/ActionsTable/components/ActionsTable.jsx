@@ -6,10 +6,6 @@ import { fnum } from "~/utils/macros.jsx";
 import {hazardsMeta} from "~/utils/colors.jsx";
 import {Attribution} from "../../../components/attribution.jsx";
 
-const colAccessNameMapping = {
-    'disaster_number': 'distinct disaster_number as disaster_number',
-}
-
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
 export const ActionsTable = ({
@@ -28,13 +24,16 @@ export const ActionsTable = ({
             ...c,
             Cell: cell => {
                 let value = getNestedValue(cell.value);
-                value = ['integer', 'number'].includes(cell.column.type) ?  fnum(value || 0, c.isDollar) : value
+                value =
+                    ['integer', 'number'].includes(cell.column.type) ?
+                        fnum(value || 0, c.isDollar) :
+                        Array.isArray(value) ? value.join(', ') : value
 
                 return( <div>{value}</div>);
             }
         }
     })
-    const sortColRaw = updatedColumns.find(c => c.accessor === Object.keys(sortBy)?.[0])?.accessor;
+    const sortColRaw = updatedColumns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
 
     const filteredData = data.filter(row =>
         !Object.keys(filterValue || {}).length ||

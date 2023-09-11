@@ -72,5 +72,7 @@ export async function setMeta({actionsConfig, visibleCols, data, setData, metaLo
                 return row;
             })
         setData(dataWithMeta)
+    }else{
+        setData(data)
     }
 }
