@@ -18,20 +18,22 @@ const colNameMapping = {
 
 const nonDeclaredDisastersColor = '#be00ff';
 
-export const RenderBarChart = ({ chartDataActiveView = [], attributionData, baseUrl, hazard, consequence = '_td' }) => {
+export const RenderBarChart = ({ chartDataActiveView = [], base, attributionData, baseUrl, hazard, consequence = '_td' }) => {
     if(!chartDataActiveView?.length) return null;
 
     const [threshold, setThreshold] = React.useState('Max');
-    const minYear = Math.min(...chartDataActiveView.map(d => d.year));
+    const minYear = 1996; //Math.min(...chartDataActiveView.map(d => d.year));
     const maxYear = Math.max(...chartDataActiveView.map(d => d.year));
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const xScaleDomain = base === 'year' ? range(minYear, maxYear) : months;
 
     const keys =
         Object.keys(hazardsMeta)
             .filter(k => !hazard || hazard === 'total' || k === hazard)
             .map(k => `${k}${consequence}`);
 
-    const yearWiseTotals = chartDataActiveView.map(d => keys.reduce((a,c) => a + (+d[c] || 0) ,0));
-    const maxValue = Math.max(...yearWiseTotals);
+    const baseWiseTotals = chartDataActiveView.map(d => keys.reduce((a,c) => a + (+d[c] || 0) ,0));
+    const maxValue = Math.max(...baseWiseTotals);
     const maxValueFormatted = +fnumIndex(maxValue, maxValue.toString().length).trim().split(' ')[0];
     const roundingMultiplier = Math.ceil(maxValueFormatted / 5);
     const roundedMaxValue = 5 * roundingMultiplier;
@@ -54,8 +56,8 @@ export const RenderBarChart = ({ chartDataActiveView = [], attributionData, base
                 key={"numEvents"}
                 data={chartDataActiveView}
                 keys={keys}
-                indexBy={"year"}
-                xScale={{domain: range(1996, maxYear)}}
+                indexBy={base}
+                xScale={{domain: xScaleDomain}}
                 axisBottom={{tickDensity: 3, axisColor: '#000', axisOpacity: 0}}
                 yScale={{domain: [0, upperLimit]}}
                 axisLeft={{

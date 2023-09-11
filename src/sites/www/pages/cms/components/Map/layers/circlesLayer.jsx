@@ -47,7 +47,7 @@ class CirclesOptions extends LayerContainer {
       "source-layer": "tl_2020_us_county",
       "type": "fill",
       "paint": {
-        "fill-color": '#d3d3d3'
+        "fill-color": '#d0d0ce'
       }
     },
     {
@@ -63,7 +63,7 @@ class CirclesOptions extends LayerContainer {
           5, 0,
           22, 1
         ],
-        "line-color": "#000000",
+        "line-color": "#ffffff",
         "line-opacity": 0.5
       }
     },
@@ -73,7 +73,7 @@ class CirclesOptions extends LayerContainer {
       "source-layer": "tl_2020_36_tract",
       "type": "fill",
       "paint": {
-        "fill-color": '#d3d3d3'
+        "fill-color": '#d0d0ce'
       }
     },
     {
@@ -89,7 +89,7 @@ class CirclesOptions extends LayerContainer {
           5, 0,
           22, 1
         ],
-        "line-color": "#252525",
+        "line-color": "#ffffff",
         "line-opacity": 0.3
       }
     },
@@ -99,6 +99,8 @@ class CirclesOptions extends LayerContainer {
       "type": "circle",
       "paint": {
         'circle-color': ['get', 'color'],
+        'circle-stroke-color': '#6e6e6e',
+        'circle-stroke-width': 1,
         'circle-opacity': 0.5,
         'circle-radius': ['get', 'radius'],
       }
@@ -118,24 +120,25 @@ class CirclesOptions extends LayerContainer {
     layers: ['circles'],
     HoverComp: ({ data, layer }) => {
       return (
-        <div style={{ maxHeight: "300px" }} className={`rounded relative px-1 overflow-auto scrollbarXsm bg-white`}>
+        <div style={{ maxHeight: "400px" }} className={`rounded relative px-1 overflow-auto scrollbar-sm bg-white`}>
           {
-            data?.length && data.map((row, i) =>
-              <div key={i} className="flex">
-                {
-                  row?.length && row.map((d, ii) =>
-                    <div key={ii}
-                      // style={{maxWidth: '200px'}}
-                         className={`
-                    ${ii === 0 ? "flex-1 font-bold" : "overflow-auto scrollbarXsm"}
-                    ${row.length > 1 && ii === 0 ? "mr-4" : ""}
-                    ${row.length === 1 && ii === 0 ? `border-b-2 text-lg ${i > 0 ? "mt-1" : ""}` : ""}
-                    `}>
-                      {d}
-                    </div>
-                  )
-                }
-              </div>
+            data?.length && data.map((d, i) =>
+              d.map(row => (
+                  <div key={i} className="flex border border-blue-300">
+                    {
+                        row?.length && row.map((d, ii) =>
+                            <div key={ii}
+                                 className={`
+                                  ${ii === 0 ? "flex-1 font-bold" : "overflow-auto scrollbarXsm"}
+                                  ${row.length > 1 && ii === 0 ? "mr-4" : ""}
+                                  ${row.length === 1 && ii === 0 ? `border-b-2 text-lg ${i > 0 ? "mt-1" : ""}` : ""}
+                                  `}>
+                              {d}
+                            </div>
+                        )
+                    }
+                  </div>
+              ))
             )
           }
         </div>
@@ -143,7 +146,6 @@ class CirclesOptions extends LayerContainer {
     },
     callback: (layerId, features, lngLat) => {
       return features.reduce((a, feature) => {
-        console.log('feature', feature)
         let { view: currentView, data } = this.props;
         const fmt = d3Formatter('0.2s');
         let record = data.find(d => d.event_id === feature.properties.event_id),
@@ -154,7 +156,7 @@ class CirclesOptions extends LayerContainer {
               .map(key => [key, fmt(get(record, key))]),
             currentView?.paintFn ? ['Total', fmt(currentView.paintFn(record || {}) || 0)] : null,
           ];
-        return response;
+        return [...a, response];
       }, []);
     }
   };

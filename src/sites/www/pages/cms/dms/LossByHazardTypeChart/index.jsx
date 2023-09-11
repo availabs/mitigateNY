@@ -19,7 +19,7 @@ const Edit = ({value, onChange}) => {
 
     const [disasterDecView, setDisasterDecView] = useState();
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(data?.ealViewId || 692);
+    const [ealViewId, setEalViewId] = useState(data?.ealViewId || 741);
     const fusionSourceId= 336;
     const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 657);
 
@@ -28,6 +28,7 @@ const Edit = ({value, onChange}) => {
     const [geoid, setGeoid] = useState(data?.geoid || '36');
     const [hazard, setHazard] = useState(data?.hazard || 'total');
     const [consequence, setConsequence] = useState(data?.consequence || '_td');
+    const [base, setBase] = useState(data?.consequence || 'year');
     const [dataPath, setDataPath] = useState([]);
 
     const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
@@ -53,8 +54,11 @@ const Edit = ({value, onChange}) => {
                 }
 
                 setFusionViewId(fusionView.view_id)
-                const dataPath = ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id, "byGeoid", geoid,
-                        "lossByYearByHazardType"];
+                const dataPath =
+                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id,
+                        "byGeoid", geoid,
+                        base === 'year' ? "lossByYearByHazardType" : "lossByMonthByHazardType"
+                    ];
 
                 setDataPath(dataPath);
 
@@ -68,11 +72,11 @@ const Edit = ({value, onChange}) => {
         }
 
         getData()
-    }, [geoid, ealViewId, geoid, hazard]);
+    }, [geoid, ealViewId, geoid, hazard, base]);
 
     const lossByYearByHazardType = get(falcorCache, [...dataPath, "value"], []),
-        { processed_data: chartDataActiveView, nri_categories } = ProcessDataForMap(lossByYearByHazardType);
-
+        { processed_data: chartDataActiveView } = ProcessDataForMap(lossByYearByHazardType, base);
+    console.log('??', base, dataPath, lossByYearByHazardType, chartDataActiveView)
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes'], {});
 
     useEffect(() =>
@@ -97,7 +101,19 @@ const Edit = ({value, onChange}) => {
                     Edit Controls
                     <VersionSelectorSearchable source_id={ealSourceId} view_id={ealViewId} onChange={setEalViewId} className={'flex-row-reverse'} />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'} />
-                    <HazardSelectorSimple hazard={hazard} setHazard={setHazard} showTotal={true}/>
+                    <HazardSelectorSimple hazard={hazard} setHazard={   setHazard} showTotal={true}/>
+                    <ButtonSelector
+                        label={'Base:'}
+                        types={[
+                            {value: 'year', label: 'Year'},
+                            {value: 'month', label: 'Month'}
+                        ]}
+                        type={base}
+                        setType={e => {
+                            setDataPath([])
+                            setBase(e)
+                        }}
+                    />
                     <ButtonSelector
                         label={'Loss Type:'}
                         types={[
@@ -114,6 +130,7 @@ const Edit = ({value, onChange}) => {
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <>
                                 <RenderBarChart
+                                    base={base}
                                     chartDataActiveView={chartDataActiveView}
                                     attributionData={attributionData}
                                     hazard={hazard}

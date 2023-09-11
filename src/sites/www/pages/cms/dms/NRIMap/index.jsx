@@ -45,7 +45,7 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
 
     data.forEach(record => {
         const value = paintFn ? paintFn(record) : record[columns?.[0]];
-        geoColors[record.geoid] = value ? colorScale(value) : '#CCC';
+        geoColors[record.geoid] = value ? colorScale(value) : '#d0d0ce';
     })
     return {geoColors, domain};
 }

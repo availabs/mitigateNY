@@ -41,7 +41,7 @@ const Edit = ({value, onChange}) => {
 
     const ealSourceId = 343;
 
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 741);
     const [fusionViewId, setFusionViewId] = useState(cachedData?.fusionViewId || 657);
     const [countyView, setCountyView] = useState(cachedData?.countyView);
     const [disasterDecView, setDisasterDecView] = useState(cachedData?.disasterDecView);
