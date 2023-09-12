@@ -49,22 +49,23 @@ export async function getMeta({actionsConfig, metaLookupByViewId={}, setMetaLook
     }
 }
 
-const filterData = ({geoAttribute, geoid, data}) =>
+const filterData = ({geoAttribute, geoid, data, actionType}) =>
     data.filter(d => {
             return !geoAttribute ||
-            d[geoAttribute] === geoid ||
-            (geoid?.length === 2 && d[geoAttribute]?.substring(0, 2) === geoid)
+                actionType === 'shmp' ||
+                d[geoAttribute] === geoid ||
+                (geoid?.length === 2 && d[geoAttribute]?.substring(0, 2) === geoid)
         }
     );
 
-export async function setMeta({actionsConfig, visibleCols, data, setData, metaLookupByViewId, geoAttribute, geoid}) {
+export async function setMeta({actionsConfig, visibleCols, data, setData, metaLookupByViewId, geoAttribute, geoid, actionType}) {
     const metaLookupCols =
         actionsConfig.attributes?.filter(md =>
             visibleCols.includes(md.label) && md.geoVariable
         );
 
     if(metaLookupCols?.length){
-        const dataWithMeta = filterData({geoAttribute, geoid, data})
+        const dataWithMeta = filterData({geoAttribute, geoid, data, actionType})
             .map(row => {
                 metaLookupCols.forEach(mdC => {
                     const currentMetaLookup = mdC.meta_lookup;
@@ -80,6 +81,6 @@ export async function setMeta({actionsConfig, visibleCols, data, setData, metaLo
             })
         setData(dataWithMeta)
     }else{
-        setData(filterData({geoAttribute, geoid, data}))
+        setData(filterData({geoAttribute, geoid, data, actionType}))
     }
 }

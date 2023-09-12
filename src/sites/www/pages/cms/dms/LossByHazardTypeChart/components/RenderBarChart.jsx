@@ -18,7 +18,7 @@ const colNameMapping = {
 
 const nonDeclaredDisastersColor = '#be00ff';
 
-export const RenderBarChart = ({ chartDataActiveView = [], base, attributionData, baseUrl, hazard, consequence = '_td' }) => {
+export const RenderBarChart = ({ chartDataActiveView = [], base='year', attributionData, baseUrl, hazard, consequence = '_td' }) => {
     if(!chartDataActiveView?.length) return null;
 
     const [threshold, setThreshold] = React.useState('Max');
