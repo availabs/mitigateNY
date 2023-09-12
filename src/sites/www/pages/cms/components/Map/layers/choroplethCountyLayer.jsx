@@ -160,7 +160,7 @@ class EALChoroplethOptions extends LayerContainer {
       context.drawImage(canvas, 0, 0);
 
 
-      drawLegend({legend: this.legend, filters: this.filters, size: this.props.size}, newCanvas, canvas);
+      drawLegend({legend: this.legend, showLegend: this.props.showLegend, filters: this.filters, size: this.props.size}, newCanvas, canvas);
       img = newCanvas.toDataURL();
       this.img = img;
       this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
@@ -192,9 +192,6 @@ class EALChoroplethOptions extends LayerContainer {
     this.legend.title = title;
 
     const hideLayer = geoLayer === 'counties' ? 'tracts' : 'counties';
-
-    console.log('??', geoColors, domain, colors, geoLayer, hideLayer)
-
 
     map.setLayoutProperty(geoLayer, 'visibility', 'visible');
     map.setLayoutProperty(`${geoLayer}-line`, 'visibility', 'visible');

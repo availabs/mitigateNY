@@ -18,6 +18,7 @@ import ckmeans from '~/utils/ckmeans';
 import {RenderMap} from "../../components/Map/RenderMap.jsx";
 import {Attribution} from "../../components/attribution.jsx";
 
+const defaultColors = getColorRange(5, "Oranges", false);
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
     return data?.length && range?.length ? ckmeans(data, Math.min(data?.length, range?.length)) : [];
@@ -70,7 +71,7 @@ const Edit = ({value, onChange, size}) => {
     const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
     const [numColors, setNumColors] = useState(cachedData?.numColors || 5);
     const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
-    const [colors, setColors] = useState(cachedData?.colors ||  getColorRange(5, "Oranges", false));
+    const [colors, setColors] = useState(cachedData?.colors || defaultColors);
     const [title, setTitle] = useState(cachedData?.title);
     const [height, setHeight] = useState(cachedData?.height || 500);
 
@@ -95,7 +96,7 @@ const Edit = ({value, onChange, size}) => {
 
     const attributionPath = view_id => ['dama', pgEnv, 'views', 'byId', view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
 
-
+    useEffect(() => setColors(metaData[type].colors || defaultColors), [type])
     useEffect(() => {
         // get required data, pass paint properties as prop.
         async function getData() {
@@ -108,6 +109,7 @@ const Edit = ({value, onChange, size}) => {
             }
             setLoading(true);
             setStatus(undefined);
+
             return falcor.get(dependencyPath(ealViewId)).then(async res => {
 
                 const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
@@ -184,6 +186,7 @@ const Edit = ({value, onChange, size}) => {
                 title,
                 size,
                 height,
+                showLegend:  metaData[type].legend !== false,
                 change: e => onChange(JSON.stringify({
                     ...e,
                     disasterNumber,
@@ -199,7 +202,8 @@ const Edit = ({value, onChange, size}) => {
                     domain,
                     numColors,
                     colors,
-                    height
+                    height,
+                    showLegend: metaData[type].legend !== false
                 }))
             }
         };
@@ -227,9 +231,13 @@ const Edit = ({value, onChange, size}) => {
                         label={'Type:'}
                         types={Object.keys(metaData).map(t => ({label: t.replace('_', ' '), value: t}))}
                         type={type}
-                        setType={setType}
+                        setType={e => {
+                            setColors(metaData[e].colors || defaultColors)
+                            setType(e)
+                        }}
                     />
-                    <RenderColorPicker
+                    {!metaData[type].colors &&
+                        <RenderColorPicker
                         title={'Colors: '}
                         numColors={numColors}
                         setNumColors={setNumColors}
@@ -237,7 +245,7 @@ const Edit = ({value, onChange, size}) => {
                         setShade={setShade}
                         colors={colors}
                         setColors={setColors}
-                    />
+                    />}
                     <ButtonSelector
                         label={'Size:'}
                         types={[{label: 'Small', value: 500},{label: 'Medium', value: 700},{label: 'Large', value: 900}]}
@@ -253,7 +261,7 @@ const Edit = ({value, onChange, size}) => {
                                     <RenderMap
                                         falcor={falcor}
                                         layerProps={layerProps}
-                                        legend={{domain, range: colors, title}}
+                                        legend={{domain, range: colors, title, show: metaData[type].legend !== false}}
                                     />
                                 </div>
                                 <Attribution baseUrl={baseUrl} attributionData={attributionData} />

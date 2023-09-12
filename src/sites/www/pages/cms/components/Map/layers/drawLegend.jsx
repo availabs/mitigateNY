@@ -10,6 +10,7 @@ const widths = {
     [undefined]: 420
 }
 export const drawLegend = (layer, newCanvas, mbCanvas) => {
+    if(layer.showLegend === false) return null;
 
     const context = newCanvas.getContext("2d")
     context.drawImage(mbCanvas, 0, 0);
