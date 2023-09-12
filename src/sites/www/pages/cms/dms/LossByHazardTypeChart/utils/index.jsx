@@ -1,13 +1,13 @@
 import React from "react";
 import get from "lodash/get.js";
 
-export const ProcessDataForMap = (data=[]) => React.useMemo(() => {
-    const years = [...new Set(data.map(d => d.year))];
+export const ProcessDataForMap = (data=[], base) => React.useMemo(() => {
+    const baseValues = [...new Set(data.map(d => d[base]))];
     const nri_categories = new Set([]);
 
-    const processed_data = years.map(year => {
+    const processed_data = baseValues.map(baseValue => {
         const lossData = data
-            .filter(d => d.year === year)
+            .filter(d => d[base] === baseValue)
             .reduce((acc, d) => {
                 const nri_category = d.nri_category;
                 const tmpDn = d.nri_category;
@@ -24,9 +24,9 @@ export const ProcessDataForMap = (data=[]) => React.useMemo(() => {
                     }
                 };
             }, {});
-        return { year, ...lossData };
+        return { [base]:baseValue, ...lossData };
     });
 
     return { processed_data, nri_categories: [...nri_categories] };
-}, [data]);
+}, [data, base]);
 

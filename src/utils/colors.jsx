@@ -4,6 +4,7 @@ export const hazardsMeta = {
         color: '#027B8E',
         name: 'Hail',
         prefix: 'hail',
+        consequences: ['b', 'p', 'pe', 'a', 't'],
         icon: 'fa-thin fa-cloud-hail'
     },
     'winterweat': {

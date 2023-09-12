@@ -41,7 +41,7 @@ export const drawLegend = (layer, newCanvas, mbCanvas) => {
     })
 
     // No data legend box
-    context.fillStyle = '#CCC';
+    context.fillStyle = '#d0d0ce';
     context.fillRect(5 + x + layer.legend.range.length * w, y, w, 20);
 
     let scale;

@@ -133,10 +133,10 @@ export const RenderHazardStatBox = ({
                 </div>
                 <div className={blockWrapper[size]}>
                     {
-                        visibleCols.includes('Estimated Annual Loss (EAL)') &&
+                        visibleCols.includes('Expected Annual Loss (EAL)') &&
                         <div className={blockClass[size]}>
                             <label className={isTotal ? 'break-word w-[25px]' : ''}>
-                                {isTotal ? `Estimated Annual Loss (EAL)` : `EAL`}
+                                {isTotal ? `Expected Annual Loss (EAL)` : `EAL`}
                             </label>
                             <span className={valueClass}>
                                 ${fnumIndex(eal)}

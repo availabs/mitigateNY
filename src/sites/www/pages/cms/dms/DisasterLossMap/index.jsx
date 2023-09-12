@@ -48,7 +48,7 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
 
         const record = data.find(d => d.geoid === gid) || {};
         const value = paintFn ? paintFn(record) : record[columns?.[0]];
-        geoColors[gid] = geoids.includes(gid) && value ? colorScale(value) : '#CCC';
+        geoColors[gid] = geoids.includes(gid) && value ? colorScale(value) : '#d0d0ce';
     }
     return {geoColors, domain};
 }
@@ -59,7 +59,7 @@ const Edit = ({value, onChange, size}) => {
     const baseUrl = '/';
 
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 741);
     const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || null);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);

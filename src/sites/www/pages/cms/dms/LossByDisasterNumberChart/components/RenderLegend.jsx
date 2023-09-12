@@ -14,7 +14,7 @@ export const RenderLegend = ({hazard, nonDeclaredDisastersColor}) =>
                                   style={{
                                       height: "10px",
                                       width: "10px",
-                                      backgroundColor: get(hazardsMeta, [key, "color"], "#ccc")
+                                      backgroundColor: get(hazardsMeta, [key, "color"], "#d0d0ce")
                                   }}/>
                             <label className={"pl-2"}>{hazardsMeta[key].name}</label>
                         </div>)

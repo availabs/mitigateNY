@@ -32,7 +32,7 @@ const getColorScale = (data, colors) => {
 const getRadiusScale = (domain = []) => {
     return scaleLinear()
         .domain([Math.min(...domain), Math.max(...domain)])
-        .range([0, 50]);
+        .range([5, 50]);
 }
 const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...rest}) => {
     if (!data?.length || !colors?.length) return {};
@@ -44,6 +44,7 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
         data.map((d) => paintFn ? paintFn(d) : d[columns?.[0]]).filter(d => d),
         colors
     );
+    console.log('cols', columns, data)
     const domain = getDomain(
         data.map((d) => paintFn ? paintFn(d) : d[columns?.[0]]).filter(d => d),
         colors
@@ -86,7 +87,7 @@ const Edit = ({value, onChange, size}) => {
     const baseUrl = '/';
 
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 692);
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 741);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
@@ -345,15 +346,16 @@ const Edit = ({value, onChange, size}) => {
                         type={attribute}
                         setType={setAttribute}
                     />
-                    <RenderColorPicker
-                        title={'Colors: '}
-                        numColors={numColors}
-                        setNumColors={setNumColors}
-                        shade={shade}
-                        setShade={setShade}
-                        colors={colors}
-                        setColors={setColors}
-                    />
+                    {type === 'Choropleth' &&
+                        <RenderColorPicker
+                            title={'Colors: '}
+                            numColors={numColors}
+                            setNumColors={setNumColors}
+                            shade={shade}
+                            setShade={setShade}
+                            colors={colors}
+                            setColors={setColors}
+                        />}
                     <ButtonSelector
                         label={'Size:'}
                         types={[{label: 'Small', value: 500}, {label: 'Medium', value: 700}, {
@@ -374,7 +376,15 @@ const Edit = ({value, onChange, size}) => {
                                     <RenderMap
                                         falcor={falcor}
                                         layerProps={layerProps}
-                                        legend={{domain, range: colors, title, show: type !== 'Circles'}}
+                                        legend={{
+                                            domain: type === 'Circles' ?
+                                                [...new Set(data.map(d => d.magnitude))] :
+                                                domain,
+                                            range: type === 'Circles' ? [5, 50] : colors,
+                                            title,
+                                            scaleType: type === 'Circles' ? 'linear' : 'quantile',
+                                            type
+                                            }}
                                         layers={[type]}
                                     />
                                 </div>

@@ -17,7 +17,7 @@ const Edit = ({value, onChange}) => {
     const baseUrl = '/';
 
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(data?.ealViewId || 692);
+    const [ealViewId, setEalViewId] = useState(data?.ealViewId || 741);
     const fusionSourceId= 336;
     const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 657);
 
@@ -75,8 +75,8 @@ const Edit = ({value, onChange}) => {
             get(falcorCache, [...dataPath, "value"], []),
         { total } = ProcessDataForMap(lossByYearByDisasterNumber);
 
-    const numDeclaredEvents = lossByYearByDisasterNumber.filter(d => d.disaster_number !== 'SWD')?.length,
-        numNonDeclaredEvents = lossByYearByDisasterNumber.reduce((acc, d) => acc + +(d.disaster_number === 'SWD' ? d.numevents : 0), 0)
+    const numDeclaredEvents = lossByYearByDisasterNumber.reduce((acc, d) => acc + +(d.disaster_number !== 'SWD' ? d.num_declared : 0), 0),
+        numNonDeclaredEvents = lossByYearByDisasterNumber.reduce((acc, d) => acc + +(d.disaster_number === 'SWD' ? d.num_non_declared : 0), 0)
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes'], {});
 
