@@ -121,7 +121,7 @@ const Edit = ({value, onChange}) => {
         }
 
         getData()
-    }, [geoid, visibleCols, fn, groupBy, notNull, geoAttribute, metaLookupByViewId]);
+    }, [geoid, visibleCols, fn, groupBy, notNull, geoAttribute, metaLookupByViewId, actionType]);
 
 
     // const attributionData = get(falcorCache, attributionPath, {});
@@ -164,7 +164,13 @@ const Edit = ({value, onChange}) => {
                 <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
                     Edit Controls
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
-
+                    <ButtonSelector
+                        label={'Action Level'}
+                        types={[{label: 'State', value: 'shmp'}, {label: 'Local', value: 'lhmp'}]}
+                        type={actionType}
+                        setType={setActionType}
+                        autoSelect={true}
+                    />
                     <RenderColumnControls
                         cols={actionsConfig.attributes.map(c => c.label)}
                         visibleCols={visibleCols}
