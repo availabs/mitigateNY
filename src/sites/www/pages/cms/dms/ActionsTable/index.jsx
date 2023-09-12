@@ -110,7 +110,9 @@ const Edit = ({value, onChange}) => {
                 visibleCols,
                 data: d,
                 setData,
-                metaLookupByViewId})
+                metaLookupByViewId,
+                geoAttribute, geoid
+            })
 
             setLoading(false);
         }

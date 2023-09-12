@@ -49,15 +49,22 @@ export async function getMeta({actionsConfig, metaLookupByViewId={}, setMetaLook
     }
 }
 
-export async function setMeta({actionsConfig, visibleCols, data, setData, metaLookupByViewId}) {
+const filterData = ({geoAttribute, geoid, data}) =>
+    data.filter(d => {
+            return !geoAttribute ||
+            d[geoAttribute] === geoid ||
+            (geoid?.length === 2 && d[geoAttribute]?.substring(0, 2) === geoid)
+        }
+    );
+
+export async function setMeta({actionsConfig, visibleCols, data, setData, metaLookupByViewId, geoAttribute, geoid}) {
     const metaLookupCols =
         actionsConfig.attributes?.filter(md =>
             visibleCols.includes(md.label) && md.geoVariable
         );
 
     if(metaLookupCols?.length){
-        console.log('metaLookupCols', metaLookupCols, metaLookupByViewId)
-        const dataWithMeta = data
+        const dataWithMeta = filterData({geoAttribute, geoid, data})
             .map(row => {
                 metaLookupCols.forEach(mdC => {
                     const currentMetaLookup = mdC.meta_lookup;
@@ -73,6 +80,6 @@ export async function setMeta({actionsConfig, visibleCols, data, setData, metaLo
             })
         setData(dataWithMeta)
     }else{
-        setData(data)
+        setData(filterData({geoAttribute, geoid, data}))
     }
 }
