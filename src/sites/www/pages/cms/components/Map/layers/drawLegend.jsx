@@ -15,7 +15,7 @@ export const drawLegend = (layer, newCanvas, mbCanvas) => {
     const context = newCanvas.getContext("2d")
     context.drawImage(mbCanvas, 0, 0);
 
-    let x = mbCanvas.width - 20 - widths[layer?.size],
+    let x = 0,
         y = 20,
         h = layer.legend.title ? 80 : 50;
     context.fillStyle = 'white'

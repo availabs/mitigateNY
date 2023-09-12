@@ -248,7 +248,7 @@ const Edit = ({value, onChange, size}) => {
                     />}
                     <ButtonSelector
                         label={'Size:'}
-                        types={[{label: 'Small', value: 500},{label: 'Medium', value: 700},{label: 'Large', value: 900}]}
+                        types={[{label: 'X Small', value: 200},{label: 'Small', value: 500},{label: 'Medium', value: 700},{label: 'Large', value: 900}]}
                         type={height}
                         setType={e => {setHeight(e)}}
                     />
