@@ -58,7 +58,7 @@ export const ActionsTable = ({
                     fetchData={fetchData}
                 />
             </div>
-            <Attribution baseUrl={baseUrl} attributionData={attributionData} />
+            {/*<Attribution baseUrl={baseUrl} attributionData={attributionData} />*/}
         </>
     )
 };

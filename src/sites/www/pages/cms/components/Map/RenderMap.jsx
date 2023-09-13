@@ -30,7 +30,7 @@ const RenderChoroplethLegend = ({size, domain, range, fmt, title,}) => {
         )
     }
     return (
-        <div className={`relative w-[${widths[size]}px] bg-white float-right mt-[20px] m-5 -mb-[100px] rounded-md`}
+        <div className={`relative w-[${widths[size]}px] bg-white float-left mt-[20px] m-5 -mb-[100px] rounded-md`}
              style={{zIndex: 10}}>
             {
                 title && <label className={'font-sm pl-2'}>{title}</label>
@@ -64,7 +64,7 @@ const RenderCirclesLegend = ({size, domain, range, fmt, title,}) => {
         )
     }
     return (
-        <div className={`relative w-[${widths[size]}px] bg-white float-right mt-[20px] m-5 -mb-[100px] rounded-md`}
+        <div className={`relative w-[${widths[size]}px] bg-white float-left mt-[20px] m-5 -mb-[100px] rounded-md`}
              style={{zIndex: 10}}>
             {
                 title && <label className={'font-sm pl-2'}>{title}</label>

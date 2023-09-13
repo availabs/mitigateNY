@@ -48,4 +48,13 @@ export const metaData = {
             'Indemnity Amount': 'indemnity_amount'
         }
     },
+    declared: {
+        title: '',
+        type: 'disaster_declarations_summaries_v2',
+        geoColumn: 'fips_state_code || fips_county_code',
+        columns: {},
+        paintFn: d => d.geoid ? 1 : 0,
+        legend: false,
+        colors: ['#fba819']
+    },
 };

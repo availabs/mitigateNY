@@ -50,7 +50,7 @@ const Edit = ({value, onChange}) => {
     const [groupBy, setGroupBy] = useState(cachedData?.groupBy || []);
     const [notNull, setNotNull] = useState(cachedData?.notNull || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
-
+    const [actionType, setActionType] = useState(cachedData?.actionType || 'shmp')
 
     useEffect(() => {
         const geoAttribute = actionsConfig.attributes.find(c => c.geoVariable);
@@ -98,6 +98,9 @@ const Edit = ({value, onChange}) => {
                             filter: {
                                 fromIndex: path => path.split('/')[1],
                                 toIndex: path => path.split('/')[2],
+                                options: JSON.stringify({
+                                    filter: {[`data->>'idKey'`]: [actionType]}
+                                })
                             },
                         }
                     ]
@@ -111,14 +114,14 @@ const Edit = ({value, onChange}) => {
                 data: d,
                 setData,
                 metaLookupByViewId,
-                geoAttribute, geoid
+                geoAttribute, geoid, actionType
             })
 
             setLoading(false);
         }
 
         getData()
-    }, [geoid, visibleCols, fn, groupBy, notNull, geoAttribute, metaLookupByViewId]);
+    }, [geoid, visibleCols, fn, groupBy, notNull, geoAttribute, metaLookupByViewId, actionType]);
 
 
     // const attributionData = get(falcorCache, attributionPath, {});
@@ -147,12 +150,12 @@ const Edit = ({value, onChange}) => {
                         status,
                         geoid,
                         pageSize, sortBy, groupBy, fn, notNull,
-                        data, columns, filters, filterValue, visibleCols, geoAttribute
+                        data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
                     }))
             }
         },
         [ status, geoid, pageSize, sortBy, groupBy, fn, notNull,
-            data, columns, filters, filterValue, visibleCols, geoAttribute
+            data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
         ]);
 
     return (
@@ -161,7 +164,13 @@ const Edit = ({value, onChange}) => {
                 <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
                     Edit Controls
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
-
+                    <ButtonSelector
+                        label={'Action Level'}
+                        types={[{label: 'State', value: 'shmp'}, {label: 'Local', value: 'lhmp'}]}
+                        type={actionType}
+                        setType={setActionType}
+                        autoSelect={true}
+                    />
                     <RenderColumnControls
                         cols={actionsConfig.attributes.map(c => c.label)}
                         visibleCols={visibleCols}

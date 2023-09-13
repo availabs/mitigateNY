@@ -28,7 +28,7 @@ const Edit = ({value, onChange}) => {
     const [geoid, setGeoid] = useState(data?.geoid || '36');
     const [hazard, setHazard] = useState(data?.hazard || 'total');
     const [consequence, setConsequence] = useState(data?.consequence || '_td');
-    const [base, setBase] = useState(data?.consequence || 'year');
+    const [base, setBase] = useState(data?.base || 'year');
     const [dataPath, setDataPath] = useState([]);
 
     const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
@@ -90,9 +90,10 @@ const Edit = ({value, onChange}) => {
                     geoid,
                     hazard,
                     dataPath,
-                    consequence
+                    consequence,
+                    base
                 })),
-        [chartDataActiveView, attributionData, status, ealViewId, fusionViewId, geoid, hazard, dataPath, consequence]);
+        [chartDataActiveView, attributionData, status, ealViewId, fusionViewId, geoid, hazard, dataPath, consequence, base]);
 
     return (
         <div className='w-full'>
