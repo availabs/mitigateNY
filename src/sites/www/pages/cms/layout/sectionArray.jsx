@@ -3,6 +3,7 @@ import isEqual from 'lodash/isEqual'
 import cloneDeep from 'lodash/cloneDeep'
 import {getSizeClass, sizeOptionsSVG} from './utils/sizes.jsx'
 import { Popover, Transition } from '@headlessui/react'
+import {Link} from "react-router-dom";
 
 function SizeSelect ({size='1', setSize, onChange}) {
     
@@ -186,7 +187,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
             {
                 (value?.['title'] || value?.['tags'] || edit) && (
                     <div className={`flex h-[50px] items-center mt-4`}>
-                        <div id={`#${value?.title?.replace(/ /g, '_')}`} className='flex-1 py-2 px-6 font-sans font-medium text-md uppercase scroll-mt-36'>
+                        <div id={`#${value?.title?.replace(/ /g, '_')}`} className='flex-1 flex-row py-2 px-6 font-sans font-medium text-md uppercase scroll-mt-36'>
                             <TitleComp
                                 className='w-full'
                                 value={value?.['title']}
@@ -229,6 +230,8 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                                 </Popover>
                             </div>)
                             : ''}
+                        {typeof onEdit !== 'function' &&
+                            <Link to={`/interact/${value?.id}`} title={'interact'}> <i className={'fa-light fa-window-restore'}/> </Link>}
 
                         { typeof onEdit === 'function' ?
                             <>
