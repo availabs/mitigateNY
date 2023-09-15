@@ -184,93 +184,102 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
 
     return (
         <div className={`${i === 0 ? '-mt-5' : 'pt-4'}`}>
-            {
-                (value?.['title'] || value?.['tags'] || edit) && (
-                    <div className={`flex h-[50px] items-center mt-4`}>
-                        <div id={`#${value?.title?.replace(/ /g, '_')}`} className='flex-1 flex-row py-2 px-6 font-sans font-medium text-md uppercase scroll-mt-36'>
-                            <TitleComp
-                                className='w-full'
-                                value={value?.['title']}
-                            />
-                        </div>
-                        <div className='p-2'>
-                            <TagsComp
-                                className=''
-                                value={value?.['tags']}
-                            />
-                        </div>
-                        
+            <div className={'flex justify-between'}>
+                {
+                    (value?.['title'] || value?.['tags'] || edit) ? (
+                        <div className={`flex h-[50px] items-center mt-4`}>
+                            <div id={`#${value?.title?.replace(/ /g, '_')}`} className='flex-1 flex-row py-2 px-6 font-sans font-medium text-md uppercase scroll-mt-36'>
+                                <TitleComp
+                                    className='w-full'
+                                    value={value?.['title']}
+                                />
+                            </div>
+                            <div className='p-2'>
+                                <TagsComp
+                                    className=''
+                                    value={value?.['tags']}
+                                />
+                            </div>
+
                             {value?.['helpText'] ?
-                            (
-                            <div>
-                            <Popover className="relative">
-                              <Popover.Button
-                                className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}>
-                                <i className="fa-light fa-question text-lg fa-fw" title="Delete"/>
-                              </Popover.Button>
-                                <Transition
-                                  as={Fragment}
-                                  enter="transition ease-out duration-200"
-                                  enterFrom="opacity-0 translate-y-1"
-                                  enterTo="opacity-100 translate-y-0"
-                                  leave="transition ease-in duration-150"
-                                  leaveFrom="opacity-100 translate-y-0"
-                                  leaveTo="opacity-0 translate-y-1"
-                                >
-                                  <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
-                                    <div className="bg-white border border-blue-200">
-                                        <HelpComp
-                                            value={value?.['helpText']}
-                                        />
+                                (
+                                    <div>
+                                        <Popover className="relative">
+                                            <Popover.Button
+                                                className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}>
+                                                <i className="fa-light fa-question text-lg fa-fw" title="Delete"/>
+                                            </Popover.Button>
+                                            <Transition
+                                                as={Fragment}
+                                                enter="transition ease-out duration-200"
+                                                enterFrom="opacity-0 translate-y-1"
+                                                enterTo="opacity-100 translate-y-0"
+                                                leave="transition ease-in duration-150"
+                                                leaveFrom="opacity-100 translate-y-0"
+                                                leaveTo="opacity-0 translate-y-1"
+                                            >
+                                                <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
+                                                    <div className="bg-white border border-blue-200">
+                                                        <HelpComp
+                                                            value={value?.['helpText']}
+                                                        />
+                                                    </div>
+
+
+                                                </Popover.Panel>
+                                            </Transition>
+                                        </Popover>
+                                    </div>)
+                                : ''}
+
+                            { typeof onEdit === 'function' ?
+                                <>
+                                    <div className='py-2'>
+                                        <button
+                                            className={'pl-3 flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
+                                            onClick={ () => moveItem(i,-1) }
+                                        >
+                                            <i className="fa-light fa-angle-up text-xl fa-fw" title="Edit"></i>
+                                            {/*☳ Edit*/}
+                                        </button>
+
                                     </div>
+                                    <div className='py-2'>
+                                        <button
+                                            className={'pl-3  flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
+                                            onClick={ () =>  moveItem(i,1) }
+                                        >
+                                            <i className="fa-light fa-angle-down text-xl fa-fw" title="Edit"></i>
+                                            {/*☳ Edit*/}
+                                        </button>
 
+                                    </div>
+                                    <div className='py-2'>
+                                        <button
+                                            className={'pl-6 py-0.5 flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
+                                            onClick={ onEdit }
+                                        >
+                                            <i className="fa-light fa-pencil text-xl fa-fw" title="Edit"></i>
+                                            {/*☳ Edit*/}
+                                        </button>
 
-                                  </Popover.Panel>
-                                </Transition>
-                                </Popover>
-                            </div>)
-                            : ''}
-                        {typeof onEdit !== 'function' &&
-                            <Link to={`/interact/${value?.id}`} title={'interact'}> <i className={'fa-light fa-window-restore'}/> </Link>}
+                                    </div>
+                                </>
+                                : ''
+                            }
+                        </div>
+                    ) : <div className={'w-full'}></div>
+                }
+                {typeof onEdit !== 'function' &&
+                    <Link
+                        className={'float-right self-center'}
+                        to={`/interact/${value?.id}`}
+                        title={'interact'}>
+                        <i className={'fa-light fa-window-restore'}/>
+                    </Link>
+                }
+            </div>
 
-                        { typeof onEdit === 'function' ?
-                            <>
-                            <div className='py-2'>
-                                <button
-                                    className={'pl-3 flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
-                                    onClick={ () => moveItem(i,-1) }
-                                >
-                                    <i className="fa-light fa-angle-up text-xl fa-fw" title="Edit"></i>
-                                    {/*☳ Edit*/}
-                                </button>
-
-                            </div>
-                            <div className='py-2'>
-                                <button
-                                    className={'pl-3  flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
-                                    onClick={ () =>  moveItem(i,1) }
-                                >
-                                    <i className="fa-light fa-angle-down text-xl fa-fw" title="Edit"></i>
-                                    {/*☳ Edit*/}
-                                </button>
-
-                            </div>
-                            <div className='py-2'>
-                                <button
-                                    className={'pl-6 py-0.5 flex items-center text-md cursor-pointer hover:text-blue-500 text-slate-400'}
-                                    onClick={ onEdit }
-                                >
-                                    <i className="fa-light fa-pencil text-xl fa-fw" title="Edit"></i>
-                                    {/*☳ Edit*/}
-                                </button>
-
-                            </div>
-                            </>
-                            : ''
-                        }
-                    </div>
-                )
-            }
             <div>
                 <ElementComp value={value?.['element']} />
             </div>
