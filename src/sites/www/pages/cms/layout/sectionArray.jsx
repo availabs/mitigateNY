@@ -184,7 +184,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
 
     return (
         <div className={`${i === 0 ? '-mt-5' : 'pt-4'}`}>
-            <div className={'flex justify-between'}>
+            <div className={onEdit !== 'function' ? 'flex justify-end' : ``}>
                 {
                     (value?.['title'] || value?.['tags'] || edit) ? (
                         <div className={`flex h-[50px] items-center mt-4`}>

@@ -31,7 +31,7 @@ export const ButtonSelector = ({
                 space-x-1 rounded-lg bg-slate-100 py-0.5
                 flex flex-row flex-wrap
                 shadow-sm 
-                ${size === 'large' ? `w-full` : 'w-3/4'}`}>
+                ${size === 'large' ? `w-full` : 'w-fit'}`}>
                 {
                     types.map((t, i) => {
                         const currentValue = t?.value || t;
