@@ -35,7 +35,7 @@ const icons = {
     'lexical': 'fa-thin fa-text'
 }
 // register components here
-const ComponentRegistry = {
+export const ComponentRegistry = {
     // "ColorBox": ColorBox,
     "Card: Callout": CalloutBox,
     "Card: Hazard Risk": HazardStatBox,
