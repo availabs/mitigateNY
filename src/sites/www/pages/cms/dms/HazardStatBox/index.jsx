@@ -77,7 +77,7 @@ const Edit = ({value, onChange}) => {
         nriPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", nriOptions];
     let
         actualLossCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) + sum(swd_population_damage) as actual_damage",
-        numSevereEventsCol = `SUM(CASE WHEN coalesce(fusion_property_damage, 0) + coalesce(fusion_crop_damage, 0) + coalesce(swd_population_damage, 0) >= ${severeEventThreshold} THEN 1 ELSE 0 END) as num_severe_events`,
+        numSevereEventsCol = `count(distinct CASE WHEN coalesce(fusion_property_damage, 0) + coalesce(fusion_crop_damage, 0) + coalesce(swd_population_damage, 0) >= ${severeEventThreshold} THEN event_id ELSE null END) as num_severe_events`,
         numEventsCol = `count(distinct coalesce(disaster_number, event_id::text)) as num_events`, // count either disaster_number or event_id
         numFEMADeclaredCol = `COALESCE(array_length(array_remove(array_agg(distinct disaster_number), null), 1), 0) as num_fema_declared`,
         deathsCol = `sum(deaths_direct) + sum(deaths_indirect) as deaths`,
