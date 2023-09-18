@@ -205,13 +205,13 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                         </div>
 
                         <Link
-                            className={interactCondition ? 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400' : 'invisible'}
+                            className={interactCondition ? 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400' : 'hidden'}
                             to={`/interact/${value?.id}`}
                             title={'interact'}>
                             <i className={'fa-light fa-window-restore'}/>
                         </Link>
 
-                        <div className={helpTextCondition ? '' : 'invisible'}>
+                        <div className={helpTextCondition ? '' : 'hidden'}>
                             <Popover className="relative">
                                 <Popover.Button
                                     className={'pl-3 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400'}>
