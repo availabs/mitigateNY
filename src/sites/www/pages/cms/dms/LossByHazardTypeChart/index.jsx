@@ -118,7 +118,7 @@ const Edit = ({value, onChange}) => {
                     <ButtonSelector
                         label={'Loss Type:'}
                         types={[
-                            {value: '_pd', label: 'Buildings'},
+                            {value: '_pd', label: 'Property'},
                             {value: '_cd', label: 'Crop'},
                             {value: '_td', label: 'Total'}
                         ]}
