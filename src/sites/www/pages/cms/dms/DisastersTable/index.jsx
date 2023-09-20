@@ -134,8 +134,13 @@ const Edit = ({value, onChange}) => {
                 aggregatedLen: true,
                 filter: {
                     [`substring(${fusionGeoCol}, 1, ${geoid.length})`]: [geoid],
-                    'disaster_number': [type === 'declared' ? 'not null' : 'null'],
+                    ...type !== 'declared' && {'disaster_number': ['null']},
                     ...hazard !== 'total' && {nri_category: [hazard]}
+                },
+                exclude: {
+                    ...type === 'declared' &&
+                    {'coalesce((fusion_property_damage), 0) + coalesce((fusion_crop_damage), 0)+ coalesce((swd_population_damage), 0)': [0]},
+                    ...type === 'declared' && {'disaster_number': ['null']}
                 },
                 groupBy: [fusionGeoCol, 'EXTRACT(YEAR from coalesce(fema_incident_begin_date, swd_begin_date))', type === 'declared' ? 'disaster_number' : 'event_id',],
             }),
@@ -143,8 +148,13 @@ const Edit = ({value, onChange}) => {
             JSON.stringify({
                 filter: {
                     [`substring(${fusionGeoCol}, 1, ${geoid.length})`]: [geoid],
-                    'disaster_number': [type === 'declared' ? 'not null' : 'null'],
+                    ...type !== 'declared' && {'disaster_number': ['null']},
                     ...hazard !== 'total' && {nri_category: [hazard]}
+                },
+                exclude: {
+                    ...type === 'declared' &&
+                    {'coalesce((fusion_property_damage), 0) + coalesce((fusion_crop_damage), 0)+ coalesce((swd_population_damage), 0)': [0]},
+                    ...type === 'declared' && {'disaster_number': ['null']}
                 },
                 groupBy: [1, 2, 3],
                 orderBy: [

@@ -34,7 +34,7 @@ const Edit = ({value, onChange}) => {
         disasterDetailsAttributes = [
             "disaster_number",
             "declaration_title",
-            "declaration_date",
+            "incident_begin_date",
             "incident_type",
             'ARRAY_AGG(distinct fips_state_code || fips_county_code) as geoid'
         ],
@@ -82,7 +82,7 @@ const Edit = ({value, onChange}) => {
 
     const title = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "declaration_title"]);
     const incidentType = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "incident_type"]);
-    const declarationDate = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "declaration_date", "value"], "");
+    const declarationDate = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "incident_begin_date", "value"], "");
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', disasterDecView, 'attributes'], {});
 
     useEffect(() => {

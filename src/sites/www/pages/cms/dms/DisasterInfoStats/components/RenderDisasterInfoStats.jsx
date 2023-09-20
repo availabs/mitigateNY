@@ -27,7 +27,7 @@ export const RenderDisasterInfoStats = ({ title, incidentType, declarationDate, 
                    </div>
 
                    <div className={"w-full h-[90px] bg-white p-3 mt-5 ml-5 flex flex-col"}>
-                       <label className={blockLabelClass}>Declaration Date</label>
+                       <label className={blockLabelClass}>Incident Date</label>
                        <span
                            className={blockValueClass}>{formatDate(declarationDate)}</span>
                    </div>

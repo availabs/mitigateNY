@@ -16,7 +16,7 @@ export const RenderStatBoxes = ({ total, numDeclaredEvents, numNonDeclaredEvents
                         # FEMA Declared Disasters
                     </label>
                     <span className={blockValueClass}>
-            {fnum(numDeclaredEvents)}
+            {get(total, [0, "ofd_ttd"], 0) === 0 ? 0 : fnum(numDeclaredEvents)}
           </span>
                 </div>
 
