@@ -59,6 +59,11 @@ const cmsPageFormat = {
       default: "New Page"
     },
     {
+      key: "show_in_nav",
+      type: "text",
+      default: "true"
+    },
+    {
       key: "index",
       type: "number",
       default: "props:index",

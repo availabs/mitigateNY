@@ -1,24 +1,17 @@
 import SectionArray from '../../cms/layout/sectionArray'
-import {cmsSection} from '../../cms/cms.format.js'
-
-
+import { cmsSection } from '../../cms/cms.format.js'
 
 const cmsPageFormat = {
   app: "dms-site",
-  type: "docs-play",
+  type: "format-page",
   registerFormats: [cmsSection],
-  defaultSearch: `data ->> 'index' = '0' and data ->> 'parent' = ''`,
-  defaultSort: (d) => d.sort((a,b) => a.index - b.index || a.parent-b.parent),
+  // defaultSearch: `data ->> 'index' = '0' and data ->> 'parent' = ''`,
+  // defaultSort: (d) => d.sort((a,b) => a.index - b.index || a.parent-b.parent),
   attributes: [
     { key: "title",
       type: "text",
       required: true,
       default: "New Page"
-    },
-    {
-      key: "show_in_nav",
-      type: "text",
-      default: "true"
     },
     {
       key: "index",
@@ -37,7 +30,6 @@ const cmsPageFormat = {
     {
       key: 'url_slug',
       type: "text",
-      matchWildcard: true,
       hidden: true
     },
     {
@@ -51,7 +43,7 @@ const cmsPageFormat = {
       isArray: true,
       format: 'dms-site+cms-section',
       DisplayComp: SectionArray
-    },
+    }
   ]
 }
 
