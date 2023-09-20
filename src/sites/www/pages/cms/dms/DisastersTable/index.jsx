@@ -41,8 +41,8 @@ const Edit = ({value, onChange}) => {
 
     const ealSourceId = 343;
 
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 741);
-    const [fusionViewId, setFusionViewId] = useState(cachedData?.fusionViewId || 657);
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 818);
+    const [fusionViewId, setFusionViewId] = useState(cachedData?.fusionViewId || 813);
     const [countyView, setCountyView] = useState(cachedData?.countyView);
     const [disasterDecView, setDisasterDecView] = useState(cachedData?.disasterDecView);
     const [disasterNumbers, setDisasterNumbers] = useState(cachedData?.disasterNumbers || []);
@@ -326,16 +326,16 @@ const Edit = ({value, onChange}) => {
 
     const columns =
         [...anchorCols, ...visibleCols]
-            .filter(c => fusionAttributes[c].visible !== false)
+            .filter(c => fusionAttributes[c] && fusionAttributes[c]?.visible !== false)
             .map(col => {
                 return {
                     Header: col,
-                    accessor: fusionAttributes[col].raw,
-                    rawHeader: fusionAttributes[col].raw,
-                    type: fusionAttributes[col].type,
-                    align: fusionAttributes[col].align || 'left',
-                    width: fusionAttributes[col].width || '15%',
-                    filter: fusionAttributes[col].filter || filters[col],
+                    accessor: fusionAttributes[col]?.raw,
+                    rawHeader: fusionAttributes[col]?.raw,
+                    type: fusionAttributes[col]?.type,
+                    align: fusionAttributes[col]?.align || 'left',
+                    width: fusionAttributes[col]?.width || '15%',
+                    filter: fusionAttributes[col]?.filter || filters[col],
                 }
             });
 

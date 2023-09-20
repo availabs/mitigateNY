@@ -19,7 +19,7 @@ const Edit = ({value, onChange}) => {
     const baseUrl = '/';
 
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 741);
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 818);
     const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
     const [countyView, setCountyView] = useState();
     const [loading, setLoading] = useState(true);
