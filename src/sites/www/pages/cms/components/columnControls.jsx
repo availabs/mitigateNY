@@ -21,7 +21,7 @@ const RenderPageSizeControl = ({pageSize, setPageSize}) => {
                 value={tmpPageSize}
                 onChange={e => {
                     setTmpPageSize(e.target.value);
-                    if (e.target.value > 0) setPageSize(e.target.value);
+                    if (e.target.value > 0) setPageSize(+e.target.value);
                 }}
                 onWheel={e => e.target.blur()}
             />

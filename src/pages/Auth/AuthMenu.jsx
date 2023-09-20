@@ -1,6 +1,6 @@
 import React from "react"
 import {useTheme, Dropdown, withAuth } from '~/modules/avl-components/src'
-import {Link} from 'react-router-dom'
+import {Link, useLocation} from 'react-router-dom'
 // import {NavItem, NavMenu, NavMenuItem, NavMenuSeparator, withAuth} from 'components/avl-components/src'
 // import user from "@availabs/ams/dist/reducers/user";
 
@@ -41,12 +41,13 @@ export const Item = (to, icon, span, condition) => (
 
 export default withAuth(({title, shadowed = true, user, children}) => {
    
-    const theme = useTheme()
-    // console.log('Auth Menu', theme)
+    const theme = useTheme();
+    const location = useLocation();
+
     return (
         <div className="h-full w-full">
             {!user.authed ?
-                <Link className={`${theme.topnav({}).navitemTop}`} to="/auth/login">Login</Link> :
+                <Link className={`${theme.topnav({}).navitemTop}`} to="/auth/login" state={{from: location?.pathname}}>Login</Link> :
                 <Dropdown control={<UserMenu user={user}/>} className={`hover:bg-blue-500 group `} >
                     <div className='p-1 bg-blue-500'>
                         { user.authLevel >= 5 ? 
