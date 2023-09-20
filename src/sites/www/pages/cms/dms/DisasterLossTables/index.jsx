@@ -78,7 +78,7 @@ const Edit = ({value, onChange}) => {
                 }
                 const tmpHMGPViews = {
                     'hmgp summaries': 725,
-                    'hmgp projects': 728,
+                    'hmgp projects': 798,
                     'hmgp properties': 729
                 }
                 const typeId = tmpHMGPViews[type] ? {view_id: tmpHMGPViews[type]} : deps.find(dep => dep.type === metaData[type]?.type);
