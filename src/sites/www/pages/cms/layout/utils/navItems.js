@@ -40,6 +40,7 @@ export function detectNavLevel(dataItems, baseUrl) {
 }
 
 export function dataItemsNav(dataItems, baseUrl = '', edit = false) {
+    // console.log('dataItemsnav', dataItems)
     return dataItems
         .sort((a, b) => a.index - b.index)
         .filter(d => !d.parent)

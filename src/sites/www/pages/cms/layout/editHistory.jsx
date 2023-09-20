@@ -2,7 +2,6 @@ import React, {Fragment, useState, useEffect} from 'react'
 
 import { Dialog, Listbox, Transition } from '@headlessui/react'
 import { NavLink, Link, useSubmit, useLocation } from "react-router-dom";
-import Nestable from './nestable';
 
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'

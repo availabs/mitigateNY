@@ -8,6 +8,7 @@ import DamaRoutes from "~/pages/DataManager"
 
 import Admin, { authMenuConfig } from "./pages/admin"
 import Playground from './pages/admin/playground'
+import Templates from './pages/admin/templates'
 import Interactive from "./pages/interactive/index.jsx";
 import FormsActions from './pages/admin/forms/actions'
 
@@ -26,7 +27,8 @@ const Routes = [
     useAuth
   }),
   Playground,
-    Interactive,
+  Templates,
+  Interactive,
   // -- Managed Data Routes -- //
   FormsActions,
   // -- Front End Routes -- //
