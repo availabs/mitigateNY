@@ -8,7 +8,7 @@ export const metaData = {
         EAL: 'eal'
     },
     consequences: {
-        Buildings: 'b',
+        Property: 'b',
         Crop: 'a',
         Population: 'p',
         'Population $': 'pe',

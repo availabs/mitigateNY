@@ -20,9 +20,10 @@ const Edit = ({value, onChange}) => {
     const baseUrl = '/';
 
     const [disasterLossView, setDisasterLossView] = useState();
+    const hmgpView = 798;
     const disasterWebSummariesView = 512;
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 741);
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 818);
     const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
 
     const [loading, setLoading] = useState(true);
@@ -41,7 +42,7 @@ const Edit = ({value, onChange}) => {
             pa_loss: "sum(pa_loss) as pa_loss",
             sba_loss: "sum(sba_loss) as sba_loss",
             nfip_loss: "sum(nfip_loss) as nfip_loss",
-            hmgp_funding: "sum(hmgp_funding) as hmgp_funding",
+            // hmgp_funding: "sum(hmgp_funding) as hmgp_funding",
             fema_crop_damage: "sum(fema_crop_damage) as fema_crop_damage"
         },
         disasterDetailsOptions = JSON.stringify({
@@ -53,6 +54,17 @@ const Edit = ({value, onChange}) => {
             groupBy: [1]
         }),
         disasterDetailsPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", disasterDetailsOptions];
+
+    const hmgpAttributes = {
+            hmgp_funding: "SUM(federal_share_obligated) as hmgp_funding",
+        },
+        hmgpOptions = JSON.stringify({
+            filter: {
+                ...disasterNumber && {disaster_number: [disasterNumber]}
+            },
+        }),
+       hmgpPath = ["dama", pgEnv, "viewsbyId", hmgpView, "options", hmgpOptions];
+
 
     const disasterWebSummariesAttributes = {
             ihp_loss: "total_amount_ihp_approved as ihp_loss",
@@ -90,6 +102,7 @@ const Edit = ({value, onChange}) => {
 
                 await falcor.get(
                     [...disasterDetailsPath(dlsDeps.view_id), "databyIndex", { from: 0, to: 0 }, Object.values(disasterDetailsAttributes)],
+                    [...hmgpPath, "databyIndex", { from: 0, to: 0 }, Object.values(hmgpAttributes)],
                     [...disasterWebSummariesPath(disasterWebSummariesView), "databyIndex", { from: 0, to: 0 }, Object.values(disasterWebSummariesAttributes)],
                     ['dama', pgEnv, 'views', 'byId', [dlsDeps.view_id, disasterWebSummariesView], 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
                 );
@@ -106,7 +119,7 @@ const Edit = ({value, onChange}) => {
     const sbaLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.sba_loss], 0);
     const nfipLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.nfip_loss], 0);
     const usdaLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.fema_crop_damage], 0);
-    const hmgpFunding = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.hmgp_funding], 0);
+    const hmgpFunding = get(falcorCache, [...hmgpPath, "databyIndex", 0, hmgpAttributes.hmgp_funding], 0);
     const totalLoss = +ihpLoss + +paLoss + +sbaLoss + +nfipLoss + +usdaLoss + +hmgpFunding;
 
     const attributionData = [disasterLossView, disasterWebSummariesView]

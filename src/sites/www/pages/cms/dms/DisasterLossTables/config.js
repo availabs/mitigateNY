@@ -152,7 +152,7 @@ export const metaData = {
             'County': `LPAD(state_number_code, 2, '0') || LPAD(county_code, 3, '0') as geoid`,
             'Project Type': `array_to_string(array_agg(distinct project_type), ', ') as project_type`,
             'Status': `array_to_string(array_agg(distinct status), ', ') as status`,
-            'Recipients': `array_to_string(array_agg(distinct recipient), ', ') as recipients`,
+            // 'Recipients': `array_to_string(array_agg(distinct recipient), ', ') as recipients`,
             '# Final Properties': `sum(number_of_final_properties) as num_final_properties`,
             'Benefit Cost Ratio': `sum(benefit_cost_ratio) as benefit_cost_ratio`,
             'Project Amount': 'sum(project_amount) as project_amount',

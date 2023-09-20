@@ -19,9 +19,9 @@ const Edit = ({value, onChange}) => {
 
     const [disasterDecView, setDisasterDecView] = useState();
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(data?.ealViewId || 741);
+    const [ealViewId, setEalViewId] = useState(data?.ealViewId || 818);
     const fusionSourceId= 336;
-    const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 657);
+    const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 813);
 
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(data?.status);
@@ -118,7 +118,7 @@ const Edit = ({value, onChange}) => {
                     <ButtonSelector
                         label={'Loss Type:'}
                         types={[
-                            {value: '_pd', label: 'Buildings'},
+                            {value: '_pd', label: 'Property'},
                             {value: '_cd', label: 'Crop'},
                             {value: '_td', label: 'Total'}
                         ]}

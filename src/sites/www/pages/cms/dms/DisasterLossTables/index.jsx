@@ -19,7 +19,7 @@ const Edit = ({value, onChange}) => {
     const baseUrl = '/';
 
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 741);
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 818);
     const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
     const [countyView, setCountyView] = useState();
     const [loading, setLoading] = useState(true);
@@ -78,7 +78,7 @@ const Edit = ({value, onChange}) => {
                 }
                 const tmpHMGPViews = {
                     'hmgp summaries': 725,
-                    'hmgp projects': 728,
+                    'hmgp projects': 798,
                     'hmgp properties': 729
                 }
                 const typeId = tmpHMGPViews[type] ? {view_id: tmpHMGPViews[type]} : deps.find(dep => dep.type === metaData[type]?.type);

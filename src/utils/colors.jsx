@@ -134,7 +134,7 @@ export const hazardsMeta = {
 };
 
 export const ctypeColors = {
-    buildings: '#54bebe',
+    property: '#54bebe',
     population: '#115f9a',
     crop: '#ffb400'
 }
