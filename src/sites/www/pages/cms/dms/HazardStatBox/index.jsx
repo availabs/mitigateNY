@@ -78,8 +78,11 @@ const Edit = ({value, onChange}) => {
     let
         actualLossCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) + sum(swd_population_damage) as actual_damage",
         numSevereEventsCol = `count(distinct CASE WHEN coalesce(fusion_property_damage, 0) + coalesce(fusion_crop_damage, 0) + coalesce(swd_population_damage, 0) >= ${severeEventThreshold} THEN event_id ELSE null END) as num_severe_events`,
-        numEventsCol = `count(distinct coalesce(disaster_number, event_id::text)) as num_events`, // count either disaster_number or event_id
-        numFEMADeclaredCol = `COALESCE(array_length(array_remove(array_agg(distinct CASE WHEN COALESCE(fema_property_damage, 0) + COALESCE(fema_crop_damage, 0) > 0 THEN disaster_number ELSE null END), null), 1), 0) as num_fema_declared`,
+        numEventsCol = `count(distinct CASE WHEN disaster_number is not null AND coalesce((fusion_property_damage), 0) + coalesce((fusion_crop_damage), 0)+ coalesce((swd_population_damage), 0) > 0 
+							  THEN disaster_number 
+							  WHEN disaster_number is null THEN event_id::text
+						END) as num_events`, // count either disaster_number or event_id
+        numFEMADeclaredCol = `COALESCE(array_length(array_remove(array_agg(distinct CASE WHEN coalesce((fusion_property_damage), 0) + coalesce((fusion_crop_damage), 0)+ coalesce((swd_population_damage), 0) > 0 THEN disaster_number ELSE null END), null), 1), 0) as num_fema_declared`,
         deathsCol = `sum(deaths_direct) + sum(deaths_indirect) as deaths`,
         injuriesCol = `sum(injuries_direct) + sum(injuries_indirect) as injuries`,
         geoidCOl = `substring(geoid, 1, ${geoid.length})`,
