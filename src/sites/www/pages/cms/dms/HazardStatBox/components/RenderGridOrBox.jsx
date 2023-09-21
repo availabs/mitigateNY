@@ -53,6 +53,7 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                             actualLoss={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.actualLoss}
                             exposure={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.exposure}
                             frequency={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.frequency}
+                            frequencySum={hazardPercentileArray.reduce((acc, h) => acc + +h.frequency, 0)}
                             numEvents={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.numEvents}
                             numSevereEvents={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.numSevereEvents}
                             numFEMADeclared={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.numFEMADeclared}
