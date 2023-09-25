@@ -41,6 +41,7 @@
     "@lexical/selection": "0.9.1",
     "@lexical/table": "0.9.1",
     "@lexical/utils": "0.9.1",
+    "@nivo/bar": "^0.83.0",
     "@reduxjs/toolkit": "^1.9.5",
     "colorbrewer": "^1.5.3",
     "d3": "^7.8.4",

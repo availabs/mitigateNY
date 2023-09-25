@@ -123,7 +123,7 @@ const Edit = ({value, onChange}) => {
     metaData[type]?.mapGeoidToName && dataModifier && dataModifier(data);
 
     let columns =
-        [...metaData[type]?.anchorCols, ...visibleCols]
+        visibleCols
             .map((col, i) => {
                 const mappedName = metaData[type]?.attributes({geoid, disasterNumber})[col];
                 return {
@@ -183,7 +183,7 @@ const Edit = ({value, onChange}) => {
                     />
                     <RenderColumnControls
                         cols={Object.keys(metaData[type]?.attributes({geoid, disasterNumber}) || {})}
-                        anchorCols={metaData[type]?.anchorCols}
+                        anchorCols={metaData[type]?.anchorCols?.filter(ac => Object.keys(metaData[type]?.attributes({geoid, disasterNumber}) || {}).includes(ac))}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
                         filters={filters}

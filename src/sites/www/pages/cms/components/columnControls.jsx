@@ -1,5 +1,6 @@
-import React, {useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {Switch} from '@headlessui/react';
+import {Simple} from "../../../../../modules/avl-components/src/components/Draggable/simple.jsx";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -44,7 +45,7 @@ const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols, me
                     .filter(c => !visibleCols.includes(c) && !anchorCols.includes(c))
                     .map(c =>
                         <option key={c} value={c}>
-                            { metadata.find(md => md.name === c)?.display_name || c }
+                            {metadata.find(md => md.name === c)?.display_name || c}
                         </option>)
             }
         </select>
@@ -249,7 +250,7 @@ const RenderSortControls = ({column, sortBy, setSortBy, fn}) => {
                     <Switch
                         key={`sortby-${column}`}
                         checked={sortBy?.[fnColumn] || false}
-                        onChange={e => setSortBy({[fnColumn]: e && 'asc'})}
+                        onChange={e => setSortBy(sortBy?.[fnColumn] ? {} : {[fnColumn]: e && 'asc'})}
                         className={classNames(
                             sortBy?.[fnColumn] ? 'bg-indigo-600' : 'bg-gray-200',
                             `relative inline-flex 
@@ -279,7 +280,7 @@ const RenderSortControls = ({column, sortBy, setSortBy, fn}) => {
                 <select
                     key={`order-${column}`}
                     className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
-                    value={sortBy[fnColumn]}
+                    value={sortBy?.[fnColumn]}
                     onChange={e => setSortBy({[fnColumn]: e.target.value})}
                     disabled={!sortBy?.[fnColumn]}
                 >
@@ -293,71 +294,110 @@ const RenderSortControls = ({column, sortBy, setSortBy, fn}) => {
 
 const RenderColumnBoxes = ({
                                cols,
-                               anchorCols,
-                               visibleCols, setVisibleCols,
+                               anchorCols=[],
+                               visibleCols=[], setVisibleCols,
                                filters, setFilters,
                                filterValue, setFilterValue,
-                               groupBy, setGroupBy, 
+                               groupBy, setGroupBy,
                                notNull, setNotNull,
                                fn, setFn,
                                sortBy, setSortBy,
                                metadata
-                           }) => (
-    <div className={'flex flex-row flex-wrap space-between my-1 text-sm'}>
-        {
-            [...anchorCols, ...visibleCols]
-                .filter(c => cols.includes(c))
-                .map((col, i) => {
-                    const currentMetaData = metadata.find(md => md.name === col);
-                    return (
-                        <div
-                            key={`col-settings-${col}`}
-                            className={
-                                'm-1 flex flex-col justify-between p-2 ' +
-                                `border border-dashed border-blue-${anchorCols.includes(col) ? `500` : `300`} rounded-md`}>
-                            <div className={'font-normal w-full h-full flex flex-row justify-between'}>
-                                <label key={`label-${col}`} className={'mb-auto'}>
-                                    {currentMetaData?.display_name || col}
-                                </label>
-                                <button
-                                    key={`cancel-${col}`}
-                                    className={
-                                        anchorCols.includes(col) ? `hidden` :
-                                            `align-top mb-auto pt-1 hover:text-red-500 text-slate-40`
-                                    }
-                                    onClick={() => setVisibleCols(visibleCols.filter(v => v !== col))}
-                                >
-                                    <i className={`fa-light fa-xmark fa-fw float-right`} title={'remove'}></i>
-                                </button>
+                           }) => {
+    const [list, setList] = useState([...new Set([...anchorCols, ...visibleCols])]);
+    const dragItem = useRef();
+    const dragOverItem = useRef();
+
+    useEffect(() => {
+        const missingAnchorCols = anchorCols.filter(ac => !visibleCols.includes(ac));
+        const newList =
+            missingAnchorCols?.length ?
+                [...new Set([...anchorCols, ...visibleCols])] :
+                visibleCols;
+        setList(newList);
+        setVisibleCols(newList);
+    }, [anchorCols, visibleCols]);
+
+    const dragStart = (e, position) => {
+        dragItem.current = position;
+    };
+
+    const dragEnter = (e, position) => {
+        dragOverItem.current = position;
+    };
+
+    const drop = (e) => {
+        const copyListItems = [...list];
+        const dragItemContent = copyListItems[dragItem.current];
+        copyListItems.splice(dragItem.current, 1);
+        copyListItems.splice(dragOverItem.current, 0, dragItemContent);
+        dragItem.current = null;
+        dragOverItem.current = null;
+        setList(copyListItems);
+        setVisibleCols(copyListItems);
+    };
+    return (
+        <div className={'flex flex-row flex-wrap space-between justify-center my-1 text-sm'}>
+            {
+                list
+                    .filter(c => cols.includes(c))
+                    .map((col, i) => {
+                        const currentMetaData = metadata.find(md => md.name === col);
+                        return (
+                            <div
+                                onDragStart={(e) => dragStart(e, i)}
+                                onDragEnter={(e) => dragEnter(e, i)}
+                                onDragEnd={drop}
+                                draggable
+                                key={`col-settings-${col}`}
+                                id={currentMetaData?.display_name || col}
+                                className={
+                                    'm-1 flex flex-col justify-between p-2 ' +
+                                    `border border-dashed border-blue-${anchorCols.includes(col) ? `500` : `300`} rounded-md`}>
+                                <div className={'font-normal w-full h-full flex flex-row justify-between'}>
+                                    <label key={`label-${col}`} className={'mb-auto'}>
+                                        {currentMetaData?.display_name || col}
+                                    </label>
+                                    <button
+                                        key={`cancel-${col}`}
+                                        className={
+                                            anchorCols.includes(col) ? `hidden` :
+                                                `align-top mb-auto pt-1 hover:text-red-500 text-slate-40`
+                                        }
+                                        onClick={() => setVisibleCols(visibleCols.filter(v => v !== col))}
+                                    >
+                                        <i className={`fa-light fa-xmark fa-fw float-right`} title={'remove'}></i>
+                                    </button>
+                                </div>
+
+                                <RenderFilterControls column={col}
+                                                      anchorCols={anchorCols}
+                                                      filters={filters} setFilters={setFilters}/>
+
+                                <RenderFilterValueControls column={col}
+                                                           filterValue={filterValue} setFilterValue={setFilterValue}/>
+
+                                <RenderGroupControls column={col}
+                                                     groupBy={groupBy} setGroupBy={setGroupBy} fn={fn}
+                                                     metadata={currentMetaData}/>
+
+                                <RenderFnControls column={col}
+                                                  fn={fn} setFn={setFn} groupBy={groupBy}
+                                                  metadata={currentMetaData}/>
+
+                                <RenderSortControls column={col}
+                                                    sortBy={sortBy} setSortBy={setSortBy} fn={fn}/>
+
+                                <RenderNullControls column={col}
+                                                    notNull={notNull} setNotNull={setNotNull}/>
+
                             </div>
-
-                            <RenderFilterControls column={col}
-                                                  anchorCols={anchorCols}
-                                                  filters={filters} setFilters={setFilters}/>
-
-                            <RenderFilterValueControls column={col}
-                                                       filterValue={filterValue} setFilterValue={setFilterValue}/>
-
-                            <RenderGroupControls column={col}
-                                                 groupBy={groupBy} setGroupBy={setGroupBy} fn={fn}
-                                                 metadata={currentMetaData}/>
-
-                            <RenderFnControls column={col}
-                                              fn={fn} setFn={setFn} groupBy={groupBy}
-                                              metadata={currentMetaData}/>
-
-                            <RenderSortControls column={col}
-                                                sortBy={sortBy} setSortBy={setSortBy} fn={fn}/>
-
-                            <RenderNullControls column={col}
-                                                notNull={notNull} setNotNull={setNotNull}/>
-
-                        </div>
-                    )
-                })
-        }
-    </div>
-);
+                        )
+                    })
+            }
+        </div>
+    )
+};
 
 export const RenderColumnControls = (
     {
