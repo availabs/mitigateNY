@@ -10,6 +10,7 @@ import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
 import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
+import {addTotalRow} from "../../utils.js";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
     const fns = columnsToFetch.map(ctf => ctf.includes(' AS') ? ctf.split(' AS')[0] : ctf.split(' as')[0]);
@@ -58,6 +59,7 @@ const Edit = ({value, onChange}) => {
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
     const [groupBy, setGroupBy] = useState(cachedData?.groupBy || []);
     const [notNull, setNotNull] = useState(cachedData?.notNull || []);
+    const [showTotal, setShowTotal] = useState(cachedData?.showTotal || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [metaLookupByViewId, setMetaLookupByViewId] = useState({});
 
@@ -259,19 +261,23 @@ const Edit = ({value, onChange}) => {
             });
 
     useEffect(() => {
+        addTotalRow({showTotal, data, columns, setLoading});
+    }, [showTotal, data, columns])
+
+    useEffect(() => {
             if (!loading) {
                 onChange(JSON.stringify(
                     {
                         attributionData,
                         status,
                         geoid,
-                        pageSize, sortBy, groupBy, fn, notNull,
+                        pageSize, sortBy, groupBy, fn, notNull, showTotal,
                         data, columns, filters, filterValue, visibleCols, geoAttribute,
                         dataSource, dataSources, version
                     }))
             }
         },
-        [attributionData, status, geoid, pageSize, sortBy, groupBy, fn, notNull,
+        [attributionData, status, geoid, pageSize, sortBy, groupBy, fn, notNull, showTotal,
             data, columns, filters, filterValue, visibleCols, geoAttribute,
             dataSource, dataSources, version
         ]);
@@ -322,6 +328,8 @@ const Edit = ({value, onChange}) => {
                         setSortBy={setSortBy}
                         notNull={notNull}
                         setNotNull={setNotNull}
+                        showTotal={showTotal}
+                        setShowTotal={setShowTotal}
                     />
                 </div>
                 {

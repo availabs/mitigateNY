@@ -182,6 +182,46 @@ const RenderNullControls = ({column, notNull, setNotNull}) => {
     )
 }
 
+const RenderShowTotalControls = ({column, index, showTotal, setShowTotal, fn}) => {
+    if (!setShowTotal || index === 0) return null;
+    const colNameWithFn = fn[column] || column //column.includes(' as') ? column.split(' as')[0] : column.split(' AS')[0];
+
+    const isActive = showTotal.includes(colNameWithFn);
+
+    return (
+        <div className={'block w-full flex mt-1'}>
+            <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> Show Total: </label>
+            <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
+                <Switch
+                    key={`show-total-${colNameWithFn}`}
+                    checked={showTotal.includes(colNameWithFn)}
+                    onChange={e => isActive ? setShowTotal(showTotal.filter(st => st !== colNameWithFn)) : setShowTotal([...showTotal, colNameWithFn])}
+                    className={classNames(
+                        isActive ? 'bg-indigo-600' : 'bg-gray-200',
+                        `relative inline-flex 
+                         h-4 w-10 shrink
+                         cursor-pointer rounded-full border-2 border-transparent 
+                         transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
+                         focus:ring-indigo-600 focus:ring-offset-2`
+                    )}
+                >
+                    <span className="sr-only">toggle show total</span>
+                    <span
+                        aria-hidden="true"
+                        className={classNames(
+                            isActive ? 'translate-x-5' : 'translate-x-0',
+                            `pointer-events-none inline-block 
+                            h-3 w-4
+                            transform rounded-full bg-white shadow ring-0 t
+                            ransition duration-200 ease-in-out`
+                        )}
+                    />
+                </Switch>
+            </div>
+        </div>
+    )
+}
+
 const RenderFilterControls = ({column, filters, setFilters, anchorCols}) => {
     if (!setFilters) return null;
     return (
@@ -224,15 +264,6 @@ const RenderFilterValueControls = ({column, filterValue, setFilterValue}) => {
                 }
                 }
             />
-            {/*<select*/}
-            {/*    key={`filter-value-${column}`}*/}
-            {/*    className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}*/}
-            {/*    value={filterValue[column]}*/}
-            {/*    onChange={e => setFilters({...filters, ...{[column]: e.target.value}})}*/}
-            {/*>*/}
-            {/*    <option key={`filter-none-${column}`} value={' '}>None</option>*/}
-            {/*    <option key={`filter-text-${column}`} value={'text'}>Text</option>*/}
-            {/*</select>*/}
         </div>
     )
 }
@@ -299,6 +330,7 @@ const RenderColumnBoxes = ({
                                filterValue, setFilterValue,
                                groupBy, setGroupBy,
                                notNull, setNotNull,
+                               showTotal, setShowTotal,
                                fn, setFn,
                                sortBy, setSortBy,
                                metadata
@@ -399,6 +431,9 @@ const RenderColumnBoxes = ({
                                 <RenderNullControls column={col}
                                                     notNull={notNull} setNotNull={setNotNull}/>
 
+                                {/*<RenderShowTotalControls column={col} index={i}*/}
+                                {/*                    showTotal={showTotal} setShowTotal={setShowTotal} fn={fn}/>*/}
+
                             </div>
                         )
                     })
@@ -415,6 +450,7 @@ export const RenderColumnControls = (
         visibleCols = [], setVisibleCols,
         filters = {}, setFilters,
         filterValue = {}, setFilterValue,
+        showTotal = [], setShowTotal,
         groupBy = [], setGroupBy,
         notNull = [], setNotNull,
         fn = {}, setFn,
@@ -444,6 +480,7 @@ export const RenderColumnControls = (
                                sortBy={sortBy} setSortBy={setSortBy}
                                groupBy={groupBy} setGroupBy={setGroupBy}
                                notNull={notNull} setNotNull={setNotNull}
+                               showTotal={showTotal} setShowTotal={setShowTotal}
                                fn={fn} setFn={setFn}
                                metadata={metadata}
             />

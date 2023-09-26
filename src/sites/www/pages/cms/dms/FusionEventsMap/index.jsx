@@ -87,7 +87,7 @@ const Edit = ({value, onChange, size}) => {
     const baseUrl = '/';
 
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 818);
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
