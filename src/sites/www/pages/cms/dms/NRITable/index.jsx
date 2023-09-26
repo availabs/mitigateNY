@@ -37,7 +37,6 @@ const Edit = ({value, onChange}) => {
 
     const nriGeoCol = metaData.dataSources.find(d => d.value === dataSource)?.geomCol,
         nriAttributes = metaData.columns(hazard, dataSource),
-        anchorCols = [nriAttributes.find(a => a.value === 'stcofips' || a.value === 'tractfips')?.label],
         nriLenOptions =
             JSON.stringify({
                 aggregatedLen: false,
@@ -48,6 +47,8 @@ const Edit = ({value, onChange}) => {
                 filter: {[`substring(${nriGeoCol}, 1, ${geoid?.length})`]: [geoid]},
             }),
         nriPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options"];
+
+    let anchorCols = nriAttributes.find(a => a.value === 'stcofips' || a.value === 'tractfips')?.label;
 
     const
         geoNamesOptions = JSON.stringify({
@@ -73,6 +74,7 @@ const Edit = ({value, onChange}) => {
     useEffect(() => {
         async function setView() {
             setLoading(true)
+            console.log('data source', dataSource)
             if (dataSource === 'avail_counties') {
                 const dependencyRes = await falcor.get(dependencyPath(dataSourceViewId));
                 const deps = get(dependencyRes, ["json", ...dependencyPath(dataSourceViewId), "dependencies"]);
@@ -84,6 +86,7 @@ const Edit = ({value, onChange}) => {
                     return Promise.resolve();
                 }
                 setTypeId(typeId.view_id);
+                console.log('setting typeid', typeId.view_id)
             } else {
                 setTypeId(dataSourceViewId)
             }
@@ -95,8 +98,11 @@ const Edit = ({value, onChange}) => {
 
     useEffect(() => {
         async function getData() {
-            if (!geoid) {
-                setStatus('Please Select a Geography');
+            if (!geoid || !hazard) {
+                console.log('hazard', hazard, !hazard)
+                !geoid && setStatus('Please Select a Geography');
+                !hazard && setStatus('Please Select a Hazard');
+                return;
             } else {
                 setStatus(undefined)
             }
@@ -127,7 +133,7 @@ const Edit = ({value, onChange}) => {
                 }, ["geoid", "namelsad"]]);
             }
 
-
+            console.log('type id', typeId)
             const lenRes = await falcor.get([...nriPath(typeId), nriLenOptions, 'length']);
             const len = Math.min(get(lenRes, ['json', ...nriPath(typeId), nriLenOptions, 'length'], 0), 250),
                 nriIndices = {from: 0, to: len - 1};
@@ -161,7 +167,7 @@ const Edit = ({value, onChange}) => {
     dataModifier(data);
 
     const columns =
-        [...anchorCols, ...visibleCols]
+        visibleCols
             .map(c => nriAttributes.find(nriA => nriA.label === c))
             .filter(c => c)
             .map(col => {
@@ -208,7 +214,10 @@ const Edit = ({value, onChange}) => {
                         types={metaData.dataSources}
                         type={dataSource}
                         setType={e => {
+                            setDataSourceViewId(undefined)
                             setDataSource(e);
+                            setVisibleCols([]);
+                            anchorCols = []
                         }}
                     />
                     <VersionSelectorSearchable
@@ -221,7 +230,7 @@ const Edit = ({value, onChange}) => {
                     <HazardSelectorSimple hazard={hazard} setHazard={setHazard}/>
                     <RenderColumnControls
                         cols={nriAttributes.map(a => a.label)}
-                        anchorCols={anchorCols}
+                        anchorCols={anchorCols ? [anchorCols] : []}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
                         filters={filters}

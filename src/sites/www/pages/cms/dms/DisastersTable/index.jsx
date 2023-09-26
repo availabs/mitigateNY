@@ -335,7 +335,7 @@ const Edit = ({value, onChange}) => {
     const data = dataModifier(originalData);
 
     const columns =
-        [...anchorCols, ...visibleCols]
+        visibleCols
             .filter(c => fusionAttributes[c] && fusionAttributes[c]?.visible !== false)
             .map(col => {
                 return {
