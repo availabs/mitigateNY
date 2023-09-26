@@ -320,10 +320,15 @@ const RenderColumnBoxes = ({
 
     const dragStart = (e, position) => {
         dragItem.current = position;
+        e.dataTransfer.effectAllowed = "move";
     };
 
     const dragEnter = (e, position) => {
         dragOverItem.current = position;
+    };
+    const dragOver = (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
     };
 
     const drop = (e) => {
@@ -337,7 +342,7 @@ const RenderColumnBoxes = ({
         setVisibleCols(copyListItems);
     };
     return (
-        <div className={'flex flex-row flex-wrap space-between justify-center my-1 text-sm'}>
+        <div className={'flex flex-row flex-wrap space-between px-16 my-1 text-sm'}>
             {
                 list
                     .filter(c => cols.includes(c))
@@ -347,13 +352,17 @@ const RenderColumnBoxes = ({
                             <div
                                 onDragStart={(e) => dragStart(e, i)}
                                 onDragEnter={(e) => dragEnter(e, i)}
+
+                                onDragOver={dragOver}
+
                                 onDragEnd={drop}
                                 draggable
                                 key={`col-settings-${col}`}
                                 id={currentMetaData?.display_name || col}
                                 className={
-                                    'm-1 flex flex-col justify-between p-2 ' +
-                                    `border border-dashed border-blue-${anchorCols.includes(col) ? `500` : `300`} rounded-md`}>
+``                                    `m-1 flex flex-col justify-between p-2 cursor-grab
+                                    border border-dashed border-blue-${anchorCols.includes(col) ? `500` : `300`}
+                                    rounded-md`}>
                                 <div className={'font-normal w-full h-full flex flex-row justify-between'}>
                                     <label key={`label-${col}`} className={'mb-auto'}>
                                         {currentMetaData?.display_name || col}
