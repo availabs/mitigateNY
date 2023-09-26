@@ -1,6 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import {Switch} from '@headlessui/react';
-import {Simple} from "../../../../../modules/avl-components/src/components/Draggable/simple.jsx";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -360,7 +359,7 @@ const RenderColumnBoxes = ({
                                 key={`col-settings-${col}`}
                                 id={currentMetaData?.display_name || col}
                                 className={
-``                                    `m-1 flex flex-col justify-between p-2 cursor-grab
+                                    `m-1 flex flex-col justify-between p-2 cursor-grab
                                     border border-dashed border-blue-${anchorCols.includes(col) ? `500` : `300`}
                                     rounded-md`}>
                                 <div className={'font-normal w-full h-full flex flex-row justify-between'}>
