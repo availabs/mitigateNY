@@ -21,13 +21,15 @@ export function TemplateEdit ({
 }) {
   const navigate = useNavigate()
   const submit = useSubmit()
+  
   const { pathname = '/edit' } = useLocation()
   //const { baseUrl } = React.useContext(CMSContext)
   const baseUrl = '/admin/templates'
-  const inPageNav = getInPageNav(dataItems, baseUrl);
   const { id } = params
   
   
+  const inPageNav = getInPageNav(dataItems, baseUrl);
+
 
   const saveSection = (v) => {
     updateAttribute('sections', v)

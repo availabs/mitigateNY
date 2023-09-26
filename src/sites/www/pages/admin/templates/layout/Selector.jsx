@@ -47,9 +47,9 @@ export default function Selector({options=[], onChange, selected, }) {
                   Nothing found.
                 </div>
               ) : (
-                filteredOptions.map((option) => (
+                filteredOptions.map((option,i) => (
                   <Combobox.Option
-                    key={option}
+                    key={i}
                     className={({ active }) =>
                       `relative cursor-default select-none py-2 pl-10 pr-4 ${
                         active ? 'bg-blue-600 text-white' : 'text-gray-900'

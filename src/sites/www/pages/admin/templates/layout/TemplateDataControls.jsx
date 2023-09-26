@@ -6,8 +6,12 @@ import Selector from './Selector'
 import get from 'lodash/get'
 import {getAttributes} from '~/pages/DataManager/components/attributes'
 
-export default function DataControls ({items, dataItems, open, setOpen}) {
+export default function DataControls ({items, dataItems,dataControls, setDataControls, open, setOpen}) {
   
+  const updateDataControls = (k,v) => {
+    setDataControls({...dataControls, [k]: v})
+  }
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-20" onClose={setOpen}>
@@ -47,8 +51,20 @@ export default function DataControls ({items, dataItems, open, setOpen}) {
                     </div>
                     <div className="relative mt-6 flex-1 px-4 sm:px-6">
                       <span className='text-sm text-gray-500 p-1'>Select Template Source:</span>
-                      <SourcesSelect />
+                      <SourcesSelect 
+                        value={dataControls.source_id}
+                        onChange={(v) => {
+                          console.log('SourcesSelect onChange', v)
+                          updateDataControls('source_id', v.source_id)
+                        }} 
+                      />
+                      <div>
+                        <pre>
+                         {JSON.stringify(dataControls, null,3)}
+                        </pre>
+                      </div>
                     </div>
+
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -61,7 +77,7 @@ export default function DataControls ({items, dataItems, open, setOpen}) {
 }
 
 const SourcesSelect = ({value, onChange}) => {
-  const [selectedSource, setSelectedSource] = useState("");
+  
   const { falcor, falcorCache } = useFalcor();
   const pgEnv = 'hazmit_dama'
 
@@ -73,7 +89,7 @@ const SourcesSelect = ({value, onChange}) => {
       const dataResp = await falcor.get([
         "dama", pgEnv, "sources", "byIndex",
         { from: 0, to: get(resp.json, lengthPath, 0) - 1 },
-        "attributes", ['id', 'name', 'metadata']
+        "attributes", ['source_id', 'name', 'metadata']
       ]);
       console.log('dataResp', dataResp)
     }
@@ -82,17 +98,54 @@ const SourcesSelect = ({value, onChange}) => {
   }, [falcor, pgEnv]);
 
   const sources = useMemo(() => {
-    console.log('set sources', falcorCache)
+    //console.log('set sources', falcorCache)
     return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
       .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]));
   }, [falcorCache, pgEnv]);
 
-  console.log('sources select', sources)
+  //console.log('sources select', sources)
   return (
      <Selector 
       options={['',...sources]}
-      selected={selectedSource}
-      onChange={(v)=> setSelectedSource(v) }
+      selected={value}
+      onChange={(v)=> onChange(v) }
+    />
+  );
+};
+
+
+const ViewsSelect = ({source_id, value, onChange}) => {
+  
+  const { falcor, falcorCache } = useFalcor();
+  const pgEnv = 'hazmit_dama'
+
+  useEffect(() => {
+    async function fetchData() {
+      const lengthPath = ["dama", pgEnv, "sources", "byId", sourceId, "views", "length"];;
+      const resp = await falcor.get(lengthPath);
+      // console.log('length', get(resp.json, lengthPath, 0) - 1)
+      const dataResp = await falcor.get([
+          "dama", pgEnv, "sources", "byId", sourceId, "views", "byIndex",
+          { from: 0, to: get(resp.json, lengthPath, 0) - 1 },
+          "attributes", ['view_id', 'version']
+        ]);
+      //console.log('dataResp', dataResp)
+    }
+
+    fetchData();
+  }, [falcor, pgEnv]);
+
+  const views = useMemo(() => {
+    return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
+      .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]));
+  }, [falcorCache, pgEnv]);
+
+  // console.log('sources select', views)
+  return (
+     <Selector 
+      options={['',...views]}
+      selected={value}
+      onChange={(v)=> onChange(v) }
     />
   );
 };

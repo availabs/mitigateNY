@@ -26,8 +26,6 @@ export const menuItems = [
     icon: 'far fa-paste fa-fw',
     path: '/admin/templates'
   },
-
-
   {
     name: 'Data', 
     //path: '/auth/someplace',
@@ -43,7 +41,6 @@ export const menuItems = [
     icon: 'far fa-flask fa-fw',
     path: '/playground/edit'
   },
-
   {
     name: 'Forms', 
     //path: '/auth/someplace',

@@ -23,6 +23,12 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
   const [ showDelete, setShowDelete ] = useState(false)
   const [ showDataControls, setShowDataControls ] = useState(false)
   const [ statusMessage, setStatusMessage ] = useState(status?.message)
+  const [ dataControls, setDataControls ] = useState({
+    source_id: null,
+    view_id: null,
+    active_row_id: null,
+    num_rows: null
+  })
   // const { baseUrl, setOpen, setHistoryOpen} = React.useContext(CMSContext)
   const baseUrl = '/admin/templates'
   const NoOp = () => {}
@@ -97,7 +103,13 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
               className={theme.pageControls.controlItem}
             >
               {'☲ Data Controls'}
-              <DataControls item={item} open={showDataControls} setOpen={setShowDataControls} />
+              <DataControls 
+                item={item} 
+                open={showDataControls} 
+                setOpen={setShowDataControls} 
+                dataControls={dataControls}
+                setDataControls={setDataControls}
+              />
             </div>
             {/*<div onClick={() => setShowDelete(true)}
               className={theme.pageControls.controlItem}
