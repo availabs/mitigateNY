@@ -10,6 +10,7 @@ import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
 import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
+import {addTotalRow} from "../../utils.js";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
     const fns = columnsToFetch.map(ctf => ctf.includes(' AS') ? ctf.split(' AS')[0] : ctf.split(' as')[0]);
@@ -58,6 +59,7 @@ const Edit = ({value, onChange}) => {
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
     const [groupBy, setGroupBy] = useState(cachedData?.groupBy || []);
     const [notNull, setNotNull] = useState(cachedData?.notNull || []);
+    const [showTotal, setShowTotal] = useState(cachedData?.showTotal || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [metaLookupByViewId, setMetaLookupByViewId] = useState({});
 
@@ -102,7 +104,7 @@ const Edit = ({value, onChange}) => {
     useEffect(() => {
         const geoAttribute =
             (dataSources
-                .find(ds => ds.source_id === dataSource)?.metadata || [])
+                .find(ds => ds.source_id === dataSource)?.metadata?.columns || [])
                 .find(c => c.display === 'geoid-variable');
         geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
     }, [dataSources, dataSource]);
@@ -146,7 +148,7 @@ const Edit = ({value, onChange}) => {
     useEffect(() => {
         // make this a general purpose util?
         async function getMeta(){
-            const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
+            const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns;
             const metaViewIdLookupCols =
                 metadata?.filter(md => visibleCols.includes(md.name) && ['meta-variable', 'geoid-variable'].includes(md.display) && md.meta_lookup);
 
@@ -208,9 +210,10 @@ const Edit = ({value, onChange}) => {
     //     return {length: len, data }
     // }, [dataSource, version, geoid, visibleCols, fn, groupBy, notNull, geoAttribute]);
 
-    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
+    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns;
 
     const data = useMemo(() => {
+        console.log('md?', metadata)
         const metaLookupCols =
             metadata?.filter(md =>
                 visibleCols.includes(md.name) &&
@@ -259,19 +262,23 @@ const Edit = ({value, onChange}) => {
             });
 
     useEffect(() => {
+        addTotalRow({showTotal, data, columns, setLoading});
+    }, [showTotal, data, columns])
+
+    useEffect(() => {
             if (!loading) {
                 onChange(JSON.stringify(
                     {
                         attributionData,
                         status,
                         geoid,
-                        pageSize, sortBy, groupBy, fn, notNull,
+                        pageSize, sortBy, groupBy, fn, notNull, showTotal,
                         data, columns, filters, filterValue, visibleCols, geoAttribute,
                         dataSource, dataSources, version
                     }))
             }
         },
-        [attributionData, status, geoid, pageSize, sortBy, groupBy, fn, notNull,
+        [attributionData, status, geoid, pageSize, sortBy, groupBy, fn, notNull, showTotal,
             data, columns, filters, filterValue, visibleCols, geoAttribute,
             dataSource, dataSources, version
         ]);
@@ -300,11 +307,11 @@ const Edit = ({value, onChange}) => {
 
                     <RenderColumnControls
                         cols={
-                           (dataSources.find(ds => ds.source_id === dataSource)?.metadata || [])
+                           (dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns || [])
                                .filter(c => ['data-variable', 'meta-variable', 'geoid-variable'].includes(c.display))
                                .map(c => c.name)
                         }
-                        metadata={dataSources.find(ds => ds.source_id === dataSource)?.metadata || []}
+                        metadata={dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns || []}
                         // anchorCols={anchorCols}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
@@ -322,6 +329,8 @@ const Edit = ({value, onChange}) => {
                         setSortBy={setSortBy}
                         notNull={notNull}
                         setNotNull={setNotNull}
+                        showTotal={showTotal}
+                        setShowTotal={setShowTotal}
                     />
                 </div>
                 {
