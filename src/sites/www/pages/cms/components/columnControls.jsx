@@ -431,8 +431,8 @@ const RenderColumnBoxes = ({
                                 <RenderNullControls column={col}
                                                     notNull={notNull} setNotNull={setNotNull}/>
 
-                                {/*<RenderShowTotalControls column={col} index={i}*/}
-                                {/*                    showTotal={showTotal} setShowTotal={setShowTotal} fn={fn}/>*/}
+                                <RenderShowTotalControls column={col} index={i}
+                                                    showTotal={showTotal} setShowTotal={setShowTotal} fn={fn}/>
 
                             </div>
                         )
