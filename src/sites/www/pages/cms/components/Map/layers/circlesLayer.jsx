@@ -146,8 +146,8 @@ class CirclesOptions extends LayerContainer {
     },
     callback: (layerId, features, lngLat) => {
       return features.reduce((a, feature) => {
-        let { view: currentView, data } = this.props;
-        const fmt = d3Formatter('0.2s');
+        let { view: currentView, data, dataFormat, idCol = 'event_id' } = this.props;
+        const fmt = dataFormat || d3Formatter('0.2s');
         let record = data.find(d => d.event_id === feature.properties.event_id),
           response = [
             [feature.properties.geoid, ''],

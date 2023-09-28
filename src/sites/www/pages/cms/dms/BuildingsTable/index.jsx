@@ -383,3 +383,26 @@ export default {
     "EditComp": Edit,
     "ViewComp": View
 }
+
+// select ebr.*,
+//     avln_eals nri_avln_eals,
+//     cfld_eals nri_cfld_eals,
+//     cwav_eals nri_cwav_eals,
+//     erqk_eals nri_erqk_eals,
+//     hail_eals nri_hail_eals,
+//     hwav_eals nri_hwav_eals,
+//     hrcn_eals nri_hrcn_eals,
+//     istm_eals nri_istm_eals,
+//     lnds_eals nri_lnds_eals,
+//     ltng_eals nri_ltng_eals,
+//     rfld_eals nri_rfld_eals,
+//     swnd_eals nri_swnd_eals,
+//     trnd_eals nri_trnd_eals,
+//     tsun_eals nri_tsun_eals,
+//     vlcn_eals nri_vlcn_eals,
+//     wfir_eals nri_wfir_eals,
+//     wntw_eals nri_wntw_eals
+// into irvs.ebr_s380_v840
+// from irvs.enhanced_building_risk ebr
+// LEFT JOIN national_risk_index.nri_tracts_795 nri
+// ON ebr.tract_geoid = nri.tractfips
