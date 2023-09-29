@@ -8,12 +8,12 @@ const AuthConfig = {
     { 
       type: 'ams-login' , 
       path: 'login',
-      props: {title: 'AVAIL DMS'}
+      props: {title: 'Mitigate NY'}
     },
     { 
       type: "ams-reset-password", 
       path: 'reset-password',
-      props: {title: 'AVAIL DMS'}
+      props: {title: 'Mitigate NY'}
     },
     { 
       type: "ams-logout", 
@@ -29,7 +29,7 @@ const AuthConfig = {
       type: "ams-signup", 
       path: 'register',
       props: { addToGroup: "123" },
-      props: {title: 'AVAIL DMS'}
+      props: {title: 'Mitigate NY'}
     },
     { 
       type: "ams-profile", 
