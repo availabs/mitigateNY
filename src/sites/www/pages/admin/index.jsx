@@ -42,6 +42,11 @@ export const menuItems = [
     path: '/playground/edit'
   },
   {
+    name: 'Drafts',
+    icon: 'far fa-compass-drafting fa-fw',
+    path: '/drafts/edit'
+  },
+  {
     name: 'Forms', 
     //path: '/auth/someplace',
     className: 'px-6 pt-8 pb-1 uppercase text-xs text-blue-400'

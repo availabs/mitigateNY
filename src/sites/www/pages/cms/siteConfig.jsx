@@ -18,6 +18,7 @@ const siteConfig = {
     } 
 
     let requiredAuth = getReqAuth(activeConfig)
+    console.log('checkAuth', user, requiredAuth)
     checkAuth({user, authLevel:requiredAuth}, navigate)
     
   },

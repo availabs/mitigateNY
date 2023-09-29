@@ -7,7 +7,7 @@ import { PageView, PageEdit } from "../../cms/layout/page"
 
 import Selector from "../../cms/dms/selector"
 
-import cmsFormat from "./draft.format.js"
+import cmsFormat from "./drafts.format.js"
 
 import { menuItems } from "../index"
 
@@ -37,7 +37,7 @@ const siteConfig = {
         <Layout 
         {...props}
         sideNav={{size: 'miniPad'}} 
-        baseUrl={'/playground'}
+        baseUrl={'/drafts'}
         />
       ),
       action: "list",
@@ -60,7 +60,7 @@ const siteConfig = {
           {...props} 
           edit={true} 
           sideNav={{size: 'miniPad'}} 
-          baseUrl={'/playground'}
+          baseUrl={'/drafts'}
         />
       ),
       action: "list",
@@ -82,7 +82,7 @@ const siteConfig = {
 }
 
 export default { 
-  ...dmsPageFactory(siteConfig, "/draft/",  withAuth),
+  ...dmsPageFactory(siteConfig, "/drafts/",  withAuth),
   name: "CMS",
   sideNav: {
     size: 'mini',
