@@ -9,7 +9,7 @@ function SizeSelect ({size='1', setSize, onChange}) {
     
     return (
         <div
-          className="flex space-x-1 rounded-lg bg-slate-100 p-0.5"
+          className="flex space-x-1 rounded-lg bg-blue-50 p-0.5"
           role="tablist"
           aria-orientation="horizontal"
         >        
@@ -108,8 +108,8 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                         <div className='py-2'>
                             <Popover className="relative">
                               <Popover.Button
-                                className={'pl-6 py-0.5 text-md cursor-pointer hover:text-red-500 text-slate-400'}>
-                                <i className="fa-light fa-question text-2xl fa-fw" title="Delete"/>
+                                className={'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400'}>
+                                <i className="fa-light fa-question text-2xl fa-fw" title="Help"/>
                               </Popover.Button>
                                 <Transition
                                   as={Fragment}

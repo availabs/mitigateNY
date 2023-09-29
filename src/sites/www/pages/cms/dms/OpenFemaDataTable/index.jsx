@@ -101,8 +101,10 @@ const Edit = ({value, onChange}) => {
 
     useEffect(() => {
         const geoAttribute =
-            (dataSources
-                .find(ds => ds.source_id === dataSource)?.metadata || [])
+            (
+                dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||
+                dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
+                [])
                 .find(c => c.display === 'geoid-variable');
         const name = geoAttribute?.name?.includes(' AS') ? geoAttribute?.name?.split(' AS')[0] : geoAttribute?.name?.split(' as')[0]
         name && setGeoAttribute(name);
@@ -307,11 +309,17 @@ const Edit = ({value, onChange}) => {
 
                     <RenderColumnControls
                         cols={
-                           (dataSources.find(ds => ds.source_id === dataSource)?.metadata || [])
+                           (
+                               dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||
+                               dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
+                               [])
                                .filter(c => ['data-variable', 'meta-variable', 'geoid-variable'].includes(c.display))
                                .map(c => c.name)
                         }
-                        metadata={dataSources.find(ds => ds.source_id === dataSource)?.metadata || []}
+                        metadata={
+                        dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||
+                        dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
+                            []}
                         // anchorCols={anchorCols}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}

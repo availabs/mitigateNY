@@ -43,12 +43,43 @@ const getGeoColors = ({geoid, data = [], columns = [], geoAttribute, paintFn, co
         data.map((d) => paintFn ? paintFn(d) : +d[columns?.[0]]).filter(d => d && d >= 0),
         colors
     )
-    data.forEach(record => {
-        const value = paintFn ? paintFn(record) : +record[columns?.[0]];
-        geoColors[record[geoAttribute]] = value ? colorScale(value) : '#d0d0ce';
-    })
-    return {geoColors, domain, geoLayer};
+
+    if (geoid?.length === 5) {
+        geoColors[geoid] = '#d3d3d3'
+    } else {
+        for (let id = 0; id <= 999; id += 1) {
+            const gid = stateFips + id.toString().padStart(3, '0');
+
+            const record = data.find(d => d.geoid === gid) || {};
+            const value = paintFn ? paintFn(record) : record[columns?.[0]];
+            geoColors[gid] = geoids.includes(gid) && value ? colorScale(value) : '#d3d3d3';
+        }
+    }
+    console.log('geocolors', geoColors, data)
+    return {geoColors, domain, geoLayer: 'counties'};
 }
+
+const parseJson = (value) => {
+    try {
+        return JSON.parse(value);
+    } catch (e) {
+        return null;
+    }
+}
+const makeFeatures = ({data = []}) => useMemo(() => {
+    const radiusScale = 2;
+    const geoJson = {
+        type: 'FeatureCollection',
+        features: data.map(d => ({
+            'type': 'Feature',
+            'properties': {color: d.color, radius: radiusScale, ...d},
+            'geometry': parseJson(d['st_asgeojson(st_centroid(footprint)) as building_centroid'])
+        }))
+    }
+
+    return geoJson
+}, [data])
+
 const Edit = ({value, onChange, size}) => {
 
     const {falcor, falcorCache} = useFalcor();
@@ -59,11 +90,11 @@ const Edit = ({value, onChange, size}) => {
     const [dataSources, setDataSources] = useState(cachedData?.dataSources || []);
     const [dataSource, setDataSource] = useState(cachedData?.dataSource);
     const [version, setVersion] = useState(cachedData?.version);
-
-    const [attribute, setAttribute] = useState(cachedData?.attribute);
     const [geoAttribute, setGeoAttribute] = useState(cachedData?.geoAttribute);
-
-
+    const [buildingType, setBuildingType] = useState(cachedData?.buildingType || JSON.stringify({value_source: ['ogs']}));
+    const [floodPlain, setFloodPlain] = useState(cachedData?.floodPlain || '{}');
+    const [hazard, setHazard] = useState(cachedData?.hazard || 'riverine');
+    const [hazardScoreThreshold, setHazardScoreThreshold] = useState(cachedData?.hazardScoreThreshold || 70);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
@@ -75,13 +106,18 @@ const Edit = ({value, onChange, size}) => {
     const [title, setTitle] = useState(cachedData?.title);
     const [height, setHeight] = useState(cachedData?.height || 500);
     const stateView = 285; // need to pull this based on categories
-    const category = 'Social Vulnerability';
+    const category = 'Buildings';
 
     const options = JSON.stringify({
-        filter: {...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]}},
+        filter: {
+            ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
+            ...JSON.parse(buildingType),
+            ...floodPlain && JSON.parse(floodPlain),
+        },
     });
     const lenPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
     const dataPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
+    const attributes = ['building_id', 'st_asgeojson(st_centroid(footprint)) as building_centroid', `nri_${hazardsMeta[hazard]?.prefix}_eals`];
     const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
     const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
         attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
@@ -106,30 +142,31 @@ const Edit = ({value, onChange, size}) => {
     useEffect(() => {
         const geoAttribute =
             (
-                dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||
+                dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns ||
                 dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
                 [])
                 .find(c => c.display === 'geoid-variable');
         geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
     }, [dataSources, dataSource]);
+
     useEffect(() => {
         async function getData() {
-            if(!attribute || !geoAttribute || !version || !dataSource) {
-                !dataSource && setStatus('Please select a Datasource.');
-                !version && setStatus('Please select a version.');
+            if (!geoAttribute || !version || !dataSource || !buildingType || !geoid) {
+                !buildingType?.length && setStatus('Please select Building Type.');
                 !geoAttribute?.length && setStatus('No geo attribute found.');
-                !attribute?.length && setStatus('Please select columns.');
+                !geoid?.length && setStatus('Please select a geography.');
+                !version && setStatus('Please select a version.');
+                !dataSource && setStatus('Please select a Datasource.');
                 setLoading(false);
                 return;
             }
             setLoading(true);
             setStatus(undefined);
-            // setTitle(metaData.title(hazardsMeta[hazard]?.name, attribute, consequence))
-
+            // setTitle(metaData.title(hazardsMeta[hazard]?.name, attributes, consequence))
             await falcor.get(lenPath);
             const len = get(falcor.getCache(), lenPath, 0);
 
-            await falcor.get([...dataPath, {from: 0, to: len - 1}, [geoAttribute, attribute]]);
+            await falcor.get([...dataPath, {from: 0, to: len - 1}, [geoAttribute, ...attributes]]);
             await falcor.get([...attributionPath, attributionAttributes]);
 
             setLoading(false);
@@ -137,15 +174,19 @@ const Edit = ({value, onChange, size}) => {
         }
 
         getData()
-    }, [dataSource, version, geoAttribute, attribute, geoid]);
+    }, [dataSource, version, geoAttribute, geoid, buildingType, floodPlain, hazard]);
 
     useEffect(() => {
-        setData(Object.values(get(falcorCache, dataPath, {})));
-    }, [falcorCache, dataSource, version, geoAttribute, attribute])
+        setData(
+            Object.values(get(falcorCache, dataPath, {}))
+                .filter(d => typeof d[`nri_${hazardsMeta[hazard]?.prefix}_eals`] !== 'object' && d[`nri_${hazardsMeta[hazard]?.prefix}_eals`] >= hazardScoreThreshold)
+        );
+    }, [falcorCache, hazardScoreThreshold])
+    console.log('data', data)
 
     useEffect(() => {
         async function getData() {
-            if (!geoid || !attribute) {
+            if (!geoid || !attributes) {
                 !geoid && setStatus('Please Select a Geography.');
                 return Promise.resolve();
             } else {
@@ -154,14 +195,14 @@ const Edit = ({value, onChange, size}) => {
             setLoading(true);
             setStatus(undefined);
 
-            const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${false && geoid?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
-            geoIndices = {from: 0, to: 0},
-            stateFips = get(data, [0, 'geoid']) || geoid?.substring(0, 2),
-            geoPath = (view_id) =>
-                ['dama', pgEnv, 'viewsbyId', view_id,
-                    'options', JSON.stringify({filter: {geoid: [false && geoid?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
-                    'databyIndex'
-                ];
+            const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${geoid?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
+                geoIndices = {from: 0, to: 0},
+                stateFips = get(data, [0, 'geoid']) || geoid?.substring(0, 2),
+                geoPath = (view_id) =>
+                    ['dama', pgEnv, 'viewsbyId', view_id,
+                        'options', JSON.stringify({filter: {geoid: [geoid?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
+                        'databyIndex'
+                    ];
             const geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);
             const geom = get(geomRes, ["json", ...geoPath(stateView), 0, geomColTransform]);
 
@@ -173,23 +214,32 @@ const Edit = ({value, onChange, size}) => {
         }
 
         getData()
-    }, [geoid, numColors, shade, colors, attribute, dataSource]);
+    }, [geoid]);
 
     const attributionData = get(falcorCache, attributionPath, {});
 
     const {geoColors, domain, geoLayer} =
-        getGeoColors({geoid, data, columns: [attribute], geoAttribute, colors});
+        getGeoColors({geoid, data, columns: [attributes], geoAttribute, colors});
+
+    const geoJson = makeFeatures({data})
 
     const layerProps =
         useMemo(() => ({
             ccl: {
-                data,
+                data: data,
+                //     .map(d => ({
+                //     building_id: d.building_id,
+                //     score: d[`nri_${hazardsMeta[hazard]?.prefix}_eals`]
+                // })),
+                dataFormat: d => d,
+                idCol: 'building_id',
+                geoJson,
                 geoColors,
                 domain,
                 mapFocus,
                 colors,
                 title,
-                attribute,
+                attributes,
                 geoAttribute,
                 dataSource,
                 version,
@@ -199,6 +249,7 @@ const Edit = ({value, onChange, size}) => {
                 change: e => onChange(JSON.stringify({
                     ...e,
                     data,
+                    geoJson,
                     geoColors,
                     domain,
                     dataSource,
@@ -206,16 +257,19 @@ const Edit = ({value, onChange, size}) => {
                     geoLayer,
                     geoid,
                     status,
-                    attribute,
+                    attributes,
                     geoAttribute,
                     attributionData,
                     mapFocus,
                     numColors,
                     colors,
-                    height
+                    height,
+                    buildingType,
+                    floodPlain,
+                    hazard
                 }))
             }
-        }), [geoid, attribute, colors, data, geoColors, height, dataSource, version, geoLayer]);
+        }), [geoid, attributes, colors, data, geoColors, height, dataSource, version, geoLayer, buildingType, floodPlain, hazard]);
 
     return (
         <div className='w-full'>
@@ -227,7 +281,6 @@ const Edit = ({value, onChange, size}) => {
                         types={dataSources.map(ds => ({label: ds.name, value: ds.source_id}))}
                         type={dataSource}
                         setType={e => {
-                            setAttribute(undefined);
                             setGeoAttribute(undefined);
                             setVersion(undefined);
                             setData([]);
@@ -243,28 +296,42 @@ const Edit = ({value, onChange, size}) => {
                     />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
 
-                    <div className={`flex justify-between`}>
-                        <label
-                            className={`shrink-0 pr-2 py-1 my-1 w-1/4`}
-                        >
-                            Attribute:
-                        </label>
-                        <select
-                            className={`bg-white w-full pl-3 rounded-md my-1`}
-                            value={attribute}
-                            onChange={e => setAttribute(e.target.value)}
-                        >
-                            <option value={undefined} key={''}>Please select an attribute</option>
-                            {
-                                (
-                                    dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||
-                                    dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
-                                    [])
-                                    .filter(c => ['data-variable', 'meta-variable'].includes(c.display))
-                                    .map(c => <option  value={c.name} key={c.name}>{c.display_name || c.name}</option>)
-                            }
-                        </select>
+                    <ButtonSelector
+                        label={'Building Type:'}
+                        types={[
+                            {label: 'State Owned', value: JSON.stringify({value_source: ['ogs']})},
+                            {label: 'Critical', value: JSON.stringify({critical: ['not null']})}]}
+                        type={buildingType}
+                        setType={setBuildingType}
+                    />
+                    <ButtonSelector
+                        label={'Flood Plain:'}
+                        types={[
+                            {label: '100 Year', value: JSON.stringify({flood_zone: ['AH', 'A', 'VE', 'AO', 'AE']})},
+                            {label: '500 Year', value: JSON.stringify({flood_zone: ['X']})}
+                        ]}
+                        type={floodPlain}
+                        setType={setFloodPlain}
+                    />
+
+                    <HazardSelectorSimple
+                        hazard={hazard}
+                        setHazard={setHazard}
+                    />
+
+                    <div className={'w-full flex flex-row text-sm'}>
+                        <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Threshold:</label>
+                        <input
+                            key={'pageSizeInput'}
+                            className={'p-2 my-1 bg-white rounded-md w-3/4 shrink'}
+                            type={"number"}
+                            placeholder={'Table Page Size'}
+                            value={hazardScoreThreshold}
+                            onChange={e => setHazardScoreThreshold(e.target.value)}
+                            onWheel={e => e.target.blur()}
+                        />
                     </div>
+
                     <RenderColorPicker
                         title={'Colors: '}
                         numColors={numColors}
@@ -295,7 +362,7 @@ const Edit = ({value, onChange, size}) => {
                                         falcor={falcor}
                                         layerProps={layerProps}
                                         legend={{domain, range: colors, title, size}}
-                                        layers={['Choropleth']}
+                                        layers={['Circles']}
                                     />
                                 </div>
                                 <Attribution baseUrl={baseUrl} attributionData={attributionData}/>
@@ -336,7 +403,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Map: Social Vulnerability',
+    "name": 'Map: Buildings',
     "type": 'Map',
     "EditComp": Edit,
     "ViewComp": View
