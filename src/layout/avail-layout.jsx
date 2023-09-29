@@ -2,6 +2,7 @@ import React from "react";
 import { useTheme, TopNav, SideNav } from "~/modules/avl-components/src/";
 import { Link, Outlet } from "react-router-dom";
 import AuthMenu from "~/pages/Auth/AuthMenu"
+import MNYLogo from './mny-logo'
 //import {getDomain, getSubdomain} from "utils"
 import get from 'lodash/get'
 
@@ -12,8 +13,8 @@ const Logo = ({sideNav}) => {
 	return (
 		<>
 			<Link to="/" className={`flex  border-b`}>
-				<div className='h-12 px-6 flex  items-center '>
-					AVAIL 
+				<div className='h-12 pl-4 pr-2 flex items-center '>
+					<MNYLogo height={35} width={170} />
 				</div>	
 			</Link>
 		</>
