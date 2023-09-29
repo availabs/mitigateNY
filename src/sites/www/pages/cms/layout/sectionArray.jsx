@@ -181,23 +181,23 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
     let HelpComp = attributes?.helpText?.ViewComp
     let sectionTitleCondition = value?.['title'] || value?.['tags'] || edit;
     let helpTextCondition = value?.['helpText'];
-    let interactCondition = typeof onEdit !== 'function';
+    let interactCondition = value?.element?.['element-type']?.includes('Map:');
     console.log('value', value)
     return (
-        <div className={`${i === 0 ? '-mt-5' : 'pt-4'}`}>
+        <div className={`${i === 0 ? '-mt-5' : ''}`}>
                 {
                     (sectionTitleCondition || helpTextCondition || interactCondition) &&
                     <div className={`flex w-full h-[50px] items-center mt-4`}>
 
                         <div id={`#${value?.title?.replace(/ /g, '_')}`}
-                             className={`flex-1 flex-row py-2 px-6 font-sans font-medium text-md uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
+                             className={`flex-1 flex-row py-2  font-sans font-medium text-md uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
                             <TitleComp
-                                className={`w-full ${(value?.['level'] || '1') === '1' ? `text-blue-400 font-bold text-2xl tracking-wider border-b py-1 pl-3` : ``}`}
+                                className={`w-full ${(value?.['level'] || '1') === '1' ? `text-blue-500 font-bold text-xl tracking-wider border-b py-1 pl-1` : ``}`}
                                 value={value?.['title']}
                             />
                         </div>
 
-                        <div className={`p-2 ${sectionTitleCondition ? '' : 'invisible'}`}>
+                        <div className={`${sectionTitleCondition ? 'p2' : 'invisible'} ${(value?.['level'] || '1') === '1' ? 'border-b' : ''}`}>
                             <TagsComp
                                 className=''
                                 value={value?.['tags']}
@@ -207,14 +207,14 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                         {
                             value?.element?.['element-type']?.includes('Map:') &&
                             <Link
-                                className={interactCondition ? 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400' : 'hidden'}
+                                className={`${interactCondition ? 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400' : 'hidden'} ${(value?.['level'] || '1') === '1' ? 'border-b' : ''}`}
                                 to={`/interact/${value?.id}`}
                                 title={'interact'}>
                                 <i className={'fa-light fa-window-restore'}/>
                             </Link>
                         }
 
-                        <div className={helpTextCondition ? '' : 'hidden'}>
+                        <div className={`${helpTextCondition ? 'p-0.5' : 'hidden'} ${(value?.['level'] || '1') === '1' ? 'border-b' : ''}`}>
                             <Popover className="relative">
                                 <Popover.Button
                                     className={'pl-3 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400'}>

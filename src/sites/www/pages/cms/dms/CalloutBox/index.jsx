@@ -67,7 +67,7 @@ const View = ({value}) => {
 
     const LexicalComp = dmsDataTypes.lexical.ViewComp;
     return (
-        <div className={'pt-3'}>
+        <div>
             <LexicalComp value={data?.text || value} bgColor={data?.bgColor} />
         </div>
     )
