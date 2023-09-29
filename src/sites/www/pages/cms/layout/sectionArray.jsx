@@ -65,7 +65,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                 <div className='flex flex-wrap border-y justify-end items-center'>
                     <div className='flex-0 grow'>
                         <TitleComp //todo make it blue if H!
-                            className={`p-2 w-full font-sans font-medium text-md uppercase ${(value?.['level'] || '1') === '1' ? `text-blue-500 font-bold text-xl tracking-wider py-1 pl-1` : ``}`}
+                            className={`p-2 w-full font-sans font-medium text-md uppercase ${(value?.['level'] || '1') === '1' ? `text-blue-500 text-lg border-y` : ``}`}
                             placeholder={'Section Title'}
                             value={value?.['title']} 
 
@@ -197,7 +197,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
         <div className={`${i === 0 ? '-mt-5' : ''} `}>
                 {
                     (sectionTitleCondition || helpTextCondition || interactCondition) &&
-                    <div className={`flex w-full h-[50px] items-center mt-4 ${(value?.['level']) === '1' ? `border-b` : ``}`}>
+                    <div className={`flex w-full h-[50px] items-center mt-4 ${(value?.['level'] || '1') === '1' ? `border-b` : ``}`}>
 
                         <div id={`#${value?.title?.replace(/ /g, '_')}`}
                              className={`flex-1 flex-row py-2  font-sans font-medium text-md uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
@@ -383,7 +383,7 @@ const Edit = ({Component, value, onChange, attr}) => {
     // every time component size total reaches 1, row changes
 
     return (
-        <div className={`mb-12 grid sm:grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr] gap-2 overflow-x-hidden`}>
+        <div className={`mb-12 grid sm:grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr] gap-2`}>
             {values.map((v,i) => {
                 const size = (edit.index === i ? edit?.value?.size : v?.size) || "1";
                 const requiredSpace = sizeOptionsSVG.find(s => s.name === size)?.value;
@@ -449,7 +449,7 @@ const View = ({Component, value, attr}) => {
     if (!value || !value.map) { return '' }
     let runningColTotal = 8;
     return (
-        <div className={`mb-12 grid grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr] gap-2 overflow-x-hidden`}   >
+        <div className={`mb-12 grid grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr] gap-2`}   >
         
         { 
             value.map((v,i) =>{
