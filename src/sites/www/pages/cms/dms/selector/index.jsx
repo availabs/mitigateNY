@@ -15,6 +15,7 @@ import DisasterLossStats from "../DisasterLossStats/index.jsx";
 import DisasterLossTables from "../DisasterLossTables/index.jsx";
 import DisasterLossMap from "../DisasterLossMap/index.jsx";
 import NRIMap from "../NRIMap/index.jsx";
+import BuildingsMap from "../BuildingsMap/index.jsx";
 import SocialVulnerabilityTable from "../SocialVulnerabilityTable/index.jsx"
 import SocialVulnerabilitySummaryTable from "../SocialVulnerabilitySummaryTable/index.jsx"
 import BuildingsTable from "../BuildingsTable/index.jsx";
@@ -57,6 +58,7 @@ export const ComponentRegistry = {
     "Map: FEMA Disaster Loss": DisasterLossMap,
     "Map: NRI": NRIMap,
     "Map: Social Vulnerability": SocialVulnerabilityMap,
+    "Map: Buildings": BuildingsMap,
     "lexical": {
         ...CalloutBox,
         name: 'Rich Text',

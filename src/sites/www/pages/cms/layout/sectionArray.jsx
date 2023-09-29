@@ -60,8 +60,8 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
             <div className='flex flex-col'>
                 <div className='flex flex-wrap border-y justify-end items-center'>
                     <div className='flex-0 grow'>
-                        <TitleComp 
-                            className='p-2 w-full font-sans font-medium text-md uppercase'
+                        <TitleComp //todo make it blue if H!
+                            className={`p-2 w-full font-sans font-medium text-md uppercase ${(value?.['level'] || '1') === '1' ? `text-blue-500 text-lg border-y` : ``}`}
                             placeholder={'Section Title'}
                             value={value?.['title']} 
 
@@ -182,7 +182,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
     let sectionTitleCondition = value?.['title'] || value?.['tags'] || edit;
     let helpTextCondition = value?.['helpText'];
     let interactCondition = typeof onEdit !== 'function';
-
+    console.log('value', value)
     return (
         <div className={`${i === 0 ? '-mt-5' : 'pt-4'}`}>
                 {
@@ -192,7 +192,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                         <div id={`#${value?.title?.replace(/ /g, '_')}`}
                              className={`flex-1 flex-row py-2 px-6 font-sans font-medium text-md uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
                             <TitleComp
-                                className='w-full'
+                                className={`w-full ${(value?.['level'] || '1') === '1' ? `text-blue-400 font-bold text-2xl tracking-wider border-b py-1 pl-3` : ``}`}
                                 value={value?.['title']}
                             />
                         </div>
@@ -204,12 +204,15 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                             />
                         </div>
 
-                        <Link
-                            className={interactCondition ? 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400' : 'hidden'}
-                            to={`/interact/${value?.id}`}
-                            title={'interact'}>
-                            <i className={'fa-light fa-window-restore'}/>
-                        </Link>
+                        {
+                            value?.element?.['element-type']?.includes('Map:') &&
+                            <Link
+                                className={interactCondition ? 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400' : 'hidden'}
+                                to={`/interact/${value?.id}`}
+                                title={'interact'}>
+                                <i className={'fa-light fa-window-restore'}/>
+                            </Link>
+                        }
 
                         <div className={helpTextCondition ? '' : 'hidden'}>
                             <Popover className="relative">
