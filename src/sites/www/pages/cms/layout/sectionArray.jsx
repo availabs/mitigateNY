@@ -191,7 +191,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
     let HelpComp = attributes?.helpText?.ViewComp
     let sectionTitleCondition = value?.['title'] || value?.['tags'] || edit;
     let helpTextCondition = value?.['helpText'];
-    let interactCondition = value?.element?.['element-type']?.includes('Map:');
+    let interactCondition = typeof onEdit !== 'function' && value?.element?.['element-type']?.includes('Map:');
 
     return (
         <div className={`${i === 0 ? '-mt-5' : ''} `}>
