@@ -30,7 +30,7 @@ export const hazardsMeta = {
     },
     'coastal': {
         color: '#54bebe',
-        name: 'Coastal Fldng',
+        name: 'Coastal Hazards',
         prefix: 'cfld',
         consequences: ['b', 'p', 'pe', 't'],
         icon: 'fa-thin fa-house-flood'
