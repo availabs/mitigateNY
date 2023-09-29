@@ -72,7 +72,7 @@ const makeFeatures = ({data = []}) => {
         type: 'FeatureCollection',
         features: data.map(d => ({
             'type': 'Feature',
-            'properties': {color: d.color, radius: radiusScale(d.magnitude), ...d},
+            'properties': {color: d.color, borderColor: '#6e6e6e', radius: radiusScale(d.magnitude), ...d},
             'geometry': parseJson(d.location)
         }))
     }

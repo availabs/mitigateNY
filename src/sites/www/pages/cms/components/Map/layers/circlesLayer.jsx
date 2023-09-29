@@ -99,7 +99,7 @@ class CirclesOptions extends LayerContainer {
       "type": "circle",
       "paint": {
         'circle-color': ['get', 'color'],
-        'circle-stroke-color': '#6e6e6e',
+        'circle-stroke-color': ['get', 'borderColor'],
         'circle-stroke-width': 1,
         'circle-opacity': 0.5,
         'circle-radius': ['get', 'radius'],
@@ -148,7 +148,7 @@ class CirclesOptions extends LayerContainer {
       return features.reduce((a, feature) => {
         let { view: currentView, data, dataFormat, idCol = 'event_id' } = this.props;
         const fmt = dataFormat || d3Formatter('0.2s');
-        let record = data.find(d => d.event_id === feature.properties.event_id),
+        let record = data.find(d => d[idCol] === feature.properties[idCol]),
           response = [
             [feature.properties.geoid, ''],
             ...Object.keys(record || {})

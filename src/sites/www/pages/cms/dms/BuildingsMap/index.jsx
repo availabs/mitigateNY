@@ -66,13 +66,13 @@ const parseJson = (value) => {
         return null;
     }
 }
-const makeFeatures = ({data = []}) => useMemo(() => {
+const makeFeatures = ({data = [], hazard}) => useMemo(() => {
     const radiusScale = 2;
     const geoJson = {
         type: 'FeatureCollection',
         features: data.map(d => ({
             'type': 'Feature',
-            'properties': {color: d.color, radius: radiusScale, ...d},
+            'properties': {color: hazardsMeta[hazard]?.color,borderColor: hazardsMeta[hazard]?.color, radius: radiusScale, ...d},
             'geometry': parseJson(d['st_asgeojson(st_centroid(footprint)) as building_centroid'])
         }))
     }
@@ -221,16 +221,16 @@ const Edit = ({value, onChange, size}) => {
     const {geoColors, domain, geoLayer} =
         getGeoColors({geoid, data, columns: [attributes], geoAttribute, colors});
 
-    const geoJson = makeFeatures({data})
+    const geoJson = makeFeatures({data, hazard})
 
     const layerProps =
         useMemo(() => ({
             ccl: {
-                data: data,
-                //     .map(d => ({
-                //     building_id: d.building_id,
-                //     score: d[`nri_${hazardsMeta[hazard]?.prefix}_eals`]
-                // })),
+                data: data
+                    .map(d => ({
+                    building_id: d.building_id,
+                    score: d[`nri_${hazardsMeta[hazard]?.prefix}_eals`]
+                })),
                 dataFormat: d => d,
                 idCol: 'building_id',
                 geoJson,
@@ -332,15 +332,6 @@ const Edit = ({value, onChange, size}) => {
                         />
                     </div>
 
-                    <RenderColorPicker
-                        title={'Colors: '}
-                        numColors={numColors}
-                        setNumColors={setNumColors}
-                        shade={shade}
-                        setShade={setShade}
-                        colors={colors}
-                        setColors={setColors}
-                    />
                     <ButtonSelector
                         label={'Size:'}
                         types={[{label: 'Small', value: 500}, {label: 'Medium', value: 700}, {
@@ -361,7 +352,7 @@ const Edit = ({value, onChange, size}) => {
                                     <RenderMap
                                         falcor={falcor}
                                         layerProps={layerProps}
-                                        legend={{domain, range: colors, title, size}}
+                                        legend={{domain, range: colors, title, size, show: false}}
                                         layers={['Circles']}
                                     />
                                 </div>
