@@ -62,7 +62,8 @@ const View = ({value}) => {
         value['element-data'] :
         JSON.parse(value)
     if(!data?.text || !value ||
-        (data?.text?.root?.children?.length === 1 && data?.text?.root?.children?.[0]?.children?.length === 0)
+        (data?.text?.root?.children?.length === 1 && data?.text?.root?.children?.[0]?.children?.length === 0) ||
+        (data?.text?.root?.children?.length === 0)
     ) return null;
 
     const LexicalComp = dmsDataTypes.lexical.ViewComp;
