@@ -1,9 +1,10 @@
-import React, {Fragment} from "react"
+import React, {Fragment, useState } from "react"
 import isEqual from 'lodash/isEqual'
 import cloneDeep from 'lodash/cloneDeep'
 import {getSizeClass, sizeOptionsSVG} from './utils/sizes.jsx'
 import { Popover, Transition } from '@headlessui/react'
 import {Link} from "react-router-dom";
+import { usePopper } from 'react-popper'
 
 function SizeSelect ({size='1', setSize, onChange}) {
     
@@ -39,6 +40,9 @@ function SizeSelect ({size='1', setSize, onChange}) {
 
 function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, onRemove}) {
     // console.log('SectionEdit', value, attributes)
+    let [referenceElement, setReferenceElement] = useState()
+    let [popperElement, setPopperElement] = useState()
+    let { styles, attributes:popperAttributes } = usePopper(referenceElement, popperElement)
 
     const updateAttribute = (k, v) => {
         if(!isEqual(value, {...value, [k]: v})) {
@@ -106,29 +110,31 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                     <div className='flex-1'/>
                     <div className={'flex flex-row flex-wrap'}>
                         <div className='py-2'>
-                            <Popover className="relative">
-                              <Popover.Button
-                                className={'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400'}>
-                                <i className="fa-light fa-question text-2xl fa-fw" title="Help"/>
-                              </Popover.Button>
+                           <Popover className="relative">
+                                <Popover.Button
+                                    ref={setReferenceElement}
+                                    className={'pl-3  text-md cursor-pointer hover:text-blue-500 text-slate-400'}>
+                                    <i className="fa-light fa-question text-lg fa-fw" title="Help"/>
+                                </Popover.Button>
                                 <Transition
-                                  as={Fragment}
-                                  enter="transition ease-out duration-200"
-                                  enterFrom="opacity-0 translate-y-1"
-                                  enterTo="opacity-100 translate-y-0"
-                                  leave="transition ease-in duration-150"
-                                  leaveFrom="opacity-100 translate-y-0"
-                                  leaveTo="opacity-0 translate-y-1"
+                                    as={Fragment}
+                                    enter="transition ease-out duration-200"
+                                    enterFrom="opacity-0 translate-y-1"
+                                    enterTo="opacity-100 translate-y-0"
+                                    leave="transition ease-in duration-150"
+                                    leaveFrom="opacity-100 translate-y-0"
+                                    leaveTo="opacity-0 translate-y-1"
                                 >
-                                  <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
-                                    <div className="bg-white">
+                                    <Popover.Panel 
+                                        ref={setPopperElement}
+                                        style={styles.popper}
+                                        {...popperAttributes.popper}
+                                        className="shadow-lg bg-white z-10 w-screen max-w-sm transform px-4 border border-blue-200 lg:max-w-3xl">
+                                        
                                         <HelpComp
                                             value={value?.['helpText']}
                                             onChange={(v) => updateAttribute('helpText', v)}
                                         />
-                                    </div>
-
-
                                   </Popover.Panel>
                                 </Transition>
                             </Popover>
@@ -175,6 +181,10 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
 }
 
 function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
+    let [referenceElement, setReferenceElement] = useState()
+    let [popperElement, setPopperElement] = useState()
+    let { styles, attributes:popperAttributes } = usePopper(referenceElement, popperElement)
+    
     let TitleComp = attributes?.title?.ViewComp
     let TagsComp = attributes?.tags?.ViewComp 
     let ElementComp = attributes?.element?.ViewComp
@@ -184,7 +194,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
     let interactCondition = value?.element?.['element-type']?.includes('Map:');
     console.log('value', value)
     return (
-        <div className={`${i === 0 ? '-mt-5' : ''}`}>
+        <div className={`${i === 0 ? '-mt-5' : ''} `}>
                 {
                     (sectionTitleCondition || helpTextCondition || interactCondition) &&
                     <div className={`flex w-full h-[50px] items-center mt-4`}>
@@ -217,7 +227,8 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                         <div className={`${helpTextCondition ? 'p-0.5' : 'hidden'} ${(value?.['level'] || '1') === '1' ? 'border-b' : ''}`}>
                             <Popover className="relative">
                                 <Popover.Button
-                                    className={'pl-3 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400'}>
+                                    ref={setReferenceElement}
+                                    className={'pl-3  text-md cursor-pointer hover:text-blue-500 text-slate-400'}>
                                     <i className="fa-light fa-question text-lg fa-fw" title="Help"/>
                                 </Popover.Button>
                                 <Transition
@@ -229,12 +240,16 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                                     leaveFrom="opacity-100 translate-y-0"
                                     leaveTo="opacity-0 translate-y-1"
                                 >
-                                    <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-screen max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
-                                        <div className="bg-white border border-blue-200">
+                                    <Popover.Panel 
+                                        ref={setPopperElement}
+                                        style={styles.popper}
+                                        {...popperAttributes.popper}
+                                        className="shadow-lg bg-white z-10 w-screen max-w-sm transform px-4 border border-blue-200 lg:max-w-3xl">
+                                        
                                             <HelpComp
                                                 value={value?.['helpText']}
                                             />
-                                        </div>
+                                        
 
 
                                     </Popover.Panel>
@@ -434,7 +449,7 @@ const View = ({Component, value, attr}) => {
     if (!value || !value.map) { return '' }
     let runningColTotal = 8;
     return (
-        <div className={`mb-12 grid grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]`}   >
+        <div className={`mb-12 grid grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr] overflow-x-hidden`}   >
         
         { 
             value.map((v,i) =>{
