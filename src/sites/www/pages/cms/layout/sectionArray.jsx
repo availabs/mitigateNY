@@ -65,7 +65,7 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                 <div className='flex flex-wrap border-y justify-end items-center'>
                     <div className='flex-0 grow'>
                         <TitleComp //todo make it blue if H!
-                            className={`p-2 w-full font-sans font-medium text-md uppercase ${(value?.['level'] || '1') === '1' ? `text-blue-500 text-lg border-y` : ``}`}
+                            className={`p-2 w-full font-sans font-medium text-md uppercase ${(value?.['level']) === '1' ? `text-blue-500 font-bold text-xl tracking-wider py-1 pl-1` : ``}`}
                             placeholder={'Section Title'}
                             value={value?.['title']} 
 
@@ -75,8 +75,8 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                     <div>
                         <LevelComp 
                             className='p-2 w-20 bg-white'
-                            value={value?.['level'] || '1'}
-                            
+                            value={value?.['level']}
+                            placeholder={'level'}
                             options={attributes.level.options}
                             onChange={(v) => updateAttribute('level', v)}
                         />
@@ -202,7 +202,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                         <div id={`#${value?.title?.replace(/ /g, '_')}`}
                              className={`flex-1 flex-row py-2  font-sans font-medium text-md uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
                             <TitleComp
-                                className={`w-full ${(value?.['level'] || '1') === '1' ? `text-blue-500 font-bold text-xl tracking-wider py-1 pl-1` : ``}`}
+                                className={`w-full ${(value?.['level']) === '1' ? `text-blue-500 font-bold text-xl tracking-wider py-1 pl-1` : ``}`}
                                 value={value?.['title']}
                             />
                         </div>
