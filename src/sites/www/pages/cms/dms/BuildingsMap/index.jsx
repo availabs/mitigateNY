@@ -7,13 +7,12 @@ import VersionSelectorSearchable from "../../components/versionSelector/searchab
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
-import {scaleThreshold} from "d3-scale";
 import {getColorRange} from "../../../../../../pages/DataManager/utils/color-ranges.js";
-import ckmeans from '~/utils/ckmeans';
 import {RenderMap} from "../../components/Map/RenderMap.jsx";
 import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 import {Attribution} from "../../components/attribution.jsx";
 import Multiselect from "../../components/MultiSelect.jsx";
+import {RenderLegend} from "./components/RenderLegend.jsx";
 
 const getGeoColors = ({
                           geoid,
@@ -415,6 +414,7 @@ const Edit = ({value, onChange, size}) => {
                     loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <React.Fragment>
+                                <RenderLegend floodPlain={floodPlain} hazard={hazard} />
                                 <div className={`flex-none w-full p-1`} style={{height: `${height}px`}}>
                                     <RenderMap
                                         falcor={falcor}
@@ -451,6 +451,7 @@ const View = ({value}) => {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
                     <div className='h-80vh flex-1 flex flex-col'>
+                        <RenderLegend floodPlain={data?.floodPlain} hazard={data?.hazard} />
                         <img alt='Choroplath Map' src={get(data, ['img'])}/>
                         <Attribution baseUrl={baseUrl} attributionData={attributionData}/>
                     </div>
