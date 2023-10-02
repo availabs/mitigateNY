@@ -11,19 +11,19 @@ function defaultTheme () {
 			'td': 'whitespace-nowrap px-3 py-4 text-sm text-gray-500'
 		},
 		text: {
-			input: 'px-2 py-1 w-full text-sm font-light border focus:border-blue-300 focus:outline-none transition ease-in',
+			input: 'px-2 py-1 w-full text-sm font-light border rounded-md focus:border-blue-300 focus:outline-none transition ease-in',
 			view: 'text-sm font-light'
 		},
 		textarea: {
-			input: 'px-2 py-1 w-full text-sm font-light border focus:border-blue-300 focus:outline-none transition ease-in',
+			input: 'px-2 py-1 w-full text-sm font-light border rounded-md focus:border-blue-300 focus:outline-none transition ease-in',
 			viewWrapper: 'whitespace-normal text-sm font-light'
 		},
 		select: {
-			input: 'px-2 py-1 w-full text-sm font-light border focus:border-blue-300 bg-white hover:bg-blue-100 transition ease-in',
+			input: 'px-2 py-1 w-full text-sm font-light border rounded-md focus:border-blue-300 bg-white hover:bg-blue-100 transition ease-in',
 			error: 'text-xs text-red-300 font-light'
 		},
 		multiselect: {
-			inputWrapper: 'flex px-2 py-1 w-full text-sm font-light border focus:border-blue-300 bg-white hover:bg-blue-100 transition ease-in',
+			inputWrapper: 'flex px-2 py-1 w-full text-sm font-light border focus:border-blue-300 rounded-md bg-white hover:bg-blue-100 transition ease-in',
 			input: 'focus:outline-none w-full',
 			tokenWrapper: 'flex px-2 py-1 mx-1 bg-blue-100 hover:bg-blue-300 rounded-md transition ease-in',
 			removeIcon: 'fa fa-x px-1 text-xs text-red-300 hover:text-red-500 self-center transition ease-in',

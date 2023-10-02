@@ -6,43 +6,29 @@ import {isJson} from "~/utils/macros.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
-import {metaData} from "./config.js";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
-import {RenderColorPicker} from "../../components/colorPicker.jsx";
 import {scaleThreshold} from "d3-scale";
 import {getColorRange} from "../../../../../../pages/DataManager/utils/color-ranges.js";
 import ckmeans from '~/utils/ckmeans';
 import {RenderMap} from "../../components/Map/RenderMap.jsx";
-import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 import {Attribution} from "../../components/attribution.jsx";
+import Multiselect from "../../components/MultiSelect.jsx";
 
-const getDomain = (data = [], range = []) => {
-    if (!data?.length || !range?.length) return [];
-    return data?.length && range?.length ? ckmeans(data, Math.min(data?.length, range?.length)) : [];
-}
-const getColorScale = (data, colors) => {
-    const domain = getDomain(data, colors)
-
-    return scaleThreshold()
-        .domain(domain)
-        .range(colors);
-}
-const getGeoColors = ({geoid, data = [], columns = [], geoAttribute, paintFn, colors = [], ...rest}) => {
-    if (!data?.length || !colors?.length) return {};
+const getGeoColors = ({
+                          geoid,
+                          data = [],
+                          columns = [],
+                          geoAttribute,
+                          paintFn
+}) => {
+    if (!data?.length) return {};
 
     const geoids = data.map(d => d[geoAttribute]);
     const stateFips = (geoid?.substring(0, 2) || geoids[0] || '00').substring(0, 2);
+
     const geoColors = {}
     const geoLayer = geoids[0]?.toString().length === 5 ? 'counties' : 'tracts';
-    const colorScale = getColorScale(
-        data.map((d) => paintFn ? paintFn(d) : +d[columns?.[0]]).filter(d => d),
-        colors
-    );
-    const domain = getDomain(
-        data.map((d) => paintFn ? paintFn(d) : +d[columns?.[0]]).filter(d => d && d >= 0),
-        colors
-    )
 
     if (geoid?.length === 5) {
         geoColors[geoid] = '#d3d3d3'
@@ -55,8 +41,8 @@ const getGeoColors = ({geoid, data = [], columns = [], geoAttribute, paintFn, co
             geoColors[gid] = geoids.includes(gid) && value ? colorScale(value) : '#d3d3d3';
         }
     }
-    console.log('geocolors', geoColors, data)
-    return {geoColors, domain, geoLayer: 'counties'};
+
+    return {geoColors, geoLayer: 'counties'};
 }
 
 const parseJson = (value) => {
@@ -66,19 +52,43 @@ const parseJson = (value) => {
         return null;
     }
 }
-const makeFeatures = ({data = [], hazard}) => useMemo(() => {
+
+const pickHazardFromRow = (row, hazards) =>
+    hazards.filter(h => row[`nri_${hazardsMeta[h].prefix}_eals`] >= 0)
+        .sort((a,b) => +row[`nri_${hazardsMeta[b].prefix}_eals`] - +row[`nri_${hazardsMeta[a].prefix}_eals`])[0];
+
+const makeFeatures = ({data = [], hazard, floodPlain}) => useMemo(() => {
+    const floodPlainColors = {
+        '100': '#6e0093',
+        '500': '#2a6400',
+    }
     const radiusScale = 2;
     const geoJson = {
         type: 'FeatureCollection',
-        features: data.map(d => ({
-            'type': 'Feature',
-            'properties': {color: hazardsMeta[hazard]?.color,borderColor: hazardsMeta[hazard]?.color, radius: radiusScale, ...d},
-            'geometry': parseJson(d['st_asgeojson(st_centroid(footprint)) as building_centroid'])
-        }))
+        features: data.map(d => {
+
+            // preference: flood plains, hazards in order of highest to lowest score
+            const color =
+                floodPlain.length && ['AH','A','VE','AO','AE'].includes(d.flood_zone) ? floodPlainColors["100"] :
+                    floodPlain.length && ['X'].includes(d.flood_zone) ? floodPlainColors["500"] :
+                        hazardsMeta[pickHazardFromRow(d, hazard)]?.color;
+            return {
+                'type': 'Feature',
+                'properties': {
+                    color,
+                    borderColor: color,
+                    radius: radiusScale, ...d
+                },
+                'geometry': parseJson(d['st_asgeojson(st_centroid(footprint)) as building_centroid'])
+            }
+        })
     }
 
     return geoJson
 }, [data])
+// 2 queries
+// 1: floodplain if selected, else return []
+// 2: hazard if selected, else return []
 
 const Edit = ({value, onChange, size}) => {
 
@@ -89,11 +99,11 @@ const Edit = ({value, onChange, size}) => {
 
     const [dataSources, setDataSources] = useState(cachedData?.dataSources || []);
     const [dataSource, setDataSource] = useState(cachedData?.dataSource);
-    const [version, setVersion] = useState(cachedData?.version);
+    const [version, setVersion] = useState(cachedData?.version || 842);
     const [geoAttribute, setGeoAttribute] = useState(cachedData?.geoAttribute);
     const [buildingType, setBuildingType] = useState(cachedData?.buildingType || JSON.stringify({value_source: ['ogs']}));
-    const [floodPlain, setFloodPlain] = useState(cachedData?.floodPlain || '{}');
-    const [hazard, setHazard] = useState(cachedData?.hazard || 'riverine');
+    const [floodPlain, setFloodPlain] = useState(cachedData?.floodPlain || []);
+    const [hazard, setHazard] = useState(cachedData?.hazard || []);
     const [hazardScoreThreshold, setHazardScoreThreshold] = useState(cachedData?.hazardScoreThreshold || 70);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
@@ -112,12 +122,17 @@ const Edit = ({value, onChange, size}) => {
         filter: {
             ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
             ...JSON.parse(buildingType),
-            ...floodPlain && JSON.parse(floodPlain),
         },
     });
     const lenPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
     const dataPath = ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
-    const attributes = ['building_id', 'st_asgeojson(st_centroid(footprint)) as building_centroid', `nri_${hazardsMeta[hazard]?.prefix}_eals`];
+    const attributes = [
+        'building_id',
+        'address',
+        'st_asgeojson(st_centroid(footprint)) as building_centroid',
+        ...Array.isArray(hazard) ? hazard.map(h => `nri_${hazardsMeta[h]?.prefix}_eals`) : [],
+        'flood_zone'
+    ];
     const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
     const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
         attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
@@ -174,15 +189,36 @@ const Edit = ({value, onChange, size}) => {
         }
 
         getData()
-    }, [dataSource, version, geoAttribute, geoid, buildingType, floodPlain, hazard]);
+    }, [dataSource, version, geoAttribute, geoid, buildingType, floodPlain, hazard, attributes]);
 
     useEffect(() => {
-        setData(
-            Object.values(get(falcorCache, dataPath, {}))
-                .filter(d => typeof d[`nri_${hazardsMeta[hazard]?.prefix}_eals`] !== 'object' && d[`nri_${hazardsMeta[hazard]?.prefix}_eals`] >= hazardScoreThreshold)
-        );
-    }, [falcorCache, hazardScoreThreshold])
-    console.log('data', data)
+        setLoading(true)
+        const newData = Object.values(get(falcorCache, dataPath, {}))
+            .filter(d =>
+                // at least one hazard is above threshold
+                (
+                    hazard?.length &&
+                    hazard.reduce((acc, curr) =>
+                            acc ||
+                            typeof d[`nri_${hazardsMeta[curr]?.prefix}_eals`] !== 'object' &&
+                            d[`nri_${hazardsMeta[curr]?.prefix}_eals`] >= hazardScoreThreshold
+                        , false)
+                ) ||
+                // building falls under one of the selected flood plains
+                (
+                    floodPlain?.length &&
+                    floodPlain.reduce((acc, curr) =>
+                            acc ||
+                            typeof d.flood_zone !== "object" &&
+                            (JSON.parse(curr)?.flood_zone || []).includes(d.flood_zone)
+                        , false)
+                )
+            )
+
+        setData(newData);
+
+        setLoading(false)
+    }, [falcorCache, hazardScoreThreshold, hazard, floodPlain, buildingType, geoid, version, dataSource])
 
     useEffect(() => {
         async function getData() {
@@ -219,17 +255,25 @@ const Edit = ({value, onChange, size}) => {
     const attributionData = get(falcorCache, attributionPath, {});
 
     const {geoColors, domain, geoLayer} =
-        getGeoColors({geoid, data, columns: [attributes], geoAttribute, colors});
+        getGeoColors({geoid, data, columns: attributes, geoAttribute});
 
-    const geoJson = makeFeatures({data, hazard})
-
+    const geoJson = makeFeatures({data, hazard, floodPlain})
+    console.log('geoColors?', geoColors)
     const layerProps =
         useMemo(() => ({
             ccl: {
                 data: (data || [])
                     .map(d => ({
-                    building_id: d.building_id,
-                    score: d[`nri_${hazardsMeta[hazard]?.prefix}_eals`]
+                        building_id: d.building_id,
+                        address: typeof d.address !== 'object' ? d.address : null,
+                        floodPlain : ['AH','A','VE','AO','AE'].includes(d.flood_zone) ? '100 Year' :
+                                        ['X'].includes(d.flood_zone) ? '500 Year' : 'None',
+                        ...hazard
+                            .sort((a,b) => +d[`nri_${hazardsMeta[b]?.prefix}_eals`] - +d[`nri_${hazardsMeta[a]?.prefix}_eals`])
+                            .reduce((acc, h) => ({
+                            ...acc,
+                            [`${h} Score`]: +d[`nri_${hazardsMeta[h]?.prefix}_eals`]
+                        }) ,{})
                 })),
                 dataFormat: d => d,
                 idCol: 'building_id',
@@ -304,22 +348,45 @@ const Edit = ({value, onChange, size}) => {
                         type={buildingType}
                         setType={setBuildingType}
                     />
-                    <ButtonSelector
-                        label={'Flood Plain:'}
-                        types={[
-                            {label: '100 Year', value: JSON.stringify({flood_zone: ['AH', 'A', 'VE', 'AO', 'AE']})},
-                            {label: '500 Year', value: JSON.stringify({flood_zone: ['X']})}
-                        ]}
-                        type={floodPlain}
-                        setType={setFloodPlain}
+
+                    <Multiselect
+                        className={'my-1 bg-white rounded-md w-3/4 shrink flex-row-reverse'}
+                        label={'Filter by'}
+                        value={[...floodPlain, ...hazard]}
+                        onChange={e => {
+                            const floodplains = e.filter(e => e.type === 'floodplain').map(e => e.key);
+                            const hazards =
+                                e.filter(e => e.type === 'hazard')
+                                    .map(e => e.key)
+                                    .sort((a,b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name));
+                            setData([]);
+                            setFloodPlain(floodplains);
+                            setHazard(hazards);
+                        }}
+                        options={
+                            [
+                                {
+                                    label: '100 Year',
+                                    key: JSON.stringify({flood_zone: ['AH', 'A', 'VE', 'AO', 'AE']}),
+                                    type: 'floodplain'
+                                },
+                                {
+                                    label: '500 Year',
+                                    key: JSON.stringify({flood_zone: ['X']}),
+                                    type: 'floodplain'
+                                },
+                                ...Object.keys(hazardsMeta)
+                                    .sort((a,b) => hazardsMeta[a].name.localeCompare(hazardsMeta[b].name))
+                                    .map((k, i) => ({
+                                        label: hazardsMeta[k].name,
+                                        key: k,
+                                        type: 'hazard'
+                                    }))
+                            ]
+                        }
                     />
 
-                    <HazardSelectorSimple
-                        hazard={hazard}
-                        setHazard={setHazard}
-                    />
-
-                    <div className={'w-full flex flex-row text-sm'}>
+                    {hazard?.length ? <div className={'w-full flex flex-row text-sm'}>
                         <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Threshold:</label>
                         <input
                             key={'pageSizeInput'}
@@ -330,7 +397,7 @@ const Edit = ({value, onChange, size}) => {
                             onChange={e => setHazardScoreThreshold(e.target.value)}
                             onWheel={e => e.target.blur()}
                         />
-                    </div>
+                    </div> : null}
 
                     <ButtonSelector
                         label={'Size:'}

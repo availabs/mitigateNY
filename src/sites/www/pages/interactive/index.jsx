@@ -48,7 +48,7 @@ const config = {
   name:'Title',
   path: "/interact/:id?",
   exact: true,
-  auth: true,
+  // auth: true,
   ...authMenuConfig,
   component: Home
 }

@@ -208,6 +208,7 @@ class CirclesOptions extends LayerContainer {
     this.legend.range = colors;
     this.legend.title = title;
     const hideLayer = geoLayer === 'counties' ? 'tracts' : 'counties';
+    console.log('???????////', geoLayer, geoColors)
     map.setFilter(geoLayer, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
     map.setFilter(`${geoLayer}-line`, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
     map.setLayoutProperty(hideLayer, 'visibility', 'none');
