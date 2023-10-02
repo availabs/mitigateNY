@@ -64,8 +64,8 @@ const View = ({value}) => {
     const dataOrValue = data?.text || value;
 
     if(!dataOrValue ||
-        (dataOrValue?.text?.root?.children?.length === 1 && dataOrValue?.text?.root?.children?.[0]?.children?.length === 0) ||
-        (dataOrValue?.text?.root?.children?.length === 0)
+        (dataOrValue?.root?.children?.length === 1 && dataOrValue?.root?.children?.[0]?.children?.length === 0) ||
+        (dataOrValue?.root?.children?.length === 0)
     ) return null;
 
     const LexicalComp = dmsDataTypes.lexical.ViewComp;
