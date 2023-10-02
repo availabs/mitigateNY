@@ -226,7 +226,7 @@ const Edit = ({value, onChange, size}) => {
     const layerProps =
         useMemo(() => ({
             ccl: {
-                data: data
+                data: (data || [])
                     .map(d => ({
                     building_id: d.building_id,
                     score: d[`nri_${hazardsMeta[hazard]?.prefix}_eals`]
