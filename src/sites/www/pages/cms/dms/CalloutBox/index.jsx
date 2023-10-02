@@ -61,15 +61,17 @@ const View = ({value}) => {
     let data = typeof value === 'object' ?
         value['element-data'] :
         JSON.parse(value)
-    if(!data?.text || !value ||
-        (data?.text?.root?.children?.length === 1 && data?.text?.root?.children?.[0]?.children?.length === 0) ||
-        (data?.text?.root?.children?.length === 0)
+    const dataOrValue = data?.text || value;
+
+    if(!dataOrValue ||
+        (dataOrValue?.text?.root?.children?.length === 1 && dataOrValue?.text?.root?.children?.[0]?.children?.length === 0) ||
+        (dataOrValue?.text?.root?.children?.length === 0)
     ) return null;
 
     const LexicalComp = dmsDataTypes.lexical.ViewComp;
     return (
         <div>
-            <LexicalComp value={data?.text || value} bgColor={data?.bgColor} />
+            <LexicalComp value={dataOrValue} bgColor={data?.bgColor} />
         </div>
     )
 }
