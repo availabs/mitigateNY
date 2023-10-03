@@ -132,7 +132,7 @@ const Edit = ({value, onChange}) => {
             await falcor.get(lenPath(options({groupBy, notNull, geoAttribute, geoid})));
             const len = Math.min(
                 get(falcor.getCache(), lenPath(options({groupBy, notNull, geoAttribute, geoid})), 0),
-                250);
+                590);
 
             await falcor.get(
                 [...dataPath(options({groupBy, notNull, geoAttribute, geoid})),

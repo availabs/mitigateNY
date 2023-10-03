@@ -11,6 +11,8 @@ import { CMSContext } from './layout'
 const theme = {
   pageControls: {
     controlItem: 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400 flex items-center',
+    select: 'bg-transparent border-none rounded-sm focus:ring-0 focus:border-0',
+    selectOption: 'p-4 text-md cursor-pointer hover:text-blue-500 text-slate-400 hover:bg-blue-600',
     content: '',
   }
 }
@@ -148,16 +150,16 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
 
             {(!item?.parent || item?.parent === '') &&
                 <div className={theme.pageControls.controlItem}>
-                  <i className={'fa-light fa-up-down-left-right'} />
+                  <i className={'fa-solid fa-up-down-left-right text-sm'} />
                   <select
                       title={'Move Page'}
-                      className={'bg-transparent'}
+                      className={theme.pageControls.select}
                       value={item.type}
                       onChange={e => movePages(e.target.value)}
                   >
-                    <option key={'cms'} value={'docs-page'}>cms</option>
-                    <option key={'draft'} value={'docs-draft'}>draft</option>
-                    <option key={'playground'} value={'docs-play'}>playground</option>
+                    <option key={'cms'} value={'docs-page'} className={theme.pageControls.selectOption}>Live</option>
+                    <option key={'draft'} value={'docs-draft'} className={theme.pageControls.selectOption}>Draft</option>
+                    <option key={'playground'} value={'docs-play'} className={theme.pageControls.selectOption}>Playground</option>
                   </select>
                 </div>
             }
