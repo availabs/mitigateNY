@@ -4,7 +4,7 @@ import { NavLink, Link } from "react-router-dom";
 import {useFalcor} from '~/modules/avl-falcor';
 import Selector from './Selector'
 import get from 'lodash/get'
-import {getAttributes} from '~/pages/DataManager/components/attributes'
+import {getAttributes} from '~/pages/DataManager/Source/attributes'
 
 export default function DataControls ({items, dataItems,dataControls, setDataControls, open, setOpen}) {
   
