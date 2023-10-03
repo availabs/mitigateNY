@@ -5,6 +5,7 @@ import CMS from './pages/cms'
 
 
 import DamaRoutes from "~/pages/DataManager"
+import hazmitDataTypes from "~/pages/HazmitDataTypes"
 
 import Admin, { authMenuConfig } from "./pages/admin"
 import Playground from './pages/admin/playground'
@@ -13,8 +14,7 @@ import Templates from './pages/admin/templates'
 import Interactive from "./pages/interactive/index.jsx";
 import FormsActions from './pages/admin/forms/actions'
 
-// import Test from "./pages/Test"
-// import NymtcSurveyCrosswalk from "./pages/nymtcSurveyCrosswalk"
+
 
 
 const Routes = [
@@ -24,6 +24,7 @@ const Routes = [
     baseUrl:'/cenrep',
     defaultPgEnv : "hazmit_dama",
     navSettings: authMenuConfig,
+    dataTypes: hazmitDataTypes,
     useFalcor,
     useAuth
   }),
