@@ -87,6 +87,28 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
 
   }
 
+  const getChildren = ({item, dataItems, children}) => {
+    const currentChildren = dataItems.filter(di => di.parent === item.id);
+    if(currentChildren.length){
+      children.push(...currentChildren)
+      currentChildren.forEach(child => getChildren({item: child, dataItems, children}))
+    }
+  }
+
+  const movePages = async (type) => {
+    const children = []
+    getChildren({item, dataItems, children});
+
+    [...children, item]
+    .reduce(async (acc, currItem) => {
+      await acc;
+      const newItem = {id: currItem.id, type}
+      submit(json2DmsForm(newItem, 'updateType'), { method: "post", action: `${baseUrl}/edit/` })
+
+    }, Promise.resolve())
+
+  }
+
   const toggleSidebar = async (value='') => {
     const newItem = cloneDeep(item)
     newItem.sidebar = value
@@ -123,6 +145,23 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
               />
             </div>
             <div className='pl-6 pb-2 text-gray-500 text-xs'>{item['id']}</div>
+
+            {(!item?.parent || item?.parent === '') &&
+                <div className={theme.pageControls.controlItem}>
+                  <i className={'fa-light fa-up-down-left-right'} />
+                  <select
+                      title={'Move Page'}
+                      className={'bg-transparent'}
+                      value={item.type}
+                      onChange={e => movePages(e.target.value)}
+                  >
+                    <option key={'cms'} value={'docs-page'}>cms</option>
+                    <option key={'draft'} value={'docs-draft'}>draft</option>
+                    <option key={'playground'} value={'docs-play'}>playground</option>
+                  </select>
+                </div>
+            }
+
             <div onClick={() => setOpen(true)}
               className={theme.pageControls.controlItem}
             >
