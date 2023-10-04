@@ -11,7 +11,7 @@ import { CMSContext } from './layout'
 const theme = {
   pageControls: {
     controlItem: 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400 flex items-center',
-    select: 'bg-transparent border-none rounded-sm focus:ring-0 focus:border-0',
+    select: 'bg-transparent border-none rounded-sm focus:ring-0 focus:border-0 p-1',
     selectOption: 'p-4 text-md cursor-pointer hover:text-blue-500 text-slate-400 hover:bg-blue-600',
     content: '',
   }

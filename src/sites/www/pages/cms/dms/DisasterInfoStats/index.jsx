@@ -119,13 +119,13 @@ const Edit = ({value, onChange}) => {
                 {
                     loading ? <Loading /> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
-                                <RenderDisasterInfoStats
-                                    title={title}
-                                    incidentType={incidentType}
-                                    declarationDate={declarationDate}
-                                    attributionData={attributionData}
-                                    baseUrl={baseUrl}
-                                />
+                        <RenderDisasterInfoStats
+                            title={title}
+                            incidentType={incidentType}
+                            declarationDate={declarationDate}
+                            attributionData={attributionData}
+                            baseUrl={baseUrl}
+                        />
                 }
             </div>
         </div>
@@ -158,6 +158,21 @@ const View = ({value}) => {
 export default {
     "name": 'Card: FEMA Disaster Info',
     "type": 'Hero Stats',
+    "variables": [
+        {
+            name: 'ealViewId',
+            default: 837,
+            hidden: true
+        },
+        {
+            name: 'geoid',
+            default: '36'
+        },
+        {
+            name: 'disasterNumber',
+            default: '1406'
+        }
+    ],
     "EditComp": Edit,
     "ViewComp": View
 }

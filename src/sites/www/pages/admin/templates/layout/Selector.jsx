@@ -4,7 +4,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 
 
-export default function Selector({options=[], onChange, selected, }) {
+export default function Selector({options=[], onChange, selected, nameAccessor=d => d?.name , valueAccessor }) {
   const [query, setQuery] = useState('')
   const filteredOptions =
     query === ''
@@ -24,7 +24,7 @@ export default function Selector({options=[], onChange, selected, }) {
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
             <Combobox.Input
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-              displayValue={(option) => option?.name || option }
+              displayValue={(option) => nameAccessor(option) || option }
               onChange={(event) => setQuery(event.target.value)}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -64,7 +64,7 @@ export default function Selector({options=[], onChange, selected, }) {
                             selected ? 'font-medium' : 'font-normal'
                           }`}
                         >
-                          {option?.name || option}
+                          {nameAccessor(option) || option}
                         </span>
                         {selected ? (
                           <span
