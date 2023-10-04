@@ -62,6 +62,7 @@ const Edit = ({value, onChange}) => {
     const [showTotal, setShowTotal] = useState(cachedData?.showTotal || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [metaLookupByViewId, setMetaLookupByViewId] = useState({});
+    const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
 
     const category = 'Buildings';
 
@@ -247,7 +248,7 @@ const Edit = ({value, onChange}) => {
     const columns =
         visibleCols
             .map(c => metadata.find(md => md.name === c))
-            .filter(c => c)
+            .filter(c => c && !hiddenCols.includes(c.name))
             .map(col => {
                 return {
                     Header: col.display_name || col.name,
@@ -273,13 +274,13 @@ const Edit = ({value, onChange}) => {
                         status,
                         geoid,
                         pageSize, sortBy, groupBy, fn, notNull, showTotal,
-                        data, columns, filters, filterValue, visibleCols, geoAttribute,
+                        data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
                         dataSource, dataSources, version
                     }))
             }
         },
         [attributionData, status, geoid, pageSize, sortBy, groupBy, fn, notNull, showTotal,
-            data, columns, filters, filterValue, visibleCols, geoAttribute,
+            data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
             dataSource, dataSources, version
         ]);
 
@@ -315,6 +316,8 @@ const Edit = ({value, onChange}) => {
                         // anchorCols={anchorCols}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
+                        hiddenCols={hiddenCols}
+                        setHiddenCols={setHiddenCols}
                         filters={filters}
                         setFilters={setFilters}
                         filterValue={filterValue}
