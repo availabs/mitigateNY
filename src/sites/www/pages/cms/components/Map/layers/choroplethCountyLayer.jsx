@@ -43,7 +43,7 @@ class EALChoroplethOptions extends LayerContainer {
       "source-layer": "s365_v778",
       "type": "fill",
       "paint": {
-        "fill-color": '#d0d0ce',
+        "fill-color": '#e1e1e1',
       }
     },
     {
@@ -69,7 +69,7 @@ class EALChoroplethOptions extends LayerContainer {
       "source-layer": "tl_2020_36_tract",
       "type": "fill",
       "paint": {
-        "fill-color": '#d0d0ce'
+        "fill-color": '#e1e1e1'
       }
     },
     {

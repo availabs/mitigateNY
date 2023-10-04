@@ -24,6 +24,8 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
   const { pathname = '/edit' } = useLocation()
   const [showDelete, setShowDelete] = useState(false)
   const [ statusMessage, setStatusMessage ] = useState(status?.message)
+  const [moving, setMoving] = useState(false);
+  const [type, setType] = useState(item.type);
   const { baseUrl, setOpen, setHistoryOpen} = React.useContext(CMSContext)
   const NoOp = () => {}
 
@@ -108,7 +110,8 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
       submit(json2DmsForm(newItem, 'updateType'), { method: "post", action: `${baseUrl}/edit/` })
 
     }, Promise.resolve())
-
+    setMoving(false);
+    setType(item.type);
   }
 
   const toggleSidebar = async (value='') => {
@@ -154,8 +157,11 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
                   <select
                       title={'Move Page'}
                       className={theme.pageControls.select}
-                      value={item.type}
-                      onChange={e => movePages(e.target.value)}
+                      value={type}
+                      onChange={e => {
+                        setMoving(true); // doesn't work yet
+                        return movePages(e.target.value);
+                      }}
                   >
                     <option key={'cms'} value={'docs-page'} className={theme.pageControls.selectOption}>Live</option>
                     <option key={'draft'} value={'docs-draft'} className={theme.pageControls.selectOption}>Draft</option>

@@ -39,6 +39,7 @@ export const RenderHazardStatBox = ({
                                         hazardPercentileArray,
                                         hazardPercentile,
                                         actualLoss,
+                                        actualLossWithPop,
                                         eal,
                                         exposure,
                                         frequency,
@@ -162,6 +163,13 @@ export const RenderHazardStatBox = ({
                         <div className={blockClass[size]}><label>Actual Loss</label>
                             <span className={valueClass}>
                                 ${fnumIndex(actualLoss)}
+                            </span>
+                        </div>
+                    }
+                    {!isTotal && visibleCols.includes('Actual Loss (with Population)') &&
+                        <div className={blockClass[size]}><label>Actual Loss (with Population)</label>
+                            <span className={valueClass}>
+                                ${fnumIndex(actualLossWithPop)}
                             </span>
                         </div>
                     }

@@ -76,7 +76,8 @@ const Edit = ({value, onChange}) => {
         }),
         nriPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", nriOptions];
     let
-        actualLossCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) + sum(swd_population_damage) as actual_damage",
+        actualLossCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) as actual_damage",
+        actualLossWithPopCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) + (sum(swd_population_damage) * 11600000) as actual_damage_with_population",
         numSevereEventsCol = `count(distinct CASE WHEN coalesce(fusion_property_damage, 0) + coalesce(fusion_crop_damage, 0) + coalesce(swd_population_damage, 0) >= ${severeEventThreshold} THEN event_id ELSE null END) as num_severe_events`,
         numEventsCol = `count(distinct CASE WHEN disaster_number is not null AND coalesce((fusion_property_damage), 0) + coalesce((fusion_crop_damage), 0)+ coalesce((swd_population_damage), 0) > 0 
 							  THEN disaster_number 
@@ -86,8 +87,8 @@ const Edit = ({value, onChange}) => {
         deathsCol = `sum(deaths_direct) + sum(deaths_indirect) as deaths`,
         injuriesCol = `sum(injuries_direct) + sum(injuries_indirect) as injuries`,
         geoidCOl = `substring(geoid, 1, ${geoid.length})`,
-        fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol, numEventsCol, numSevereEventsCol, numFEMADeclaredCol, deathsCol, injuriesCol],
-        fusionAttributesTotal = [`${geoidCOl} as geoid`, actualLossCol],
+        fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol, actualLossWithPopCol, numEventsCol, numSevereEventsCol, numFEMADeclaredCol, deathsCol, injuriesCol],
+        fusionAttributesTotal = [`${geoidCOl} as geoid`, actualLossCol, actualLossWithPopCol],
         fusionOptions = JSON.stringify({
             aggregatedLen: true,
             filter: isTotal ? {[geoidCOl]: [geoid]} : {[geoidCOl]: [geoid]},
@@ -109,6 +110,7 @@ const Edit = ({value, onChange}) => {
         {label: 'Hazard Percentile Bar', forTotal: false},
         {label: 'Expected Annual Loss (EAL)', forTotal: undefined},
         {label: 'Actual Loss', forTotal: false},
+        {label: 'Actual Loss (with Population)', forTotal: false},
         {label: 'Exposure', forTotal: false},
         {label: '# Events', forTotal: false},
         {label: 'Frequency (yearly)', forTotal: false},
@@ -208,6 +210,11 @@ const Edit = ({value, onChange}) => {
                         isTotal ? [...fusionPathTotal(fusionViewId), "databyIndex"] : [...fusionPath(fusionViewId), "databyIndex"],
                         {}))
                     .find(fc => fc.nri_category === d.nri_category) || {})[actualLossCol],
+                actualLossWithPop: (Object.values(
+                    get(falcorCache,
+                        isTotal ? [...fusionPathTotal(fusionViewId), "databyIndex"] : [...fusionPath(fusionViewId), "databyIndex"],
+                        {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[actualLossWithPopCol],
                 numSevereEvents: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
                     .find(fc => fc.nri_category === d.nri_category) || {})[numSevereEventsCol],
                 numEvents: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))

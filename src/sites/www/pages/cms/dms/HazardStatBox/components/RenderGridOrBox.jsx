@@ -25,6 +25,7 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                                                         hazardPercentileArray={hazardPercentileArray}
                                                         hazardPercentile={hazardPercentileArray.find(h => h.key === key)?.value}
                                                         actualLoss={hazardPercentileArray.find(h => h.key === key)?.actualLoss}
+                                                        actualLossWithPop={hazardPercentileArray.find(h => h.key === key)?.actualLossWithPop}
                                                         exposure={hazardPercentileArray.find(h => h.key === key)?.exposure}
                                                         frequency={hazardPercentileArray.find(h => h.key === key)?.frequency}
                                                         frequencySum={hazardPercentileArray.reduce((acc, h) => acc + +h.frequency, 0)}
@@ -51,6 +52,7 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                             hazardPercentileArray={hazardPercentileArray}
                             hazardPercentile={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.value}
                             actualLoss={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.actualLoss}
+                            actualLossWithPop={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.actualLossWithPop}
                             exposure={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.exposure}
                             frequency={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.frequency}
                             frequencySum={hazardPercentileArray.reduce((acc, h) => acc + +h.frequency, 0)}
