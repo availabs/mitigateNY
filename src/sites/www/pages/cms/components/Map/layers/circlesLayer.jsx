@@ -47,7 +47,7 @@ class CirclesOptions extends LayerContainer {
       "source-layer": "s365_v778",
       "type": "fill",
       "paint": {
-        "fill-color": '#d0d0ce'
+        "fill-color": '#e1e1e1'
       }
     },
     {
@@ -60,8 +60,8 @@ class CirclesOptions extends LayerContainer {
           "interpolate",
           ["linear"],
           ["zoom"],
-          5, 0,
-          22, 1
+          5, 0.5,
+          22, 2
         ],
         "line-color": "#ffffff",
         "line-opacity": 0.5
@@ -73,7 +73,7 @@ class CirclesOptions extends LayerContainer {
       "source-layer": "tl_2020_36_tract",
       "type": "fill",
       "paint": {
-        "fill-color": '#d0d0ce'
+        "fill-color": '#e1e1e1'
       }
     },
     {
@@ -86,8 +86,8 @@ class CirclesOptions extends LayerContainer {
           "interpolate",
           ["linear"],
           ["zoom"],
-          5, 0,
-          22, 1
+          5, 0.5,
+          22, 2
         ],
         "line-color": "#ffffff",
         "line-opacity": 0.3

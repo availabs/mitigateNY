@@ -222,6 +222,46 @@ const RenderShowTotalControls = ({column, index, showTotal, setShowTotal, fn}) =
     )
 }
 
+const RenderHideControls = ({column, hiddenCols, setHiddenCols, fn}) => {
+    if (!setHiddenCols) return null;
+    const colNameWithFn = fn[column] || column //column.includes(' as') ? column.split(' as')[0] : column.split(' AS')[0];
+
+    const isActive = hiddenCols.includes(colNameWithFn);
+
+    return (
+        <div className={'block w-full flex mt-1'}>
+            <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> Hide: </label>
+            <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
+                <Switch
+                    key={`hide-${colNameWithFn}`}
+                    checked={hiddenCols.includes(colNameWithFn)}
+                    onChange={e => isActive ? setHiddenCols(hiddenCols.filter(st => st !== colNameWithFn)) : setHiddenCols([...hiddenCols, colNameWithFn])}
+                    className={classNames(
+                        isActive ? 'bg-indigo-600' : 'bg-gray-200',
+                        `relative inline-flex 
+                         h-4 w-10 shrink
+                         cursor-pointer rounded-full border-2 border-transparent 
+                         transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
+                         focus:ring-indigo-600 focus:ring-offset-2`
+                    )}
+                >
+                    <span className="sr-only">toggle hide column</span>
+                    <span
+                        aria-hidden="true"
+                        className={classNames(
+                            isActive ? 'translate-x-5' : 'translate-x-0',
+                            `pointer-events-none inline-block 
+                            h-3 w-4
+                            transform rounded-full bg-white shadow ring-0 t
+                            ransition duration-200 ease-in-out`
+                        )}
+                    />
+                </Switch>
+            </div>
+        </div>
+    )
+}
+
 const RenderFilterControls = ({column, filters, setFilters, anchorCols}) => {
     if (!setFilters) return null;
     return (
@@ -326,6 +366,7 @@ const RenderColumnBoxes = ({
                                cols,
                                anchorCols=[],
                                visibleCols=[], setVisibleCols,
+                               hiddenCols=[], setHiddenCols,
                                filters, setFilters,
                                filterValue, setFilterValue,
                                groupBy, setGroupBy,
@@ -434,6 +475,9 @@ const RenderColumnBoxes = ({
                                 <RenderShowTotalControls column={col} index={i}
                                                     showTotal={showTotal} setShowTotal={setShowTotal} fn={fn}/>
 
+                                <RenderHideControls column={col}
+                                                    hiddenCols={hiddenCols} setHiddenCols={setHiddenCols} fn={fn}/>
+
                             </div>
                         )
                     })
@@ -448,6 +492,7 @@ export const RenderColumnControls = (
         metadata = [],
         anchorCols = [],
         visibleCols = [], setVisibleCols,
+        hiddenCols=[], setHiddenCols,
         filters = {}, setFilters,
         filterValue = {}, setFilterValue,
         showTotal = [], setShowTotal,
@@ -475,6 +520,7 @@ export const RenderColumnControls = (
             <RenderColumnBoxes cols={cols}
                                anchorCols={anchorCols}
                                visibleCols={visibleCols} setVisibleCols={setVisibleCols}
+                               hiddenCols={hiddenCols} setHiddenCols={setHiddenCols}
                                filters={filters} setFilters={setFilters}
                                filterValue={filterValue} setFilterValue={setFilterValue}
                                sortBy={sortBy} setSortBy={setSortBy}

@@ -149,7 +149,11 @@ const Edit = ({value, onChange}) => {
     useEffect(() => {
         // make this a general purpose util?
         async function getMeta(){
-            const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
+            const metadata = (
+                dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||
+                dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
+                []
+            );
             const metaViewIdLookupCols =
                 metadata?.filter(md => visibleCols.includes(md.name) && ['meta-variable', 'geoid-variable'].includes(md.display) && md.meta_lookup);
 
@@ -211,7 +215,11 @@ const Edit = ({value, onChange}) => {
     //     return {length: len, data }
     // }, [dataSource, version, geoid, visibleCols, fn, groupBy, notNull, geoAttribute]);
 
-    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata;
+    const metadata = (
+        dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||
+        dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
+        []
+    );
 
     const data = useMemo(() => {
         const metaLookupCols =

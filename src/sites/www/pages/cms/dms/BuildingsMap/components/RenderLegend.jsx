@@ -17,7 +17,7 @@ export const RenderLegend = ({floodPlain=[], hazard=[]}) =>
     (
         <div className={"flex flex-rows flex-wrap gap-2 text-xs align-middle"}>
             {
-                Array.isArray(floodPlain) && floodPlain?.length &&
+                Array.isArray(floodPlain) && floodPlain?.length ?
                     floodPlain.map(fp => {
                         return (
                             <div className={"h-full flex"} key={'nonDeclaredDisasters'}>
@@ -31,7 +31,7 @@ export const RenderLegend = ({floodPlain=[], hazard=[]}) =>
                                 <label className={"pl-1"}>{floodPlainColors[fp]?.name}</label>
                             </div>
                         )
-                    })
+                    }) : null
             }
             {
                 Object.keys(hazardsMeta)
