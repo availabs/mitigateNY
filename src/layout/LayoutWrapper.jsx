@@ -1,10 +1,17 @@
-import React from 'react';
+import React, {useLayoutEffect} from 'react';
 import { useNavigate,useLocation } from "react-router-dom";
 import { withAuth } from '~/modules/ams/src'
 import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import checkAuth from './checkAuth'
 
+const Wrapper = ({children}) => {
+  const location = useLocation();
+  useLayoutEffect(() => {
+    document.documentElement.scrollTo(0, 0);
+  }, [location.pathname]);
+  return children
+}
 
 const LayoutWrapper = withAuth(({ 
   element: Element, 
@@ -36,9 +43,11 @@ const LayoutWrapper = withAuth(({
   // }
  
   return (
-    <Layout {...props}>
-      <Child />
-    </Layout>
+    <Wrapper>
+      <Layout {...props}>
+        <Child />
+      </Layout>
+    </Wrapper>
   )
 })
 

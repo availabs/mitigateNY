@@ -8,7 +8,7 @@ const levelClasses = {
 
 }
 
-const parseData = data => typeof data === "object" ? data : JSON.parse(data)?.text
+const parseData = data => !data ? {} : typeof data === "object" ? data : JSON.parse(data)?.text
 
 export function getInPageNav(dataItems, baseUrl = '', edit = false) {
     const currentDI = getCurrentDataItem(dataItems, baseUrl);
