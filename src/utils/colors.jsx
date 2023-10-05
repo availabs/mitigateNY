@@ -9,7 +9,7 @@ export const hazardsMeta = {
     },
     'winterweat': {
         color: '#76c8c8',
-        name: 'Snow Storm',
+        name: 'Snowstorm',
         prefix: 'wntw',
         consequences: ['b', 'p', 'pe', 'a', 't'],
         icon: 'fa-thin fa-snow-blowing'

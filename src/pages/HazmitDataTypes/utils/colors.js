@@ -1,7 +1,7 @@
 export const hazardsMeta2 = {
   // icy blue
   'hail':{color:'#027B8E', name:'Hail'},
-  'winterweat':{color:'#3F92B7', name:'Snow Storm'},
+  'winterweat':{color:'#3F92B7', name:'Snowstorm'},
   'icestorm':{color:'#6CC4DC', name:'Ice Storm'},
   'coldwave':{color:'#845EC2', name:'Coldwave'},
 
@@ -31,7 +31,7 @@ export const hazardsMeta2 = {
 export const hazardsMeta3 = {
   // icy blue
   'hail':{color:'#B1D4E0', name:'Hail'},
-  'winterweat':{color:'#3F92B7', name:'Snow Storm'},
+  'winterweat':{color:'#3F92B7', name:'Snowstorm'},
   'icestorm':{color:'#6CC4DC', name:'Ice Storm'},
   'coldwave':{color:'#845EC2', name:'Coldwave'},
 
@@ -61,7 +61,7 @@ export const hazardsMeta3 = {
 export const hazardsMeta = {
   // icy blue
   'hail':{color:'#027B8E', name:'Hail', prefix: 'hail'},
-  'winterweat':{color:'#76c8c8', name:'Snow Storm', prefix: 'wntw'},
+  'winterweat':{color:'#76c8c8', name:'Snowstorm', prefix: 'wntw'},
   'icestorm':{color:'#98d1d1', name:'Ice Storm', prefix: 'istm'},
   'coldwave':{color:'#badbdb', name:'Coldwave', prefix: 'cwav'},
   'coastal': {color:'#54bebe', name:'Coastal', prefix: 'cfld'},
