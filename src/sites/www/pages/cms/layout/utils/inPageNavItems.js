@@ -8,15 +8,18 @@ const levelClasses = {
 
 }
 
+const parseData = data => !data ? {} : typeof data === "object" ? data : JSON.parse(data)?.text
+
 export function getInPageNav(dataItems, baseUrl = '', edit = false) {
     const currentDI = getCurrentDataItem(dataItems, baseUrl);
 
     const menuItems = (currentDI?.sections || []).reduce((acc, {title, element, level = '1', ...props}) => {
 
-        if (!element || level === '0' ) return acc;
+        if (!element || !title || level === '0' ) return acc;
+
         const lexicalNavElements = element['element-type'] === 'lexical' || !element['element-type'] ?
-            element['element-data']?.root?.children?.reduce((acc, {type, tag, children}) => {
-                return type === 'heading' ?
+            parseData(element['element-data'])?.root?.children?.reduce((acc, {type, tag, children}) => {
+                return type === 'heading' && children[0]?.text?.length ?
                     [
                         ...acc,
                         {

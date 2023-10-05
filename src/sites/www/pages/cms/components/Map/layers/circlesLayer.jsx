@@ -153,7 +153,7 @@ class CirclesOptions extends LayerContainer {
             [feature.properties.geoid, ''],
             ...Object.keys(record || {})
               .filter(key => key !== 'geoid')
-              .map(key => [key, fmt(get(record, key))]),
+              .map(key => [key, key === idCol ? get(record, key) : fmt(get(record, key))]),
             currentView?.paintFn ? ['Total', fmt(currentView.paintFn(record || {}) || 0)] : null,
           ];
         return [...a, response];

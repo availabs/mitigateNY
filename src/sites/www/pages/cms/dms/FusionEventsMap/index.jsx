@@ -44,7 +44,6 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
         data.map((d) => paintFn ? paintFn(d) : d[columns?.[0]]).filter(d => d),
         colors
     );
-    console.log('cols', columns, data)
     const domain = getDomain(
         data.map((d) => paintFn ? paintFn(d) : d[columns?.[0]]).filter(d => d),
         colors
@@ -67,12 +66,13 @@ const parseJson = (value) => {
     }
 }
 const makeFeatures = ({data = []}) => {
-    const radiusScale = getRadiusScale(data.map(d => d.magnitude));
+    const radiusScale = getRadiusScale(data.filter(d => !isNaN(+d.magnitude)).map(d => +d.magnitude));
+
     const geoJson = {
         type: 'FeatureCollection',
         features: data.map(d => ({
             'type': 'Feature',
-            'properties': {color: d.color, borderColor: '#6e6e6e', radius: radiusScale(d.magnitude), ...d},
+            'properties': {color: d.color, borderColor: '#6e6e6e', radius: radiusScale(+d.magnitude), ...d},
             'geometry': parseJson(d.location)
         }))
     }
@@ -253,13 +253,14 @@ const Edit = ({value, onChange, size}) => {
 
     const geoJson = makeFeatures({data});
 
-
+    console.log('?', data, geoJson)
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
     const layerProps = useMemo(() => (
         {
             ccl: {
                 view: metaData.fusion,
-                data,
+                data: (data || []).map(d => ({event_id: d.event_id, magnitude: d.magnitude})),
+                // dataFormat: d => d,
                 geoJson,
                 hazard,
                 attribute,
@@ -327,7 +328,10 @@ const Edit = ({value, onChange, size}) => {
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
                     <HazardSelectorSimple
                         hazard={hazard}
-                        setHazard={setHazard}
+                        setHazard={e => {
+                            setData([])
+                            setHazard(e)
+                        }}
                     />
                     <ButtonSelector
                         label={'Type:'}
