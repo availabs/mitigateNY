@@ -26,13 +26,13 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
   
   const menuItems = React.useMemo(() => {
     let items = dataItemsNav(dataItems,baseUrl,edit)
-    if(edit) {
-      items.push( {
-        id: '',
-        onClick: () => console.log('add page'),
-        name: 'Add Page'
-      })
-    }
+    // if(edit) {
+    //   items.push( {
+    //     id: '',
+    //     onClick: () => console.log('add page'),
+    //     name: 'Add Page'
+    //   })
+    // }
     // console.log('updated menuItems', 
     //   items, 
     //   dataItems
