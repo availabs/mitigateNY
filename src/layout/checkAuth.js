@@ -16,7 +16,7 @@ const checkAuth = (props,navigate) => {
   const authLevel = props.auth ? 0 : (props?.authLevel || -1); 
   const sendToLogin = authLevel > -1 && !get(props, ["user", "authed"], false)
   const sendToHome = (get(props , ["user", "authLevel"], -1) < authLevel);
-  console.log('lw login:', sendToLogin, 'home:',sendToHome, props.path)
+ // console.log('lw login:', sendToLogin, 'home:',sendToHome, props.path)
   
   //----------------------------------------
   // if page requires auth

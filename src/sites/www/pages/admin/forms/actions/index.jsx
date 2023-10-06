@@ -9,7 +9,7 @@ import cmsFormat from "./actions.format.js"
 
 import {menuItems} from "../../index"
 import dmsFormsTheme from "../dmsFormsTheme"
-import get from "lodash/get.js";
+import get from "lodash/get";
 
 // registerDataType("selector", Selector)
 

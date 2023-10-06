@@ -46,7 +46,7 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
 
   const inPageNav = getInPageNav(dataItems, baseUrl);
   return (
-    <Layout topNav={{menuItems, position: 'fixed' }} sideNav={edit ? props.sideNav : inPageNav}>
+    <Layout topNav={{menuItems, position: 'fixed' }} sideNav={edit || props.sideNav ? props.sideNav : inPageNav}>
       <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
         <div className={theme.layout.container}>
           <CMSContext.Provider value={{baseUrl, open, setOpen, historyOpen, setHistoryOpen}}>

@@ -113,8 +113,8 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                            <Popover className="relative">
                                 <Popover.Button
                                     ref={setReferenceElement}
-                                    className={'pl-3  text-md cursor-pointer hover:text-blue-500 text-slate-400'}>
-                                    <i className="fa-light fa-question text-lg fa-fw" title="Help"/>
+                                    className={'pl-3  text-md cursor-pointer hover:text-blue-800 text-blue-500'}>
+                                    <i className="fa fa-circle-info text-2xl fa-fw" title="Help"/>
                                 </Popover.Button>
                                 <Transition
                                     as={Fragment}
@@ -228,8 +228,8 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                             <Popover className="relative">
                                 <Popover.Button
                                     ref={setReferenceElement}
-                                    className={'pl-3  text-md cursor-pointer hover:text-blue-500 text-slate-400'}>
-                                    <i className="fa-light fa-question text-lg fa-fw" title="Help"/>
+                                    className={'pl-3  text-md cursor-pointer hover:text-blue-200 text-blue-500'}>
+                                    <i className="fa fa-circle-info text-2xl fa-fw" title="Help"/>
                                 </Popover.Button>
                                 <Transition
                                     as={Fragment}
