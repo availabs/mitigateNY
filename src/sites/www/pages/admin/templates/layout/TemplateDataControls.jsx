@@ -99,13 +99,23 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
   )
 }
 
+const parseJSON = (d) => {
+  let out = {}
+  try {
+    out = JSON.parse(d)
+  } catch (e) {
+    console.log('parse failed',d)
+  }
+  return out
+}
+
 const SectionThumb =({section}) => {
 
-  let data = JSON.parse(section?.element?.['element-data']) || {}
-
+  let data = parseJSON(section?.element?.['element-data']) || {}
+  
   return (
     <div className='p-4 border rounded mb-1'>
-      <div>Title: {section.title}</div>
+      <div>Title: {section?.title}</div>
       <div>{section?.element?.['element-type']}</div>
       <div>
         {Object.keys(data)
@@ -220,6 +230,7 @@ const ViewsSelect = ({source_id, value, onChange}) => {
 const ViewInfo = ({source,view}) => {
   
   const { falcor, falcorCache } = useFalcor();
+  const [idCol, setIdCol] = useState('')
   
   React.useEffect(() => {
     if(view.view_id){
@@ -227,13 +238,42 @@ const ViewInfo = ({source,view}) => {
     } 
   }, [pgEnv,  view.view_id]);
 
+
+
   const dataLength = React.useMemo(() => {
     return get(
       falcorCache,
       ["dama", pgEnv, "viewsbyId", view.view_id, "data", "length"],
-      "No Length"
+      0
     );
   }, [pgEnv, view.view_id, falcorCache]);
+
+  React.useEffect(() =>{
+    if(view?.view_id && idCol?.name && dataLength ) {
+       falcor
+        .get(
+          [
+            "dama",
+            pgEnv,
+            "viewsbyId",
+            view.view_id,
+            "databyIndex",
+            {"from":0, "to": dataLength-1},
+            idCol.name,
+          ]
+        )
+    }
+  },[idCol.name,view.view_id])
+
+  const dataRows = React.useMemo(()=>{
+    return Object.values(get(falcorCache,[
+      "dama",
+      pgEnv,
+      "viewsbyId",
+      view.view_id,
+      "databyIndex"
+      ],{})).map(v => get(falcorCache,[...v.value,idCol.name],''))
+  },[idCol.name,view.view_id,falcorCache])
 
   const attributes = React.useMemo(() => {
     
@@ -245,15 +285,25 @@ const ViewInfo = ({source,view}) => {
     return md
       
   }, [source]);
-  
+    
+
+  console.log('dataRows', dataRows)
 
 
-  // console.log('sources select', views)
   return (
      <div className='flex flex-col'>
       <div>View Info</div>
       <div>Rows: {dataLength} </div>
       <div>Attributes : {attributes?.length || 0}</div>
+        <Selector
+          options={['',...attributes]}
+          value={idCol}
+          onChange={d => setIdCol(d)}
+        />
+        {idCol?.name ? 
+        <Selector 
+          options={dataRows}
+        /> : ''}
      </div>
   );
 };

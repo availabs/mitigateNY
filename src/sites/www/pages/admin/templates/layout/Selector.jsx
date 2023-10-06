@@ -47,7 +47,9 @@ export default function Selector({options=[], onChange, selected, nameAccessor=d
                   Nothing found.
                 </div>
               ) : (
-                filteredOptions.map((option,i) => (
+                filteredOptions
+                  .filter((d,i) => i < 20)
+                  .map((option,i) => (
                   <Combobox.Option
                     key={i}
                     className={({ active }) =>
