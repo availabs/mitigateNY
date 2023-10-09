@@ -193,7 +193,9 @@ const Edit = ({value, onChange}) => {
             _modified_timestamp: attributionDataFn(d)?._modified_timestamp?.value
         }
     ))
-
+    const total_eal = get(falcorCache, ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid, "value"], [])
+        .filter(row => row.geoid === geoid)
+        .reduce((acc, d) => acc + +get(d, ealCol, 0) , 0)
     const hazardPercentileArray =
         get(falcorCache, ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid, "value"], [])
             .filter(row => row.geoid === geoid && hazardsMeta[row.nri_category])
@@ -201,7 +203,7 @@ const Edit = ({value, onChange}) => {
                 key: d.nri_category,
                 label: hazardsMeta[d.nri_category].name,
                 color: hazardsMeta[d.nri_category].color,
-                value: (d.avail_eal * 100 / d.avail_eal_total).toFixed(2),
+                value: (d.nri_eal * 100 / total_eal).toFixed(2),
                 eal: get(d, ealCol, 0),
                 nationalPercentile: get(d, npCol, 0) * 100,
                 statePercentile: get(d, spCol, 0) * 100,
