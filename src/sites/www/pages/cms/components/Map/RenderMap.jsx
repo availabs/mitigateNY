@@ -103,7 +103,7 @@ const RenderCirclesLegend = ({size, domain, range, fmt, title,}) => {
             .attr('x', xLabel)
             .attr('y', function(d){ return yCircle - size(d) } )
             .text( function(d){ return fmt(d) } )
-            .style("font-size", 10)
+            .style("font-size", 12)
             .attr('alignment-baseline', 'middle')
     }
 
