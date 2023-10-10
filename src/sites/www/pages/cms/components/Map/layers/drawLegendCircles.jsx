@@ -15,6 +15,8 @@ const widths = {
 function SVGToImage(settings, context, canvas){
     let _settings = {
         svg: null,
+        x: 0,
+        y: 0,
         // Usually all SVG have transparency, so PNG is the way to go by default
         mimetype: "image/png",
         quality: 0.92,
@@ -72,8 +74,8 @@ function SVGToImage(settings, context, canvas){
 
 
             // Render image in the canvas
-            console.log('drawing', finalHeight, finalWidth)
-            context.drawImage(this, 0, 0, finalWidth, finalHeight);
+            // console.log('drawing', finalHeight, finalWidth)
+            context.drawImage(this, settings.x, settings.y, finalWidth, finalHeight);
 
 
                 // Fullfil and Return the Base64 image
@@ -91,6 +93,20 @@ export const drawLegend = async (layer, newCanvas, mbCanvas) => {
 
     const context = newCanvas.getContext("2d")
 
+    let x = 0,
+        y = 20,
+        h = 130,
+        w = widths[layer?.size];
+    if(layer.legend.title){
+        context.font = layer?.size === '1/3' ? "1rem Arial" : "1rem Arial";
+        context.fillStyle = '#232323';
+        y += 20;
+
+        const text = layer.legend.title;
+        context.fillText(text, x + 10, y, w);
+        y += 10
+    }
+
     var svgElement =  document.getElementById("legend_svg");
     let {width, height} = svgElement.getBBox();
     await SVGToImage({
@@ -103,6 +119,8 @@ export const drawLegend = async (layer, newCanvas, mbCanvas) => {
         //  - You can provide a single dimension and the other one will be automatically calculated
         // width: "auto",
         // height: "auto",
+        x,
+        y,
         width,
         height,
         // 4. Specify the quality of the image
@@ -114,7 +132,7 @@ export const drawLegend = async (layer, newCanvas, mbCanvas) => {
         //  data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0...
         // Or with Blob (Blob)
         //  Blob {size: 14353, type: "image/png"}
-        console.log(outputData);
+        // console.log(outputData);
         // const img = new Image();
         // img.src = outputData;
         // img.alt = ' ';
@@ -123,72 +141,10 @@ export const drawLegend = async (layer, newCanvas, mbCanvas) => {
 
     }).catch(function(err){
         // Log any error
-        console.log(err);
+        console.error(err);
     });
 
-    // console.log('??',
-    //     document.getElementById("legend_svg"),
-    //     document.querySelector('svg[id = "legend_svg"]'),
-    //     document.querySelector('svg')
-    // )
-    // var svgElement =  document.getElementById("legend_svg");
-    // const pathElement = svgElement.querySelector('path');
-    // const pathData = pathElement?.getAttribute('d');
-    // const path2dObject = new Path2D(pathData);
 
-    // let {width, height} = svgElement.getBBox();
-    // let clonedSvgElement = svgElement.cloneNode(true);
-    //
-    // let outerHTML = clonedSvgElement.outerHTML,
-    //     blob = new Blob([outerHTML],{type:'image/svg+xml'});
-    //
-    // // let URL = window.URL || window.webkitURL || window;
-    // let blobURL = URL.createObjectURL(blob);
-    //
-    // console.log('blob??', blobURL)
-    // let image = new Image();
-    // image.src = blobURL;
-    // image.addEventListener('load', () => URL.revokeObjectURL(blobURL), {once: true});
-    // console.log('img', image)
-
-
-    // let x = 0,
-    //     y = 20,
-    //     h = 130,
-    //     w = widths[layer?.size];
-    //
-    // context.fillStyle = 'white'
-    // context.roundRect(x, y, w + 15, h, 5);
-    // context.fill();
-    //
-    // if(layer.legend.title){
-    //     context.font = layer?.size === '1/3' ? "1rem Arial" : "1rem Arial";
-    //     context.fillStyle = '#232323';
-    //     y += 20;
-    //
-    //     const text = layer.legend.title;
-    //     context.fillText(text, x + 10, y, w);
-    //     y += 10
-    // }
-    //
-    // x += 10
-    // y += 10
-    //
-    // const minValue =  Math.min(...layer.legend.domain);
-    // const maxValue = Math.max(...layer.legend.domain);
-    //
-    // var size = scaleLinear()
-    //     .domain([minValue, maxValue])
-    //     .range([5, 50]);
-    //
-    //
-    // [minValue, maxValue]
-    //     .forEach((c, i) => {
-    //         console.log('loop', x, h - (size(c) / 2), c, size(c))
-    //         context.beginPath();
-    //         context.arc(w/2 + x, h - (size(c) / 2), size(c), 0, 2 * Math.PI, false);
-    //         context.stroke();
-    //     })
 
     return 0;
 }
