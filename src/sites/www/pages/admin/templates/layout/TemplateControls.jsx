@@ -24,14 +24,25 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
   const [ showDataControls, setShowDataControls ] = useState(false)
   const [ statusMessage, setStatusMessage ] = useState(status?.message)
   const [ dataControls, setDataControls ] = useState({
-    source_id: null,
-    view_id: null,
-    active_row_id: null,
-    num_rows: null
+    source: null,
+    view: null,
+    num_rows: null,
+    id_column: null,
+    active_row: {},
+    sectionControls: {}
   })
   // const { baseUrl, setOpen, setHistoryOpen} = React.useContext(CMSContext)
   const baseUrl = '/admin/templates'
   const NoOp = () => {}
+
+  useEffect(() => {
+    console.log('active_id updated', 
+    dataControls.active_row, 
+    dataControls.sectionControls)
+
+  },[dataControls.active_row])
+
+  //console.log('render', showDataControls)
 
   useEffect(() => {
     setStatusMessage(status?.message)
@@ -63,7 +74,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
     submit(json2DmsForm(newItem), { method: "post", action: pathname })
   }
 
-   const TitleEdit = attributes['title'].EditComp
+  const TitleEdit = attributes['title'].EditComp
   
   //console.log('showDelete', showDelete)
   return (
@@ -99,10 +110,12 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
               />
               Show Sidebar
             </div>
-            <div onClick={() => setShowDataControls(true)}
+            <div 
               className={theme.pageControls.controlItem}
             >
-              {'☲ Data Controls'}
+              <span onClick={() => { console.log('click data controls'); setShowDataControls(true); }}>
+                {'☲ Data Controls'}
+              </span>
               <DataControls 
                 item={item} 
                 open={showDataControls} 
