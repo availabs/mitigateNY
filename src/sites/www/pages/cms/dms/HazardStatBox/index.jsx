@@ -203,7 +203,7 @@ const Edit = ({value, onChange}) => {
                 key: d.nri_category,
                 label: hazardsMeta[d.nri_category].name,
                 color: hazardsMeta[d.nri_category].color,
-                value: (d.nri_eal * 100 / total_eal).toFixed(2),
+                value: (d[ealCol] * 100 / total_eal).toFixed(2),
                 eal: get(d, ealCol, 0),
                 nationalPercentile: get(d, npCol, 0) * 100,
                 statePercentile: get(d, spCol, 0) * 100,
