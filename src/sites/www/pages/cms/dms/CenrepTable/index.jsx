@@ -289,15 +289,26 @@ const Edit = ({value, onChange}) => {
             <div className='relative'>
                 <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
                     Edit Controls
-                    <ButtonSelector
-                        label={'Data Source:'}
-                        types={dataSources.map(ds => ({label: ds.name, value: ds.source_id}))}
-                        type={dataSource}
-                        setType={e => {
-                            setVisibleCols([])
-                            setDataSource(e);
-                        }}
-                    />
+                    <div className={`flex justify-between`}>
+                        <label
+                            className={`shrink-0 pr-2 py-1 my-1 w-1/4`}
+                        >
+                            Data Source:
+                        </label>
+                        <select
+                            className={`bg-white w-full pl-3 rounded-md my-1`}
+                            value={dataSource}
+                            onChange={e => {
+                                setVisibleCols([])
+                                setDataSource(+e.target.value);
+                            } }
+                        >
+                            <option key={'undefined'} value={undefined} selected disabled>Please select a data source</option>
+                            {
+                                dataSources.map(ds => <option key={ds.source_id} value={ds.source_id}> {ds.name} </option>)
+                            }
+                        </select>
+                    </div>
                     <VersionSelectorSearchable
                         source_id={dataSource}
                         view_id={version}
