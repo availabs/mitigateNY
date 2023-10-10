@@ -114,7 +114,7 @@ const RenderCirclesLegend = ({size, domain, range, fmt, title,}) => {
                 title && <label className={'font-sm pl-2'}>{title}</label>
             }
             <div className={'flex flex-col justify-center inline-block align-middle pt-2.5'}>
-                <div id="legend"><svg /></div>
+                <div id="legend"><svg id={'legend_svg'} xmlns="http://www.w3.org/2000/svg"/></div>
                 <RenderLegendBox value={maxValue} fmt={fmt}/>
             </div>
         </div>
