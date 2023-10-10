@@ -22,6 +22,7 @@ import CalloutBox from "./CalloutBox/";
 import FusionEventsMap from "./FusionEventsMap/index.jsx";
 import OpenFemaDataTable from "./OpenFemaDataTable/index.jsx";
 import ActionsTable from "./ActionsTable/";
+import CenrepTable from "./CenrepTable/index.jsx";
 
 const ComponentRegistry = {
     // "ColorBox": ColorBox,
@@ -38,6 +39,7 @@ const ComponentRegistry = {
     "Table: Buildings": BuildingsTable,
     "Table: Open Fema Data": OpenFemaDataTable,
     "Table: Actions": ActionsTable,
+    "Table: Cenrep": CenrepTable,
     "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
     "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
     "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
