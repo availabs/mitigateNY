@@ -50,8 +50,8 @@ const RenderChoroplethLegend = ({size, domain, range, fmt, title,}) => {
 
 const RenderCirclesLegend = ({size, domain, range, fmt, title,}) => {
 
-    const minValue =  Math.min(...domain);
-    const maxValue = Math.max(...domain);
+    const minValue =  Math.min(...domain.filter(d => d));
+    const maxValue = Math.max(...domain.filter(d => d));
 
     const RenderLegendBox = ({value, color, fmt, className}) => {
         var height = 110
@@ -64,7 +64,7 @@ const RenderCirclesLegend = ({size, domain, range, fmt, title,}) => {
         var size = scaleLinear()
             .domain([minValue, maxValue])
             .range(range)
-
+        console.log('???????????', minValue, maxValue, range, domain)
         // Add legend: circles
         var valuesToShow = [minValue, maxValue]
         var xCircle = 60
@@ -76,8 +76,8 @@ const RenderCirclesLegend = ({size, domain, range, fmt, title,}) => {
             .enter()
             .append("circle")
             .attr("cx", xCircle)
-            .attr("cy", function(d){ return yCircle - size(d) } )
-            .attr("r", function(d){ return size(d) })
+            .attr("cy", function(d){ return yCircle - +size(d) } )
+            .attr("r", function(d){ return +size(d) })
             .style("fill", "none")
             .attr("stroke", "#3f3f3f")
 
