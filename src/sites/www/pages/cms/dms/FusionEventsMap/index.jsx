@@ -264,6 +264,7 @@ const Edit = ({value, onChange, size}) => {
                     [...new Set(data.map(d => d.magnitude))] :
                     domain,
                 range: type === 'Circles' ? [5, 50] : colors,
+                showLegend: true,
                 geoJson,
                 hazard,
                 attribute,
