@@ -4,16 +4,16 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 
 
-export default function Selector({options=[], onChange, selected, nameAccessor=d => d?.name , valueAccessor }) {
+export default function Selector({options=[], onChange, selected, nameAccessor=d => d?.name || d , valueAccessor }) {
   const [query, setQuery] = useState('')
   const filteredOptions =
     query === ''
       ? options
       : options.filter((option) =>
-          (option?.name || option)
+          (nameAccessor(option))
             .toLowerCase()
             .replace(/\s+/g, '')
-            .includes(query.toLowerCase().replace(/\s+/g, ''))
+            .startsWith(query.toLowerCase().replace(/\s+/g, ''))
         )
 
   

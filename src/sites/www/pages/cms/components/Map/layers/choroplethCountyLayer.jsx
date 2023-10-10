@@ -47,6 +47,15 @@ class EALChoroplethOptions extends LayerContainer {
       }
     },
     {
+      "id": "tracts",
+      "source": "tracts",
+      "source-layer": "tl_2020_36_tract",
+      "type": "fill",
+      "paint": {
+        "fill-color": '#e1e1e1'
+      }
+    },
+    {
       "id": "counties-line",
       "source": "counties",
       "source-layer": "s365_v778",
@@ -63,32 +72,23 @@ class EALChoroplethOptions extends LayerContainer {
         "line-opacity": 0.5
       }
     },
-    {
-      "id": "tracts",
-      "source": "tracts",
-      "source-layer": "tl_2020_36_tract",
-      "type": "fill",
-      "paint": {
-        "fill-color": '#e1e1e1'
-      }
-    },
-    {
-      "id": "tracts-line",
-      "source": "tracts",
-      "source-layer": "tl_2020_36_tract",
-      "type": "line",
-      "paint": {
-        "line-width": [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          5, 0.5,
-          22, 2
-        ],
-        "line-color": "#efefef",
-        "line-opacity": 0.5
-      }
-    },
+    // {
+    //   "id": "tracts-line",
+    //   "source": "tracts",
+    //   "source-layer": "tl_2020_36_tract",
+    //   "type": "line",
+    //   "paint": {
+    //     "line-width": [
+    //       "interpolate",
+    //       ["linear"],
+    //       ["zoom"],
+    //       5, 0.5,
+    //       22, 2
+    //     ],
+    //     "line-color": "#efefef",
+    //     "line-opacity": 0.5
+    //   }
+    // },
   ];
 
   legend = {
@@ -194,14 +194,16 @@ class EALChoroplethOptions extends LayerContainer {
     const hideLayer = geoLayer === 'counties' ? 'tracts' : 'counties';
 
     map.setLayoutProperty(geoLayer, 'visibility', 'visible');
-    map.setLayoutProperty(`${geoLayer}-line`, 'visibility', 'visible');
-
     map.setFilter(geoLayer, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
-    map.setFilter(`${geoLayer}-line`, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
     map.setPaintProperty(geoLayer, "fill-color", ["get", ["get", "geoid"], ["literal", geoColors]]);
 
+    const geoids = [...new Set(Object.keys(geoColors).map(geoId => geoId.substring(0, 5)))]
+
+    map.setLayoutProperty(`counties-line`, 'visibility', 'visible');
+    map.setFilter(`counties-line`, ["in", ['get', "geoid"], ['literal', geoids]]);
+
     map.setLayoutProperty(hideLayer, 'visibility', 'none');
-    map.setLayoutProperty(`${hideLayer}-line`, 'visibility', 'none');
+    // map.setLayoutProperty(`${hideLayer}-line`, 'visibility', 'none');
   }
 
   receiveProps(props, prev, map, falcor) {

@@ -19,7 +19,7 @@ const Sites = {
   www
 }
 
-const App = (props) => {
+function App (props) {
   const SUBDOMAIN = getSubdomain(window.location.host)
   
   const site = useMemo(() => {

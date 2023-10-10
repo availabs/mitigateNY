@@ -2,9 +2,10 @@ import React, {useEffect, useMemo, useState} from "react";
 import {AvlMap} from '~/modules/avl-maplibre/src';
 import {ChoroplethCountyFactory} from "./layers/choroplethCountyLayer.jsx";
 import * as d3scale from "d3-scale";
+import * as d3 from 'd3'
 import {d3Formatter} from "~/utils/macros.jsx";
 import {CirclesFactory} from "./layers/circlesLayer.jsx";
-import {scaleLinear} from "d3-scale";
+import {scaleLinear, scaleSqrt} from "d3-scale";
 
 const widths = {
     '1/3': 290,
@@ -51,26 +52,69 @@ const RenderCirclesLegend = ({size, domain, range, fmt, title,}) => {
 
     const minValue =  Math.min(...domain);
     const maxValue = Math.max(...domain);
-    console.log('???????/', range)
 
     const RenderLegendBox = ({value, color, fmt, className}) => {
-        const label =  fmt ? fmt(value) : value ;
-        const size = label.replace(/[a-z,A-Z]/, '')
-        return (
-            <div className={'flex flex-row'}>
-                <div className={`h-[${size}px] w-[${size}px] border-2 rounded-full text-center`} />
-                <span className={'self-center'}>{label}</span>
-            </div>
-        )
+        var height = 110
+        var width = 150
+
+        var svg = d3.select("#legend > svg")
+            .attr("width", width)
+            .attr("height", height)
+
+        var size = scaleLinear()
+            .domain([minValue, maxValue])
+            .range(range)
+
+        // Add legend: circles
+        var valuesToShow = [minValue, maxValue]
+        var xCircle = 60
+        var xLabel = 120
+        var yCircle = 105
+        svg
+            .selectAll("legend")
+            .data(valuesToShow)
+            .enter()
+            .append("circle")
+            .attr("cx", xCircle)
+            .attr("cy", function(d){ return yCircle - size(d) } )
+            .attr("r", function(d){ return size(d) })
+            .style("fill", "none")
+            .attr("stroke", "#3f3f3f")
+
+        // Add legend: segments
+        svg
+            .selectAll("legend")
+            .data(valuesToShow)
+            .enter()
+            .append("line")
+            .attr('x1', function(d){ return xCircle + size(d) } )
+            .attr('x2', xLabel)
+            .attr('y1', function(d){ return yCircle - size(d) } )
+            .attr('y2', function(d){ return yCircle - size(d) } )
+            .attr('stroke', 'black')
+            .style('stroke-dasharray', ('2,2'))
+
+        // Add legend: labels
+        svg
+            .selectAll("legend")
+            .data(valuesToShow)
+            .enter()
+            .append("text")
+            .attr('x', xLabel)
+            .attr('y', function(d){ return yCircle - size(d) } )
+            .text( function(d){ return fmt(d) } )
+            .style("font-size", 10)
+            .attr('alignment-baseline', 'middle')
     }
+
     return (
-        <div className={`relative w-[${widths[size]}px] float-left mt-[20px] m-5 -mb-[100px] rounded-md`}
+        <div className={`absolute w-[${widths[size]}px] float-left mt-[20px] m-5 -mb-[100px] rounded-md`}
              style={{zIndex: 10}}>
             {
                 title && <label className={'font-sm pl-2'}>{title}</label>
             }
             <div className={'flex flex-col justify-center inline-block align-middle pt-2.5'}>
-                <RenderLegendBox value={minValue} fmt={fmt}/>
+                <div id="legend"><svg id={'legend_svg'} xmlns="http://www.w3.org/2000/svg"/></div>
                 <RenderLegendBox value={maxValue} fmt={fmt}/>
             </div>
         </div>

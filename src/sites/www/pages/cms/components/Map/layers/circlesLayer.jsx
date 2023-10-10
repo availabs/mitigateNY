@@ -1,9 +1,8 @@
 import get from "lodash/get";
 import { LayerContainer } from "~/modules/avl-maplibre/src";
 import { getColorRange } from "~/modules/avl-components/src";
-// import {drawLegend} from "./drawLegend.jsx";
-import {d3Formatter} from "../../../../../../../utils/macros.jsx";
-import {drawLegend} from "./drawLegend.jsx";
+import {d3Formatter} from "~/utils/macros.jsx";
+import {drawLegend} from "./drawLegendCircles.jsx";
 
 class CirclesOptions extends LayerContainer {
   constructor(props) {
@@ -164,7 +163,7 @@ class CirclesOptions extends LayerContainer {
   init(map, falcor, props) {
     map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904]);
     // map.on('styledata', () => console.log('styling'));
-    map.on('idle', (e) => {
+    map.on('idle', async (e) => {
       console.log('idle')
       const canvas = document.querySelector("canvas.maplibregl-canvas"),
           newCanvas = document.createElement("canvas");
@@ -175,13 +174,19 @@ class CirclesOptions extends LayerContainer {
       newCanvas.height = canvas.height;
 
       const context = newCanvas.getContext("2d");
-      context.beginPath();
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-      context.beginPath();
-      context.drawImage(canvas, 0, 0);
+      // context.beginPath();
+      // context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+      // context.beginPath();
+      // context.drawImage(canvas, 0, 0);
 
-
-      // drawLegend({legend: this.legend, showLegend: this.props.showLegend, filters: this.filters, size: this.props.size}, newCanvas, canvas);
+      if(this.props.showLegend){
+        await drawLegend({legend: this.legend, showLegend: this.props.showLegend, filters: this.filters, size: this.props.size}, newCanvas, canvas);
+      }else{
+        context.beginPath();
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.beginPath();
+        context.drawImage(canvas, 0, 0);
+      }
       img = newCanvas.toDataURL();
       this.img = img;
       this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
@@ -208,7 +213,7 @@ class CirclesOptions extends LayerContainer {
     this.legend.range = colors;
     this.legend.title = title;
     const hideLayer = geoLayer === 'counties' ? 'tracts' : 'counties';
-    console.log('???????////', geoLayer, geoColors)
+
     map.setFilter(geoLayer, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
     map.setFilter(`${geoLayer}-line`, ["in", ['get', "geoid"], ['literal', Object.keys(geoColors)]]);
     map.setLayoutProperty(hideLayer, 'visibility', 'none');

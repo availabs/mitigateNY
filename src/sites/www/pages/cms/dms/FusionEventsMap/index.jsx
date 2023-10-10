@@ -253,7 +253,6 @@ const Edit = ({value, onChange, size}) => {
 
     const geoJson = makeFeatures({data});
 
-    console.log('?', data, geoJson)
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
     const layerProps = useMemo(() => (
         {
@@ -261,19 +260,27 @@ const Edit = ({value, onChange, size}) => {
                 view: metaData.fusion,
                 data: (data || []).map(d => ({event_id: d.event_id, magnitude: d.magnitude})),
                 // dataFormat: d => d,
+                domain: type === 'Circles' ?
+                    [...new Set(data.map(d => d.magnitude))] :
+                    domain,
+                range: type === 'Circles' ? [5, 50] : colors,
+                showLegend: true,
                 geoJson,
                 hazard,
                 attribute,
                 type,
                 geoColors,
                 mapFocus,
-                domain,
                 colors,
                 title,
                 size,
                 height,
                 change: e => onChange(JSON.stringify({
                     ...e,
+                    domain: type === 'Circles' ?
+                        [...new Set(data.map(d => d.magnitude))] :
+                        domain,
+                    range: type === 'Circles' ? [5, 50] : colors,
                     ealViewId,
                     geoid,
                     hazard,
@@ -286,7 +293,6 @@ const Edit = ({value, onChange, size}) => {
                     data,
                     geoColors,
                     mapFocus,
-                    domain,
                     numColors,
                     colors,
                     height

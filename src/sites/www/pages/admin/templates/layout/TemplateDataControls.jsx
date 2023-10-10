@@ -5,6 +5,7 @@ import {useFalcor} from '~/modules/avl-falcor';
 import Selector from './Selector'
 import get from 'lodash/get'
 import {getAttributes} from '~/pages/DataManager/Source/attributes'
+import ComponentRegistry from '~/sites/www/pages/cms/dms/ComponentRegistry'
 
 const pgEnv = 'hazmit_dama'
 
@@ -14,6 +15,7 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
     setDataControls({...dataControls, [k]: v})
   }
 
+  // console.log('render data controls', dataControls)
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-20 " onClose={()=> {setOpen(false); console.log('onclose');}}>
@@ -63,7 +65,6 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
                           source_id={dataControls?.source?.source_id}
                           value={dataControls.view}
                           onChange={(v) => {
-                            console.log('ViewsSelect onChange', v)
                             updateDataControls('view', v)
                           }} 
                         /> : ''
@@ -72,20 +73,42 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
                        dataControls?.view?.view_id? 
                         <div>
                           <ViewInfo
-                            source={dataControls.source}
-                            view={dataControls.view}
+                            source={dataControls?.source}
+                            view={dataControls?.view}
+                            id_column={dataControls?.id_column}
+                            active_id={dataControls?.active_id}
+                            onChange={(k,v) => {
+                              console.log('view info change', k,v)
+                              if(k === 'id_column') {
+                                updateDataControls('id_column', v)
+                                //updateDataControls('active_id','')
+                                setDataControls({...dataControls, ...{id_column: v, active_id: null, active_row: {}}})
+                              } 
+                              if(k === 'active_id') {
+                                //updateDataControls('active_id',v)
+                                console.log('active_id', v)
+                                setDataControls({...dataControls, ...v})
+                              }
+                            }}
                           />
                           <PathControl />
-                          <ComponentListControls sections={item.sections}/>
+                          <SectionListControls 
+                            sections={item.sections}
+                            sectionControlData={dataControls.sectionControls}
+                            source={dataControls?.source}
+                            onChange={e => {
+                              updateDataControls('sectionControls', e)
+                            }}
+                          />
                         </div> 
                         : ''
                       }
 
-                      {/*<div>
+                      <div>
                         <pre>
                          {JSON.stringify(dataControls, null,3)}
                         </pre>
-                      </div>*/}
+                      </div>
                     </div>
 
                   </div>
@@ -109,21 +132,50 @@ const parseJSON = (d) => {
   return out
 }
 
-const SectionThumb =({section}) => {
+const SectionThumb =({section,source,sectionControl={},updateSectionControl}) => {
 
   let data = parseJSON(section?.element?.['element-data']) || {}
+  let type = section?.element?.['element-type'] || ''
+  let comp = ComponentRegistry[type] || {}
+  let controlVars = comp?.variables || []
+
+
+  const attributes = React.useMemo(() => {
+    
+    let md = get(source, ["metadata", "columns"], get(source, "metadata", []));
+    if (!Array.isArray(md)) {
+      md = [];
+    }
+
+    return md
+      
+  }, [source]);
+
   
   return (
     <div className='p-4 border rounded mb-1'>
-      <div>Title: {section?.title}</div>
-      <div>{section?.element?.['element-type']}</div>
+      
+      <div>Title: {section?.title} {section?.id}</div>
+      <div>{type}</div>
       <div>
-        {Object.keys(data)
-          //.filter()
+        {controlVars
+          .filter(k => !k.hidden)
           .map(k => {
           return (
-            <div>
-              {k}
+            <div className='flex' key={k.name}>
+              <div className='flex-1 items-center'>
+                <div>{k.name}</div>
+                <div className='text-xs'>{data[k.name]}</div>
+              </div>
+              <div className='flex-1 flex items-center'>
+                <Selector
+                  options={['',...attributes]}
+                  value={sectionControl[k.name] || ''}
+                  onChange={v => {
+                    updateSectionControl({...sectionControl,...{[k.name]: v}})
+                  }}
+                />
+              </div>
             </div>
           )
         })}
@@ -132,11 +184,21 @@ const SectionThumb =({section}) => {
   )
 }
 
-const ComponentListControls = ({sections}) => {
-  console.log('ComponentListControls', sections)
+const SectionListControls = ({sections, sectionControls, source, onChange}) => {
+  
   return (
     <div>
-      {sections.map(s=> <SectionThumb key={s.id} section={s} />)}
+      {sections.map(s => (
+        <SectionThumb 
+          key={s.id}
+          section={s} 
+          source={source}
+          sectionControl={sectionControls?.[s.id] || {}}
+          updateSectionControl={(d) => {
+            onChange({...sectionControls, ...{[s.id]: d}})
+          }}
+        />
+      ))}
     </div>
   )
 }
@@ -159,7 +221,7 @@ const SourcesSelect = ({value, onChange}) => {
         { from: 0, to: get(resp.json, lengthPath, 0) - 1 },
         "attributes", ['source_id', 'name', 'metadata']
       ]);
-      console.log('dataResp', dataResp)
+      // console.log('dataResp', dataResp)
     }
 
     fetchData();
@@ -227,18 +289,17 @@ const ViewsSelect = ({source_id, value, onChange}) => {
   );
 };
 
-const ViewInfo = ({source,view}) => {
+const ViewInfo = ({source,view, id_column, active_id, onChange}) => {
   
+  // console.log('ViewInfo', id_column, active_id)
   const { falcor, falcorCache } = useFalcor();
-  const [idCol, setIdCol] = useState('')
+  //const [idCol, setIdCol] = useState('')
   
   React.useEffect(() => {
     if(view.view_id){
       falcor.get(["dama", pgEnv, "viewsbyId", view.view_id, "data", "length"])
     } 
   }, [pgEnv,  view.view_id]);
-
-
 
   const dataLength = React.useMemo(() => {
     return get(
@@ -247,33 +308,6 @@ const ViewInfo = ({source,view}) => {
       0
     );
   }, [pgEnv, view.view_id, falcorCache]);
-
-  React.useEffect(() =>{
-    if(view?.view_id && idCol?.name && dataLength ) {
-       falcor
-        .get(
-          [
-            "dama",
-            pgEnv,
-            "viewsbyId",
-            view.view_id,
-            "databyIndex",
-            {"from":0, "to": dataLength-1},
-            idCol.name,
-          ]
-        )
-    }
-  },[idCol.name,view.view_id])
-
-  const dataRows = React.useMemo(()=>{
-    return Object.values(get(falcorCache,[
-      "dama",
-      pgEnv,
-      "viewsbyId",
-      view.view_id,
-      "databyIndex"
-      ],{})).map(v => get(falcorCache,[...v.value,idCol.name],''))
-  },[idCol.name,view.view_id,falcorCache])
 
   const attributes = React.useMemo(() => {
     
@@ -285,11 +319,36 @@ const ViewInfo = ({source,view}) => {
     return md
       
   }, [source]);
+
+  React.useEffect(() =>{
+    if(view?.view_id && id_column?.name && dataLength ) {
+       falcor
+        .get(
+          [
+            "dama",
+            pgEnv,
+            "viewsbyId",
+            view.view_id,
+            "databyIndex",
+            {"from":0, "to": dataLength-1},
+            attributes.map(d => d.name),
+          ]
+        )
+    }
+  },[id_column,view.view_id])
+
+  const dataRows = React.useMemo(()=>{
+    return Object.values(get(falcorCache,[
+      "dama",
+      pgEnv,
+      "viewsbyId",
+      view.view_id,
+      "databyIndex"
+      ],{})).map(v => get(falcorCache,[...v.value],''))
+  },[id_column,view.view_id,falcorCache])
+
+  
     
-
-  console.log('dataRows', dataRows)
-
-
   return (
      <div className='flex flex-col'>
       <div>View Info</div>
@@ -297,12 +356,18 @@ const ViewInfo = ({source,view}) => {
       <div>Attributes : {attributes?.length || 0}</div>
         <Selector
           options={['',...attributes]}
-          value={idCol}
-          onChange={d => setIdCol(d)}
+          value={id_column}
+          onChange={d => onChange('id_column',d)}
         />
-        {idCol?.name ? 
+        {id_column?.name ? 
         <Selector 
           options={dataRows}
+          value={active_id}
+          nameAccessor={d => d?.[id_column?.name] }
+          onChange={d => onChange('active_id',{
+              active_row:d
+            }
+          )}
         /> : ''}
      </div>
   );

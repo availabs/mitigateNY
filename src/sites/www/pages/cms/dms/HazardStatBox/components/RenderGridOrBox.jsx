@@ -65,7 +65,11 @@ export const RenderGridOrBox = ({visibleCols = [], hazard, hazardPercentileArray
                             isTotal={isTotal}
                             size={size}
                             style={style}
-                            eal={hazardPercentileArray.filter(h => h.key === hazard || hazard === 'total')[0]?.eal}
+                            eal={
+                            hazard === 'total' ?
+                                hazardPercentileArray.reduce((acc, h) => acc + +h.eal , 0) :
+                                hazardPercentileArray.find(h => h.key === hazard)?.eal
+                        }
                             isGrid={false}
                         />
             }

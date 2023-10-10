@@ -44,7 +44,7 @@ export function TemplateEdit ({
   const ContentEdit = attributes['sections'].EditComp
  
   return (
-    <div className='flex flex-1 h-full w-full px-1 md:px-6 py-6'>
+    <div key={id} className='flex flex-1 h-full w-full px-1 md:px-6 py-6'>
       {item?.sidebar === 'show' ? 
           (<div className='w-64 hidden xl:block'>
             <div className='w-64 fixed hidden xl:block h-screen'> 

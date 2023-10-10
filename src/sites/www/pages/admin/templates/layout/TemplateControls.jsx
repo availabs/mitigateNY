@@ -26,14 +26,23 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
   const [ dataControls, setDataControls ] = useState({
     source: null,
     view: null,
-    active_row_id: null,
-    num_rows: null
+    num_rows: null,
+    id_column: null,
+    active_row: {},
+    sectionControls: {}
   })
   // const { baseUrl, setOpen, setHistoryOpen} = React.useContext(CMSContext)
   const baseUrl = '/admin/templates'
   const NoOp = () => {}
 
-  console.log('render', showDataControls)
+  useEffect(() => {
+    console.log('active_id updated', 
+    dataControls.active_row, 
+    dataControls.sectionControls)
+
+  },[dataControls.active_row])
+
+  //console.log('render', showDataControls)
 
   useEffect(() => {
     setStatusMessage(status?.message)

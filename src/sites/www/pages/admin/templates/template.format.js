@@ -5,8 +5,6 @@ const cmsPageFormat = {
   app: "dms-site",
   type: "format-page",
   registerFormats: [cmsSection],
-  // defaultSearch: `data ->> 'index' = '0' and data ->> 'parent' = ''`,
-  // defaultSort: (d) => d.sort((a,b) => a.index - b.index || a.parent-b.parent),
   attributes: [
     { key: "title",
       type: "text",
