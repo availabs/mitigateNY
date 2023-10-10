@@ -276,6 +276,7 @@ const Edit = ({value, onChange, size}) => {
                 })),
                 dataFormat: d => d,
                 idCol: 'building_id',
+                showLegend: false,
                 geoJson,
                 geoColors,
                 domain,

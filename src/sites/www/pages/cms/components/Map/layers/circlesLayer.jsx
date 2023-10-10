@@ -179,8 +179,14 @@ class CirclesOptions extends LayerContainer {
       // context.beginPath();
       // context.drawImage(canvas, 0, 0);
 
-
-      await drawLegend({legend: this.legend, showLegend: this.props.showLegend, filters: this.filters, size: this.props.size}, newCanvas, canvas);
+      if(this.props.showLegend){
+        await drawLegend({legend: this.legend, showLegend: this.props.showLegend, filters: this.filters, size: this.props.size}, newCanvas, canvas);
+      }else{
+        context.beginPath();
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.beginPath();
+        context.drawImage(canvas, 0, 0);
+      }
       img = newCanvas.toDataURL();
       this.img = img;
       this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
