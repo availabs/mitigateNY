@@ -97,7 +97,7 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
                             sectionControlData={dataControls.sectionControls}
                             source={dataControls?.source}
                             onChange={e => {
-                              updateDataControls('sectionControls', e)
+                              updateDataControls('sectionControls', {...dataControls.sectionControls, ...e})
                             }}
                           />
                         </div> 
@@ -122,7 +122,7 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
   )
 }
 
-const parseJSON = (d) => {
+export const parseJSON = (d) => {
   let out = {}
   try {
     out = JSON.parse(d)

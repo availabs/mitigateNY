@@ -18,7 +18,7 @@ export default function Selector({options=[], onChange, selected, nameAccessor=d
 
   
   return (
-    <div className="w-full z-50">
+    <div className="w-full">
       <Combobox value={selected} onChange={onChange}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">

@@ -13,27 +13,18 @@ const colAccessNameMapping = {
     'disaster_number': 'distinct disaster_number as disaster_number',
 }
 
-const Edit = ({value, onChange}) => {
-    const { falcor, falcorCache } = useFalcor();
+async function getData ({ealViewId, geoid, disasterNumber}, falcor) {
+    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
+    const res = await falcor.get(dependencyPath(ealViewId))
+    const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
+    const dlsDeps = deps.find(dep => dep.type === "disaster_loss_summary");
 
-    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
-    const baseUrl = '/';
-
-    const [disasterLossView, setDisasterLossView] = useState();
+ 
+    const disasterLossView = dlsDeps.view_id
     const hmgpView = 798;
     const disasterWebSummariesView = 512;
-    const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
-    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
 
-    const [loading, setLoading] = useState(true);
-    const [status, setStatus] = useState(cachedData?.status);
-    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
-
-    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
-
-    const
-        geoIdCol = geoid?.length === 2 ? "substring(geoid, 1, 2)" : geoid?.length === 5 ? "geoid" : `'all'`,
+    const geoIdCol = geoid?.length === 2 ? "substring(geoid, 1, 2)" : geoid?.length === 5 ? "geoid" : `'all'`,
         disasterDetailsAttributes = {
     // ...disasterNumber && {disaster_number: "disaster_number"},
             geoid: `${geoIdCol} as geoid`,
@@ -77,69 +68,72 @@ const Edit = ({value, onChange}) => {
         }),
         disasterWebSummariesPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", disasterWebSummariesOptions];
 
+    const finalResp = await falcor.get(
+        [...disasterDetailsPath(dlsDeps.view_id), "databyIndex", { from: 0, to: 0 }, Object.values(disasterDetailsAttributes)],
+        [...hmgpPath, "databyIndex", { from: 0, to: 0 }, Object.values(hmgpAttributes)],
+        [...disasterWebSummariesPath(disasterWebSummariesView), "databyIndex", { from: 0, to: 0 }, Object.values(disasterWebSummariesAttributes)],
+        ['dama', pgEnv, 'views', 'byId', [dlsDeps.view_id, disasterWebSummariesView], 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
+    );
+
+    const ihpLoss = get(finalResp, ['json', ...disasterWebSummariesPath(disasterWebSummariesView), "databyIndex", 0, disasterWebSummariesAttributes.ihp_loss], 0),
+        paLoss = get(finalResp, ['json', ...disasterWebSummariesPath(disasterWebSummariesView), "databyIndex", 0, disasterWebSummariesAttributes.pa_loss], 0),
+        sbaLoss = get(finalResp, ['json', ...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.sba_loss], 0),
+        nfipLoss = get(finalResp, ['json', ...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.nfip_loss], 0),
+        usdaLoss = get(finalResp, ['json', ...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.fema_crop_damage], 0),
+        hmgpFunding = get(finalResp, ['json', ...hmgpPath, "databyIndex", 0, hmgpAttributes.hmgp_funding], 0);
+        
+    return {
+        ealViewId,
+        disasterNumber,
+        geoid,
+        disasterLossView,
+        ihpLoss,
+        paLoss,
+        sbaLoss,
+        nfipLoss,
+        usdaLoss,
+        hmgpFunding,
+        totalLoss: (+ihpLoss + +paLoss + +sbaLoss + +nfipLoss + +usdaLoss + +hmgpFunding),
+        attributionData: [disasterLossView, disasterWebSummariesView]
+            .map(view => get(finalResp, ['json','dama', pgEnv, 'views', 'byId', view, 'attributes'], {}))
+    }
+}
+
+const Edit = ({value, onChange}) => {
+    const { falcor, falcorCache } = useFalcor();
+
+    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
+    const baseUrl = '/';
+
+    
+    const ealSourceId = 343;
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
+    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
+
+    const [loading, setLoading] = useState(true);
+    const [status, setStatus] = useState(cachedData?.status);
+    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
+
     useEffect( () => {
-        async function getData(){
-            if(!geoid){
-                setStatus('Please Select a Geography.');
+        async function load(){
+            if(!geoid || !disasterNumber){
+                setStatus('Please Select a Geography && disasterNumber.');
                 return Promise.resolve();
             }else{
                 setStatus(undefined)
             }
             setLoading(true);
             setStatus(undefined);
-            return falcor.get(dependencyPath(ealViewId)).then(async res => {
-
-                const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
-                const dlsDeps = deps.find(dep => dep.type === "disaster_loss_summary");
-
-                if(!dlsDeps) {
-                    setLoading(false)
-                    setStatus('This component only supports EAL versions that use Fusion data.')
-                    return Promise.resolve();
-                }
-
-                setDisasterLossView(dlsDeps.view_id)
-
-                await falcor.get(
-                    [...disasterDetailsPath(dlsDeps.view_id), "databyIndex", { from: 0, to: 0 }, Object.values(disasterDetailsAttributes)],
-                    [...hmgpPath, "databyIndex", { from: 0, to: 0 }, Object.values(hmgpAttributes)],
-                    [...disasterWebSummariesPath(disasterWebSummariesView), "databyIndex", { from: 0, to: 0 }, Object.values(disasterWebSummariesAttributes)],
-                    ['dama', pgEnv, 'views', 'byId', [dlsDeps.view_id, disasterWebSummariesView], 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
-                );
-
-                setLoading(false);
-            })
+            const data = await getData({geoid,disasterNumber,ealViewId},falcor)
+            if(data.totalLoss) {
+                onChange(JSON.stringify(data))
+            }
+            setLoading(false);
         }
 
-        getData()
+        load()
     }, [geoid, ealViewId, disasterNumber]);
 
-    const ihpLoss = get(falcorCache, [...disasterWebSummariesPath(disasterWebSummariesView), "databyIndex", 0, disasterWebSummariesAttributes.ihp_loss], 0);
-    const paLoss = get(falcorCache, [...disasterWebSummariesPath(disasterWebSummariesView), "databyIndex", 0, disasterWebSummariesAttributes.pa_loss], 0);
-    const sbaLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.sba_loss], 0);
-    const nfipLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.nfip_loss], 0);
-    const usdaLoss = get(falcorCache, [...disasterDetailsPath(disasterLossView), "databyIndex", 0, disasterDetailsAttributes.fema_crop_damage], 0);
-    const hmgpFunding = get(falcorCache, [...hmgpPath, "databyIndex", 0, hmgpAttributes.hmgp_funding], 0);
-    const totalLoss = +ihpLoss + +paLoss + +sbaLoss + +nfipLoss + +usdaLoss + +hmgpFunding;
-
-    const attributionData = [disasterLossView, disasterWebSummariesView]
-        .map(view => get(falcorCache, ['dama', pgEnv, 'views', 'byId', view, 'attributes'], {}));
-
-    useEffect(() => {
-            if(!loading){
-                onChange(JSON.stringify(
-                    {
-                        ealViewId,
-                        disasterLossView,
-                        attributionData,
-                        status,
-                        geoid,
-                        disasterNumber,
-                        totalLoss, ihpLoss, paLoss, sbaLoss, nfipLoss, usdaLoss, hmgpFunding
-                    }))
-            }
-        },
-        [status, ealViewId, attributionData, geoid, disasterNumber, totalLoss, ihpLoss, paLoss, sbaLoss, nfipLoss, usdaLoss, hmgpFunding]);
 
     return (
         <div className='w-full'>
@@ -157,20 +151,19 @@ const Edit = ({value, onChange}) => {
                         className={'flex-row-reverse'}
                     />
                 </div>
-                {
-                    loading ? <Loading /> :
-                        status ? <div className={'p-5 text-center'}>{status}</div> :
-                                <RenderDisasterLossStats
-                                    totalLoss={totalLoss}
-                                    ihpLoss={ihpLoss}
-                                    paLoss={paLoss}
-                                    sbaLoss={sbaLoss}
-                                    nfipLoss={nfipLoss}
-                                    usdaLoss={usdaLoss}
-                                    hmgpFunding={hmgpFunding}
-                                    attributionData={attributionData}
-                                    baseUrl={baseUrl}
-                                />
+                {loading ? <Loading /> :
+                    status ? <div className={'p-5 text-center'}>{status}</div> :
+                    <RenderDisasterLossStats
+                        totalLoss={cachedData.totalLoss}
+                        ihpLoss={cachedData.ihpLoss}
+                        paLoss={cachedData.paLoss}
+                        sbaLoss={cachedData.sbaLoss}
+                        nfipLoss={cachedData.nfipLoss}
+                        usdaLoss={cachedData.usdaLoss}
+                        hmgpFunding={cachedData.hmgpFunding}
+                        attributionData={cachedData.attributionData}
+                        baseUrl={cachedData.baseUrl}
+                    />
                 }
             </div>
         </div>
@@ -203,6 +196,22 @@ const View = ({value}) => {
 export default {
     "name": 'Card: FEMA Disaster Loss Summary',
     "type": 'Hero Stats',
+    "variables": [
+        {
+            name: 'geoid',
+            default: '36'
+        },
+        {
+            name: 'disasterNumber',
+            default: '1406'
+        },
+        {
+            name: 'ealViewId',
+            default: 837,
+            hidden: true
+        }
+    ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }

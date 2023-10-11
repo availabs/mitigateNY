@@ -6,7 +6,6 @@ import {dmsDataTypes} from "~/modules/dms/src"
 
 import FilterableSearch from "../../components/FilterableSearch.jsx";
 
-
 import ComponentRegistry from '../ComponentRegistry'
 
 const icons = {
