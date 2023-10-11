@@ -4,12 +4,12 @@ import {format as d3format} from "d3-format";
 import {d3Formatter} from "../../../../../../../utils/macros.jsx";
 import {scaleLinear} from "d3-scale";
 const widths = {
-    '1/3': 150,
-    '2/3': 150,
-    '1/2': 150,
-    '2': 150,
-    '1': 150,
-    [undefined]: 150
+    '1/3': 236,
+    '2/3': 420,
+    '1/2': 420,
+    '2': 420,
+    '1': 420,
+    [undefined]: 420
 }
 
 function SVGToImage(settings, context, canvas){
