@@ -13,93 +13,99 @@ const colAccessNameMapping = {
     'disaster_number': 'distinct disaster_number as disaster_number',
 }
 
+async function getData({geoid, disasterNumber, ealViewId}, falcor){
+    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
+    const res = await falcor.get(dependencyPath(ealViewId))
+    
+    const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
+    const ddsDeps = deps.find(d => d.type === "disaster_declarations_summaries_v2");
+
+    // if(!ddsDeps) {
+    //     setLoading(false)
+    //     setStatus('This component only supports EAL versions that use Fusion data.')
+    //     return Promise.resolve();
+    // }
+
+    const disasterDecView = ddsDeps.view_id
+    const disasterDetailsPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", disasterDetailsOptions, "databyIndex"];
+    const disasterDetailsAttributes = [
+        "disaster_number",
+        "declaration_title",
+        "incident_begin_date",
+        "incident_end_date",
+        "incident_type",
+        'ARRAY_AGG(distinct fips_state_code || fips_county_code) as geoid'
+    ]
+    const disasterDetailsOptions = JSON.stringify({
+        filter: { disaster_number: [disasterNumber] },
+        groupBy: [1, 2, 3, 4, 5]
+    })
+
+    const finalResp = await falcor.get(
+        [...disasterDetailsPath(ddsDeps.view_id), { from: 0, to: 0 }, disasterDetailsAttributes],
+        ['dama', pgEnv, 'views', 'byId', ddsDeps.view_id, 'attributes', ['source_id', 'view_id', 'version']]
+    );
+    return {
+        ealViewId,
+        geoid,
+        disasterNumber,
+        disasterDecView,
+        title: get(finalResp, ['json',...disasterDetailsPath(disasterDecView), 0, "declaration_title"]),
+        incidentType: get(finalResp, ['json',...disasterDetailsPath(disasterDecView), 0, "incident_type"]),
+        declarationDate: get(finalResp, ['json',...disasterDetailsPath(disasterDecView), 0, "incident_begin_date"], ""),
+        endDate: get(finalResp, ['json',...disasterDetailsPath(disasterDecView), 0, "incident_end_date"], ""),
+        attributionData: get(finalResp, ['json','dama', pgEnv, 'views', 'byId', disasterDecView, 'attributes'], {})
+    }
+  
+    
+}
+
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
 
-    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
+    let cachedData = useMemo(() => value && isJson(value) ? JSON.parse(value) : {}, [value]);
     const baseUrl = '/';
 
-    const [disasterDecView, setDisasterDecView] = useState();
     const ealSourceId = 343;
     const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
     const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
 
     const [loading, setLoading] = useState(true);
-    const [status, setStatus] = useState(cachedData?.status);
+    const [status, setStatus] = useState(undefined);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
 
-    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
-
-    const
-        disasterDetailsAttributes = [
-            "disaster_number",
-            "declaration_title",
-            "incident_begin_date",
-            "incident_type",
-            'ARRAY_AGG(distinct fips_state_code || fips_county_code) as geoid'
-        ],
-        disasterDetailsOptions = JSON.stringify({
-            filter: { disaster_number: [disasterNumber] },
-            groupBy: [1, 2, 3, 4]
-        }),
-        disasterDetailsPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", disasterDetailsOptions, "databyIndex"];
-
     useEffect( () => {
-        async function getData(){
-
+        async function load () {
+            console.log('got to load', ealViewId, geoid, disasterNumber)
             if(!geoid || !disasterNumber){
                 setStatus('Please Select a Geography and a Disaster.');
                 return Promise.resolve();
-            }else{
+            } else{
                 setStatus(undefined);
             }
+            console.log()
             setLoading(true);
             setStatus(undefined);
-            return falcor.get(dependencyPath(ealViewId)).then(async res => {
+            let data = await getData({ealViewId, geoid,disasterNumber}, falcor)
+            if(data.title) {
+                console.log('data', data)
+                onChange(JSON.stringify(data))    
+            }
+            setLoading(false)
+        } 
 
-                const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
-                const ddsDeps = deps.find(d => d.type === "disaster_declarations_summaries_v2");
+        load()
 
-                if(!ddsDeps) {
-                    setLoading(false)
-                    setStatus('This component only supports EAL versions that use Fusion data.')
-                    return Promise.resolve();
-                }
-
-                setDisasterDecView(ddsDeps.view_id)
-
-                falcor.get(
-                    [...disasterDetailsPath(ddsDeps.view_id), { from: 0, to: 0 }, disasterDetailsAttributes],
-                    ['dama', pgEnv, 'views', 'byId', ddsDeps.view_id, 'attributes', ['source_id', 'view_id', 'version']]
-                );
-
-                setLoading(false);
-            })
-        }
-
-        getData()
     }, [geoid, ealViewId, disasterNumber]);
 
-    const title = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "declaration_title"]);
-    const incidentType = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "incident_type"]);
-    const declarationDate = get(falcorCache, [...disasterDetailsPath(disasterDecView), 0, "incident_begin_date", "value"], "");
-    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', disasterDecView, 'attributes'], {});
 
-    useEffect(() => {
-            if(!loading){
-                onChange(JSON.stringify(
-                    {
-                        ealViewId,
-                        disasterDecView,
-                        attributionData,
-                        status,
-                        geoid,
-                        disasterNumber,
-                        title, incidentType, declarationDate
-                    }))
-            }
-        },
-        [status, ealViewId, geoid, attributionData, disasterNumber, title, incidentType, declarationDate]);
+   /* useEffect(() => {
+        if(!loading){
+            onChange(JSON.stringify(
+                ))
+        }
+    },
+    [status, ealViewId, geoid, attributionData, disasterNumber, title, incidentType, declarationDate]);*/
 
     return (
         <div className='w-full'>
@@ -120,10 +126,11 @@ const Edit = ({value, onChange}) => {
                     loading ? <Loading /> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                         <RenderDisasterInfoStats
-                            title={title}
-                            incidentType={incidentType}
-                            declarationDate={declarationDate}
-                            attributionData={attributionData}
+                            title={cachedData?.title}
+                            incidentType={cachedData?.incidentType}
+                            declarationDate={cachedData?.declarationDate}
+                            endDate={cachedData?.endDate}
+                            attributionData={cachedData?.attributionData}
                             baseUrl={baseUrl}
                         />
                 }
@@ -160,19 +167,20 @@ export default {
     "type": 'Hero Stats',
     "variables": [
         {
-            name: 'ealViewId',
-            default: 837,
-            hidden: true
-        },
-        {
             name: 'geoid',
             default: '36'
         },
         {
             name: 'disasterNumber',
             default: '1406'
+        },
+        {
+            name: 'ealViewId',
+            default: 837,
+            hidden: true
         }
     ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }

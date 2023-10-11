@@ -6,7 +6,10 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import { useSubmit, useLocation } from "react-router-dom";
 import {json2DmsForm, getUrlSlug, toSnakeCase} from '~/sites/www/pages/cms/layout/nav'
 import 'react-toastify/dist/ReactToastify.css';
-import DataControls from './TemplateDataControls'
+import DataControls, {parseJSON} from './TemplateDataControls'
+import ComponentRegistry from '~/sites/www/pages/cms/dms/ComponentRegistry'
+import {useFalcor} from '~/modules/avl-falcor';
+
 
 const theme = {
   pageControls: {
@@ -19,6 +22,7 @@ const theme = {
 
 export function PageControls({ item, dataItems, updateAttribute,attributes, edit, status, setItem }) {
   const submit = useSubmit()
+  const { falcor, falcorCache } = useFalcor();
   const { pathname = '/edit' } = useLocation()
   const [ showDelete, setShowDelete ] = useState(false)
   const [ showDataControls, setShowDataControls ] = useState(false)
@@ -36,9 +40,47 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
   const NoOp = () => {}
 
   useEffect(() => {
-    console.log('active_id updated', 
-    dataControls.active_row, 
-    dataControls.sectionControls)
+    async function loadUpdates () { 
+
+      let dataFetchers = Object.keys(dataControls.sectionControls)
+      .map(section_id => {
+        let section = item.sections.filter(d => d.id === section_id)?.[0]  || {}
+        let data = parseJSON(section?.element?.['element-data']) || {}
+        let type = section?.element?.['element-type'] || ''
+        let comp = ComponentRegistry[type] || {}
+        
+        let controlVars = (comp?.variables || []).reduce((out,curr) => {
+          out[curr.name] = data[curr.name]
+          return out
+        },{})
+
+        let updateVars = Object.keys(dataControls.sectionControls[section_id])
+        .reduce((out,curr) => {
+          out[curr] = dataControls?.active_row?.[dataControls?.sectionControls?.[section_id]?.[curr]?.name] || null
+          //console.log('update var',  dataControls?.active_row, dataControls?.sectionControls?.[section_id]?.[curr]?.name)
+          
+          return out
+        },{})
+
+        let args = {...controlVars, ...updateVars}
+        return comp.getData(args,falcor).then(data => ({section_id, data}))
+      })
+      let updates = await Promise.all(dataFetchers)
+      if(updates.length > 0) {
+        let newSections = cloneDeep(item.sections)
+        updates.forEach(({section_id, data}) => {
+          let section = newSections.filter(d => d.id === section_id)?.[0]  || {}
+          section.element['element-data'] = JSON.stringify(data)
+          console.log('updating section', section_id)
+        })
+        updateAttribute('sections', newSections)
+      }
+
+
+
+    }
+
+    loadUpdates()
 
   },[dataControls.active_row])
 

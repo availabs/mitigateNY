@@ -9,7 +9,7 @@ import {Attribution} from "../../../components/attribution.jsx";
 const blockLabelClass = `border-b-2`,
     blockValueClass = `font-medium pt-2 text-xl`;
 
-export const RenderDisasterInfoStats = ({ title, incidentType, declarationDate, attributionData, baseUrl }) => {
+export const RenderDisasterInfoStats = ({ title, incidentType, declarationDate, endDate, attributionData, baseUrl }) => {
    return (
        <React.Fragment>
            <div className={"w-full shrink-1 flex flex-col mr-5"}>
@@ -29,7 +29,7 @@ export const RenderDisasterInfoStats = ({ title, incidentType, declarationDate, 
                    <div className={"w-full h-[90px] bg-white p-3 mt-5 ml-5 flex flex-col"}>
                        <label className={blockLabelClass}>Incident Date</label>
                        <span
-                           className={blockValueClass}>{formatDate(declarationDate)}</span>
+                           className={blockValueClass}>{formatDate(declarationDate)} {endDate && formatDate(declarationDate) !== formatDate(endDate) ? `- ${formatDate(endDate)}` : '' }</span>
                    </div>
 
                </div>
