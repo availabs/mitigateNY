@@ -47,16 +47,20 @@ export const RenderBuildingsTable = ({
     return (
         <>
             <div className={'py-5'}>
-                <Table
-                    columns={updatedColumns}
-                    data={filteredData}
-                    initialPageSize={pageSize}
-                    pageSize={pageSize}
-                    striped={striped}
-                    sortBy={sortColRaw}
-                    sortOrder={Object.values(sortBy)?.[0] || 'asc'}
-                    fetchData={fetchData}
-                />
+                {
+                    Object.values(filteredData[0] || {}).find(v => typeof v === 'object') ?
+                        'Something went wrong. Please try changing the selection / settings.' :
+                        <Table
+                            columns={updatedColumns}
+                            data={filteredData}
+                            initialPageSize={pageSize}
+                            pageSize={pageSize}
+                            striped={striped}
+                            sortBy={sortColRaw}
+                            sortOrder={Object.values(sortBy)?.[0] || 'asc'}
+                            fetchData={fetchData}
+                        />
+                }
             </div>
             <Attribution baseUrl={baseUrl} attributionData={attributionData} />
         </>

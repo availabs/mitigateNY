@@ -310,10 +310,11 @@ const Edit = ({value, onChange, size}) => {
                     height,
                     buildingType,
                     floodPlain,
-                    hazard
+                    hazard,
+                    hazardScoreThreshold
                 }))
             }
-        }), [geoid, attributes, colors, data, geoColors, height, dataSource, version, geoLayer, buildingType, floodPlain, hazard]);
+        }), [geoid, attributes, colors, data, geoColors, height, dataSource, version, geoLayer, buildingType, floodPlain, hazard, hazardScoreThreshold]);
 
     return (
         <div className='w-full'>
