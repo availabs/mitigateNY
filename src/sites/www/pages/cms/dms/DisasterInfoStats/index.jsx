@@ -88,7 +88,6 @@ const Edit = ({value, onChange}) => {
             setStatus(undefined);
             let data = await getData({ealViewId, geoid,disasterNumber}, falcor)
             if(data.title) {
-                console.log('data', data)
                 onChange(JSON.stringify(data))    
             }
             setLoading(false)
