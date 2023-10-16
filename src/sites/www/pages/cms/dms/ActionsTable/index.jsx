@@ -1,28 +1,26 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import get from "lodash/get";
 import {useFalcor} from '~/modules/avl-falcor';
 import {pgEnv} from "~/utils/";
 import {isJson} from "~/utils/macros.jsx";
 import {ActionsTable} from "./components/ActionsTable.jsx";
-import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
-import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
-import actionsConfig from "~/sites/www/pages/admin/forms/actions/actions.format.js";
 import {dmsDataLoader} from "~/modules/dms/src";
 import {getMeta, setMeta} from "./utils.js";
+import {formsConfigFormat} from "../../../forms/index.jsx";
+
 const isValid = ({groupBy, fn, columnsToFetch}) => {
     const fns = columnsToFetch.map(ctf => ctf.includes(' AS') ? ctf.split(' AS')[0] : ctf.split(' as')[0]);
 
-    if(groupBy.length){
+    if (groupBy.length) {
         return fns.filter(ctf =>
             !ctf.includes('sum(') &&
             !ctf.includes('array_to_string') &&
             !ctf.includes('count(')
         ).length === groupBy.length
-    }else{
+    } else {
         return fns.filter(ctf =>
             ctf.includes('sum(') ||
             ctf.includes('array_to_string') ||
@@ -51,13 +49,37 @@ const Edit = ({value, onChange}) => {
     const [notNull, setNotNull] = useState(cachedData?.notNull || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [actionType, setActionType] = useState(cachedData?.actionType || 'shmp')
+    const [actionsConfig, setActionsConfig] = useState()
 
     useEffect(() => {
+        async function getActionsConfig() {
+            const formConfigs = await dmsDataLoader(
+                {
+                    format: formsConfigFormat,
+                    children: [
+                        {
+                            type: () => {
+                            },
+                            action: 'list',
+                            path: '/',
+                        }
+                    ]
+                }, '/');
+            const config = formConfigs.find(fc => fc.name === 'Actions')?.config;
+            if(config) setActionsConfig(JSON.parse(config));
+        }
+
+        getActionsConfig();
+    }, [])
+
+    useEffect(() => {
+        if (!actionsConfig) return;
         const geoAttribute = actionsConfig.attributes.find(c => c.geoVariable);
-        geoAttribute?.key && setGeoAttribute(geoAttribute?.key);
+        geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
     }, []);
 
     useEffect(() => {
+        if (!actionsConfig) return;
         getMeta({
             actionsConfig,
             metaLookupByViewId,
@@ -65,20 +87,23 @@ const Edit = ({value, onChange}) => {
             visibleCols,
             pgEnv,
             falcor,
-            geoid});
-    }, [geoid, visibleCols]);
+            geoid
+        });
+    }, [actionsConfig, geoid, visibleCols]);
 
     useEffect(() => {
+        if (!actionsConfig) return;
+
         // gets 250 rows
         async function getData() {
-            if(!visibleCols?.length ) {
+            if (!visibleCols?.length) {
                 !visibleCols?.length && setStatus('Please select columns.');
 
                 setLoading(false);
                 return;
             }
 
-            if(!isValid({groupBy, fn, columnsToFetch: visibleCols.map(vc => fn[vc] ? fn[vc] : vc)})){
+            if (!isValid({groupBy, fn, columnsToFetch: visibleCols.map(vc => fn[vc] ? fn[vc] : vc)})) {
                 setStatus('Please make appropriate grouping selections.');
                 setLoading(false);
                 return;
@@ -92,14 +117,30 @@ const Edit = ({value, onChange}) => {
                     format: actionsConfig,
                     children: [
                         {
-                            type: () => {},
+                            type: () => {
+                            },
                             action: 'load',
                             path: '/0/250',
                             filter: {
-                                fromIndex: path => path.split('/')[1],
-                                toIndex: path => path.split('/')[2],
+                                // fromIndex: path => path.split('/')[1],
+                                // toIndex: path => path.split('/')[2],
                                 options: JSON.stringify({
-                                    filter: {[`data->>'idKey'`]: [actionType]}
+                                    aggregatedLen: true,
+                                    filter: {[`data->>'idKey'`]: [actionType]},
+                                    exclude: {
+                                        ...notNull.length &&
+                                        notNull.reduce((acc, col) => ({...acc, [`data->>'${col}'`]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
+                                    },
+                                    groupBy: groupBy.map(gb => `data->>'${gb}'`)
+                                }),
+                                attributes: visibleCols.map(vc => {
+                                    return (
+                                        fn[vc] && fn[vc].includes('data->>') ? fn[vc] :
+                                            fn[vc] && !fn[vc].includes('data->>') && fn[vc].toLowerCase().includes(' as ') ?
+                                                fn[vc].replace(vc, `data->>'${vc}'`) :
+                                                fn[vc] && !fn[vc].includes('data->>') && !fn[vc].toLowerCase().includes(' as ') ?
+                                                    `${fn[vc].replace(vc, `data->>'${vc}'`)} as ${vc}` :
+                                                    `data->>'${vc}' as ${vc}`)
                                 })
                             },
                         }
@@ -114,32 +155,39 @@ const Edit = ({value, onChange}) => {
                 data: d,
                 setData,
                 metaLookupByViewId,
-                geoAttribute, geoid, actionType
+                geoAttribute, geoid, actionType, fn
             })
 
             setLoading(false);
         }
 
         getData()
-    }, [geoid, visibleCols, fn, groupBy, notNull, geoAttribute, metaLookupByViewId, actionType]);
+    }, [actionsConfig, geoid, visibleCols, fn, groupBy, notNull, geoAttribute, metaLookupByViewId, actionType]);
 
 
     // const attributionData = get(falcorCache, attributionPath, {});
 
     const columns =
         visibleCols
-            .map(c => actionsConfig.attributes.find(md => md.label === c))
+            .map(c => actionsConfig?.attributes?.find(md => md.name === c))
             .filter(c => c)
             .map(col => {
+                const acc =
+                    fn[col.name] && fn[col.name].includes('data->>') ? fn[col.name] :
+                        fn[col.name] && !fn[col.name].includes('data->>') && fn[col.name].toLowerCase().includes(' as ') ?
+                            fn[col.name].replace(col.name, `data->>'${col.name}'`) :
+                            fn[col.name] && !fn[col.name].includes('data->>') && !fn[col.name].toLowerCase().includes(' as ') ?
+                                `${fn[col.name].replace(col.name, `data->>'${col.name}'`)} as ${col.name}` :
+                                `data->>'${col.name}' as ${col.name}`;
                 return {
-                    Header: col.label,
-                    accessor: col.key,
+                    Header: col.display_name,
+                    accessor: acc,
                     align: col.align || 'right',
                     width: col.width || '15%',
-                    filter: col.filter || filters[col.label],
+                    filter: col.filter || filters[col.display_name],
                     info: col.desc,
                     ...col,
-                    type: fn[col.label]?.includes('array_to_string') ? 'string' : col.type
+                    type: fn[col.display_name]?.includes('array_to_string') ? 'string' : col.type
                 }
             });
 
@@ -154,7 +202,7 @@ const Edit = ({value, onChange}) => {
                     }))
             }
         },
-        [ status, geoid, pageSize, sortBy, groupBy, fn, notNull,
+        [status, geoid, pageSize, sortBy, groupBy, fn, notNull,
             data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
         ]);
 
@@ -172,7 +220,8 @@ const Edit = ({value, onChange}) => {
                         autoSelect={true}
                     />
                     <RenderColumnControls
-                        cols={actionsConfig.attributes.map(c => c.label)}
+                        cols={actionsConfig?.attributes?.map(c => c.name)}
+                        metadata={actionsConfig?.attributes}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
                         filters={filters}

@@ -4,10 +4,10 @@ export async function getMeta({actionsConfig, metaLookupByViewId={}, setMetaLook
     const metaViewIdLookupCols =
         actionsConfig.attributes
             .filter(md =>
-                visibleCols.includes(md.label) &&
+                visibleCols.includes(md.name) &&
                 md.geoVariable &&
                 md.meta_lookup &&
-                !metaLookupByViewId[md.label]
+                !metaLookupByViewId[md.name]
             );
     if(metaViewIdLookupCols?.length){
         const data =
@@ -43,7 +43,7 @@ export async function getMeta({actionsConfig, metaLookupByViewId={}, setMetaLook
                             }
                         ), {})
 
-                    return {...prev, ...{[md.label]: data}};
+                    return {...prev, ...{[md.name]: data}};
                 }, {});
         setMetaLookupByViewId({...metaLookupByViewId, ...data});
     }
@@ -54,14 +54,23 @@ const filterData = ({geoAttribute, geoid, data, actionType}) =>
             return !geoAttribute ||
                 actionType === 'shmp' ||
                 d[geoAttribute] === geoid ||
-                (geoid?.length === 2 && d[geoAttribute]?.substring(0, 2) === geoid)
+                (geoid?.length === 2 && d[geoAttribute]?.substring(0, 2) === geoid) // todo: geofilters should move to data call
         }
     );
 
-export async function setMeta({actionsConfig, visibleCols, data, setData, metaLookupByViewId, geoAttribute, geoid, actionType}) {
+export async function setMeta({
+                                  actionsConfig, 
+                                  visibleCols, 
+                                  data, setData, 
+                                  metaLookupByViewId, 
+                                  geoAttribute, geoid, 
+                                  actionType, 
+                                  fn
+                    }) {
+
     const metaLookupCols =
         actionsConfig.attributes?.filter(md =>
-            visibleCols.includes(md.label) && md.geoVariable
+            visibleCols.includes(md.name) && ['meta-variable', 'geoid-variable'].includes(md.display)
         );
 
     if(metaLookupCols?.length){
@@ -69,12 +78,19 @@ export async function setMeta({actionsConfig, visibleCols, data, setData, metaLo
             .map(row => {
                 metaLookupCols.forEach(mdC => {
                     const currentMetaLookup = mdC.meta_lookup;
-
+                    const modifiedName = fn[mdC.name] && fn[mdC.name].includes('data->>') ? fn[mdC.name] :
+                        fn[mdC.name] && !fn[mdC.name].includes('data->>') && fn[mdC.name].toLowerCase().includes(' as ') ?
+                            fn[mdC.name].replace(mdC.name, `data->>'${mdC.name}'`) :
+                            fn[mdC.name] && !fn[mdC.name].includes('data->>') && !fn[mdC.name].toLowerCase().includes(' as ') ?
+                                `${fn[mdC.name].replace(mdC.name, `data->>'${mdC.name}'`)} as ${mdC.name}` :
+                                `data->>'${mdC.name}' as ${mdC.name}`;
+                    
+                    
                     if(currentMetaLookup?.view_id){
-                        const currentViewIdLookup = metaLookupByViewId?.[mdC.label] || [];
-                        row[mdC.key] = currentViewIdLookup[row[mdC.key]]?.name || row[mdC.key];
+                        const currentViewIdLookup = metaLookupByViewId?.[mdC.name] || [];
+                        row[modifiedName] = currentViewIdLookup?.[row[modifiedName]]?.name || row[modifiedName];
                     }else{
-                        row[mdC.key] = currentMetaLookup[row[mdC.key]] || row[mdC.key];
+                        row[modifiedName] = currentMetaLookup?.[row[modifiedName]] || row[modifiedName];
                     }
                 })
                 return row;

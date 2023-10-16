@@ -64,7 +64,7 @@ const RenderCirclesLegend = ({size, domain, range, fmt, title,}) => {
         var size = scaleLinear()
             .domain([minValue, maxValue])
             .range(range)
-        console.log('???????????', minValue, maxValue, range, domain)
+
         // Add legend: circles
         var valuesToShow = [minValue, maxValue]
         var xCircle = 60
@@ -108,10 +108,10 @@ const RenderCirclesLegend = ({size, domain, range, fmt, title,}) => {
     }
 
     return (
-        <div className={`absolute w-[${widths[size]}px] float-left mt-[20px] m-5 -mb-[100px] rounded-md`}
+        <div className={`absolute float-left mt-[20px] m-5 rounded-md`}
              style={{zIndex: 10}}>
             {
-                title && <label className={'font-sm pl-2'}>{title}</label>
+                title && <label className={'font-md pl-2'}>{title}</label>
             }
             <div className={'flex flex-col justify-center inline-block align-middle pt-2.5'}>
                 <div id="legend"><svg id={'legend_svg'} xmlns="http://www.w3.org/2000/svg"/></div>

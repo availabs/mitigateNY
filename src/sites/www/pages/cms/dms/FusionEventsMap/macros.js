@@ -103,7 +103,14 @@ export const setCirclesData = async ({
             'databyIndex'],
         {}));
 
-    const geoids = [...new Set(points.filter(p => p.begin_lat === 0).map(p => p['substring(geoid, 1, 5) as geoid']))];
+    const geoids = [
+        ...new Set(
+           [
+               ...points.filter(p => p.begin_lat === 0).map(p => p['substring(geoid, 1, 5) as geoid']),
+               ...data.filter(d => !d.event_id).map(p => p.geoid)
+           ]
+        )
+    ];
 
     const magnitudeLocationData = [] // {[{event_id: 123, magnitude: 1, location: POINT}]}
 
@@ -153,6 +160,22 @@ export const setCirclesData = async ({
 
                 location && magnitudeLocationData.push({
                     event_id,
+                    location,
+                    magnitude,
+                    color: hazardsMeta[nri_category]?.color
+                })
+            })
+
+        // manually inserted FEMA events without event_id
+        data.filter(d => !d.event_id)
+            .forEach(({geoid, nri_category, ...rest}) => {
+                const location =
+                    countyCentroids
+                        .find(cc => cc.geoid === geoid)?.[countyCentroidAttributes.centroid];
+                const magnitude = rest[metaData.fusion.columns[attribute]];
+
+                location && magnitudeLocationData.push({
+                    event_id:`${geoid} FEMA Event (No NCEI match)`,
                     location,
                     magnitude,
                     color: hazardsMeta[nri_category]?.color
