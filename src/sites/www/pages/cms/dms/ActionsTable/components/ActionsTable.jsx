@@ -28,7 +28,7 @@ export const ActionsTable = ({
                     ['integer', 'number'].includes(cell.column.type) ?
                         fnum(value || 0, c.isDollar) :
                         Array.isArray(value) ? value.join(', ') : value
-
+                if(typeof value === 'object') return  <div></div>
                 return( <div>{value}</div>);
             }
         }

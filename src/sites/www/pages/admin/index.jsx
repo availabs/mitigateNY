@@ -37,6 +37,11 @@ export const menuItems = [
     path: '/cenrep'
   },
   {
+    name: 'Forms',
+    icon: 'far fa-database fa-fw',
+    path: '/admin/forms/list'
+  },
+  {
     name: 'Playground',
     icon: 'far fa-flask fa-fw',
     path: '/playground/edit'
