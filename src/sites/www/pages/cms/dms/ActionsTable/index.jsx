@@ -8,7 +8,7 @@ import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 import {dmsDataLoader} from "~/modules/dms/src";
-import {getMeta, setMeta} from "./utils.js";
+import {getMeta, setMeta, getAccessor, getColAccessor, defaultOpenOutAttributes} from "./utils.js";
 import {formsConfigFormat} from "../../../forms/index.jsx";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
@@ -125,23 +125,15 @@ const Edit = ({value, onChange}) => {
                                 // fromIndex: path => path.split('/')[1],
                                 // toIndex: path => path.split('/')[2],
                                 options: JSON.stringify({
-                                    aggregatedLen: true,
+                                    aggregatedLen: groupBy?.length,
                                     filter: {[`data->>'idKey'`]: [actionType]},
                                     exclude: {
                                         ...notNull.length &&
                                         notNull.reduce((acc, col) => ({...acc, [`data->>'${col}'`]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
                                     },
-                                    groupBy: groupBy.map(gb => `data->>'${gb}'`)
+                                    groupBy: groupBy.map(gb => `${getAccessor(gb)}'${gb}'`)
                                 }),
-                                attributes: visibleCols.map(vc => {
-                                    return (
-                                        fn[vc] && fn[vc].includes('data->>') ? fn[vc] :
-                                            fn[vc] && !fn[vc].includes('data->>') && fn[vc].toLowerCase().includes(' as ') ?
-                                                fn[vc].replace(vc, `data->>'${vc}'`) :
-                                                fn[vc] && !fn[vc].includes('data->>') && !fn[vc].toLowerCase().includes(' as ') ?
-                                                    `${fn[vc].replace(vc, `data->>'${vc}'`)} as ${vc}` :
-                                                    `data->>'${vc}' as ${vc}`)
-                                })
+                                attributes: visibleCols.map(vc => getColAccessor(fn, vc))
                             },
                         }
                     ]
@@ -170,15 +162,9 @@ const Edit = ({value, onChange}) => {
     const columns =
         visibleCols
             .map(c => actionsConfig?.attributes?.find(md => md.name === c))
-            .filter(c => c)
+            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
             .map(col => {
-                const acc =
-                    fn[col.name] && fn[col.name].includes('data->>') ? fn[col.name] :
-                        fn[col.name] && !fn[col.name].includes('data->>') && fn[col.name].toLowerCase().includes(' as ') ?
-                            fn[col.name].replace(col.name, `data->>'${col.name}'`) :
-                            fn[col.name] && !fn[col.name].includes('data->>') && !fn[col.name].toLowerCase().includes(' as ') ?
-                                `${fn[col.name].replace(col.name, `data->>'${col.name}'`)} as ${col.name}` :
-                                `data->>'${col.name}' as ${col.name}`;
+                const acc = getColAccessor(fn, col.name);
                 return {
                     Header: col.display_name,
                     accessor: acc,
@@ -222,6 +208,11 @@ const Edit = ({value, onChange}) => {
                     <RenderColumnControls
                         cols={actionsConfig?.attributes?.map(c => c.name)}
                         metadata={actionsConfig?.attributes}
+                        stateNamePreferences={{
+                            sortBy: 'original',
+                            hideCols: 'original',
+                            showTotal: 'original'
+                        }}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
                         filters={filters}
