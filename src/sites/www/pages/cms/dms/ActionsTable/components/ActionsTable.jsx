@@ -7,6 +7,7 @@ import {hazardsMeta} from "~/utils/colors.jsx";
 import {Attribution} from "../../../components/attribution.jsx";
 
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
+const mapColName = (columns, col) => columns.find(c => c.name === col)?.accessor;
 
 export const ActionsTable = ({
                                        data=[],
@@ -33,16 +34,16 @@ export const ActionsTable = ({
             }
         }
     })
-    const sortColRaw = updatedColumns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
+    const sortColRaw = updatedColumns.find(c => c.name === Object.keys(sortBy)?.[0])?.accessor;
 
     const filteredData = data.filter(row =>
         !Object.keys(filterValue || {}).length ||
         Object.keys(filterValue)
             .reduce((acc, col) => {
-                const value = getNestedValue(row[col]);
+                const mappedName = mapColName(updatedColumns, col)
+                const value = getNestedValue(row[mappedName]);
                 return acc && value?.toString().toLowerCase().includes(filterValue[col]?.toLowerCase())
-            }, true)
-    )
+            }, true))
 
     return (
         <>

@@ -1,5 +1,37 @@
 import get from "lodash/get.js";
 
+export const defaultOpenOutAttributes = ['description_of_problem_being_mitigated', 'solution_description']
+const jsonAccessor = 'data->';
+const textAccessor = 'data->>';
+export const getAccessor = (col) => col.includes('associated_hazards') ? jsonAccessor : textAccessor;
+export const getColAccessor = (fn, col) => fn[col] && fn[col].includes('data->') ? fn[col] :
+    fn[col] && !fn[col].includes('data->') && fn[col].toLowerCase().includes(' as ') ?
+        fn[col].replace(col, `${getAccessor(col)}'${col}'`) :
+        fn[col] && !fn[col].includes('data->') && !fn[col].toLowerCase().includes(' as ') ?
+            `${fn[col].replace(col, `${getAccessor(col)}'${col}'`)} as ${col}` :
+            `${getAccessor(col)}'${col}' as ${col}`;
+
+const handleExpandableRows = (data, attributes, columns) => {
+    const openOutAttributes =
+        attributes
+            .filter(attr => attr.openOut || defaultOpenOutAttributes.includes(attr.name))
+            .map(attr => attr.name);
+    const expandableColumns = columns.filter(c => openOutAttributes.includes(c.name))
+    if(expandableColumns?.length){
+        const newData = data.map(row => {
+            const newRow = {...row}
+            newRow.expand = []
+            newRow.expand.push(
+                ...expandableColumns.map(col => ({key: attributes.find(attr => attr.name === col.name)?.display_name || col.name, value: row[col.accessor]}))
+            )
+            expandableColumns.forEach(col => delete newRow[col.accessor])
+            return newRow;
+        });
+        return newData;
+    }else{
+        return data
+    }
+}
 export async function getMeta({actionsConfig, metaLookupByViewId={}, setMetaLookupByViewId, visibleCols, pgEnv, falcor, geoid}){
     const metaViewIdLookupCols =
         actionsConfig.attributes
@@ -78,25 +110,34 @@ export async function setMeta({
             .map(row => {
                 metaLookupCols.forEach(mdC => {
                     const currentMetaLookup = mdC.meta_lookup;
-                    const modifiedName = fn[mdC.name] && fn[mdC.name].includes('data->>') ? fn[mdC.name] :
-                        fn[mdC.name] && !fn[mdC.name].includes('data->>') && fn[mdC.name].toLowerCase().includes(' as ') ?
-                            fn[mdC.name].replace(mdC.name, `data->>'${mdC.name}'`) :
-                            fn[mdC.name] && !fn[mdC.name].includes('data->>') && !fn[mdC.name].toLowerCase().includes(' as ') ?
-                                `${fn[mdC.name].replace(mdC.name, `data->>'${mdC.name}'`)} as ${mdC.name}` :
-                                `data->>'${mdC.name}' as ${mdC.name}`;
+                    const modifiedName = fn[mdC.name] && fn[mdC.name].includes('data->') ? fn[mdC.name] :
+                        fn[mdC.name] && !fn[mdC.name].includes('data->') && fn[mdC.name].toLowerCase().includes(' as ') ?
+                            fn[mdC.name].replace(mdC.name, `${getAccessor(mdC.name)}'${mdC.name}'`) :
+                            fn[mdC.name] && !fn[mdC.name].includes('data->') && !fn[mdC.name].toLowerCase().includes(' as ') ?
+                                `${fn[mdC.name].replace(mdC.name, `${getAccessor(mdC.name)}'${mdC.name}'`)} as ${mdC.name}` :
+                                `${getAccessor(mdC.name)}'${mdC.name}' as ${mdC.name}`;
                     
                     
                     if(currentMetaLookup?.view_id){
                         const currentViewIdLookup = metaLookupByViewId?.[mdC.name] || [];
-                        row[modifiedName] = currentViewIdLookup?.[row[modifiedName]]?.name || row[modifiedName];
+                        const currentRawValue = row[modifiedName];
+                        if(currentRawValue?.includes(',')){
+                            row[modifiedName] =  currentRawValue.split(',').reduce((acc, curr) => [...acc, currentViewIdLookup?.[curr?.trim()]?.name || curr] , []).join(', ')
+                        }else{
+                            row[modifiedName] = currentViewIdLookup?.[row[modifiedName]]?.name || row[modifiedName];
+                        }
                     }else{
                         row[modifiedName] = currentMetaLookup?.[row[modifiedName]] || row[modifiedName];
                     }
                 })
                 return row;
             })
-        setData(dataWithMeta)
+        setData(handleExpandableRows(dataWithMeta, actionsConfig.attributes, visibleCols.map(vc => ({name: vc, accessor: getColAccessor(fn, vc)}))))
     }else{
-        setData(filterData({geoAttribute, geoid, data, actionType}))
+        setData(handleExpandableRows(
+            filterData({geoAttribute, geoid, data, actionType}),
+            actionsConfig.attributes,
+            visibleCols.map(vc => ({name: vc, accessor: getColAccessor(fn, vc)}))
+        ))
     }
 }

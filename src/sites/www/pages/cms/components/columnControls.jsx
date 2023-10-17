@@ -308,9 +308,9 @@ const RenderFilterValueControls = ({column, filterValue, setFilterValue}) => {
     )
 }
 
-const RenderSortControls = ({column, sortBy, setSortBy, fn}) => {
+const RenderSortControls = ({column, sortBy, setSortBy, fn, stateNamePreferences}) => {
     if (!setSortBy) return null;
-    const fnColumn = fn[column] || column;
+    const fnColumn = stateNamePreferences === 'original' ? column : (fn[column] || column );
 
     return (
         <>
@@ -374,7 +374,8 @@ const RenderColumnBoxes = ({
                                showTotal, setShowTotal,
                                fn, setFn,
                                sortBy, setSortBy,
-                               metadata
+                               metadata,
+                               stateNamePreferences
                            }) => {
     const [list, setList] = useState([...new Set([...anchorCols, ...visibleCols])]);
     const dragItem = useRef();
@@ -467,16 +468,19 @@ const RenderColumnBoxes = ({
                                                   metadata={currentMetaData}/>
 
                                 <RenderSortControls column={col}
-                                                    sortBy={sortBy} setSortBy={setSortBy} fn={fn}/>
+                                                    sortBy={sortBy} setSortBy={setSortBy} fn={fn}
+                                                    stateNamePreferences={stateNamePreferences?.sortBy}/>
 
                                 <RenderNullControls column={col}
                                                     notNull={notNull} setNotNull={setNotNull}/>
 
                                 <RenderShowTotalControls column={col} index={i}
-                                                    showTotal={showTotal} setShowTotal={setShowTotal} fn={fn}/>
+                                                    showTotal={showTotal} setShowTotal={setShowTotal} fn={fn}
+                                                         stateNamePreferences={stateNamePreferences?.showTotal}/>
 
                                 <RenderHideControls column={col}
-                                                    hiddenCols={hiddenCols} setHiddenCols={setHiddenCols} fn={fn}/>
+                                                    hiddenCols={hiddenCols} setHiddenCols={setHiddenCols} fn={fn}
+                                                    stateNamePreferences={stateNamePreferences?.hideCols}/>
 
                             </div>
                         )
@@ -500,7 +504,14 @@ export const RenderColumnControls = (
         notNull = [], setNotNull,
         fn = {}, setFn,
         sortBy = {}, setSortBy,
-        pageSize, setPageSize
+        pageSize, setPageSize,
+        stateNamePreferences
+        // stateNamePreferences defaults to fn[column]. to change,
+        // pass {
+        //     sortBy: 'original',
+        //     hideCols: 'original',
+        //     showTotal: 'original'
+        // }
     }) => {
 
     return (
@@ -529,6 +540,7 @@ export const RenderColumnControls = (
                                showTotal={showTotal} setShowTotal={setShowTotal}
                                fn={fn} setFn={setFn}
                                metadata={metadata}
+                               stateNamePreferences={stateNamePreferences}
             />
         </div>
     )
