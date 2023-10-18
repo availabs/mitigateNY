@@ -1,15 +1,14 @@
 import React, {useState} from "react"
-import {dmsPageFactory, registerDataType} from "~/modules/dms/src"
+import {dmsDataLoader, dmsPageFactory, registerDataType} from "~/modules/dms/src"
 import {falcor} from "~/modules/avl-falcor"
 import {Table} from "~/modules/avl-components/src"
 import {Link, useNavigate, useParams} from 'react-router-dom'
 import {withAuth} from "~/modules/ams/src"
 import checkAuth from "~/layout/checkAuth"
-import cmsFormat from "./actions.format.js"
-
 import {menuItems} from "../../index"
 import dmsFormsTheme from "../dmsFormsTheme"
 import get from "lodash/get";
+import {formsConfigFormat} from "../../../forms/index.jsx";
 
 // registerDataType("selector", Selector)
 
@@ -66,12 +65,30 @@ const TableComp = ({data, columns, ...rest}) => {
                   onPageChange={(p) => {
                       const nextFromINdex = p * pageSize;
                       const nextToIndex = nextFromINdex + pageSize;
-                      navigate(`/admin/forms/actions/list/${nextFromINdex}/${nextToIndex}`)
+                      navigate(`/admin/forms/form/${params.formid}/list/${nextFromINdex}/${nextToIndex}`)
                   }}
     />
 }
 const siteConfig = {
-    format: cmsFormat,
+    formatFn: async () => {
+        const id = window.location.pathname.split('form/')[1]?.split('/list')?.[0];
+        if(!id) return {};
+        const formConfigs = await dmsDataLoader(
+            {
+                format: formsConfigFormat,
+                children: [
+                    {
+                        type: () => {
+                        },
+                        action: 'list',
+                        path: '/',
+                    }
+                ]
+            }, '/');
+        // const config = formConfigs.find(fc => fc.name === 'Actions')?.config;
+        const config = formConfigs.find(fc => fc.id === id)?.config;
+        return JSON.parse(config);
+    },
     check: ({user}, activeConfig, navigate) => {
 
         const getReqAuth = (configs) => {
@@ -90,7 +107,7 @@ const siteConfig = {
     },
     children: [
         {
-            type: (props) => <Layout {...props} title={'Actions'} baseUrl={'/admin/forms/actions'}/>,
+            type: (props) => <Layout {...props} title={'Actions'} baseUrl={'/admin/forms/form/:formid'}/>,
             path: '/*',
             action: 'list',
             filter: {
@@ -114,11 +131,11 @@ const siteConfig = {
                                 name: 'Name',
                                 text: 'action_name',
                                 // path: ':action_name',
-                                to: '/admin/forms/actions/view/:id',
+                                to: '/admin/forms/form/:formid/view/:id',
                                 filter: "fuzzyText",
                                 Cell: d => {
                                     return <Link
-                                        to={`/admin/forms/actions/view/${d?.cell?.row?.original?.id}`}> {d?.cell?.row?.original?.action_name} </Link>
+                                        to={`/admin/forms/form/:formid/view/${d?.cell?.row?.original?.id}`}> {d?.cell?.row?.original?.action_name} </Link>
                                 }
                             },
                             {
@@ -140,7 +157,7 @@ const siteConfig = {
                                 accessor: 'edit',
                                 Cell: d => {
                                     return <Link
-                                        to={`/admin/forms/actions/edit/${d?.cell?.row?.original?.id}`}> edit </Link>
+                                        to={`/admin/forms/form/:formid/edit/${d?.cell?.row?.original?.id}`}> edit </Link>
                                 }
                             }
                             //   { type: 'date',
@@ -149,7 +166,7 @@ const siteConfig = {
                             // },
                             // { type: 'link',
                             //     name: '',
-                            //     to: '/admin/forms/actions/edit/:id',
+                            //     to: '/admin/forms/form/:formid/edit/:id',
                             //     text: "edit"
                             // }
                         ]}
@@ -185,7 +202,7 @@ const siteConfig = {
                     action: 'edit',
                     filter: {type: 'new'},
                     path: '/new',
-                    redirect: '/admin/forms/actions'
+                    redirect: '/admin/forms/form/:formid'
                 },
                 {
                     type: "dms-form-edit",
@@ -200,7 +217,7 @@ const siteConfig = {
 export default {
     ...dmsPageFactory(
         siteConfig,
-        "/admin/forms/actions/",
+        "/admin/forms/form/:formid/",
         withAuth,
         dmsFormsTheme
     ),

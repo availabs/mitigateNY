@@ -46,7 +46,7 @@ const Edit = ({value, onChange}) => {
 
     const [dataSources, setDataSources] = useState(cachedData?.dataSources || []);
     const [dataSource, setDataSource] = useState(cachedData?.dataSource);
-    const [version, setVersion] = useState(cachedData?.version);
+    const [version, setVersion] = useState(cachedData?.version || 842);
     const [geoAttribute, setGeoAttribute] = useState(cachedData?.geoAttribute);
 
     const [loading, setLoading] = useState(true);
