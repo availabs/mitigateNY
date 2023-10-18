@@ -50,6 +50,7 @@ const Edit = ({value, onChange}) => {
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [actionType, setActionType] = useState(cachedData?.actionType || 'shmp')
     const [actionsConfig, setActionsConfig] = useState()
+    const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
 
     useEffect(() => {
         async function getActionsConfig() {
@@ -162,7 +163,7 @@ const Edit = ({value, onChange}) => {
     const columns =
         visibleCols
             .map(c => actionsConfig?.attributes?.find(md => md.name === c))
-            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
+            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name) && !hiddenCols.includes(c.name))
             .map(col => {
                 const acc = getColAccessor(fn, col.name);
                 return {
@@ -183,12 +184,12 @@ const Edit = ({value, onChange}) => {
                     {
                         status,
                         geoid,
-                        pageSize, sortBy, groupBy, fn, notNull,
+                        pageSize, sortBy, groupBy, fn, notNull, hiddenCols,
                         data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
                     }))
             }
         },
-        [status, geoid, pageSize, sortBy, groupBy, fn, notNull,
+        [status, geoid, pageSize, sortBy, groupBy, fn, notNull, hiddenCols,
             data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
         ]);
 
@@ -215,6 +216,8 @@ const Edit = ({value, onChange}) => {
                         }}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
+                        hiddenCols={hiddenCols}
+                        setHiddenCols={setHiddenCols}
                         filters={filters}
                         setFilters={setFilters}
                         filterValue={filterValue}
