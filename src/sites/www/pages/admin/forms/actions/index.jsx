@@ -57,7 +57,7 @@ const TableComp = ({data, columns, ...rest}) => {
     let currentPage = fromIndex / pageSize;
 
     return <Table data={data} // filter data from fromIndex
-                  columns={columns}
+                  columns={columns(params.formid)}
                   manualPagination={true}
                   numRecords={length}
                   pageSize={pageSize}
@@ -71,7 +71,7 @@ const TableComp = ({data, columns, ...rest}) => {
 }
 const siteConfig = {
     formatFn: async () => {
-        const id = window.location.pathname.split('form/')[1]?.split('/list')?.[0];
+        const id = window.location.pathname.split('form/')[1]?.split('/')?.[0];
         if(!id) return {};
         const formConfigs = await dmsDataLoader(
             {
@@ -119,7 +119,7 @@ const siteConfig = {
                 type: props =>
                     <TableComp
                         data={props.dataItems}
-                        columns={[
+                        columns={(formid) => [
                             // {
                             //     Header: 'Local/State',
                             //     accessor: 'idKey'
@@ -135,7 +135,7 @@ const siteConfig = {
                                 filter: "fuzzyText",
                                 Cell: d => {
                                     return <Link
-                                        to={`/admin/forms/form/:formid/view/${d?.cell?.row?.original?.id}`}> {d?.cell?.row?.original?.action_name} </Link>
+                                        to={`/admin/forms/form/${formid}/view/${d?.cell?.row?.original?.id}`}> {d?.cell?.row?.original?.action_name} </Link>
                                 }
                             },
                             {
@@ -157,7 +157,7 @@ const siteConfig = {
                                 accessor: 'edit',
                                 Cell: d => {
                                     return <Link
-                                        to={`/admin/forms/form/:formid/edit/${d?.cell?.row?.original?.id}`}> edit </Link>
+                                        to={`/admin/forms/form/${formid}/edit/${d?.cell?.row?.original?.id}`}> edit </Link>
                                 }
                             }
                             //   { type: 'date',
