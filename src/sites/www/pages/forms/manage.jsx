@@ -4,8 +4,6 @@ import {falcor} from "~/modules/avl-falcor";
 import MetadataTable from "./Metadata/advanced.jsx";
 export const Manage = (props) => {
   const config = JSON.parse(props?.item?.config || '{}');
-  console.log('p?', props)
-  console.log('config?', JSON.parse(props.item.config))
 
   const submit = async (config) => {
     if(!props.item?.id) return;
