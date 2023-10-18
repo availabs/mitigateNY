@@ -41,48 +41,48 @@ export function getInPageNav(dataItems, baseUrl = '', edit = false) {
                         }
                     ] : []
 
-                const collapsible =
-                    type === 'collapsible-container'
-                        ? [
-                            {
-                                name: children?.[0]?.children?.[0]?.text,
-                                onClick: (e) => {
-                                    const elmntToView =
-                                        [...window.document.querySelectorAll('.Collapsible__title')]
-                                            .find(headerElement => headerElement?.children[0]?.innerHTML === children?.[0]?.children?.[0]?.text);
-                                    // .__lexicalKey_cgviu
-                                    elmntToView?.scrollIntoView({ behavior: "smooth"});
-                                },
-                                className: `px-4 pb-1 text-sm text-slate-400 hover:text-slate-700 cursor-pointer border-r-2 mr-4
-                            ${
-                                    [...window.document.querySelectorAll('.Collapsible__title')]
-                                        .find(headerElement => headerElement?.children[0]?.innerHTML === children?.[0]?.children?.[0]?.text)?.offsetParent
-                                    === null ? 'text-blue-200' : ''
-                                }`
-                            },
-                            ...(children.find(c => c.type === 'collapsible-content')?.children || [])
-                                .filter(c => c.type === 'heading')
-                                .map(c => (
-                                    {
-                                        name: c?.children?.[0]?.text,
-                                        onClick: (e) => {
-                                            const elmntToView =
-                                                [...window.document.querySelectorAll(c.tag)]
-                                                    .find(headerElement => headerElement?.children[0]?.innerHTML === c?.children?.[0]?.text);
-                                            // .__lexicalKey_cgviu
-                                            elmntToView?.scrollIntoView({ behavior: "smooth"});
-                                        },
-                                        className: `px-8 pb-1 text-sm text-slate-400 hover:text-slate-700 cursor-pointer border-r-2 mr-4
-                            ${
-                                            [...window.document.querySelectorAll(c.tag)]
-                                                .find(headerElement => headerElement?.children[0]?.innerHTML === c?.children?.[0]?.text)?.offsetParent
-                                            === null ? 'text-blue-200' : ''
-                                        }`
-                                    }
-                                ))
-                        ] : [];
+                // const collapsible =
+                //     type === 'collapsible-container'
+                //         ? [
+                //             {
+                //                 name: children?.[0]?.children?.[0]?.text,
+                //                 onClick: (e) => {
+                //                     const elmntToView =
+                //                         [...window.document.querySelectorAll('.Collapsible__title')]
+                //                             .find(headerElement => headerElement?.children[0]?.innerHTML === children?.[0]?.children?.[0]?.text);
+                //                     // .__lexicalKey_cgviu
+                //                     elmntToView?.scrollIntoView({ behavior: "smooth"});
+                //                 },
+                //                 className: `px-4 pb-1 text-sm text-slate-400 hover:text-slate-700 cursor-pointer border-r-2 mr-4
+                //             ${
+                //                     [...window.document.querySelectorAll('.Collapsible__title')]
+                //                         .find(headerElement => headerElement?.children[0]?.innerHTML === children?.[0]?.children?.[0]?.text)?.offsetParent
+                //                     === null ? 'text-blue-200' : ''
+                //                 }`
+                //             },
+                //             ...(children.find(c => c.type === 'collapsible-content')?.children || [])
+                //                 .filter(c => c.type === 'heading')
+                //                 .map(c => (
+                //                     {
+                //                         name: c?.children?.[0]?.text,
+                //                         onClick: (e) => {
+                //                             const elmntToView =
+                //                                 [...window.document.querySelectorAll(c.tag)]
+                //                                     .find(headerElement => headerElement?.children[0]?.innerHTML === c?.children?.[0]?.text);
+                //                             // .__lexicalKey_cgviu
+                //                             elmntToView?.scrollIntoView({ behavior: "smooth"});
+                //                         },
+                //                         className: `px-8 pb-1 text-sm text-slate-400 hover:text-slate-700 cursor-pointer border-r-2 mr-4
+                //             ${
+                //                             [...window.document.querySelectorAll(c.tag)]
+                //                                 .find(headerElement => headerElement?.children[0]?.innerHTML === c?.children?.[0]?.text)?.offsetParent
+                //                             === null ? 'text-blue-200' : ''
+                //                         }`
+                //                     }
+                //                 ))
+                //         ] : [];
 
-                return [...acc, ...heading, ...collapsible]
+                return [...acc, ...heading, /*...collapsible*/]
             }, []) : []
 
         return [
