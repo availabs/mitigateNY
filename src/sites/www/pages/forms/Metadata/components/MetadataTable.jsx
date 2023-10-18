@@ -9,6 +9,7 @@ import {FnSelector} from "./FnSelector.jsx";
 import {TypeSelector} from "./TypeSelector.jsx";
 import {dmsDataTypes} from "~/modules/dms/src"
 import {IsCurrencySwitch} from "./IsCurrencySwitch.jsx";
+import {IsOpenOutSwitch} from "./openOutSwitch.jsx";
 
 
 export const MetadataTable = ({meta = [], update, colOrigin}) => {
@@ -149,6 +150,16 @@ export const MetadataTable = ({meta = [], update, colOrigin}) => {
                                             setMetadata={setMetadata}
                                             col={col.name}
                                             value={col.isDollar}
+                                        /> : null
+                                }
+                                {
+                                    authLevel > 5 ?
+                                        <IsOpenOutSwitch
+                                            update={update}
+                                            metadata={metadata}
+                                            setMetadata={setMetadata}
+                                            col={col.name}
+                                            value={col.openOut}
                                         /> : null
                                 }
                             </dd>

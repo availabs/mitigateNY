@@ -319,6 +319,7 @@ const ppdaf = () => {
                   `${sizes[size]} pb-1 h-8 border border-b-4 border-gray-200 bg-white text-left font-medium text-gray-700 uppercase first:rounded-tl-md last:rounded-tr-md`,
               tableInfoBar: "bg-white",
               tableRow: `${colors[color]} transition ease-in-out duration-150 hover:bg-blue-100`,
+              tableOpenOutRow: 'flex flex-col',
               tableRowStriped: `bg-white odd:bg-tigGray-25 hover:bg-tigGray-100 bg-opacity-25 transition ease-in-out duration-150`,
               tableCell: `${sizes[size]} break-words border border-gray-200 pl-1 align-top font-light text-sm`,
               inputSmall: 'w-24',

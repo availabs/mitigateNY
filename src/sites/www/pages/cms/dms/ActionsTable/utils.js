@@ -1,6 +1,6 @@
 import get from "lodash/get.js";
 
-export const defaultOpenOutAttributes = ['description_of_problem_being_mitigated', 'solution_description']
+export const defaultOpenOutAttributes = [/*'description_of_problem_being_mitigated', 'solution_description'*/]
 const jsonAccessor = 'data->';
 const textAccessor = 'data->>';
 export const getAccessor = (col) => col.includes('associated_hazards') ? jsonAccessor : textAccessor;
