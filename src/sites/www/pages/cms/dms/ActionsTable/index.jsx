@@ -164,7 +164,7 @@ const Edit = ({value, onChange}) => {
     const columns =
         visibleCols
             .map(c => actionsConfig?.attributes?.find(md => md.name === c))
-            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name) && !hiddenCols.includes(c.name))
+            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
             .map(col => {
                 const acc = getColAccessor(fn, col.name);
                 return {
@@ -244,6 +244,7 @@ const Edit = ({value, onChange}) => {
                                 geoid={geoid}
                                 data={data}
                                 columns={columns}
+                                hiddenCols={hiddenCols}
                                 filterValue={filterValue}
                                 pageSize={pageSize}
                                 sortBy={sortBy}

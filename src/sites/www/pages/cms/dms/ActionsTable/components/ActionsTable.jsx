@@ -12,6 +12,7 @@ const mapColName = (columns, col) => columns.find(c => c.name === col)?.accessor
 export const ActionsTable = ({
                                        data=[],
                                        columns=[],
+                                       hiddenCols=[],
                                        filterValue = {},
                                        pageSize,
                                        sortBy = {},
@@ -20,7 +21,10 @@ export const ActionsTable = ({
                                        striped,
                                          fetchData
 }) => {
-    const updatedColumns = columns.map(c => {
+    const updatedColumns =
+        columns
+            .filter(c => !hiddenCols.includes(c.name))
+            .map(c => {
         return {
             ...c,
             Cell: cell => {
@@ -40,7 +44,7 @@ export const ActionsTable = ({
         !Object.keys(filterValue || {}).length ||
         Object.keys(filterValue)
             .reduce((acc, col) => {
-                const mappedName = mapColName(updatedColumns, col)
+                const mappedName = mapColName(columns, col)
                 const value = getNestedValue(row[mappedName]);
                 return acc && value?.toString().toLowerCase().includes(filterValue[col]?.toLowerCase())
             }, true))
