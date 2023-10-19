@@ -1,5 +1,6 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import {Switch} from '@headlessui/react';
+import {ButtonSelector} from "./buttonSelector.jsx";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -15,7 +16,7 @@ const RenderPageSizeControl = ({pageSize, setPageSize}) => {
             <label className={'shrink-0 pr-2 py-2 my-1 w-1/4'}>Table Page Size</label>
             <input
                 key={'pageSizeInput'}
-                className={'p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+                className={'p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
                 type={"number"}
                 placeholder={'Table Page Size'}
                 value={tmpPageSize}
@@ -35,7 +36,7 @@ const RenderColumnSelector = ({cols, anchorCols, visibleCols, setVisibleCols, me
         <select
             key={'displayColsInput'}
             value={' '}
-            className={'p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+            className={'p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
             onChange={e => setVisibleCols([...visibleCols, e.target.value])}
         >
             <option key={0} value={' '}> Select a Column</option>
@@ -60,7 +61,7 @@ const RenderGroupControls = ({column, groupBy, setGroupBy, fn, metadata}) => {
     return (
         <div className={'block w-full flex mt-1'}>
             <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> Group by: </label>
-            <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
+            <div className={'align-bottom p-2 pl-0 my-1 rounded-md shrink self-center'}>
                 <Switch
                     key={`groupby-${column}`}
                     checked={isActive}
@@ -129,7 +130,7 @@ const RenderFnControls = ({column, fn, setFn, groupBy, metadata}) => {
             <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> Function: </label>
             <select
                 key={`fn-${column}`}
-                className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+                className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
                 value={fn[column]}
                 onChange={e => setFn({...fn, ...{[column]: e.target.value}})}
                 disabled={!groupBy.length}
@@ -151,7 +152,7 @@ const RenderNullControls = ({column, notNull, setNotNull}) => {
     return (
         <div className={'block w-full flex mt-1'}>
             <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> Exclude N/A: </label>
-            <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
+            <div className={'align-bottom p-2 pl-0 my-1 rounded-md shrink self-center'}>
                 <Switch
                     key={`notNull-${groupableName}`}
                     checked={notNull.includes(groupableName)}
@@ -191,7 +192,7 @@ const RenderShowTotalControls = ({column, index, showTotal, setShowTotal, fn}) =
     return (
         <div className={'block w-full flex mt-1'}>
             <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> Show Total: </label>
-            <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
+            <div className={'align-bottom p-2 pl-0 my-1 rounded-md shrink self-center'}>
                 <Switch
                     key={`show-total-${colNameWithFn}`}
                     checked={showTotal.includes(colNameWithFn)}
@@ -231,7 +232,7 @@ const RenderHideControls = ({column, hiddenCols, setHiddenCols, fn}) => {
     return (
         <div className={'block w-full flex mt-1'}>
             <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> Hide: </label>
-            <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
+            <div className={'align-bottom p-2 pl-0 my-1 rounded-md shrink self-center'}>
                 <Switch
                     key={`hide-${colNameWithFn}`}
                     checked={hiddenCols.includes(colNameWithFn)}
@@ -269,7 +270,7 @@ const RenderFilterControls = ({column, filters, setFilters, anchorCols}) => {
             <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> Filter: </label>
             <select
                 key={`filter-${column}`}
-                className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+                className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
                 value={filters[column]}
                 onChange={e => setFilters({...filters, ...{[column]: e.target.value}})}
                 disabled={anchorCols.includes(column)}
@@ -288,7 +289,7 @@ const RenderFilterValueControls = ({column, filterValue, setFilterValue}) => {
             <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> Filter by: </label>
             <input
                 type={'text'}
-                className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+                className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
                 value={filterValue[column]}
                 placeholder={'filter by'}
                 onChange={e => {
@@ -316,7 +317,7 @@ const RenderSortControls = ({column, sortBy, setSortBy, fn, stateNamePreferences
         <>
             <div className={'block shrink-0 w-full flex'}>
                 <label className={'align-bottom pr-2 py-2 my-1 w-1/4'}> Sort by: </label>
-                <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
+                <div className={'align-bottom p-2 pl-0 my-1 rounded-md shrink self-center'}>
                     <Switch
                         key={`sortby-${column}`}
                         checked={sortBy?.[fnColumn] || false}
@@ -349,7 +350,7 @@ const RenderSortControls = ({column, sortBy, setSortBy, fn, stateNamePreferences
                 <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> Order: </label>
                 <select
                     key={`order-${column}`}
-                    className={'align-bottom p-2 ml-2 my-1 bg-white rounded-md w-full shrink'}
+                    className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
                     value={sortBy?.[fnColumn]}
                     onChange={e => setSortBy({[fnColumn]: e.target.value})}
                     disabled={!sortBy?.[fnColumn]}
@@ -362,6 +363,19 @@ const RenderSortControls = ({column, sortBy, setSortBy, fn, stateNamePreferences
     )
 }
 
+const RenderSizeControls = ({column, colSizes, setColSizes}) => {
+    if (!setColSizes) return null;
+    const currentSize = colSizes[column] || '15%';
+
+    return (
+        <ButtonSelector
+            label={'Size:'}
+            types={[{label: 'small', value: '15%'},{label: 'medium', value: '20%'},{label: 'large', value: '25%'}]}
+            type={currentSize}
+            setType={e => setColSizes({...colSizes, [column]: e})}
+        />
+    )
+}
 const RenderColumnBoxes = ({
                                cols,
                                anchorCols=[],
@@ -375,7 +389,8 @@ const RenderColumnBoxes = ({
                                fn, setFn,
                                sortBy, setSortBy,
                                metadata,
-                               stateNamePreferences
+                               stateNamePreferences,
+                               colSizes, setColSizes
                            }) => {
     const [list, setList] = useState([...new Set([...anchorCols, ...visibleCols])]);
     const dragItem = useRef();
@@ -471,6 +486,9 @@ const RenderColumnBoxes = ({
                                                     sortBy={sortBy} setSortBy={setSortBy} fn={fn}
                                                     stateNamePreferences={stateNamePreferences?.sortBy}/>
 
+                                <RenderSizeControls column={col}
+                                                    colSizes={colSizes} setColSizes={setColSizes} />
+
                                 <RenderNullControls column={col}
                                                     notNull={notNull} setNotNull={setNotNull}/>
 
@@ -505,13 +523,14 @@ export const RenderColumnControls = (
         fn = {}, setFn,
         sortBy = {}, setSortBy,
         pageSize, setPageSize,
-        stateNamePreferences
+        stateNamePreferences,
         // stateNamePreferences defaults to fn[column]. to change,
         // pass {
         //     sortBy: 'original',
         //     hideCols: 'original',
         //     showTotal: 'original'
         // }
+        colSizes = {}, setColSizes
     }) => {
 
     return (
@@ -541,6 +560,7 @@ export const RenderColumnControls = (
                                fn={fn} setFn={setFn}
                                metadata={metadata}
                                stateNamePreferences={stateNamePreferences}
+                               colSizes={colSizes} setColSizes={setColSizes}
             />
         </div>
     )

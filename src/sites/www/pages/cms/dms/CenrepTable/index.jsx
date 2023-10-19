@@ -63,6 +63,7 @@ const Edit = ({value, onChange}) => {
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [metaLookupByViewId, setMetaLookupByViewId] = useState({});
     const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
+    const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
 
     const category = 'Cenrep';
 
@@ -254,7 +255,7 @@ const Edit = ({value, onChange}) => {
                     Header: col.display_name || col.name,
                     accessor: fn[col.name] || col.name,
                     align: col.align || 'right',
-                    width: col.width || '15%',
+                    width: colSizes[col.name] || '15%',
                     filter: col.filter || filters[col.name],
                     info: col.desc,
                     ...col,
@@ -273,13 +274,13 @@ const Edit = ({value, onChange}) => {
                         attributionData,
                         status,
                         geoid,
-                        pageSize, sortBy, groupBy, fn, notNull, showTotal,
+                        pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                         data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
                         dataSource, dataSources, version
                     }))
             }
         },
-        [attributionData, status, geoid, pageSize, sortBy, groupBy, fn, notNull, showTotal,
+        [attributionData, status, geoid, pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
             data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
             dataSource, dataSources, version
         ]);
@@ -345,6 +346,8 @@ const Edit = ({value, onChange}) => {
                         setNotNull={setNotNull}
                         showTotal={showTotal}
                         setShowTotal={setShowTotal}
+                        colSizes={colSizes}
+                        setColSizes={setColSizes}
                     />
                 </div>
                 {

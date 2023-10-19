@@ -50,6 +50,8 @@ const Edit = ({value, onChange}) => {
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [actionType, setActionType] = useState(cachedData?.actionType || 'shmp')
     const [actionsConfig, setActionsConfig] = useState()
+    const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
+    const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
 
     useEffect(() => {
         async function getActionsConfig() {
@@ -162,14 +164,14 @@ const Edit = ({value, onChange}) => {
     const columns =
         visibleCols
             .map(c => actionsConfig?.attributes?.find(md => md.name === c))
-            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
+            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name) && !hiddenCols.includes(c.name))
             .map(col => {
                 const acc = getColAccessor(fn, col.name);
                 return {
                     Header: col.display_name,
                     accessor: acc,
                     align: col.align || 'right',
-                    width: col.width || '15%',
+                    width: colSizes[col.name] || '15%',
                     filter: col.filter || filters[col.display_name],
                     info: col.desc,
                     ...col,
@@ -183,12 +185,12 @@ const Edit = ({value, onChange}) => {
                     {
                         status,
                         geoid,
-                        pageSize, sortBy, groupBy, fn, notNull,
+                        pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes,
                         data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
                     }))
             }
         },
-        [status, geoid, pageSize, sortBy, groupBy, fn, notNull,
+        [status, geoid, pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes,
             data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
         ]);
 
@@ -215,6 +217,8 @@ const Edit = ({value, onChange}) => {
                         }}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
+                        hiddenCols={hiddenCols}
+                        setHiddenCols={setHiddenCols}
                         filters={filters}
                         setFilters={setFilters}
                         filterValue={filterValue}
@@ -229,6 +233,8 @@ const Edit = ({value, onChange}) => {
                         setSortBy={setSortBy}
                         notNull={notNull}
                         setNotNull={setNotNull}
+                        colSizes={colSizes}
+                        setColSizes={setColSizes}
                     />
                 </div>
                 {
