@@ -135,7 +135,7 @@ const Edit = ({value, onChange}) => {
                                     },
                                     groupBy: groupBy.map(gb => `${getAccessor(gb)}'${gb}'`)
                                 }),
-                                attributes: visibleCols.map(vc => getColAccessor(fn, vc))
+                                attributes: visibleCols.map(vc => getColAccessor(fn, vc, actionsConfig?.attributes?.find(attr => attr.name === vc)?.origin))
                             },
                         }
                     ]
@@ -166,7 +166,7 @@ const Edit = ({value, onChange}) => {
             .map(c => actionsConfig?.attributes?.find(md => md.name === c))
             .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
             .map(col => {
-                const acc = getColAccessor(fn, col.name);
+                const acc = getColAccessor(fn, col.name, col.origin);
                 return {
                     Header: col.display_name,
                     accessor: acc,

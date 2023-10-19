@@ -4,7 +4,8 @@ export const defaultOpenOutAttributes = [/*'description_of_problem_being_mitigat
 const jsonAccessor = 'data->';
 const textAccessor = 'data->>';
 export const getAccessor = (col) => col.includes('associated_hazards') ? jsonAccessor : textAccessor;
-export const getColAccessor = (fn, col) => fn[col] && fn[col].includes('data->') ? fn[col] :
+export const getColAccessor = (fn, col, origin) => origin === 'calculated-column' ? col :
+    fn[col] && fn[col].includes('data->') ? fn[col] :
     fn[col] && !fn[col].includes('data->') && fn[col].toLowerCase().includes(' as ') ?
         fn[col].replace(col, `${getAccessor(col)}'${col}'`) :
         fn[col] && !fn[col].includes('data->') && !fn[col].toLowerCase().includes(' as ') ?
@@ -132,12 +133,22 @@ export async function setMeta({
                 })
                 return row;
             })
-        setData(handleExpandableRows(dataWithMeta, actionsConfig.attributes, visibleCols.map(vc => ({name: vc, accessor: getColAccessor(fn, vc)}))))
+        setData(handleExpandableRows(
+            dataWithMeta,
+            actionsConfig.attributes,
+            visibleCols.map(vc => ({
+                name: vc,
+                accessor: getColAccessor(fn, vc, actionsConfig.attributes?.find(attr => attr.name === vc)?.origin)
+            }))
+        ))
     }else{
         setData(handleExpandableRows(
             filterData({geoAttribute, geoid, data, actionType}),
             actionsConfig.attributes,
-            visibleCols.map(vc => ({name: vc, accessor: getColAccessor(fn, vc)}))
+            visibleCols.map(vc => ({
+                name: vc,
+                accessor: getColAccessor(fn, vc, actionsConfig.attributes?.find(attr => attr.name === vc)?.origin)
+            }))
         ))
     }
 }
