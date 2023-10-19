@@ -202,7 +202,7 @@ const Edit = ({value, onChange}) => {
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
                     <ButtonSelector
                         label={'Action Level'}
-                        types={[{label: 'State', value: 'shmp'}, {label: 'Local', value: 'lhmp'}]}
+                        types={[{label: 'State', value: 'shmp'}, {label: 'Local', value: 'lhmp'}, {label: 'NYRCR', value: 'nyrcr'}]}
                         type={actionType}
                         setType={setActionType}
                         autoSelect={true}
