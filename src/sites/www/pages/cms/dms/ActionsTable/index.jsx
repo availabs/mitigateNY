@@ -227,7 +227,7 @@ const Edit = ({value, onChange}) => {
                         autoSelect={true}
                     /> : ''}
                     <RenderColumnControls
-                        cols={formsConfig?.attributes?.map(c => c.name)}
+                        cols={formsConfig?.attributes?.filter(c => ['data-variable', 'meta-variable', 'geoid-variable'].includes(c.display))?.map(c => c.name)}
                         metadata={formsConfig?.attributes}
                         stateNamePreferences={{
                             sortBy: 'original',
