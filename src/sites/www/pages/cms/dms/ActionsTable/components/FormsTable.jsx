@@ -9,7 +9,7 @@ import {Attribution} from "../../../components/attribution.jsx";
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 const mapColName = (columns, col) => columns.find(c => c.name === col)?.accessor;
 
-export const ActionsTable = ({
+export const FormsTable = ({
                                        data=[],
                                        columns=[],
                                        hiddenCols=[],
