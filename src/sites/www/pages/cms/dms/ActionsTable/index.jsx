@@ -138,7 +138,7 @@ const Edit = ({value, onChange}) => {
                                     },
                                     groupBy: groupBy.map(gb => `${getAccessor(gb, form)}'${gb}'`)
                                 }),
-                                attributes: ['id', ...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin, form))]
+                                attributes: [...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin, form))]
                             },
                         }
                     ]
@@ -181,7 +181,7 @@ const Edit = ({value, onChange}) => {
                     type: fn[col.display_name]?.includes('array_to_string') ? 'string' : col.type
                 }
             });
-
+    console.log('cols', columns, fn)
     useEffect(() => {
             if (!loading) {
                 onChange(JSON.stringify(
