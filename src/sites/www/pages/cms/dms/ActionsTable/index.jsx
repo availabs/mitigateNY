@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useFalcor} from '~/modules/avl-falcor';
 import {pgEnv} from "~/utils/";
 import {isJson} from "~/utils/macros.jsx";
-import {ActionsTable} from "./components/ActionsTable.jsx";
+import {FormsTable} from "./components/FormsTable.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
@@ -34,6 +34,7 @@ const Edit = ({value, onChange}) => {
 
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
     const baseUrl = '/';
+    const [form, setForm] = useState(cachedData?.form || 'Actions');
     const [data, setData] = useState(cachedData?.data || []);
     const [geoAttribute, setGeoAttribute] = useState(cachedData?.geoAttribute);
     const [metaLookupByViewId, setMetaLookupByViewId] = useState({}); // not caching
@@ -49,12 +50,12 @@ const Edit = ({value, onChange}) => {
     const [notNull, setNotNull] = useState(cachedData?.notNull || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [actionType, setActionType] = useState(cachedData?.actionType || 'shmp')
-    const [actionsConfig, setActionsConfig] = useState()
+    const [formsConfig, setFormsConfig] = useState()
     const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
     const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
 
     useEffect(() => {
-        async function getActionsConfig() {
+        async function getFormsConfig() {
             const formConfigs = await dmsDataLoader(
                 {
                     format: formsConfigFormat,
@@ -67,23 +68,23 @@ const Edit = ({value, onChange}) => {
                         }
                     ]
                 }, '/');
-            const config = formConfigs.find(fc => fc.name === 'Actions')?.config;
-            if(config) setActionsConfig(JSON.parse(config));
+            const config = formConfigs.find(fc => fc.name === form)?.config;
+            if(config) setFormsConfig(JSON.parse(config));
         }
 
-        getActionsConfig();
-    }, [])
+        getFormsConfig();
+    }, [form])
 
     useEffect(() => {
-        if (!actionsConfig) return;
-        const geoAttribute = actionsConfig.attributes.find(c => c.geoVariable);
+        if (!formsConfig) return;
+        const geoAttribute = formsConfig.attributes.find(c => c.geoVariable);
         geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
-    }, []);
+    }, [form, formsConfig]);
 
     useEffect(() => {
-        if (!actionsConfig) return;
+        if (!formsConfig) return;
         getMeta({
-            actionsConfig,
+            formsConfig: formsConfig,
             metaLookupByViewId,
             setMetaLookupByViewId,
             visibleCols,
@@ -91,10 +92,10 @@ const Edit = ({value, onChange}) => {
             falcor,
             geoid
         });
-    }, [actionsConfig, geoid, visibleCols]);
+    }, [form, formsConfig, geoid, visibleCols]);
 
     useEffect(() => {
-        if (!actionsConfig) return;
+        if (!formsConfig) return;
 
         // gets 250 rows
         async function getData() {
@@ -116,7 +117,7 @@ const Edit = ({value, onChange}) => {
 
             const d = await dmsDataLoader(
                 {
-                    format: actionsConfig,
+                    format: formsConfig,
                     children: [
                         {
                             type: () => {
@@ -128,14 +129,16 @@ const Edit = ({value, onChange}) => {
                                 // toIndex: path => path.split('/')[2],
                                 options: JSON.stringify({
                                     aggregatedLen: groupBy?.length,
-                                    filter: {[`data->>'idKey'`]: [actionType]},
+                                    filter: {
+                                        ...form === 'Actions' && actionType && {[`data->>'idKey'`]: [actionType]}
+                                    },
                                     exclude: {
                                         ...notNull.length &&
                                         notNull.reduce((acc, col) => ({...acc, [`data->>'${col}'`]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
                                     },
                                     groupBy: groupBy.map(gb => `${getAccessor(gb)}'${gb}'`)
                                 }),
-                                attributes: visibleCols.map(vc => getColAccessor(fn, vc))
+                                attributes: ['id', ...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin))]
                             },
                         }
                     ]
@@ -144,7 +147,7 @@ const Edit = ({value, onChange}) => {
             );
 
             await setMeta({
-                actionsConfig,
+                formsConfig: formsConfig,
                 visibleCols,
                 data: d,
                 setData,
@@ -156,17 +159,17 @@ const Edit = ({value, onChange}) => {
         }
 
         getData()
-    }, [actionsConfig, geoid, visibleCols, fn, groupBy, notNull, geoAttribute, metaLookupByViewId, actionType]);
+    }, [form, formsConfig, geoid, visibleCols, fn, groupBy, notNull, geoAttribute, metaLookupByViewId, actionType]);
 
 
     // const attributionData = get(falcorCache, attributionPath, {});
 
     const columns =
         visibleCols
-            .map(c => actionsConfig?.attributes?.find(md => md.name === c))
-            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name) && !hiddenCols.includes(c.name))
+            .map(c => formsConfig?.attributes?.find(md => md.name === c))
+            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
             .map(col => {
-                const acc = getColAccessor(fn, col.name);
+                const acc = getColAccessor(fn, col.name, col.origin);
                 return {
                     Header: col.display_name,
                     accessor: acc,
@@ -185,31 +188,47 @@ const Edit = ({value, onChange}) => {
                     {
                         status,
                         geoid,
-                        pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes,
+                        pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes, form,
                         data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
                     }))
             }
         },
-        [status, geoid, pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes,
+        [status, geoid, pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes, form,
             data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
         ]);
-
+    console.log('????????????//', columns, data)
     return (
         <div className='w-full'>
             <div className='relative'>
                 <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
                     Edit Controls
-                    <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
                     <ButtonSelector
+                        label={'Type'}
+                        types={[{label: 'Actions', value: 'Actions'}, {label: 'Capabilities', value: 'Capabilities'}]}
+                        type={form}
+                        setType={e => {
+                            setData([]);
+                            setVisibleCols([]);
+                            setActionType(undefined);
+                            setGeoAttribute(undefined);
+                            setForm(e)
+                        }}
+                        autoSelect={true}
+                    />
+                    <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
+                    {form === 'Actions' ? <ButtonSelector
                         label={'Action Level'}
-                        types={[{label: 'State', value: 'shmp'}, {label: 'Local', value: 'lhmp'}]}
+                        types={[{label: 'State', value: 'shmp'}, {label: 'Local', value: 'lhmp'}, {
+                            label: 'NYRCR',
+                            value: 'nyrcr'
+                        }]}
                         type={actionType}
                         setType={setActionType}
                         autoSelect={true}
-                    />
+                    /> : ''}
                     <RenderColumnControls
-                        cols={actionsConfig?.attributes?.map(c => c.name)}
-                        metadata={actionsConfig?.attributes}
+                        cols={formsConfig?.attributes?.filter(c => ['data-variable', 'meta-variable', 'geoid-variable'].includes(c.display))?.map(c => c.name)}
+                        metadata={formsConfig?.attributes}
                         stateNamePreferences={{
                             sortBy: 'original',
                             hideCols: 'original',
@@ -240,10 +259,11 @@ const Edit = ({value, onChange}) => {
                 {
                     loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
-                            <ActionsTable
+                            <FormsTable
                                 geoid={geoid}
                                 data={data}
                                 columns={columns}
+                                hiddenCols={hiddenCols}
                                 filterValue={filterValue}
                                 pageSize={pageSize}
                                 sortBy={sortBy}
@@ -272,7 +292,7 @@ const View = ({value}) => {
             {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
-                    <ActionsTable {...data} baseUrl={'/'}/>
+                    <FormsTable {...data} baseUrl={'/'}/>
             }
         </div>
     )
@@ -280,7 +300,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Table: Actions',
+    "name": 'Table: Forms',
     "type": 'Table',
     "EditComp": Edit,
     "ViewComp": View
