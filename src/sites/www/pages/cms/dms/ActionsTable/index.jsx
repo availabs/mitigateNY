@@ -78,7 +78,7 @@ const Edit = ({value, onChange}) => {
     useEffect(() => {
         if (!formsConfig) return;
         const geoAttribute = formsConfig.attributes.find(c => c.geoVariable);
-        geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
+        setGeoAttribute(geoAttribute?.name);
     }, [form, formsConfig]);
 
     useEffect(() => {
@@ -136,9 +136,9 @@ const Edit = ({value, onChange}) => {
                                         ...notNull.length &&
                                         notNull.reduce((acc, col) => ({...acc, [`data->>'${col}'`]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
                                     },
-                                    groupBy: groupBy.map(gb => `${getAccessor(gb)}'${gb}'`)
+                                    groupBy: groupBy.map(gb => `${getAccessor(gb, form)}'${gb}'`)
                                 }),
-                                attributes: ['id', ...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin))]
+                                attributes: ['id', ...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin, form))]
                             },
                         }
                     ]
@@ -152,7 +152,7 @@ const Edit = ({value, onChange}) => {
                 data: d,
                 setData,
                 metaLookupByViewId,
-                geoAttribute, geoid, actionType, fn
+                geoAttribute, geoid, actionType, fn, form
             })
 
             setLoading(false);
@@ -169,7 +169,7 @@ const Edit = ({value, onChange}) => {
             .map(c => formsConfig?.attributes?.find(md => md.name === c))
             .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
             .map(col => {
-                const acc = getColAccessor(fn, col.name, col.origin);
+                const acc = getColAccessor(fn, col.name, col.origin, form);
                 return {
                     Header: col.display_name,
                     accessor: acc,
@@ -196,7 +196,7 @@ const Edit = ({value, onChange}) => {
         [status, geoid, pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes, form,
             data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
         ]);
-    console.log('????????????//', columns, data)
+
     return (
         <div className='w-full'>
             <div className='relative'>
@@ -204,7 +204,11 @@ const Edit = ({value, onChange}) => {
                     Edit Controls
                     <ButtonSelector
                         label={'Type'}
-                        types={[{label: 'Actions', value: 'Actions'}, {label: 'Capabilities', value: 'Capabilities'}]}
+                        types={[
+                            {label: 'Actions', value: 'Actions'},
+                            {label: 'Capabilities', value: 'Capabilities'},
+                            {label: 'Mitigation Measures', value: 'Mitigation Measures'}
+                        ]}
                         type={form}
                         setType={e => {
                             setData([]);
@@ -218,10 +222,11 @@ const Edit = ({value, onChange}) => {
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
                     {form === 'Actions' ? <ButtonSelector
                         label={'Action Level'}
-                        types={[{label: 'State', value: 'shmp'}, {label: 'Local', value: 'lhmp'}, {
-                            label: 'NYRCR',
-                            value: 'nyrcr'
-                        }]}
+                        types={[
+                            {label: 'State', value: 'shmp'},
+                            {label: 'Local', value: 'lhmp'},
+                            {label: 'NYRCR', value: 'nyrcr'}
+                        ]}
                         type={actionType}
                         setType={setActionType}
                         autoSelect={true}

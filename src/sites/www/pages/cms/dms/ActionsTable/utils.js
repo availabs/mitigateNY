@@ -1,16 +1,44 @@
 import get from "lodash/get.js";
 
-export const defaultOpenOutAttributes = [/*'description_of_problem_being_mitigated', 'solution_description'*/]
+export const defaultOpenOutAttributes = [/*'description_of_problem_being_mitigated', 'solution_description'*/];
+const array_columns = {
+    "Actions": [
+        'associated_hazards',
+        'domain_categorization'
+    ],
+    "Capabilities": [
+        'associated_hazards',
+        'buildings',
+        'infrastructure',
+        'natural_environment',
+        'emergency_management_phase',
+        'category',
+        'integrated_capacity_building',
+        'climate_change',
+        'status',
+        'can_provide_fun_or_resources_for',
+        'funding_source_type',
+        'eligibility'
+    ],
+    "Mitigation Measures": [
+        'associated_hazards',
+        'planning_and_regulatory',
+        'property_protection_and_infrastructure',
+        'natural_resource_protection_and_restoration'
+    ]
+}
 const jsonAccessor = 'data->';
 const textAccessor = 'data->>';
-export const getAccessor = (col) => col.includes('associated_hazards') ? jsonAccessor : textAccessor;
-export const getColAccessor = (fn, col, origin) => origin === 'calculated-column' ? col :
+export const getAccessor = (col, form) => {
+    return array_columns[form]?.find(array_col => col.includes(array_col)) ? jsonAccessor : textAccessor;
+}
+export const getColAccessor = (fn, col, origin, form) => origin === 'calculated-column' || !col ? col :
     fn[col] && fn[col].includes('data->') ? fn[col] :
         fn[col] && !fn[col].includes('data->') && fn[col].toLowerCase().includes(' as ') ?
-            fn[col].replace(col, `${getAccessor(col)}'${col}'`) :
+            fn[col].replace(col, `${getAccessor(col, form)}'${col}'`) :
             fn[col] && !fn[col].includes('data->') && !fn[col].toLowerCase().includes(' as ') ?
-                `${fn[col].replace(col, `${getAccessor(col)}'${col}'`)} as ${col}` :
-                `${getAccessor(col)}'${col}' as ${col}`;
+                `${fn[col].replace(col, `${getAccessor(col, form)}'${col}'`)} as ${col}` :
+                `${getAccessor(col, form)}'${col}' as ${col}`;
 
 const handleExpandableRows = (data, attributes, columns) => {
     const openOutAttributes =
@@ -110,7 +138,7 @@ export async function setMeta({
                                   metaLookupByViewId,
                                   geoAttribute, geoid,
                                   actionType,
-                                  fn
+                                  fn, form
                               }) {
 
     const metaLookupCols =
@@ -120,7 +148,7 @@ export async function setMeta({
 
     if (metaLookupCols?.length) {
         const dataWithMeta = filterData({
-            geoAttribute: getColAccessor(fn, geoAttribute, formsConfig.attributes?.find(attr => attr.name === geoAttribute)?.origin),
+            geoAttribute: getColAccessor(fn, geoAttribute, formsConfig.attributes?.find(attr => attr.name === geoAttribute)?.origin, form),
             geoid,
             data,
             actionType
@@ -130,10 +158,10 @@ export async function setMeta({
                     const currentMetaLookup = mdC.meta_lookup;
                     const modifiedName = fn[mdC.name] && fn[mdC.name].includes('data->') ? fn[mdC.name] :
                         fn[mdC.name] && !fn[mdC.name].includes('data->') && fn[mdC.name].toLowerCase().includes(' as ') ?
-                            fn[mdC.name].replace(mdC.name, `${getAccessor(mdC.name)}'${mdC.name}'`) :
+                            fn[mdC.name].replace(mdC.name, `${getAccessor(mdC.name, form)}'${mdC.name}'`) :
                             fn[mdC.name] && !fn[mdC.name].includes('data->') && !fn[mdC.name].toLowerCase().includes(' as ') ?
-                                `${fn[mdC.name].replace(mdC.name, `${getAccessor(mdC.name)}'${mdC.name}'`)} as ${mdC.name}` :
-                                `${getAccessor(mdC.name)}'${mdC.name}' as ${mdC.name}`;
+                                `${fn[mdC.name].replace(mdC.name, `${getAccessor(mdC.name, form)}'${mdC.name}'`)} as ${mdC.name}` :
+                                `${getAccessor(mdC.name, form)}'${mdC.name}' as ${mdC.name}`;
 
 
                     if (currentMetaLookup?.view_id) {
@@ -155,13 +183,13 @@ export async function setMeta({
             formsConfig.attributes,
             visibleCols.map(vc => ({
                 name: vc,
-                accessor: getColAccessor(fn, vc, formsConfig.attributes?.find(attr => attr.name === vc)?.origin)
+                accessor: getColAccessor(fn, vc, formsConfig.attributes?.find(attr => attr.name === vc)?.origin, form)
             }))
         ))
     } else {
         setData(handleExpandableRows(
             filterData({
-                geoAttribute: getColAccessor(fn, geoAttribute, formsConfig.attributes?.find(attr => attr.name === geoAttribute)?.origin),
+                geoAttribute: getColAccessor(fn, geoAttribute, formsConfig.attributes?.find(attr => attr.name === geoAttribute)?.origin, form),
                 geoid,
                 data,
                 actionType
@@ -169,7 +197,7 @@ export async function setMeta({
             formsConfig.attributes,
             visibleCols.map(vc => ({
                 name: vc,
-                accessor: getColAccessor(fn, vc, formsConfig.attributes?.find(attr => attr.name === vc)?.origin)
+                accessor: getColAccessor(fn, vc, formsConfig.attributes?.find(attr => attr.name === vc)?.origin, form)
             }))
         ))
     }
