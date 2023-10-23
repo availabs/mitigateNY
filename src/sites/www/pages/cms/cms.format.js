@@ -51,7 +51,9 @@ const cmsPageFormat = {
   type: "docs-page",
   registerFormats: [cmsSection],
   defaultSearch: `data ->> 'index' = '0' and data ->> 'parent' = ''`,
-  defaultSort: (d) => d.sort((a,b) => a.index - b.index || a.parent-b.parent),
+  defaultSort: (d) => d.sort((a,b) => {
+   return (b.parent===null)-(a.parent===null) || a.index - b.index || +a.parent - +b.parent
+  }),
   attributes: [
     { key: "title",
       type: "text",

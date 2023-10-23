@@ -20,6 +20,8 @@ const theme = {
 
 export function PageView ({item, dataItems, attributes}) {
   if(!item) return <div> No Pages </div>
+
+  // console.log('page view', item, dataItems)
   const {baseUrl} = React.useContext(CMSContext)
   const ContentView = attributes['sections'].ViewComp
   const inPageNav = getInPageNav(dataItems, baseUrl);

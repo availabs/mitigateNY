@@ -13,22 +13,22 @@ const colAccessNameMapping = {
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
 export const RenderBuildingsTable = ({
-                                       data=[],
-                                       columns=[],
-                                       filterValue = {},
-                                       pageSize,
-                                       sortBy = {},
-                                       baseUrl,
-                                       attributionData,
-                                       striped,
-                                         fetchData
+   data=[],
+   columns=[],
+   filterValue = {},
+   pageSize,
+   sortBy = {},
+   baseUrl,
+   attributionData,
+    striped,
+    fetchData
 }) => {
     const updatedColumns = columns.map(c => {
         return {
             ...c,
             Cell: cell => {
-                let value = getNestedValue(cell.value);
-                value = ['integer', 'number'].includes(cell.column.type) ?  fnum(value || 0, c.isDollar) : value
+                let value = getNestedValue(cell?.value);
+                value = ['integer', 'number'].includes(cell?.column?.type) ?  fnum(value || 0, c?.isDollar) : value
 
                 return( <div>{value}</div>);
             }
