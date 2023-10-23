@@ -17,6 +17,7 @@ import Forms from './pages/forms'
 import FormsActions from './pages/admin/forms/formats/actionsIndex.jsx';
 import FormsCapabilities from './pages/admin/forms/formats/capabilitiesIndex.jsx';
 import FormsMeasures from './pages/admin/forms/formats/measures.jsx';
+import FormsRVMatrix from './pages/admin/forms/formats/rv_matrix.jsx';
 
 
 
@@ -40,6 +41,7 @@ const Routes = [
   FormsActions,
     FormsCapabilities,
     FormsMeasures,
+    FormsRVMatrix,
   // -- Front End Routes -- //
   CMS
 ]

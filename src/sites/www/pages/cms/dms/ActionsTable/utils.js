@@ -25,6 +25,9 @@ const array_columns = {
         'planning_and_regulatory',
         'property_protection_and_infrastructure',
         'natural_resource_protection_and_restoration'
+    ],
+    "R+V Matrix": [
+        'associated_hazards'
     ]
 }
 const jsonAccessor = 'data->';

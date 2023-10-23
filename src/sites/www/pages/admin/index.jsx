@@ -72,6 +72,11 @@ export const menuItems = [
     path: '/admin/forms/form/130882/list/0/10'
   },
   {
+    name: 'R+V Matrix',
+    icon: 'far fa-warehouse-full fa-fw',
+    path: '/admin/forms/form/131450/list/0/10'
+  },
+  {
     name: 'Roles',
     icon: 'far fa-people-arrows',
     path: '/admin/forms/roles'
