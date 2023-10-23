@@ -14,20 +14,26 @@ import {formsConfigFormat} from "../../../forms/index.jsx";
 
 const Layout = ({children, title, baseUrl}) => {
     const params = useParams();
-    const url = baseUrl.replace(':formid', params.formid)
+    const url = baseUrl //.replace('130306', params.formid)
     return (
     <div className='py-6 h-full'>
         <div className='bg-white h-full shadow max-w-6xl mx-auto px-6'>
             <div className='flex items-center'>
                 <div className='text-2xl p-3 font-thin flex-1'>{title}</div>
-                <div className='px-1'><Link to={`${url}/new`}
-                                            className='inline-flex w-36 justify-center rounded-lg cursor-pointer text-sm font-semibold py-1 px-4 bg-blue-600 text-white hover:bg-blue-500 shadow-lg border border-b-4 border-blue-800 hover:border-blue-700 active:border-b-2 active:mb-[2px] active:shadow-none'> Create
-                    New</Link></div>
-                <div className='px-1'><Link to={`${url}/list/0/10`}
-                                            className='inline-flex w-36 justify-center rounded-lg cursor-pointer text-sm font-semibold py-1 px-4 bg-blue-600 text-white hover:bg-blue-500 shadow-lg border border-b-4 border-blue-800 hover:border-blue-700 active:border-b-2 active:mb-[2px] active:shadow-none'> Actions
-                    Home </Link></div>
-                <div className='px-1'><Link to={`/admin/forms/manage/93165`}
-                                            className='inline-flex w-36 justify-center rounded-lg cursor-pointer text-sm font-semibold py-1 px-4 bg-blue-600 text-white hover:bg-blue-500 shadow-lg border border-b-4 border-blue-800 hover:border-blue-700 active:border-b-2 active:mb-[2px] active:shadow-none'> Meta </Link>
+                <div className='px-1'>
+                    <Link to={`${url}/new`} className='inline-flex w-36 justify-center rounded-lg cursor-pointer text-sm font-semibold py-1 px-4 bg-blue-600 text-white hover:bg-blue-500 shadow-lg border border-b-4 border-blue-800 hover:border-blue-700 active:border-b-2 active:mb-[2px] active:shadow-none'>
+                        Create New
+                    </Link>
+                </div>
+                <div className='px-1'>
+                    <Link to={`${url}/list/0/10`} className='inline-flex w-36 justify-center rounded-lg cursor-pointer text-sm font-semibold py-1 px-4 bg-blue-600 text-white hover:bg-blue-500 shadow-lg border border-b-4 border-blue-800 hover:border-blue-700 active:border-b-2 active:mb-[2px] active:shadow-none'>
+                        Capabilities Home
+                    </Link>
+                </div>
+                <div className='px-1'>
+                    <Link to={`/admin/forms/manage/130306`} className='inline-flex w-36 justify-center rounded-lg cursor-pointer text-sm font-semibold py-1 px-4 bg-blue-600 text-white hover:bg-blue-500 shadow-lg border border-b-4 border-blue-800 hover:border-blue-700 active:border-b-2 active:mb-[2px] active:shadow-none'>
+                        Meta
+                    </Link>
                 </div>
             </div>
             {children}
@@ -41,7 +47,7 @@ const TableComp = ({data, columns, ...rest}) => {
     const [length, setLength] = useState(0);
 
     const app = "dms-site",
-        type = "forms-actions-test";
+        type = "forms-capabilities";
 
     const lengthReq = ['dms', 'data', `${app}+${type}`, 'length'];
 
@@ -66,7 +72,7 @@ const TableComp = ({data, columns, ...rest}) => {
     let currentPage = fromIndex / pageSize;
 
     return <Table data={data} // filter data from fromIndex
-                  columns={columns(params.formid)}
+                  columns={columns(130306)}
                   manualPagination={true}
                   numRecords={length}
                   pageSize={pageSize}
@@ -74,14 +80,14 @@ const TableComp = ({data, columns, ...rest}) => {
                   onPageChange={(p) => {
                       const nextFromINdex = p * pageSize;
                       const nextToIndex = nextFromINdex + pageSize;
-                      navigate(`/admin/forms/form/${params.formid}/list/${nextFromINdex}/${nextToIndex}`)
+                      navigate(`/admin/forms/form/130306/list/${nextFromINdex}/${nextToIndex}`)
                   }}
     />
 }
 const siteConfig = {
     formatFn: async () => {
-        const id = window.location.pathname.split('form/')[1]?.split('/')?.[0];
-        if(!id) return {};
+        // const id = window.location.pathname.split('form/')[1]?.split('/')?.[0];
+        // if(!id) return {};
         const formConfigs = await dmsDataLoader(
             {
                 format: formsConfigFormat,
@@ -94,8 +100,8 @@ const siteConfig = {
                     }
                 ]
             }, '/');
-        // const config = formConfigs.find(fc => fc.name === 'Actions')?.config;
-        const config = formConfigs.find(fc => fc.id === id)?.config;
+        const config = formConfigs.find(fc => fc.name === 'Capabilities')?.config;
+        // const config = formConfigs.find(fc => fc.id === id)?.config;
         return JSON.parse(config);
     },
     check: ({user}, activeConfig, navigate) => {
@@ -116,7 +122,7 @@ const siteConfig = {
     },
     children: [
         {
-            type: (props) => <Layout {...props} title={'Actions'} baseUrl={'/admin/forms/form/:formid'}/>,
+            type: (props) => <Layout {...props} title={'Capabilities'} baseUrl={'/admin/forms/form/130306'}/>,
             path: '/*',
             action: 'list',
             filter: {
@@ -134,25 +140,26 @@ const siteConfig = {
                             //     accessor: 'idKey'
                             // },
                             {
-                                Header: 'Action Name',
-                                accessor: 'action_name',
+                                Header: 'Capability Name',
+                                accessor: 'name',
                                 type: 'link',
                                 name: 'Name',
-                                text: 'action_name',
+                                text: 'name',
                                 // path: ':action_name',
                                 to: `/admin/forms/form/${formid}/view/:id`,
                                 filter: "fuzzyText",
                                 Cell: d => {
                                     return <Link
-                                        to={`/admin/forms/form/${formid}/view/${d?.cell?.row?.original?.id}`}> {d?.cell?.row?.original?.action_name} </Link>
+                                        to={`/admin/forms/form/${formid}/view/${d?.cell?.row?.original?.id}`}> {d?.cell?.row?.original?.name} </Link>
                                 }
                             },
                             {
-                                Header: 'Action Type',
-                                accessor: 'action_type',
+                                Header: 'Program',
+                                accessor: 'program',
+                                text: 'program',
                                 type: 'data',
                                 name: 'Type',
-                                path: "action_type",
+                                path: "program",
                             },
                             // {
                             //     Header: 'Description',
@@ -175,7 +182,7 @@ const siteConfig = {
                             // },
                             // { type: 'link',
                             //     name: '',
-                            //     to: '/admin/forms/form/:formid/edit/:id',
+                            //     to: '/admin/forms/form/130306/edit/:id',
                             //     text: "edit"
                             // }
                         ]}
@@ -224,11 +231,11 @@ const siteConfig = {
 export default {
     ...dmsPageFactory(
         siteConfig,
-        "/admin/forms/form/:formid/",
+        "/admin/forms/form/130306/",
         withAuth,
         dmsFormsTheme
     ),
-    name: "Actions",
+    name: "Capabilities",
     sideNav: {
         size: 'compact',
         color: 'white',

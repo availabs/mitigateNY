@@ -64,7 +64,12 @@ export const menuItems = [
   {
     name: 'Capabilities',
     icon: 'far fa-warehouse-full fa-fw',
-    path: '/admin/forms/capabilities'
+    path: '/admin/forms/form/130306/list/0/10'
+  },
+  {
+    name: 'Mitigation Measures',
+    icon: 'far fa-warehouse-full fa-fw',
+    path: '/admin/forms/form/130882/list/0/10'
   },
   {
     name: 'Roles',

@@ -14,7 +14,9 @@ import Templates from './pages/admin/templates'
 import Interactive from "./pages/interactive/index.jsx";
 
 import Forms from './pages/forms'
-import FormsActions from './pages/admin/forms/actions';
+import FormsActions from './pages/admin/forms/formats/actionsIndex.jsx';
+import FormsCapabilities from './pages/admin/forms/formats/capabilitiesIndex.jsx';
+import FormsMeasures from './pages/admin/forms/formats/measures.jsx';
 
 
 
@@ -36,6 +38,8 @@ const Routes = [
   // -- Managed Data Routes -- //
     Forms,
   FormsActions,
+    FormsCapabilities,
+    FormsMeasures,
   // -- Front End Routes -- //
   CMS
 ]
