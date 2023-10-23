@@ -220,7 +220,11 @@ const Edit = ({value, onChange}) => {
                         }}
                         autoSelect={true}
                     />
-                    <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
+                    {
+                        form === 'Actions' ?
+                            <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/> :
+                            null
+                    }
                     {form === 'Actions' ? <ButtonSelector
                         label={'Action Level'}
                         types={[
