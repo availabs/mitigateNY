@@ -18,6 +18,9 @@ import ckmeans from '~/utils/ckmeans';
 import {RenderMap} from "../../components/Map/RenderMap.jsx";
 import {Attribution} from "../../components/attribution.jsx";
 
+
+
+
 const defaultColors = getColorRange(5, "Oranges", false);
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
@@ -53,6 +56,19 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
     }
     return {geoColors, domain};
 }
+
+
+const getData = async ({geoid, disasterNumber, ealViewId}, falcor) => {
+    return {
+        geoid,
+        disasterNumber,
+        ealViewId,
+        
+            img: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAAD6CAQAAAAi5ZK2AAABcUlEQVR42u3RAQ0AAAgDIJ/c6FrDTahApotnIl060pGOdKQjHelIRzrSkY50pCMd6UhHunSkIx3pSEc60pGOdKQjHelIRzrSkY506UhHOtKRjnSkIx3pSEc60pGOdKQjHenSkY50pCMd6UhHOtKRjnSkIx3pSEc60qUjHelIRzrSkY50pCMd6UhHOtKRjnSkS5cuHelIRzrSkY50pCMd6UhHOtKRjnSkI1060pGOdKQjHelIRzrSkY50pCMd6UhHunSkIx3pSEc60pGOdKQjHelIRzrSkY506UhHOtKRjnSkIx3pSEc60pGOdKQjHenSkY50pCMd6UhHOtKRjnSkIx3pSEc60qVLl450pCMd6UhHOtKRjnSkIx3pSEc60pEuHelIRzrSkY50pCMd6UhHOtKRjnSkI1060pGOdKQjHelIRzrSkY50pCMd6UhHunSkIx3pSEc60pGOdKQjHelIRzrSkY506UhHOtKRjnSkI50bFu6adhYxjyJzAAAAAElFTkSuQmCC' }
+        
+    }
+
+
 const Edit = ({value, onChange, size}) => {
     const {falcor, falcorCache} = useFalcor();
 
@@ -304,6 +320,23 @@ const View = ({value}) => {
 export default {
     "name": 'Map: FEMA Disaster Loss',
     "type": 'Map',
+    "variables": [
+        {
+            name: 'geoid',
+            default: '36'
+        },
+        {
+            name: 'disasterNumber',
+            default: '1406'
+        },
+        {
+            name: 'ealViewId',
+            default: 837,
+            hidden: true
+        }
+    ],
+    getData,
+
     "EditComp": Edit,
     "ViewComp": View
 }

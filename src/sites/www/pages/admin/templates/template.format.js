@@ -41,6 +41,11 @@ const cmsPageFormat = {
       isArray: true,
       format: 'dms-site+cms-section',
       DisplayComp: SectionArray
+    },
+    {
+      key: 'data_controls',
+      type: "text",
+      hidden: true
     }
   ]
 }

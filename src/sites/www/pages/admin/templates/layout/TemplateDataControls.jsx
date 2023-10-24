@@ -9,7 +9,7 @@ import ComponentRegistry from '~/sites/www/pages/cms/dms/ComponentRegistry'
 
 const pgEnv = 'hazmit_dama'
 
-export default function DataControls ({item, dataItems,dataControls, setDataControls, open, setOpen}) {
+export default function DataControls ({item, dataItems,dataControls, setDataControls, open, setOpen, saveDataControls}) {
   
   const updateDataControls = (k,v) => {
     setDataControls({...dataControls, [k]: v})
@@ -60,6 +60,8 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
                           updateDataControls('source', v)
                         }} 
                       />
+                      <div onClick={(e) => saveDataControls()} className='p-2 cursor-pointer'> Save </div>
+                      
                       {dataControls?.source?.source_id ? 
                         <ViewsSelect
                           source_id={dataControls?.source?.source_id}
@@ -76,17 +78,16 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
                             source={dataControls?.source}
                             view={dataControls?.view}
                             id_column={dataControls?.id_column}
-                            active_id={dataControls?.active_id}
+                            active_row={dataControls?.active_row}
                             onChange={(k,v) => {
-                              console.log('view info change', k,v)
                               if(k === 'id_column') {
                                 updateDataControls('id_column', v)
                                 //updateDataControls('active_id','')
-                                setDataControls({...dataControls, ...{id_column: v, active_id: null, active_row: {}}})
+                                setDataControls({...dataControls, ...{id_column: v, active_row: {}}})
                               } 
-                              if(k === 'active_id') {
+                              if(k === 'active_row') {
                                 //updateDataControls('active_id',v)
-                                console.log('active_id', v)
+                                //console.log('active_id', v)
                                 setDataControls({...dataControls, ...v})
                               }
                             }}
@@ -94,7 +95,7 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
                           <PathControl />
                           <SectionListControls 
                             sections={item.sections}
-                            sectionControlData={dataControls.sectionControls}
+                            sectionControls={dataControls.sectionControls}
                             source={dataControls?.source}
                             onChange={e => {
                               updateDataControls('sectionControls', {...dataControls.sectionControls, ...e})
@@ -122,8 +123,8 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
   )
 }
 
-export const parseJSON = (d) => {
-  let out = {}
+export const parseJSON = (d, fallback={}) => {
+  let out = fallback
   try {
     out = JSON.parse(d)
   } catch (e) {
@@ -147,9 +148,11 @@ const SectionThumb =({section,source,sectionControl={},updateSectionControl}) =>
       md = [];
     }
 
-    return md
+    return md.map(d => d.name)
       
   }, [source]);
+
+  //console.log('section Thumb', attributes, sectionControl)
 
   
   return (
@@ -185,7 +188,7 @@ const SectionThumb =({section,source,sectionControl={},updateSectionControl}) =>
 }
 
 const SectionListControls = ({sections, sectionControls, source, onChange}) => {
-  
+  console.log('SectionListControls',sectionControls)
   return (
     <div>
       {sections.map(s => (
@@ -237,7 +240,7 @@ const SourcesSelect = ({value, onChange}) => {
   return (
      <Selector 
       options={['',...sources]}
-      selected={value}
+      value={value}
       onChange={(v)=> onChange(v) }
     />
   );
@@ -282,14 +285,14 @@ const ViewsSelect = ({source_id, value, onChange}) => {
   return (
      <Selector 
       options={['',...views]}
-      selected={value}
+      value={value}
       nameAccessor={d => d?.version }
       onChange={(v)=> onChange(v) }
     />
   );
 };
 
-const ViewInfo = ({source,view, id_column, active_id, onChange}) => {
+export const ViewInfo = ({source,view, id_column, active_row, onChange}) => {
   
   // console.log('ViewInfo', id_column, active_id)
   const { falcor, falcorCache } = useFalcor();
@@ -335,7 +338,7 @@ const ViewInfo = ({source,view, id_column, active_id, onChange}) => {
           ]
         )
     }
-  },[id_column,view.view_id])
+  },[id_column,view.view_id,dataLength])
 
   const dataRows = React.useMemo(()=>{
     return Object.values(get(falcorCache,[
@@ -347,24 +350,26 @@ const ViewInfo = ({source,view, id_column, active_id, onChange}) => {
       ],{})).map(v => get(falcorCache,[...v.value],''))
   },[id_column,view.view_id,falcorCache])
 
-  
+  // console.log('view info', id_column, active_row, dataRows)
     
   return (
      <div className='flex flex-col'>
-      <div>View Info</div>
+      {/*<div>View Info</div>*/}
       <div>Rows: {dataLength} </div>
       <div>Attributes : {attributes?.length || 0}</div>
         <Selector
           options={['',...attributes]}
           value={id_column}
+          nameAccessor={d => d?.name}
+          valueAccessor={d => d?.name}
           onChange={d => onChange('id_column',d)}
         />
         {id_column?.name ? 
         <Selector 
           options={dataRows}
-          value={active_id}
+          value={active_row}
           nameAccessor={d => d?.[id_column?.name] }
-          onChange={d => onChange('active_id',{
+          onChange={d => onChange('active_row',{
               active_row:d
             }
           )}

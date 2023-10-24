@@ -2,11 +2,12 @@ import React, { useEffect, Fragment, useRef, useState } from 'react'
 import { Dialog, Transition, Switch } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import cloneDeep from 'lodash/cloneDeep'
+import isEqual from 'lodash/isEqual'
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import { useSubmit, useLocation } from "react-router-dom";
 import {json2DmsForm, getUrlSlug, toSnakeCase} from '~/sites/www/pages/cms/layout/nav'
 import 'react-toastify/dist/ReactToastify.css';
-import DataControls, {parseJSON} from './TemplateDataControls'
+import DataControls, {parseJSON, ViewInfo} from './TemplateDataControls'
 import ComponentRegistry from '~/sites/www/pages/cms/dms/ComponentRegistry'
 import {useFalcor} from '~/modules/avl-falcor';
 
@@ -27,7 +28,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
   const [ showDelete, setShowDelete ] = useState(false)
   const [ showDataControls, setShowDataControls ] = useState(false)
   const [ statusMessage, setStatusMessage ] = useState(status?.message)
-  const [ dataControls, setDataControls ] = useState({
+  const [ dataControls, setDataControls ] = useState(item.data_controls,{
     source: null,
     view: null,
     num_rows: null,
@@ -38,6 +39,14 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
   // const { baseUrl, setOpen, setHistoryOpen} = React.useContext(CMSContext)
   const baseUrl = '/admin/templates'
   const NoOp = () => {}
+
+  const saveDataControls = () => {
+    if(!isEqual(item.data_controls, dataControls)) {
+      const newItem = cloneDeep(item)
+      newItem.data_controls = dataControls
+      submit(json2DmsForm(newItem), { method: "post", action: pathname })
+    }
+  }
 
   useEffect(() => {
     async function loadUpdates () { 
@@ -128,10 +137,10 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
                 onClick={saveItem}
                 className='inline-flex w-36 justify-center rounded-lg cursor-pointer text-sm font-semibold py-2 px-4 bg-blue-600 text-white hover:bg-blue-500 shadow-lg border border-b-4 border-blue-800 hover:border-blue-700 active:border-b-2 active:mb-[2px] active:shadow-none'>
                 <span className='flex items-center'>
-                  <span className='pr-2'>Save</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <span className=''>Save Template</span>
+             {/*     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  </svg>*/}
 
                 </span>
               </div>
@@ -164,8 +173,25 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
                 setOpen={setShowDataControls} 
                 dataControls={dataControls}
                 setDataControls={setDataControls}
+                saveDataControls={saveDataControls}
               />
             </div>
+            {dataControls?.id_column && <div>
+              <ViewInfo
+                source={dataControls?.source}
+                view={dataControls?.view}
+                id_column={dataControls?.id_column}
+                active_row={dataControls?.active_row}
+                onChange={(k,v) => {
+                  if(k === 'id_column') {
+                    setDataControls({...dataControls, ...{id_column: v, active_row: {}}})
+                  } 
+                  if(k === 'active_row') {
+                    setDataControls({...dataControls, ...v})
+                  }
+                }}
+              />
+            </div>}
             {/*<div onClick={() => setShowDelete(true)}
               className={theme.pageControls.controlItem}
             >
@@ -179,7 +205,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
             
           </div>
         }
-          <ToastContainer />
+        <ToastContainer />
     </>
   )
 }

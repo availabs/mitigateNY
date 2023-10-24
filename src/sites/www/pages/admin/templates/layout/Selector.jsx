@@ -4,7 +4,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 
 
-export default function Selector({options=[], onChange, selected, nameAccessor=d => d?.name || d , valueAccessor }) {
+export default function Selector({options=[], onChange, value, nameAccessor=d => d?.name || d , valueAccessor }) {
   const [query, setQuery] = useState('')
   const filteredOptions =
     query === ''
@@ -16,10 +16,10 @@ export default function Selector({options=[], onChange, selected, nameAccessor=d
             .startsWith(query.toLowerCase().replace(/\s+/g, ''))
         )
 
-  
+  // console.log('selected', value) 
   return (
     <div className="w-full">
-      <Combobox value={selected} onChange={onChange}>
+      <Combobox value={value} onChange={onChange}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
             <Combobox.Input
@@ -48,7 +48,7 @@ export default function Selector({options=[], onChange, selected, nameAccessor=d
                 </div>
               ) : (
                 filteredOptions
-                  .filter((d,i) => i < 20)
+                  .filter((d,i) => i < 60)
                   .map((option,i) => (
                   <Combobox.Option
                     key={i}
