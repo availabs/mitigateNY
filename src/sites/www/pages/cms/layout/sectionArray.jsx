@@ -65,7 +65,14 @@ function SectionEdit ({value, i, onChange, attributes, size, onCancel, onSave, o
                 <div className='flex flex-wrap border-y justify-end items-center'>
                     <div className='flex-0 grow'>
                         <TitleComp //todo make it blue if H!
-                            className={`p-2 w-full font-sans font-medium text-md uppercase ${(value?.['level']) === '1' ? `text-blue-500 font-bold text-xl tracking-wider py-1 pl-1` : ``}`}
+                            className={`p-2 w-full font-sans font-medium text-md uppercase ${
+                                (value?.['level']) === '1' ?
+                                    `text-blue-500 font-bold text-xl tracking-wider py-1 pl-1` :
+                                    value?.['level'] === '2' ?
+                                        `text-lg tracking-wider` :
+                                        value?.['level'] === '3' ?
+                                            `text-md tracking-wide` :
+                                            ``}`}
                             placeholder={'Section Title'}
                             value={value?.['title']} 
 
@@ -200,9 +207,16 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                     <div className={`flex w-full h-[50px] items-center mt-4 ${(value?.['level']) === '1' ? `border-b` : ``}`}>
 
                         <div id={`#${value?.title?.replace(/ /g, '_')}`}
-                             className={`flex-1 flex-row py-2  font-sans font-medium text-md uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
+                             className={`flex-1 flex-row py-2  font-sans font-medium uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
                             <TitleComp
-                                className={`w-full ${(value?.['level']) === '1' ? `text-blue-500 font-bold text-xl tracking-wider py-1 pl-1` : ``}`}
+                                className={`w-full ${
+                                    (value?.['level']) === '1' ? 
+                                        `text-blue-500 font-bold text-xl tracking-wider py-1 pl-1` : 
+                                        value?.['level'] === '2' ? 
+                                            `text-lg tracking-wider` : 
+                                            value?.['level'] === '3' ? 
+                                            `text-md tracking-wide` : 
+                                                ``}`}
                                 value={value?.['title']}
                             />
                         </div>
