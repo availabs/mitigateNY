@@ -64,10 +64,10 @@ const Edit = ({value, onChange, size}) => {
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
-    const [hazard, setHazard] = useState(cachedData?.hazard);
+    const [hazard, setHazard] = useState(cachedData?.hazard || 'total');
     const [data, setData] = useState(cachedData?.data);
-    const [attribute, setAttribute] = useState(cachedData?.attribute);
-    const [consequence, setConsequance] = useState(cachedData?.consequence);
+    const [attribute, setAttribute] = useState(cachedData?.attribute || 'eal');
+    const [consequence, setConsequance] = useState(cachedData?.consequence || 't');
     const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
     const [numColors, setNumColors] = useState(cachedData?.numColors || 5);
     const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
@@ -77,7 +77,7 @@ const Edit = ({value, onChange, size}) => {
 
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id],
         geomColName = metaData.dataSources.find(d => d.value === dataSource)?.geomCol,
-        columns = [`${hazardsMeta[hazard]?.prefix}_${attribute}${consequence || ``}`],
+        columns = [hazard === 'total' ? `eal_val${consequence || `t`}` : `${hazardsMeta[hazard]?.prefix}_${attribute}${consequence || ``}`],
         options = JSON.stringify({
             filter: {[`substring(${geomColName}, 1, ${geoid?.length})`]: [geoid]},
         }),
@@ -142,8 +142,8 @@ const Edit = ({value, onChange, size}) => {
             setLoading(true);
             setStatus(undefined);
 
-            setTitle(metaData.title(hazardsMeta[hazard]?.name, attribute, consequence))
-
+            setTitle(metaData.title(hazard === 'total' ? 'total' : hazardsMeta[hazard]?.name, attribute, consequence))
+            console.log('data path', dataPath(typeId))
             const dataLenRes = await falcor.get(
                 [...dataPath(typeId), 'length'],
                 attributionPath(typeId)
@@ -257,8 +257,8 @@ const Edit = ({value, onChange, size}) => {
                         types={metaData.dataSources}
                         type={dataSource}
                         setType={e => {
-                            setAttribute(undefined);
-                            setConsequance(undefined);
+                            // setAttribute(undefined);
+                            // setConsequance(undefined);
                             setDataSourceViewId(undefined);
                             setDataSourceSRCId(undefined);
                             setDataSource(e);
@@ -271,7 +271,10 @@ const Edit = ({value, onChange, size}) => {
                         className={'flex-row-reverse'}
                     />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
-                    <HazardSelectorSimple hazard={hazard} setHazard={setHazard}/>
+                    <HazardSelectorSimple hazard={hazard} setHazard={e => {
+                        e === 'total' && setAttribute('eal')
+                        setHazard(e)
+                    }} showTotal={true}/>
                     <ButtonSelector
                         label={'Attribute:'}
                         types={
@@ -283,13 +286,14 @@ const Edit = ({value, onChange, size}) => {
                             setAttribute(e);
                             e === 'afreq' && setConsequance(null)
                         }}
-                        disabled={!hazard}
+                        disabled={!hazard || hazard === 'total'}
                         disabledTitle={'Please Select a Hazard.'}
                     />
                     <ButtonSelector
                         label={'Consequence:'}
                         types={
                             Object.keys(metaData.consequences)
+                                .filter(c => (!hazard || hazard === 'total') ? !['Population', 'Population $'].includes(c) : true)
                                 .map(t => ({label: t.replace('_', ' '), value: metaData.consequences[t]}))
                         }
                         type={consequence}
