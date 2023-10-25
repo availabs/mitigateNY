@@ -215,7 +215,6 @@ const Edit = ({value, onChange}) => {
     const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns;
 
     const data = useMemo(() => {
-        console.log('md?', metadata)
         const metaLookupCols =
             metadata?.filter(md =>
                 visibleCols.includes(md.name) &&
@@ -227,12 +226,17 @@ const Edit = ({value, onChange}) => {
                 .map(row => {
                     metaLookupCols.forEach(mdC => {
                         const currentMetaLookup = parseJson(mdC.meta_lookup);
-
+                        const currentColName = fn[mdC.name] || mdC.name;
                         if(currentMetaLookup?.view_id){
                             const currentViewIdLookup = metaLookupByViewId[mdC.name] || [];
-                            row[mdC.name] = currentViewIdLookup[row[mdC.name]]?.name || row[mdC.name];
+                            const currentKeys = row[currentColName];
+                            if(currentKeys?.includes(',')){
+                                row[currentColName] = currentKeys.split(',').map(ck => currentViewIdLookup[ck.trim()]?.name || ck.trim()).join(', ')
+                            }else{
+                                row[currentColName] = currentViewIdLookup[currentKeys]?.name || currentKeys;
+                            }
                         }else{
-                            row[mdC.name] = currentMetaLookup[row[mdC.name]] || row[mdC.name];
+                            row[currentColName] = currentMetaLookup[row[currentColName]] || row[currentColName];
                         }
                     })
                     return row;
