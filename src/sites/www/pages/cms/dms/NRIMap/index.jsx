@@ -143,7 +143,7 @@ const Edit = ({value, onChange, size}) => {
             setStatus(undefined);
 
             setTitle(metaData.title(hazard === 'total' ? '' : hazardsMeta[hazard]?.name, attribute, consequence))
-            console.log('data path', dataPath(typeId))
+
             const dataLenRes = await falcor.get(
                 [...dataPath(typeId), 'length'],
                 attributionPath(typeId)

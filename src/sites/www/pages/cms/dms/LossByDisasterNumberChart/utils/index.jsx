@@ -1,5 +1,6 @@
 import React from "react";
 import get from "lodash/get.js";
+import {hazardsMeta} from "~/utils/colors.jsx";
 
 export const ProcessDataForMap = (data=[], disasterNames) => React.useMemo(() => {
     const years = [...new Set(data.map(d => d.year))];
@@ -17,7 +18,7 @@ export const ProcessDataForMap = (data=[], disasterNames) => React.useMemo(() =>
             .reduce((acc, d) => {
                 const nri_category = d.nri_category;
                 const tmpDn = d.disaster_number === 'SWD' ? 'Non-declared Disasters' :
-                    get(disasterNames, [d.disaster_number], 'No Title') + ` (${d.disaster_number} - ${nri_category})`;
+                    get(disasterNames, [d.disaster_number], 'No Title') + ` (${d.disaster_number} - ${hazardsMeta[nri_category]?.name || nri_category})`;
                 const tmpPd = +d.fusion_property_damage || 0,
                     tmpCd =  +d.fusion_crop_damage || 0,
                     tmptd = tmpPd + tmpCd + (+d.swd_population_damage || 0);

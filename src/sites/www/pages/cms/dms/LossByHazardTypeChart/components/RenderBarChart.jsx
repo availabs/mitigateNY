@@ -76,7 +76,7 @@ export const RenderBarChart = ({ chartDataActiveView = [], base='year', attribut
                 hoverComp={{
                     HoverComp: HoverComp,
                     valueFormat: fnumIndex,
-                    keyFormat: k => colNameMapping[k] || k.replace('_td', '')
+                    keyFormat: k => colNameMapping[k] || hazardsMeta[k.replace('_td', '')]?.name || k.replace('_td', '')
                 }}
                 groupMode={"stacked"}
             />
