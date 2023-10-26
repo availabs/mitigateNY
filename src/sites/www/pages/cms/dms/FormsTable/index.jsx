@@ -134,7 +134,14 @@ const Edit = ({value, onChange}) => {
                                     },
                                     exclude: {
                                         ...notNull.length &&
-                                        notNull.reduce((acc, col) => ({...acc, [`data->>'${col}'`]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
+                                        notNull.reduce((acc, col) => (
+                                            {...acc,
+                                                [
+                                                    formsConfig?.attributes?.find(attr =>
+                                                        attr.name.toLowerCase().split(' as ')[0] === col.toLowerCase())?.origin === 'calculated-column' ? col :
+                                                        `${getAccessor(col, form)}'${col}'`
+                                                    ]:
+                                                ['number', 'integer'].includes(formsConfig?.attributes?.find(attr => attr.name.toLowerCase().split(' as ')[0] === col.toLowerCase())?.type) ? ['null'] : ['null', '', ' ']}) , {}) // , '', ' ' error out for numeric columns.
                                     },
                                     groupBy: groupBy.map(gb => `${getAccessor(gb, form)}'${gb}'`)
                                 }),
