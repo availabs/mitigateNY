@@ -23,6 +23,7 @@ import FusionEventsMap from "./FusionEventsMap/index.jsx";
 import OpenFemaDataTable from "./OpenFemaDataTable/index.jsx";
 import ActionsTable from "./ActionsTable/";
 import CenrepTable from "./CenrepTable/index.jsx";
+import CountyTextBox from "./CountyTextBox/index.jsx";
 
 const ComponentRegistry = {
     // "ColorBox": ColorBox,
@@ -52,7 +53,8 @@ const ComponentRegistry = {
         ...CalloutBox,
         name: 'Rich Text',
         hideInSelector: false
-    }
+    },
+    "County Text Box": CountyTextBox
 }
 
 
