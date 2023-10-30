@@ -28,7 +28,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
   const [ showDelete, setShowDelete ] = useState(false)
   const [ showDataControls, setShowDataControls ] = useState(false)
   const [ statusMessage, setStatusMessage ] = useState(status?.message)
-  const [ dataControls, setDataControls ] = useState(item.data_controls,{
+  const [ dataControls, setDataControls ] = useState(item.data_controls || {
     source: null,
     view: null,
     num_rows: null,
@@ -91,7 +91,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
 
     loadUpdates()
 
-  },[dataControls.active_row])
+  },[dataControls?.active_row])
 
   //console.log('render', showDataControls)
 

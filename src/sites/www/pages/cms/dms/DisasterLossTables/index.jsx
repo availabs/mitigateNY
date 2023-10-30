@@ -12,6 +12,98 @@ import {metaData} from "./config.js";
 import {RenderColumnControls} from "../../components/columnControls.jsx/";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
+async function getData({
+                           disasterNumber, geoid, ealViewId, type, visibleCols, filters
+                       }, falcor){
+    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
+    const attributionPath = ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
+
+    const
+        geoNamesOptions = JSON.stringify({
+            ...geoid && { filter: { [`substring(geoid, 1, ${geoid?.length})`]: [geoid] } }
+        }),
+        geoNamesPath = view_id => ["dama", pgEnv, "viewsbyId", view_id, "options", geoNamesOptions];
+
+    const geoOptions = JSON.stringify(metaData[type]?.options({disasterNumber, geoid})),
+        geoPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options"];
+
+    return falcor.get(dependencyPath(ealViewId)).then(async res => {
+        const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
+        const countyView = deps.find(dep => dep.type === "tl_county");
+
+        const geoNameLenRes = await falcor.get([...geoNamesPath(countyView.view_id), "length"]);
+        const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView.view_id), "length"], 0);
+
+        if (geoNameLen) {
+            await falcor.get([...geoNamesPath(countyView.view_id), "databyIndex", {
+                from: 0,
+                to: geoNameLen - 1
+            }, ["geoid", "namelsad"]]);
+        }
+        const tmpHMGPViews = {
+            'hmgp summaries': 725,
+            'hmgp projects': 798,
+            'hmgp properties': 729
+        }
+        const typeId = tmpHMGPViews[type] ? {view_id: tmpHMGPViews[type]} : deps.find(dep => dep.type === metaData[type]?.type);
+
+        if(!typeId) {
+            return {};
+        }
+
+        const lenRes = await falcor.get([...geoPath(typeId.view_id), geoOptions, 'length']);
+        const len = Math.min(get(lenRes, ['json', ...geoPath(typeId.view_id), geoOptions, 'length'], 0), 100),
+            indices = { from: 0, to: len - 1 };
+        if(!len) return {};
+
+        await falcor.get(
+            [...geoPath(typeId.view_id), geoOptions, 'databyIndex', indices, Object.values(metaData[type]?.attributes({geoid, disasterNumber}))],
+            attributionPath
+        );
+        const falcorCache = falcor.getCache();
+
+        const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes'], {});
+
+        const geoNames = Object.values(get(falcorCache, [...geoNamesPath(countyView.view_id), "databyIndex"], {}));
+        const  dataModifier = data => {
+            data.map(row => {
+                const geoidCol = metaData[type].geoidCol || 'geoid';
+                const geoName = geoNames?.find(gn => gn.geoid === row[geoidCol])?.namelsad;
+                row[geoidCol] =  geoName || row[geoidCol];
+            })
+            return data
+        };
+
+        let data = Object.values(get(falcorCache, [...geoPath(typeId.view_id), geoOptions, 'databyIndex'], {}));
+
+        metaData[type]?.mapGeoidToName && dataModifier && dataModifier(data);
+
+        const columns =
+            visibleCols
+                .map((col, i) => {
+                    const mappedName = metaData[type]?.attributes({geoid, disasterNumber})[col];
+                    return {
+                        Header:  col,
+                        accessor: mappedName,
+                        align: metaData[type]?.textCols?.includes(col) ? 'left' : 'right',
+                        filter: filters[col]
+                    }
+                });
+
+        return {
+            typeId: typeId.view_id,
+            countyView: countyView.view_id,
+            disasterNumber,
+            geoid,
+            ealViewId,
+            type,
+            visibleCols,
+            filters,
+            data, columns,
+            attributionData
+        }
+    })
+}
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
 
@@ -21,32 +113,18 @@ const Edit = ({value, onChange}) => {
     const ealSourceId = 343;
     const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
     const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber);
-    const [countyView, setCountyView] = useState();
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
     const [type, setType] = useState(cachedData?.type || 'ihp');
-    const [typeId, setTypeId] = useState(cachedData?.typeId);
     const [filters, setFilters] = useState(cachedData?.filters || {});
     const [filterValue, setFilterValue] = useState(cachedData?.filterValue || {});
     const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
     const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);
     const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
 
-    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
-    const
-        geoNamesOptions = JSON.stringify({
-            ...geoid && { filter: { [`substring(geoid, 1, ${geoid?.length})`]: [geoid] } }
-        }),
-        geoNamesPath = view_id => ["dama", pgEnv, "viewsbyId", view_id, "options", geoNamesOptions];
-
-    const attributionPath = ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
-
-    const geoOptions = JSON.stringify(metaData[type]?.options({disasterNumber, geoid})),
-        geoPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options"];
-
     useEffect( () => {
-        async function getData(){
+        async function load() {
             if(!geoid || !type ){
                 !geoid && setStatus('Please Select a Geography.');
                 !type && setStatus('Please Select a Type.');
@@ -59,97 +137,24 @@ const Edit = ({value, onChange}) => {
             setLoading(true);
             setStatus(undefined);
             setFilters({...filters,
-            ...{[Object.keys(metaData[type]?.attributes({geoid, disasterNumber}) || {})[0]]: 'text'}})
-            return falcor.get(dependencyPath(ealViewId)).then(async res => {
+                ...{[Object.keys(metaData[type]?.attributes({geoid, disasterNumber}) || {})[0]]: 'text'}})
 
-                const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
+            const data = await getData({
+                disasterNumber, geoid, ealViewId, type, visibleCols, filters
+            }, falcor);
 
-                const countyView = deps.find(dep => dep.type === "tl_county");
-                setCountyView(countyView.view_id);
-
-                const geoNameLenRes = await falcor.get([...geoNamesPath(countyView.view_id), "length"]);
-                const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView.view_id), "length"], 0);
-
-                if (geoNameLen) {
-                    await falcor.get([...geoNamesPath(countyView.view_id), "databyIndex", {
-                        from: 0,
-                        to: geoNameLen - 1
-                    }, ["geoid", "namelsad"]]);
-                }
-                const tmpHMGPViews = {
-                    'hmgp summaries': 725,
-                    'hmgp projects': 798,
-                    'hmgp properties': 729
-                }
-                const typeId = tmpHMGPViews[type] ? {view_id: tmpHMGPViews[type]} : deps.find(dep => dep.type === metaData[type]?.type);
-
-                if(!typeId) {
-                    setLoading(false)
-                    setStatus('This component only supports EAL versions that use Fusion data.')
-                    return Promise.resolve();
-                }
-                setTypeId(typeId.view_id);
-
-                const lenRes = await falcor.get([...geoPath(typeId.view_id), geoOptions, 'length']);
-                const len = Math.min(get(lenRes, ['json', ...geoPath(typeId.view_id), geoOptions, 'length'], 0), 100),
-                    indices = { from: 0, to: len - 1 };
-                if(!len) setLoading(false);
-
-                await falcor.get(
-                    [...geoPath(typeId.view_id), geoOptions, 'databyIndex', indices, Object.values(metaData[type]?.attributes({geoid, disasterNumber}))],
-                    attributionPath
-                );
-
-                setLoading(false);
-            })
+            onChange(JSON.stringify({
+                ...data,
+            }))
+            setLoading(false);
         }
 
-        getData()
-    }, [geoid, ealViewId, disasterNumber, type]);
+        load()
+    }, [geoid, ealViewId, disasterNumber, type, visibleCols]);
 
-    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', ealViewId, 'attributes'], {});
-
-    const geoNames = Object.values(get(falcorCache, [...geoNamesPath(countyView), "databyIndex"], {}));
-    const  dataModifier = data => {
-        data.map(row => {
-            const geoidCol = metaData[type].geoidCol || 'geoid';
-            const geoName = geoNames?.find(gn => gn.geoid === row[geoidCol])?.namelsad;
-            row[geoidCol] =  geoName || row[geoidCol];
-        })
-        return data
-    };
-    let data = Object.values(get(falcorCache, [...geoPath(typeId), geoOptions, 'databyIndex'], {}));
-
-    metaData[type]?.mapGeoidToName && dataModifier && dataModifier(data);
-
-    let columns =
-        visibleCols
-            .map((col, i) => {
-                const mappedName = metaData[type]?.attributes({geoid, disasterNumber})[col];
-                return {
-                    Header:  col,
-                    accessor: mappedName,
-                    align: metaData[type]?.textCols?.includes(col) ? 'left' : 'right',
-                    filter: filters[col]
-                }
-            });
-
-    useEffect(() => {
-            if(!loading){
-                onChange(JSON.stringify(
-                    {
-                        ealViewId,
-                        status,
-                        geoid,
-                        attributionData,
-                        disasterNumber,
-                        pageSize, sortBy,
-                        data, columns, filters, filterValue, visibleCols, type, typeId
-                    }))
-            }
-        },
-        [status, ealViewId, geoid, attributionData, disasterNumber, pageSize, sortBy,
-            data, columns, filters, filterValue, visibleCols, type, typeId]);
+    const data = cachedData?.data || [];
+    const attributionData = cachedData?.attributionData;
+    const columns = cachedData?.columns;
 
     return (
         <div className='w-full'>
@@ -243,6 +248,34 @@ const View = ({value}) => {
 export default {
     "name": 'Table: FEMA Disaster Loss by Program',
     "type": 'Table',
+    "variables": [
+        {
+            name: 'ealViewId',
+            default: 837,
+            hidden: true
+        },
+        {
+            name: 'geoid',
+            default: '36',
+        },
+        {
+            name: 'disasterNumber',
+            default: '1406'
+        },
+        {
+            name: 'type',
+            default: 'ihp',
+        },
+        {
+            name: 'visibleCols',
+            default: [],
+        },
+        {
+            name: 'filters',
+            default: {},
+        },
+    ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }
