@@ -152,7 +152,7 @@ const SectionThumb =({section,source,sectionControl={},updateSectionControl}) =>
       
   }, [source]);
 
-  //console.log('section Thumb', attributes, sectionControl)
+  console.log('section Thumb', data)
 
   
   return (
@@ -168,7 +168,7 @@ const SectionThumb =({section,source,sectionControl={},updateSectionControl}) =>
             <div className='flex' key={k.name}>
               <div className='flex-1 items-center'>
                 <div>{k.name}</div>
-                <div className='text-xs'>{data[k.name]}</div>
+                <div className='text-xs'>{typeof data[k.name] === 'object' ? JSON.stringify(data[k.name]) : data[k.name]}</div>
               </div>
               <div className='flex-1 flex items-center'>
                 <Selector
@@ -211,7 +211,7 @@ const PathControl = () => {
 }
 
 const SourcesSelect = ({value, onChange}) => {
-  
+   
   const { falcor, falcorCache } = useFalcor();
   
   useEffect(() => {
