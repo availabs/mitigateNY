@@ -18,9 +18,6 @@ import ckmeans from '~/utils/ckmeans';
 import {RenderMap} from "../../components/Map/RenderMap.jsx";
 import {Attribution} from "../../components/attribution.jsx";
 
-
-
-
 const defaultColors = getColorRange(5, "Oranges", false);
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
@@ -56,16 +53,32 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
     }
     return {geoColors, domain};
 }
+const Edit = ({value, onChange, size}) => {
+    const {falcor, falcorCache} = useFalcor();
 
+    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
+    const baseUrl = '/';
 
+    const ealSourceId = 343;
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
+    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || null);
+    const [loading, setLoading] = useState(true);
+    const [status, setStatus] = useState(cachedData?.status);
+    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
+    const [type, setType] = useState(cachedData?.type || 'total_losses');
+    const [typeId, setTypeId] = useState(cachedData?.typeId);
+    const [data, setData] = useState(cachedData?.data);
+    const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
+    const [numColors, setNumColors] = useState(cachedData?.numColors || 5);
+    const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
+    const [colors, setColors] = useState(cachedData?.colors || defaultColors);
+    const [title, setTitle] = useState(cachedData?.title);
+    const [height, setHeight] = useState(cachedData?.height || 500);
 
-
-async function getData({geoid,disasterNumber,ealViewId, type, numColors}, falcor) {
-    console.log('getdata', type, metaData[type])
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id],
-        geomColName = `substring(${metaData[type]?.geoColumn || 'geoid'}, 1, 5)`,
-        disasterNumberColName = metaData[type]?.disasterNumberColumn || 'disaster_number',
-        columns = Array.isArray(metaData[type]?.columns) ? metaData[type]?.columns : Object.values(metaData[type]?.columns || {}),
+        geomColName = `substring(${metaData[type].geoColumn || 'geoid'}, 1, 5)`,
+        disasterNumberColName = metaData[type].disasterNumberColumn || 'disaster_number',
+        columns = Array.isArray(metaData[type]?.columns) ? metaData[type]?.columns : Object.values(metaData[type]?.columns),
         options = JSON.stringify({
             aggregatedLen: true,
             filter: false && geoid?.length === 5 ? {
@@ -82,142 +95,118 @@ async function getData({geoid,disasterNumber,ealViewId, type, numColors}, falcor
         gromPath = view_id => ['dama', pgEnv, 'viewsbyId', view_id, 'options', options];
 
     const attributionPath = view_id => ['dama', pgEnv, 'views', 'byId', view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
-    const res = await falcor.get(dependencyPath(ealViewId))
 
-    const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
-
-    const stateView = deps.find(dep => dep.type === "tl_state");
-    const typeId = deps.find(dep => dep.type === metaData[type]?.type);
-    console.log('typeID', typeId, deps)
-    if(!typeId?.view_id) {
-        return {}
-    }
-    typeId?.view_id
-    let title = metaData[type].title
-    let geomRes = await falcor.get(
-        [...gromPath(typeId.view_id), 'length'],
-        attributionPath(typeId.view_id)
-    );
-
-    const len = get(geomRes, ['json', ...gromPath(typeId.view_id), 'length']);
-
-    const resData = await falcor.get([
-        ...gromPath(typeId.view_id), 'databyIndex', 
-        {from: 0,to: len - 1}, 
-        Object.values(attributes)
-    ])
-        
-    let data = Object.values(get(resData, ['json', ...gromPath(typeId.view_id), 'databyIndex'], {}));
-    data = [...Array(len).keys()].map(i => {
-        return Object.keys(attributes).reduce((acc, curr) => ({
-            ...acc,
-            [curr]: data[i][attributes[curr]]
-        }), {});
-    });
-
-    const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${false && geoid?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
-        geoIndices = {from: 0, to: 0},
-        stateFips = get(data, [0, 'geoid']) || geoid?.substring(0, 2),
-        geoPath = ({view_id}) => ['dama', pgEnv, 'viewsbyId', view_id,
-            'options', JSON.stringify({filter: {geoid: [false && geoid?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
-            'databyIndex'
-        ];
-    geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);
-    const geom = get(geomRes, ["json", ...geoPath(stateView), 0, geomColTransform]);
-    const colors =  metaData[type].colors || defaultColors
-            
-    return {
-        ealViewId,
-        disasterNumber,
-        geoid,
-        type,
-        title,
-        data,
-        mapFocus: geom ? get(JSON.parse(geom), 'bbox', null ) : null
-    }
-}
-
-
-const Edit = ({value, onChange, size}) => {
-    const {falcor, falcorCache} = useFalcor();
-
-    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
-    const baseUrl = '/';
-
-    const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
-    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || null);
-    const [loading, setLoading] = useState(true);
-    const [status, setStatus] = useState('');
-    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
-    const [type, setType] = useState(cachedData?.type || 'total_losses');
-    const [typeId, setTypeId] = useState(cachedData?.typeId);
-    const [data, setData] = useState(cachedData?.data);
-    const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
-    const [numColors, setNumColors] = useState(cachedData?.numColors || 5);
-    const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
-    const [colors, setColors] = useState(cachedData?.colors || defaultColors);
-    const [title, setTitle] = useState(cachedData?.title);
-    const [height, setHeight] = useState(cachedData?.height || 500);
-
-    
-
+    useEffect(() => setColors(metaData[type].colors || defaultColors), [type])
     useEffect(() => {
-        const load = async () => {
+        // get required data, pass paint properties as prop.
+        async function getData() {
             if (!geoid || !disasterNumber) {
                 !geoid && setStatus('Please Select a Geography');
                 !disasterNumber && setStatus('Please Select a Disaster');
                 return Promise.resolve();
+            } else {
+                setStatus(undefined)
             }
-            setStatus(undefined);
             setLoading(true);
-            console.log('EDIT: get data',geoid,disasterNumber,ealViewId, type)
-    
-            let data = await getData({geoid,disasterNumber,ealViewId, type}, falcor)
-            console.log('testing 123', data)
-            onChange(JSON.stringify({...cachedData, ...data}))
-            setLoading(false)
-        }
-        load();
-    }, [geoid, ealViewId, disasterNumber, type, numColors]);
+            setStatus(undefined);
 
-    const columns = Array.isArray(metaData[type]?.columns) ? metaData[type]?.columns : Object.values(metaData[type]?.columns || {})
-    const {geoColors, domain} = getGeoColors({geoid, data, columns, paintFn: metaData[type].paintFn, colors});
+            return falcor.get(dependencyPath(ealViewId)).then(async res => {
+
+                const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
+
+                const stateView = deps.find(dep => dep.type === "tl_state");
+                const typeId = deps.find(dep => dep.type === metaData[type]?.type);
+
+                if (!typeId) {
+                    setLoading(false)
+                    setStatus('This component only supports EAL versions that use Fusion data.')
+                    return Promise.resolve();
+                }
+                setTypeId(typeId.view_id);
+                setTitle(metaData[type].title)
+                const geomRes = await falcor.get(
+                    [...gromPath(typeId.view_id), 'length'],
+                    attributionPath(typeId.view_id)
+                );
+
+                const len = get(geomRes, ['json', ...gromPath(typeId.view_id), 'length']);
+
+                await len && falcor.get([...gromPath(typeId.view_id), 'databyIndex', {
+                    from: 0,
+                    to: len - 1
+                }, Object.values(attributes)])
+                    .then(async res => {
+                        let data = Object.values(get(res, ['json', ...gromPath(typeId.view_id), 'databyIndex'], {}));
+                        data = [...Array(len).keys()].map(i => {
+                            return Object.keys(attributes).reduce((acc, curr) => ({
+                                ...acc,
+                                [curr]: data[i][attributes[curr]]
+                            }), {});
+                        });
+
+                        setData(data);
+
+                        if (!data?.length) return Promise.resolve();
+
+                        const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${false && geoid?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
+                            geoIndices = {from: 0, to: 0},
+                            stateFips = get(data, [0, 'geoid']) || geoid?.substring(0, 2),
+                            geoPath = ({view_id}) =>
+                                ['dama', pgEnv, 'viewsbyId', view_id,
+                                    'options', JSON.stringify({filter: {geoid: [false && geoid?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
+                                    'databyIndex'
+                                ];
+                        const geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);
+                        const geom = get(geomRes, ["json", ...geoPath(stateView), 0, geomColTransform]);
+                        if (geom) {
+                            setMapfocus(get(JSON.parse(geom), 'bbox'));
+                        }
+                    })
+
+                setLoading(false);
+            })
+        }
+
+        getData()
+    }, [geoid, ealViewId, disasterNumber, type, numColors, shade, colors]);
+
+    const {geoColors, domain} = getGeoColors({geoid, data, columns: columns, paintFn: metaData[type].paintFn, colors});
     // const domain = getDomain(data, colors);
 
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
-    const layerProps = {
-        ccl: {
-            view: metaData[type],
-            data,
-            geoColors,
-            mapFocus,
-            domain,
-            colors,
-            title,
-            size,
-            height,
-            showLegend:  metaData[type].legend !== false,
-            change: e => onChange(JSON.stringify({
-                ...e,
-                disasterNumber,
-                ealViewId,
-                geoid,
-                status,
-                type,
-                typeId,
-                attributionData,
+    const layerProps =
+        {
+            ccl: {
+                view: metaData[type],
                 data,
                 geoColors,
                 mapFocus,
                 domain,
-                numColors,
                 colors,
+                title,
+                size,
                 height,
-                showLegend: metaData[type].legend !== false
-            }))
-        }
-    };
+                showLegend:  metaData[type].legend !== false,
+                change: e => onChange(JSON.stringify({
+                    ...e,
+                    disasterNumber,
+                    ealViewId,
+                    geoid,
+                    status,
+                    type,
+                    typeId,
+                    attributionData,
+                    data,
+                    geoColors,
+                    mapFocus,
+                    domain,
+                    numColors,
+                    colors,
+                    height,
+                    showLegend: metaData[type].legend !== false
+                }))
+            }
+        };
 
     return (
         <div className='w-full'>
@@ -272,12 +261,7 @@ const Edit = ({value, onChange, size}) => {
                                     <RenderMap
                                         falcor={falcor}
                                         layerProps={layerProps}
-                                        legend={{
-                                            domain, 
-                                            range: colors, 
-                                            title, 
-                                            show: metaData[type].legend !== false
-                                        }}
+                                        legend={{domain, range: colors, title, show: metaData[type].legend !== false}}
                                     />
                                 </div>
                                 <Attribution baseUrl={baseUrl} attributionData={attributionData} />
@@ -320,27 +304,6 @@ const View = ({value}) => {
 export default {
     "name": 'Map: FEMA Disaster Loss',
     "type": 'Map',
-    "variables": 
-[        {
-            name: 'geoid',
-            default: '36'
-        },
-        {
-            name: 'disasterNumber',
-            default: '1406'
-        },
-        {
-            name: 'ealViewId',
-            default: 837,
-            hidden: true
-        },
-        {
-            name: 'type',
-            hidden: true
-        }
-    ],
-    getData,
-
     "EditComp": Edit,
     "ViewComp": View
 }
