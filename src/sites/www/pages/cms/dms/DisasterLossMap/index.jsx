@@ -61,6 +61,7 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
 
 
 async function getData({geoid,disasterNumber,ealViewId, type, numColors}, falcor) {
+    return {}
     console.log('getdata', type, metaData[type])
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id],
         geomColName = `substring(${metaData[type]?.geoColumn || 'geoid'}, 1, 5)`,

@@ -152,7 +152,7 @@ const SectionThumb =({section,source,sectionControl={},updateSectionControl}) =>
       
   }, [source]);
 
-  console.log('section Thumb', data)
+  //console.log('section Thumb', data)
 
   
   return (
@@ -188,7 +188,7 @@ const SectionThumb =({section,source,sectionControl={},updateSectionControl}) =>
 }
 
 const SectionListControls = ({sections, sectionControls, source, onChange}) => {
-  console.log('SectionListControls',sectionControls)
+  // console.log('SectionListControls',sectionControls)
   return (
     <div>
       {sections.map(s => (
@@ -218,7 +218,7 @@ const SourcesSelect = ({value, onChange}) => {
     async function fetchData() {
       const lengthPath = ["dama", pgEnv, "sources", "length"];
       const resp = await falcor.get(lengthPath);
-      console.log('length', get(resp.json, lengthPath, 0) - 1)
+      //console.log('length', get(resp.json, lengthPath, 0) - 1)
       const dataResp = await falcor.get([
         "dama", pgEnv, "sources", "byIndex",
         { from: 0, to: get(resp.json, lengthPath, 0) - 1 },
