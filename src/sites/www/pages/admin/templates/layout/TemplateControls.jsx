@@ -65,8 +65,8 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
 
         let updateVars = Object.keys(dataControls.sectionControls[section_id])
         .reduce((out,curr) => {
-          out[curr] = dataControls?.active_row?.[dataControls?.sectionControls?.[section_id]?.[curr]?.name] || null
-          //console.log('update var',  dataControls?.active_row, dataControls?.sectionControls?.[section_id]?.[curr]?.name)
+          out[curr] = dataControls?.active_row?.[dataControls?.sectionControls?.[section_id]?.[curr]?.name] ||
+                      dataControls?.active_row?.[dataControls?.sectionControls?.[section_id]?.[curr]] || null
           
           return out
         },{})
