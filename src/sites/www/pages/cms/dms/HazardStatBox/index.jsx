@@ -64,9 +64,9 @@ const Edit = ({value, onChange}) => {
                     }
                 ), {});
 
-    const npCol = isTotal ? "national_percent_total" : "national_percent_hazard",
+    const npCol = isTotal ? "total_rank" : "hazard_rank",
         spCol = isTotal ? "state_percent_total" : "state_percent_hazard",
-        ealCol = isTotal ? "nri_eal" : "nri_eal";
+        ealCol = isTotal ? "nri_eal_total" : "nri_eal";
 
     let
         fipsCol = `substring(stcofips, 1, ${geoid.length})`,
