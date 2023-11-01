@@ -60,9 +60,14 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
 
 
 
-async function getData({geoid,disasterNumber,ealViewId, type, numColors}, falcor) {
-    return {}
-    console.log('getdata', type, metaData[type])
+async function getData({geoid,disasterNumber,ealViewId, type='total_losses', numColors='5', colors}, falcor) {
+    //return {}
+    if(!ealViewId ||  !geoid || !disasterNumber ) {
+        console.log('getdata not running')
+        return {}
+    }
+    // console.log('test', ealViewId)
+    // console.log('getdata', type, metaData[type])
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id],
         geomColName = `substring(${metaData[type]?.geoColumn || 'geoid'}, 1, 5)`,
         disasterNumberColName = metaData[type]?.disasterNumberColumn || 'disaster_number',
@@ -86,6 +91,8 @@ async function getData({geoid,disasterNumber,ealViewId, type, numColors}, falcor
     const res = await falcor.get(dependencyPath(ealViewId))
 
     const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
+
+    console.log('deps', res, deps, dependencyPath(ealViewId))
 
     const stateView = deps.find(dep => dep.type === "tl_state");
     const typeId = deps.find(dep => dep.type === metaData[type]?.type);
@@ -125,16 +132,27 @@ async function getData({geoid,disasterNumber,ealViewId, type, numColors}, falcor
         ];
     geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);
     const geom = get(geomRes, ["json", ...geoPath(stateView), 0, geomColTransform]);
-    const colors =  metaData[type].colors || defaultColors
+    //const colors =  metaData[type].colors || defaultColors
+
+    // const columns = Array.isArray(metaData[type]?.columns) ? metaData[type]?.columns : Object.values(metaData[type]?.columns || {})
+    const {geoColors, domain} = getGeoColors({geoid, data, columns, paintFn: metaData[type].paintFn, colors});
+    const attributionData = {} //get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
+    
             
     return {
+        view: metaData[type],
         ealViewId,
         disasterNumber,
         geoid,
         type,
         title,
         data,
-        mapFocus: geom ? get(JSON.parse(geom), 'bbox', null ) : null
+        columns,
+        geoColors,
+        domain,
+        attributionData,
+        mapFocus: geom ? get(JSON.parse(geom), 'bbox', null ) : null,
+        showLegend:  metaData[type].legend !== false
     }
 }
 
@@ -142,83 +160,86 @@ async function getData({geoid,disasterNumber,ealViewId, type, numColors}, falcor
 const Edit = ({value, onChange, size}) => {
     const {falcor, falcorCache} = useFalcor();
 
-    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
+    let cachedData = useMemo(() => {
+        return value && isJson(value) ? JSON.parse(value) : {}
+    }, [value]);
+
+   
     const baseUrl = '/';
 
     const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
-    const [disasterNumber, setDisasterNumber] = useState(cachedData?.disasterNumber || null);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState('');
-    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
-    const [type, setType] = useState(cachedData?.type || 'total_losses');
-    const [typeId, setTypeId] = useState(cachedData?.typeId);
-    const [data, setData] = useState(cachedData?.data);
-    const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
-    const [numColors, setNumColors] = useState(cachedData?.numColors || 5);
-    const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
-    const [colors, setColors] = useState(cachedData?.colors || defaultColors);
-    const [title, setTitle] = useState(cachedData?.title);
-    const [height, setHeight] = useState(cachedData?.height || 500);
+    const [compData, setCompData] = useState({
+        ealViewId: cachedData?.ealViewId || 837,
+        geoid: cachedData?.geoid || '36',
+        disasterNumber: cachedData?.disasterNumber || null,
+        type: cachedData?.type || 'total_losses',
+        typeId: cachedData?.typeId,
+        data: cachedData?.data,
+        mapFocus: cachedData.mapFocus,
+        numColors: cachedData?.numColors || 5,
+        shade: cachedData?.shade || 'Oranges',
+        colors: cachedData?.colors || defaultColors,
+        title: cachedData?.title,
+        height: cachedData?.height || 500
+    })
+
+    useEffect(() => {
+        setCompData({...compData, ...cachedData})   
+    },[cachedData])
 
     
 
     useEffect(() => {
         const load = async () => {
+            const {
+                geoid,disasterNumber,ealViewId, type ,colors
+            } = compData
+            console.log(geoid, disasterNumber)
+            
             if (!geoid || !disasterNumber) {
-                !geoid && setStatus('Please Select a Geography');
-                !disasterNumber && setStatus('Please Select a Disaster');
-                return Promise.resolve();
+                console.log('not going to load mfer')
+                setStatus('Please Select a Geography & Disaster');
+                
+                //return Promise.resolve();
+            } else {
+                setStatus(undefined);
+                setLoading(true);
+                console.log('EDIT: get data',geoid,disasterNumber,ealViewId, type)
+        
+                let data = await getData({
+                    geoid,
+                    disasterNumber,
+                    ealViewId, 
+                    type,
+                    colors
+                }, falcor)
+                //console.log('testing 123', data, {...cachedData, ...data})
+                onChange(JSON.stringify({...cachedData, ...data}))
+                setLoading(false)
             }
-            setStatus(undefined);
-            setLoading(true);
-            console.log('EDIT: get data',geoid,disasterNumber,ealViewId, type)
-    
-            let data = await getData({geoid,disasterNumber,ealViewId, type}, falcor)
-            console.log('testing 123', data)
-            onChange(JSON.stringify({...cachedData, ...data}))
-            setLoading(false)
         }
         load();
-    }, [geoid, ealViewId, disasterNumber, type, numColors]);
+    }, [compData]);
 
-    const columns = Array.isArray(metaData[type]?.columns) ? metaData[type]?.columns : Object.values(metaData[type]?.columns || {})
-    const {geoColors, domain} = getGeoColors({geoid, data, columns, paintFn: metaData[type].paintFn, colors});
-    // const domain = getDomain(data, colors);
-
-    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
-    const layerProps = {
-        ccl: {
-            view: metaData[type],
-            data,
-            geoColors,
-            mapFocus,
-            domain,
-            colors,
-            title,
-            size,
-            height,
-            showLegend:  metaData[type].legend !== false,
-            change: e => onChange(JSON.stringify({
-                ...e,
-                disasterNumber,
-                ealViewId,
-                geoid,
-                status,
-                type,
-                typeId,
-                attributionData,
-                data,
-                geoColors,
-                mapFocus,
-                domain,
-                numColors,
-                colors,
-                height,
-                showLegend: metaData[type].legend !== false
-            }))
+    
+    
+    
+    
+    const layerProps = useMemo(() => { 
+        return {
+            ccl: {
+                ...cachedData,
+                change: e => onChange(JSON.stringify({
+                    ...e,
+                    ...cachedData
+                }))
+            }
         }
-    };
+    },[cachedData])
+
+    //console.log('layerProps', layerProps)
 
     return (
         <div className='w-full'>
@@ -227,61 +248,67 @@ const Edit = ({value, onChange, size}) => {
                     Edit Controls
                     <VersionSelectorSearchable
                         source_id={ealSourceId}
-                        view_id={ealViewId}
-                        onChange={setEalViewId}
+                        view_id={compData.ealViewId}
+                        onChange={(v) => setCompData({...compData, "ealViewId": v})}
                         className={'flex-row-reverse'}
                     />
-                    <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
+                    <GeographySearch 
+                        value={compData.geoid} 
+                        onChange={(v) => setCompData({...compData, "geoid": v})}
+                        className={'flex-row-reverse'}
+                    />
                     <DisasterSearch
-                        view_id={ealViewId}
-                        value={disasterNumber}
-                        geoid={geoid}
-                        onChange={setDisasterNumber}
+                        view_id={compData.ealViewId}
+                        value={compData.disasterNumber}
+                        geoid={compData.geoid}
+                        onChange={(v) => setCompData({...compData, "disasterNumber": v})}
                         className={'flex-row-reverse'}
                     />
                     <ButtonSelector
                         label={'Type:'}
                         types={Object.keys(metaData).map(t => ({label: t.replace('_', ' '), value: t}))}
-                        type={type}
+                        type={compData.type}
                         setType={e => {
-                            setColors(metaData[e].colors || defaultColors)
-                            setType(e)
+                            setCompData({...compData, 
+                                "colors": metaData[e].colors || defaultColors,
+                                "type": e
+                            })
                         }}
                     />
-                    {!metaData[type].colors &&
+                    {!metaData[compData.type].colors &&
                         <RenderColorPicker
                         title={'Colors: '}
-                        numColors={numColors}
-                        setNumColors={setNumColors}
-                        shade={shade}
-                        setShade={setShade}
-                        colors={colors}
-                        setColors={setColors}
+                        numColors={compData.numColors}
+                        setNumColors={(v) => setCompData({...compData, "numColors": v})}
+                        shade={compData.shade}
+                        setShade={(v) => setCompData({...compData, "shade": v})}
+                        colors={compData.colors}
+                        setColors={(v) => setCompData({...compData, "colors": v})}
                     />}
                     <ButtonSelector
                         label={'Size:'}
                         types={[{label: 'X Small', value: 200},{label: 'Small', value: 500},{label: 'Medium', value: 700},{label: 'Large', value: 900}]}
-                        type={height}
-                        setType={e => {setHeight(e)}}
+                        type={compData.height}
+                        setType={v => setCompData({...compData, "height": v})}
                     />
                 </div>
                 {
                     loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <React.Fragment>
-                                <div className={`flex-none w-full p-1`} style={{height: `${height}px`}}>
+                                <div className={`flex-none w-full p-1`} style={{height: `${compData.height}px`}}>
                                     <RenderMap
                                         falcor={falcor}
                                         layerProps={layerProps}
                                         legend={{
-                                            domain, 
-                                            range: colors, 
-                                            title, 
-                                            show: metaData[type].legend !== false
+                                            domain: compData?.domain || [], 
+                                            range: compData.colors, 
+                                            title: compData.title, 
+                                            show: metaData[compData.type].legend !== false
                                         }}
                                     />
                                 </div>
-                                <Attribution baseUrl={baseUrl} attributionData={attributionData} />
+                                <Attribution baseUrl={baseUrl} attributionData={compData.attributionData} />
                             </React.Fragment>
                 }
             </div>

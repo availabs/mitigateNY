@@ -22,7 +22,7 @@ const RenderChoroplethLegend = ({size, domain, range, fmt, title,}) => {
             heightParent = '40px',
             heightChild = '20px';
         return (
-            <div className={`flex flex-col h-[${heightParent}] ${className}`} style={{width}}>
+            <div key={value} className={`flex flex-col h-[${heightParent}] ${className}`} style={{width}}>
                 <div className={`h-[${heightChild}]`} style={{backgroundColor: color, width}}/>
                 <div className={`h-[${heightChild}] text-xs text-right`} style={{width}}>
                     { fmt ? fmt(value) : value }

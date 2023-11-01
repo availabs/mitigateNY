@@ -72,6 +72,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
         },{})
 
         let args = {...controlVars, ...updateVars}
+        console.log('new args', section.id, section?.element?.['element-type'], args)
         return comp.getData(args,falcor).then(data => ({section_id, data}))
       })
       let updates = await Promise.all(dataFetchers)
@@ -88,8 +89,10 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
 
 
     }
-
+    console.log('x-----------------x')
     loadUpdates()
+    console.log('y-----------------y')
+    
 
   },[dataControls?.active_row])
 
