@@ -9,7 +9,7 @@ import {metaData} from "../config.js";
 
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
-export const RenderDisasterLossTable = ({ geoid, data, columns, pageSize, sortBy={}, filterValue = {}, striped, attributionData, baseUrl, type }) => {
+export const RenderDisasterLossTable = ({ geoid, data=[], columns=[], pageSize, sortBy={}, filterValue = {}, striped, attributionData, baseUrl, type }) => {
     const sortColRaw = columns.find(c => c.Header === Object.keys(sortBy)?.[0])?.accessor;
     const filteredData = data.filter(row => {
         return  !Object.keys(filterValue || {}).length ||

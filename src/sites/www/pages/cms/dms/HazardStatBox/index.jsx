@@ -64,9 +64,9 @@ const Edit = ({value, onChange}) => {
                     }
                 ), {});
 
-    const npCol = isTotal ? "national_percent_total" : "national_percent_hazard",
+    const npCol = isTotal ? "total_rank" : "hazard_rank",
         spCol = isTotal ? "state_percent_total" : "state_percent_hazard",
-        ealCol = isTotal ? "nri_eal" : "nri_eal";
+        ealCol = isTotal ? "nri_eal_total" : "nri_eal";
 
     let
         fipsCol = `substring(stcofips, 1, ${geoid.length})`,
@@ -203,7 +203,7 @@ const Edit = ({value, onChange}) => {
                 key: d.nri_category,
                 label: hazardsMeta[d.nri_category].name,
                 color: hazardsMeta[d.nri_category].color,
-                value: (d[ealCol] * 100 / total_eal).toFixed(2),
+                value: (d.nri_eal * 100 / d.nri_eal_total).toFixed(2),
                 eal: get(d, ealCol, 0),
                 nationalPercentile: get(d, npCol, 0) * 100,
                 statePercentile: get(d, spCol, 0) * 100,
