@@ -13,59 +13,39 @@ import {RenderColumnControls} from "../../components/columnControls.jsx";
 import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import HazardSelectorMulti from "../../components/HazardSelector/hazardSelectorMulti.jsx";
 
-const Edit = ({value, onChange}) => {
-    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
-    const baseUrl = '/';
-
-    const ealSourceId = 343;
-    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
-
-    const [loading, setLoading] = useState(true);
-    const [hazard, setHazard] = useState(cachedData?.hazard || 'total');
-    const [type, setType] = useState(cachedData?.type || 'card');
-    const [style, setStyle] = useState(cachedData?.style || 'compact');
-    const [status, setStatus] = useState(cachedData?.status);
-    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
-    const [isTotal, setIsTotal] = useState(cachedData?.isTotal || (hazard === 'total' && type === 'card'));
-
-    const {falcor, falcorCache} = useFalcor();
-    const [nriIds, setNriIds] = useState({source_id: null, view_id: null});
-    const [fusionViewId, setfusionViewId] = useState({source_id: null, view_id: null});
-    const [deps, setDeps] = useState([ealViewId]);
-    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
-    const [severeEventThreshold, setSevereEventsThreshold] = useState(cachedData.severeEventThreshold || 1_000_000)
-
-    const freqCol =
-            Object.keys(hazardsMeta)
-                .reduce((acc, key) =>
-                        ({
-                            ...acc,
-                            ...{
-                                [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_afreq) as ${get(hazardsMeta, [key, "prefix"], "total")}_freq`
-                            }
-                        })
-                    , {}),
-        expCol =
-            Object.keys(hazardsMeta)
-                .reduce((acc, key) => (
-                    {
-                        ...acc,
-                        [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_expt) as ${get(hazardsMeta, [hazard, "prefix"], "total")}_exp`
-                    }
-                ), {}),
-        evntsCol =
-            Object.keys(hazardsMeta)
-                .reduce((acc, key) => (
-                    {
+const freqCol =
+        Object.keys(hazardsMeta)
+            .reduce((acc, key) =>
+                    ({
                         ...acc,
                         ...{
-                            [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_evnts) as ${get(hazardsMeta, [key, "prefix"], "total")}_evnts`
+                            [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_afreq) as ${get(hazardsMeta, [key, "prefix"], "total")}_freq`
                         }
+                    })
+                , {}),
+    expCol =
+        Object.keys(hazardsMeta)
+            .reduce((acc, key) => (
+                {
+                    ...acc,
+                    [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_expt) as ${get(hazardsMeta, [key, "prefix"], "total")}_exp`
+                }
+            ), {}),
+    evntsCol =
+        Object.keys(hazardsMeta)
+            .reduce((acc, key) => (
+                {
+                    ...acc,
+                    ...{
+                        [key]: `sum(${get(hazardsMeta, [key, "prefix"], "total")}_evnts) as ${get(hazardsMeta, [key, "prefix"], "total")}_evnts`
                     }
-                ), {});
+                }
+            ), {});
 
+
+async function getData({ealSourceId, ealViewId, isTotal, geoid, hazard, severeEventThreshold,
+                           type, visibleCols, style},  falcor) {
     const npCol = isTotal ? "total_rank" : "hazard_rank",
-        spCol = isTotal ? "state_percent_total" : "state_percent_hazard",
         ealCol = isTotal ? "nri_eal_total" : "nri_eal";
 
     let
@@ -74,7 +54,7 @@ const Edit = ({value, onChange}) => {
             filter: {[fipsCol]: [geoid]},
             groupBy: [fipsCol]
         }),
-        nriPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", nriOptions];
+        nriPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", nriOptions];
     let
         actualLossCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) as actual_damage",
         actualLossWithPopCol = "sum(fusion_property_damage) + sum(fusion_crop_damage) + (sum(swd_population_damage) * 11600000) as actual_damage_with_population",
@@ -101,8 +81,130 @@ const Edit = ({value, onChange}) => {
             exclude: {['EXTRACT(YEAR from coalesce(fema_incident_begin_date, swd_begin_date))']: ['null']},
             groupBy: [geoidCOl]
         }),
-        fusionPath = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptions],
-        fusionPathTotal = ({view_id}) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptionsTotal];
+        fusionPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptions],
+        fusionPathTotal = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptionsTotal];
+    const res = await falcor.get(
+        ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId],
+        ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid]
+    )
+
+    const deps = get(res, ["json", "dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId, "dependencies"]);
+    const nriView = deps.find(d => d.type === "nri");
+    const fusionView = deps.find(d => d.type === "fusion");
+
+    if (!fusionView) {
+        return {}
+    }
+
+    const lenRes = await falcor.get([...fusionPath(fusionView.view_id), "length"]);
+    const len = get(lenRes, ["json", ...fusionPath(fusionView.view_id), "length"], 0);
+
+    const fusionByIndexRoute = [...fusionPath(fusionView.view_id), "databyIndex", {
+        from: 0,
+        to: len - 1
+    }, fusionAttributes];
+    const fusionTotalByIndexRoute = [...fusionPathTotal(fusionView.view_id), "databyIndex", {
+        from: 0,
+        to: 0
+    }, fusionAttributesTotal];
+
+    const attributionRoute = ['dama', pgEnv, 'views', 'byId',
+        [ealViewId, nriView.view_id, fusionView.view_id],
+        'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
+
+    const routes = isTotal && len ? [fusionByIndexRoute, fusionTotalByIndexRoute, attributionRoute] :
+        !isTotal && len ? [[...nriPath(nriView.view_id), "databyIndex", {
+            from: 0,
+            to: len - 1
+        }, [...Object.values(freqCol), ...Object.values(expCol), ...Object.values(evntsCol)]], fusionByIndexRoute, fusionTotalByIndexRoute, attributionRoute] : [];
+    await falcor.get(...routes);
+
+    // set data
+    const falcorCache = falcor.getCache();
+
+    const attributionDataFn = view_id => get(falcorCache, ['dama', pgEnv, 'views', 'byId', view_id, 'attributes'], {});
+
+    const attributionData = [ealViewId, nriView.view_id, fusionView.view_id].map(d => (
+        {
+            source_id: attributionDataFn(d)?.source_id,
+            view_id: attributionDataFn(d)?.view_id,
+            version: attributionDataFn(d)?.version,
+            _modified_timestamp: attributionDataFn(d)?._modified_timestamp?.value
+        }
+    ))
+
+    const hazardPercentileArray =
+        get(falcorCache, ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid, "value"], [])
+            .filter(row => row.geoid === geoid && hazardsMeta[row.nri_category])
+            .map(d => ({
+                key: d.nri_category,
+                label: hazardsMeta[d.nri_category].name,
+                color: hazardsMeta[d.nri_category].color,
+                value: (d.nri_eal * 100 / d.nri_eal_total).toFixed(2),
+                eal: get(d, ealCol, 0),
+                nationalPercentile: get(d, npCol, 0) * 100,
+                actualLoss: (Object.values(
+                    get(falcorCache,
+                        isTotal ? [...fusionPathTotal(fusionView.view_id), "databyIndex"] : [...fusionPath(fusionView.view_id), "databyIndex"],
+                        {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[actualLossCol],
+                actualLossWithPop: (Object.values(
+                    get(falcorCache,
+                        isTotal ? [...fusionPathTotal(fusionView.view_id), "databyIndex"] : [...fusionPath(fusionView.view_id), "databyIndex"],
+                        {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[actualLossWithPopCol],
+                numSevereEvents: (Object.values(get(falcorCache, [...fusionPath(fusionView.view_id), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[numSevereEventsCol],
+                numEvents: (Object.values(get(falcorCache, [...fusionPath(fusionView.view_id), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[numEventsCol],
+                numFEMADeclared: (Object.values(get(falcorCache, [...fusionPath(fusionView.view_id), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[numFEMADeclaredCol],
+                deaths: (Object.values(get(falcorCache, [...fusionPath(fusionView.view_id), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[deathsCol],
+                injuries: (Object.values(get(falcorCache, [...fusionPath(fusionView.view_id), "databyIndex"], {}))
+                    .find(fc => fc.nri_category === d.nri_category) || {})[injuriesCol],
+                exposure: get(falcorCache, [...nriPath(nriView.view_id), "databyIndex", 0, expCol[d.nri_category]]),
+                frequency: get(falcorCache, [...nriPath(nriView.view_id), "databyIndex", 0, freqCol[d.nri_category]], 0),
+            }))
+            .sort((a, b) => +b.value - +a.value);
+
+    const size =
+        type === 'card' && hazard !== 'total' ? 'small' :
+            type === 'card' && hazard === 'total' ? 'large' : 'small';
+
+    return {
+        hazardPercentileArray,
+        attributionData,
+        size,
+        visibleCols,
+        style,
+
+        ealViewId,
+        geoid,
+        hazard,
+        isTotal,
+        type,
+        severeEventThreshold
+    }
+}
+
+const Edit = ({value, onChange}) => {
+    const {falcor, falcorCache} = useFalcor();
+
+    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
+
+    const ealSourceId = 343;
+    const [ealViewId, setEalViewId] = useState(cachedData?.ealViewId || 837);
+
+    const [loading, setLoading] = useState(true);
+    const [hazard, setHazard] = useState(cachedData?.hazard || 'total');
+    const [type, setType] = useState(cachedData?.type || 'card');
+    const [style, setStyle] = useState(cachedData?.style || 'compact');
+    const [status, setStatus] = useState(cachedData?.status);
+    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
+    const [isTotal, setIsTotal] = useState(cachedData?.isTotal || (hazard === 'total' && type === 'card'));
+    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
+    const [severeEventThreshold, setSevereEventsThreshold] = useState(cachedData.severeEventThreshold || 1_000_000);
 
     const cols = [
         {label: 'National Percentile Bar', forTotal: undefined},
@@ -122,7 +224,7 @@ const Edit = ({value, onChange}) => {
         {label: 'Injuries', forTotal: false},
     ]
     React.useEffect(() => {
-        async function getData() {
+        async function load(){
             if (!geoid) {
                 setStatus('Please Select a Geography');
             } else {
@@ -131,121 +233,24 @@ const Edit = ({value, onChange}) => {
             setLoading(true);
             setStatus(undefined);
 
-            await falcor.get(
-                ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId],
-                ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid]
-            ).then(async (res) => {
-                const deps = get(res, ["json", "dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId, "dependencies"]);
-                const nriView = deps.find(d => d.type === "nri");
-                const fusionView = deps.find(d => d.type === "fusion");
+            const data = await getData({
+                ealSourceId, ealViewId, geoid, hazard, isTotal, type, visibleCols, severeEventThreshold, style
+            }, falcor);
 
-                if (!fusionView) {
-                    setLoading(false)
-                    setStatus('This component only supports EAL versions that use Fusion data.')
-                    return Promise.resolve();
-                }
+            onChange(JSON.stringify({
+                ...data,
+            }));
 
-                setNriIds(nriView);
-                setfusionViewId(fusionView);
-
-                const lenRes = await falcor.get([...fusionPath(fusionView), "length"]);
-                const len = get(lenRes, ["json", ...fusionPath(fusionView), "length"], 0);
-
-                const fusionByIndexRoute = [...fusionPath(fusionView), "databyIndex", {
-                    from: 0,
-                    to: len - 1
-                }, fusionAttributes];
-                const fusionTotalByIndexRoute = [...fusionPathTotal(fusionView), "databyIndex", {
-                    from: 0,
-                    to: 0
-                }, fusionAttributesTotal];
-
-                setDeps([ealViewId, nriView.view_id, fusionView.view_id]);
-
-                const attributionRoute = ['dama', pgEnv, 'views', 'byId',
-                    [ealViewId, nriView.view_id, fusionView.view_id],
-                    'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
-
-                const routes = isTotal && len ? [fusionByIndexRoute, fusionTotalByIndexRoute, attributionRoute] :
-                    !isTotal && len ? [[...nriPath(nriView), "databyIndex", {
-                        from: 0,
-                        to: len - 1
-                    }, [...Object.values(freqCol), ...Object.values(expCol), ...Object.values(evntsCol)]], fusionByIndexRoute, fusionTotalByIndexRoute, attributionRoute] : [];
-                await falcor.get(...routes);
-                setLoading(false);
-            });
+            setLoading(false);
         }
 
-        getData();
-    }, [ealViewId, geoid, hazard, type, falcorCache, severeEventThreshold]);
+        load()
+    }, [ealViewId, geoid, hazard, isTotal, type, visibleCols, severeEventThreshold, style]);
 
-    const size =
-        type === 'card' && hazard !== 'total' ? 'small' :
-            type === 'card' && hazard === 'total' ? 'large' : 'small';
+    const size = cachedData.size;
+    const attributionData = cachedData.attributionData
 
-    const attributionDataFn = view_id => get(falcorCache, ['dama', pgEnv, 'views', 'byId', view_id, 'attributes'], {});
-
-    const attributionData = deps.map(d => (
-        {
-            source_id: attributionDataFn(d)?.source_id,
-            view_id: attributionDataFn(d)?.view_id,
-            version: attributionDataFn(d)?.version,
-            _modified_timestamp: attributionDataFn(d)?._modified_timestamp?.value
-        }
-    ))
-    const total_eal = get(falcorCache, ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid, "value"], [])
-        .filter(row => row.geoid === geoid)
-        .reduce((acc, d) => acc + +get(d, ealCol, 0) , 0)
-    const hazardPercentileArray =
-        get(falcorCache, ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid, "value"], [])
-            .filter(row => row.geoid === geoid && hazardsMeta[row.nri_category])
-            .map(d => ({
-                key: d.nri_category,
-                label: hazardsMeta[d.nri_category].name,
-                color: hazardsMeta[d.nri_category].color,
-                value: (d.nri_eal * 100 / d.nri_eal_total).toFixed(2),
-                eal: get(d, ealCol, 0),
-                nationalPercentile: get(d, npCol, 0) * 100,
-                statePercentile: get(d, spCol, 0) * 100,
-                actualLoss: (Object.values(
-                    get(falcorCache,
-                        isTotal ? [...fusionPathTotal(fusionViewId), "databyIndex"] : [...fusionPath(fusionViewId), "databyIndex"],
-                        {}))
-                    .find(fc => fc.nri_category === d.nri_category) || {})[actualLossCol],
-                actualLossWithPop: (Object.values(
-                    get(falcorCache,
-                        isTotal ? [...fusionPathTotal(fusionViewId), "databyIndex"] : [...fusionPath(fusionViewId), "databyIndex"],
-                        {}))
-                    .find(fc => fc.nri_category === d.nri_category) || {})[actualLossWithPopCol],
-                numSevereEvents: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
-                    .find(fc => fc.nri_category === d.nri_category) || {})[numSevereEventsCol],
-                numEvents: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
-                    .find(fc => fc.nri_category === d.nri_category) || {})[numEventsCol],
-                numFEMADeclared: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
-                    .find(fc => fc.nri_category === d.nri_category) || {})[numFEMADeclaredCol],
-                deaths: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
-                    .find(fc => fc.nri_category === d.nri_category) || {})[deathsCol],
-                injuries: (Object.values(get(falcorCache, [...fusionPath(fusionViewId), "databyIndex"], {}))
-                    .find(fc => fc.nri_category === d.nri_category) || {})[injuriesCol],
-                exposure: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, expCol[d.nri_category]]),
-                frequency: get(falcorCache, [...nriPath(nriIds), "databyIndex", 0, freqCol[d.nri_category]], 0),
-            }))
-            .sort((a, b) => +b.value - +a.value);
-
-    useEffect(() => {
-            if (!loading) {
-                onChange(JSON.stringify(
-                    {
-                        ealViewId,
-                        fusionViewId,
-                        status,
-                        geoid,
-                        hazard, hazardPercentileArray, size, isTotal, type, attributionData, severeEventThreshold,
-                        visibleCols, style
-                    }))
-            }
-        },
-        [ealViewId, geoid, falcorCache, hazard, hazardPercentileArray, size, isTotal, type, attributionData, visibleCols, severeEventThreshold, style]);
+    const hazardPercentileArray = cachedData.hazardPercentileArray;
 
     return (
         <div className='w-full'>
@@ -354,6 +359,52 @@ const View = ({value}) => {
 export default {
     "name": 'Card: Hazard Risk',
     "type": 'Card/Grid',
+    "variables": [
+        {
+            name: 'ealSourceId',
+            default: 343,
+            hidden: true
+        },
+        {
+            name: 'ealViewId',
+            default: 837,
+            hidden: true
+        },
+        {
+            name: 'geoid',
+            default: '36',
+        },
+        {
+            name: 'hazard',
+            default: 'total',
+        },
+        {
+            name: 'isTotal',
+            default: true,
+            hidden: true
+        },
+        {
+            name: 'type',
+            default: 'card',
+            hidden: true
+        },
+        {
+            name: 'visibleCols',
+            default: [],
+            hidden: true
+        },
+        {
+            name: 'severeEventThreshold',
+            default: 1_000_000,
+            hidden: true
+        },
+        {
+            name: 'style',
+            default: 'compact',
+            hidden: true
+        },
+    ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }
