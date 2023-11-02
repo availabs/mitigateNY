@@ -70,7 +70,6 @@ const Edit = ({value, onChange}) => {
     const [status, setStatus] = useState(data?.status);
     const [geoid, setGeoid] = useState(data?.geoid || '36');
     const [hazard, setHazard] = useState(data?.hazard || 'total');
-    const [dataPath, setDataPath] = useState([]);
 
     useEffect( () => {
         async function load(){
