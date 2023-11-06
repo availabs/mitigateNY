@@ -33,8 +33,46 @@ const getCountyData = async ({ falcor, pgEnv, geoid, setGeoName }) => {
             return county[geoAttributesMapping.name];
         })
 
-    setGeoName(geoData[0])
+
     return geoData[0]
+}
+
+async function getData({pgEnv, geoid, version, geoAttribute, visibleCols, id, bgColor}, falcor) {
+    const lenPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
+    const dataPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
+    const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
+        attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
+    const options = ({geoAttribute, geoName}) => JSON.stringify({
+        filter: {
+            ...geoAttribute && {[geoAttribute]: [geoName]},
+        }
+    });
+
+    const geoName = await getCountyData({falcor, pgEnv, geoid});
+
+    await falcor.get(lenPath(options({geoAttribute, geoName})));
+    const len = Math.min(
+        get(falcor.getCache(), lenPath(options({geoAttribute, geoName})), 0),
+        1);
+
+    await falcor.get(
+        [...dataPath(options({geoAttribute, geoName})),
+            {from: 0, to: len - 1}, visibleCols]);
+    await falcor.get([...attributionPath, attributionAttributes]);
+
+    const textToSave = visibleCols.map(vc =>
+        Object.values(
+            get(falcor.getCache(), dataPath(options({geoAttribute, geoName})), {})
+        )[0]?.[vc] || '');
+
+    return {
+        id: id + 1,
+        bgColor,
+        text: convertToEditorText(textToSave),
+        geoAttribute,
+        geoid,
+        visibleCols
+    }
 }
 const convertToEditorText = text => ({
     root: {
@@ -100,28 +138,15 @@ const Edit = ({value, onChange}) => {
     const [version, setVersion] = useState(cachedData?.version || 850);
     const [geoAttribute, setGeoAttribute] = useState(cachedData?.geoAttribute || 'county');
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
-    const [geoName, setGeoName] = useState(cachedData?.geoid || 'Albany County');
     const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
-
-    const category = 'County Descriptions ';
-
-    const options = ({geoAttribute, geoName}) => JSON.stringify({
-        filter: {
-            ...geoAttribute && {[geoAttribute]: [geoName]},
-        }
-    });
-
-    const lenPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
-    const dataPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
-    const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
-    const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
-        attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
-
 
     useEffect(() => {
         async function getData() {
             setLoading(true);
             setStatus(undefined);
+
+            const category = 'County Descriptions ';
+            const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
 
             // fetch data sources from categories that match passed prop
             await falcor.get(dataSourceByCategoryPath);
@@ -146,7 +171,7 @@ const Edit = ({value, onChange}) => {
     const LexicalComp = dmsDataTypes.lexical.EditComp;
 
     useEffect(() => {
-        async function getData() {
+        async function load(){
             if(!version || !dataSource) {
                 !dataSource && setStatus('Please select a Datasource.');
                 !version && setStatus('Please select a version.');
@@ -158,43 +183,21 @@ const Edit = ({value, onChange}) => {
             setLoading(true);
             setStatus(undefined);
 
-            const geoName = await getCountyData({falcor, pgEnv, geoid, setGeoName});
+            const data = await getData({
+                pgEnv, geoid, version, geoAttribute, visibleCols, id, bgColor
+            }, falcor);
 
-            await falcor.get(lenPath(options({geoAttribute, geoName})));
-            const len = Math.min(
-                get(falcor.getCache(), lenPath(options({geoAttribute, geoName})), 0),
-                1);
-
-            await falcor.get(
-                [...dataPath(options({geoAttribute, geoName})),
-                    {from: 0, to: len - 1}, visibleCols]);
-            await falcor.get([...attributionPath, attributionAttributes]);
+            setId(data.id);
+            setText(data.text);
+            onChange(JSON.stringify({
+                ...data,
+            }));
 
             setLoading(false);
         }
 
-        getData()
-    }, [dataSource, version, geoid, geoAttribute, visibleCols]);
-
-    useEffect(() => {
-        if(!loading){
-            setId(id+1)
-            const textToSave = visibleCols.map(vc =>
-                Object.values(
-                    get(falcorCache, dataPath(options({geoAttribute, geoName})), {})
-                )[0]?.[vc] || '');
-            setText(convertToEditorText(textToSave))
-            onChange(
-                JSON.stringify({
-                    bgColor,
-                    text: convertToEditorText(textToSave),
-                    geoAttribute,
-                    geoid,
-                    visibleCols
-                })
-            )
-        }
-    }, [falcorCache, geoAttribute, geoid, visibleCols])
+        load()
+    }, [dataSource, version, geoid, geoAttribute, visibleCols, bgColor]);
 
     return (
         <div className='w-full'>
@@ -276,6 +279,37 @@ const View = ({value}) => {
 
 export default {
     "name": 'County Text Box',
+    "variables": [
+        // pgEnv, geoid, version, geoAttribute, visibleCols, id, bgColor
+        {
+            name: 'pgEnv',
+            default: 'hazmit_dms',
+            hidden: true
+        },
+        {
+            name: 'geoid',
+            default: '36001',
+        },
+        {
+            name: 'version',
+            hidden: true
+        },
+        {
+            name: 'geoAttribute',
+            hidden: true
+        },
+        {
+            name: 'visibleCols',
+            default: [],
+            hidden: true
+        },
+        {
+            name: 'bgColor',
+            default: 'rgba(0,0,0,0)',
+            hidden: true
+        },
+    ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }
