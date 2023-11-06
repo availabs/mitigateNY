@@ -1,7 +1,7 @@
 import React from "react";
 import get from "lodash/get.js";
 
-export const ProcessDataForMap = (data=[], base) => React.useMemo(() => {
+export const ProcessDataForMap = (data=[], base) =>  {
     const baseValues = [...new Set(data.map(d => d[base]))];
     const nri_categories = new Set([]);
 
@@ -28,5 +28,5 @@ export const ProcessDataForMap = (data=[], base) => React.useMemo(() => {
     });
 
     return { processed_data, nri_categories: [...nri_categories] };
-}, [data, base]);
+};
 

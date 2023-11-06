@@ -12,27 +12,21 @@ import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelect
 import {metaData} from "./components/config.js";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
-const Edit = ({value, onChange}) => {
-    const {falcor, falcorCache} = useFalcor();
+const ealSourceId = 343;
+const nriSourceId = 159;
+const nriTractsSourceId = 346;
 
-    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
-    const baseUrl = '/';
+const dataSourceMapping = {
+    avail_counties: ealSourceId,
+    nri: nriSourceId,
+    nri_tracts: nriTractsSourceId
+}
 
-    const [dataSource, setDataSource] = useState(cachedData?.dataSource || 'avail_counties');
-    const [dataSourceSRCId, setDataSourceSRCId] = useState(cachedData?.dataSourceSRCId);
-    const [dataSourceViewId, setDataSourceViewId] = useState(cachedData?.dataSourceViewId);
-    const [typeId, setTypeId] = useState(cachedData?.typeId);
-
-    const [loading, setLoading] = useState(true);
-    const [status, setStatus] = useState(cachedData?.status);
-    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
-    const [filters, setFilters] = useState(cachedData?.filters || {});
-    const [filterValue, setFilterValue] = useState(cachedData?.filterValue || {});
-    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
-    const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);
-    const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
-    const [hazard, setHazard] = useState(cachedData?.hazard);
-
+async function getData({
+                           dataSource, geoid, filters, dataSourceViewId, hazard, visibleCols,
+                           pageSize, sortBy,  filterValue, dataSourceSRCId,
+                       }, falcor) {
+    let typeId;
     const countyView = metaData.dataSources.find(d => d.value === dataSource)?.geomView;
 
     const nriGeoCol = metaData.dataSources.find(d => d.value === dataSource)?.geomCol,
@@ -57,98 +51,49 @@ const Edit = ({value, onChange}) => {
         geoNamesPath = view_id => ["dama", pgEnv, "viewsbyId", view_id, "options", geoNamesOptions];
 
     const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
+    filters = {
+        ...filters,
+        ...nriAttributes
+            .filter(c => c.filter)
+            .reduce((acc, curr) => ({...acc, [curr.label]: curr.filter}), {})
+    }
 
-    useEffect(() => {
-        const ealSourceId = 343;
-        const nriSourceId = 159;
-        const nriTractsSourceId = 346;
+    if (dataSource === 'avail_counties') {
+        const dependencyRes = await falcor.get(dependencyPath(dataSourceViewId));
+        const deps = get(dependencyRes, ["json", ...dependencyPath(dataSourceViewId), "dependencies"]);
+        typeId = deps.find(dep => dep.type === 'nri')?.view_id;
 
-        const dataSourceMapping = {
-            avail_counties: ealSourceId,
-            nri: nriSourceId,
-            nri_tracts: nriTractsSourceId
+        if (!typeId) {
+            return {}
         }
-        setDataSourceSRCId(dataSourceMapping[dataSource]);
-    }, [dataSource]);
+    } else {
+        typeId = dataSourceViewId;
+    }
 
-    useEffect(() => {
-        async function setView() {
-            setLoading(true)
-            console.log('data source', dataSource)
-            if (dataSource === 'avail_counties') {
-                const dependencyRes = await falcor.get(dependencyPath(dataSourceViewId));
-                const deps = get(dependencyRes, ["json", ...dependencyPath(dataSourceViewId), "dependencies"]);
-                const typeId = deps.find(dep => dep.type === 'nri');
+    if (!typeId) {
+        return {};
+    }
 
-                if (!typeId) {
-                    setLoading(false)
-                    setStatus('This component only supports EAL versions that use Fusion data.')
-                    return Promise.resolve();
-                }
-                setTypeId(typeId.view_id);
-                console.log('setting typeid', typeId.view_id)
-            } else {
-                setTypeId(dataSourceViewId)
-            }
-            setLoading(false)
-        }
+    const geoNameLenRes = await falcor.get([...geoNamesPath(countyView), "length"]);
+    const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView), "length"], 0);
 
-        setView();
-    }, [dataSourceSRCId, dataSourceViewId]);
+    if (geoNameLen) {
+        await falcor.get([...geoNamesPath(countyView), "databyIndex", {
+            from: 0,
+            to: geoNameLen - 1
+        }, ["geoid", "namelsad"]]);
+    }
 
-    useEffect(() => {
-        async function getData() {
-            if (!geoid || !hazard) {
-                console.log('hazard', hazard, !hazard)
-                !geoid && setStatus('Please Select a Geography');
-                !hazard && setStatus('Please Select a Hazard');
-                return;
-            } else {
-                setStatus(undefined)
-            }
-            setLoading(true);
-            setStatus(undefined);
-            setFilters({
-                    ...filters,
-                    ...nriAttributes
-                        .filter(c => c.filter)
-                        .reduce((acc, curr) => ({...acc, [curr.label]: curr.filter}), {})
-                }
-            )
+    const lenRes = await falcor.get([...nriPath(typeId), nriLenOptions, 'length']);
+    const len = Math.min(get(lenRes, ['json', ...nriPath(typeId), nriLenOptions, 'length'], 0), 250),
+        nriIndices = {from: 0, to: len - 1};
 
+    await falcor.get(
+        [...nriPath(typeId), nriOptions, 'databyIndex', nriIndices, nriAttributes.map(v => v.value)],
+        ['dama', pgEnv, 'views', 'byId', typeId, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
+    );
 
-            if (!typeId) {
-                setLoading(false)
-                setStatus('This component only supports EAL versions that use nri data.')
-                return Promise.resolve();
-            }
-
-            const geoNameLenRes = await falcor.get([...geoNamesPath(countyView), "length"]);
-            const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView), "length"], 0);
-
-            if (geoNameLen) {
-                await falcor.get([...geoNamesPath(countyView), "databyIndex", {
-                    from: 0,
-                    to: geoNameLen - 1
-                }, ["geoid", "namelsad"]]);
-            }
-
-            console.log('type id', typeId)
-            const lenRes = await falcor.get([...nriPath(typeId), nriLenOptions, 'length']);
-            const len = Math.min(get(lenRes, ['json', ...nriPath(typeId), nriLenOptions, 'length'], 0), 250),
-                nriIndices = {from: 0, to: len - 1};
-
-            await falcor.get(
-                [...nriPath(typeId), nriOptions, 'databyIndex', nriIndices, nriAttributes.map(v => v.value)],
-                ['dama', pgEnv, 'views', 'byId', typeId, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
-            );
-
-            setLoading(false);
-
-        }
-
-        getData()
-    }, [geoid, hazard, dataSource, dataSourceSRCId, dataSourceViewId, typeId]);
+    const falcorCache = falcor.getCache();
 
     const geoNames = Object.values(get(falcorCache, [...geoNamesPath(countyView), "databyIndex"], {}));
     const dataModifier = data => {
@@ -157,13 +102,10 @@ const Edit = ({value, onChange}) => {
         })
         return data
     };
-    const data =
-        useMemo(() =>
-                Object.values(get(falcorCache,
-                    [...nriPath(typeId), nriOptions, 'databyIndex'],
-                    {})
-                ),
-            [falcorCache, typeId, nriOptions, nriAttributes, hazard]);
+    const data = Object.values(get(falcorCache,
+        [...nriPath(typeId), nriOptions, 'databyIndex'],
+        {}));
+
     dataModifier(data);
 
     const columns =
@@ -181,28 +123,72 @@ const Edit = ({value, onChange}) => {
                 }
             });
 
-    const cols = metaData.columns(hazard);
-
     const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
 
+    return {
+        dataSource,
+        dataSourceSRCId,
+        dataSourceViewId,
+        typeId,
+        hazard,
+        geoid,
+        data,
+        columns,
+        visibleCols,
+        pageSize, sortBy, filterValue,
+        attributionData,
+        nriAttributes,
+        anchorCols
+    }
+}
+
+const Edit = ({value, onChange}) => {
+    const {falcor, falcorCache} = useFalcor();
+
+    let cachedData = value && isJson(value) ? JSON.parse(value) : {};
+    const baseUrl = '/';
+
+    const [dataSource, setDataSource] = useState(cachedData?.dataSource || 'avail_counties');
+    const [dataSourceSRCId, setDataSourceSRCId] = useState(cachedData?.dataSourceSRCId || 343);
+    const [dataSourceViewId, setDataSourceViewId] = useState(cachedData?.dataSourceViewId || 837);
+
+    const [loading, setLoading] = useState(true);
+    const [status, setStatus] = useState(cachedData?.status);
+    const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
+    const [filters, setFilters] = useState(cachedData?.filters || {});
+    const [filterValue, setFilterValue] = useState(cachedData?.filterValue || {});
+    const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
+    const [pageSize, setPageSize] = useState(cachedData?.pageSize || 5);
+    const [sortBy, setSortBy] = useState(cachedData?.sortBy || {});
+    const [hazard, setHazard] = useState(cachedData?.hazard);
+
     useEffect(() => {
-            if (!loading) {
-                onChange(JSON.stringify(
-                    {
-                        attributionData,
-                        typeId,
-                        status,
-                        geoid,
-                        pageSize, sortBy,
-                        data, columns, filters, filterValue, visibleCols, nriAttributes, hazard,
-                        dataSource, dataSourceSRCId, dataSourceViewId
-                    }))
+        async function load(){
+            if (!geoid || !hazard) {
+                !geoid && setStatus('Please Select a Geography');
+                !hazard && setStatus('Please Select a Hazard');
+                return;
+            } else {
+                setStatus(undefined)
             }
-        },
-        [attributionData, status, typeId, geoid, pageSize, sortBy,
-            data, columns, filters, filterValue, visibleCols, nriAttributes, hazard,
-            dataSource, dataSourceSRCId, dataSourceViewId
-        ]);
+            setLoading(true);
+            setStatus(undefined);
+            const data = await getData({
+                dataSource, dataSourceSRCId, dataSourceViewId, geoid, filters, hazard, visibleCols,
+                pageSize, sortBy,  filterValue,
+            }, falcor);
+
+            onChange(JSON.stringify({
+                ...data,
+            }));
+
+            setLoading(false);
+        }
+
+        load()
+    }, [geoid, hazard, dataSource, dataSourceSRCId, dataSourceViewId,
+        pageSize, sortBy, filters, filterValue, visibleCols
+    ]);
 
     return (
         <div className='w-full'>
@@ -214,10 +200,10 @@ const Edit = ({value, onChange}) => {
                         types={metaData.dataSources}
                         type={dataSource}
                         setType={e => {
+                            setDataSourceSRCId(dataSourceMapping[e])
                             setDataSourceViewId(undefined)
-                            setDataSource(e);
                             setVisibleCols([]);
-                            anchorCols = []
+                            setDataSource(e);
                         }}
                     />
                     <VersionSelectorSearchable
@@ -229,8 +215,8 @@ const Edit = ({value, onChange}) => {
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
                     <HazardSelectorSimple hazard={hazard} setHazard={setHazard}/>
                     <RenderColumnControls
-                        cols={nriAttributes.map(a => a.label)}
-                        anchorCols={anchorCols ? [anchorCols] : []}
+                        cols={cachedData.nriAttributes?.map(a => a.label)}
+                        anchorCols={cachedData.anchorCols ? [cachedData.anchorCols] : []}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
                         filters={filters}
@@ -248,13 +234,13 @@ const Edit = ({value, onChange}) => {
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <RenderNRITable
                                 geoid={geoid}
-                                data={data}
-                                columns={columns}
-                                nriAttributes={nriAttributes}
+                                data={cachedData.data}
+                                columns={cachedData.columns}
+                                nriAttributes={cachedData.nriAttributes}
                                 filterValue={filterValue}
                                 pageSize={pageSize}
                                 sortBy={sortBy}
-                                attributionData={attributionData}
+                                attributionData={cachedData.attributionData}
                                 baseUrl={baseUrl}
                             />
 
@@ -287,9 +273,57 @@ const View = ({value}) => {
 }
 
 
+
 export default {
     "name": 'Table: NRI',
     "type": 'Table',
+    "variables": [
+        {
+            name: 'dataSource',
+            default: 'avail_counties',
+            hidden: true
+        },
+        {
+            name: 'dataSourceSRCId',
+            default: 343,
+            hidden: true
+        },
+        {
+            name: 'dataSourceViewId',
+            default: 837,
+            hidden: true
+        },
+        {
+            name: 'typeId',
+            default: 837,
+            hidden: true
+        },
+        {
+            name: 'geoid',
+            default: '36',
+        },
+        {
+            name: 'filters',
+            default: [],
+            hidden: true
+        },
+        {
+            name: 'filterValue',
+            default: {},
+            hidden: true
+        },
+        {
+            name: 'visibleCols',
+            default: [],
+            hidden: true
+        },
+        {
+            name: 'sortBy',
+            default: {},
+            hidden: true
+        },
+    ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }

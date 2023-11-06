@@ -394,6 +394,7 @@ const View = ({value}) => {
 export default {
     "name": 'Table: Open Fema Data',
     "type": 'Table',
+    deprecated: true,
     "EditComp": Edit,
     "ViewComp": View
 }

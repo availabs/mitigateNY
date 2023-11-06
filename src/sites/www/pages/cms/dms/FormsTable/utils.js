@@ -137,7 +137,7 @@ const filterData = ({geoAttribute, geoid, data, actionType}) =>
 export async function setMeta({
                                   formsConfig,
                                   visibleCols,
-                                  data, setData,
+                                  data,
                                   metaLookupByViewId,
                                   geoAttribute, geoid,
                                   actionType,
@@ -181,16 +181,16 @@ export async function setMeta({
                 })
                 return row;
             })
-        setData(handleExpandableRows(
+        return handleExpandableRows(
             dataWithMeta,
             formsConfig.attributes,
             visibleCols.map(vc => ({
                 name: vc,
                 accessor: getColAccessor(fn, vc, formsConfig.attributes?.find(attr => attr.name === vc)?.origin, form)
             }))
-        ))
+        )
     } else {
-        setData(handleExpandableRows(
+        return handleExpandableRows(
             filterData({
                 geoAttribute: getColAccessor(fn, geoAttribute, formsConfig.attributes?.find(attr => attr.name === geoAttribute)?.origin, form),
                 geoid,
@@ -202,6 +202,6 @@ export async function setMeta({
                 name: vc,
                 accessor: getColAccessor(fn, vc, formsConfig.attributes?.find(attr => attr.name === vc)?.origin, form)
             }))
-        ))
+        )
     }
 }

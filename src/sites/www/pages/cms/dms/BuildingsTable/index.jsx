@@ -390,6 +390,7 @@ const View = ({value}) => {
 export default {
     "name": 'Table: Buildings',
     "type": 'Table',
+    deprecated: true,
     "EditComp": Edit,
     "ViewComp": View
 }

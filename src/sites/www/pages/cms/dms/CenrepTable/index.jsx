@@ -38,6 +38,182 @@ const parseJson = str => {
     }
 }
 
+async function getMeta({dataSources, dataSource, visibleCols, geoid}, falcor){
+    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns;
+    const metaViewIdLookupCols =
+        metadata?.filter(md => visibleCols.includes(md.name) && ['meta-variable', 'geoid-variable'].includes(md.display) && md.meta_lookup);
+
+    if(metaViewIdLookupCols?.length){
+        const data =
+            await metaViewIdLookupCols
+                .filter(md => parseJson(md.meta_lookup)?.view_id)
+                .reduce(async (acc, md) => {
+                    const prev = await acc;
+                    const metaLookup = parseJson(md.meta_lookup);
+                    const options = JSON.stringify({
+                        aggregatedLen: metaLookup.aggregatedLen,
+                        filter: {
+                            ...metaLookup?.geoAttribute && {[`substring(${metaLookup.geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
+                            ...(metaLookup?.filter || {})
+                        }
+                    });
+                    const attributes = metaLookup.attributes;
+                    const keyAttribute = metaLookup.keyAttribute;
+
+                    const lenPath = ['dama', pgEnv, 'viewsbyId', metaLookup.view_id, 'options', options, 'length'];
+
+                    const lenRes = await falcor.get(lenPath);
+                    const len = get(lenRes, ['json', ...lenPath], 0);
+
+                    if(!len) return Promise.resolve();
+
+                    const dataPath = ['dama', pgEnv, 'viewsbyId', metaLookup.view_id, 'options', options, 'databyIndex'];
+                    const dataRes = await falcor.get([...dataPath, {from: 0, to: len - 1}, attributes]);
+                    const data = Object.values(get(dataRes, ['json', ...dataPath], {}))
+                        .reduce((acc, d) => (
+                            {
+                                ...acc,
+                                ...{[d[keyAttribute]]: {...attributes.reduce((acc, attr) => ({...acc, ...{[attr]: d[attr]}}), {})}}
+                            }
+                        ), {})
+
+                    return {...prev, ...{[md.name]: data}};
+                }, {});
+        // setMetaLookupByViewId(data)
+        return data;
+    }
+    return {}
+}
+
+const assignMeta = ({
+                        metadata,
+                        visibleCols,
+                        dataPath,
+                        options,
+                        groupBy,
+                        fn,
+                        notNull,
+                        geoAttribute,
+                        geoid,
+                        metaLookupByViewId
+                    }, falcor) => {
+    const falcorCache = falcor.getCache();
+
+    const metaLookupCols =
+        metadata?.filter(md =>
+            visibleCols.includes(md.name) &&
+            ['meta-variable', 'geoid-variable'].includes(md.display)
+        );
+
+    if(metaLookupCols?.length){
+        return Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {}))
+            .map(row => {
+                metaLookupCols.forEach(mdC => {
+                    const currentMetaLookup = parseJson(mdC.meta_lookup);
+                    const currentColName = fn[mdC.name] || mdC.name;
+                    if(currentMetaLookup?.view_id){
+                        const currentViewIdLookup = metaLookupByViewId[mdC.name] || [];
+                        const currentKeys = row[currentColName];
+                        if(currentKeys?.includes(',')){
+                            row[currentColName] = currentKeys.split(',').map(ck => currentViewIdLookup[ck.trim()]?.name || ck.trim()).join(', ')
+                        }else{
+                            row[currentColName] = currentViewIdLookup[currentKeys]?.name || currentKeys;
+                        }
+                    }else{
+                        row[currentColName] = currentMetaLookup[row[currentColName]] || row[currentColName];
+                    }
+                })
+                return row;
+            })
+    }
+
+    return Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {}))
+
+}
+
+async function getData({
+                           dataSources, dataSource, geoAttribute,
+                           geoid,
+                           pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
+                           filters, filterValue, visibleCols, hiddenCols,
+                           version
+                       }, falcor) {
+    const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
+        aggregatedLen: Boolean(groupBy.length),
+        filter: {
+            ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
+        },
+        exclude: {
+            ...notNull.length && notNull.reduce((acc, col) => ({...acc, [col]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
+        },
+        groupBy: groupBy,
+    });
+
+    const lenPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
+    const dataPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
+    const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
+        attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
+
+    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns ||
+                     dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
+                     [];
+
+    await falcor.get(lenPath(options({groupBy, notNull, geoAttribute, geoid})));
+    const len = Math.min(
+        get(falcor.getCache(), lenPath(options({groupBy, notNull, geoAttribute, geoid})), 0),
+        590);
+
+    await falcor.get(
+        [...dataPath(options({groupBy, notNull, geoAttribute, geoid})),
+            {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
+
+    await falcor.get([...attributionPath, attributionAttributes]);
+
+    const metaLookupByViewId = await getMeta({dataSources, dataSource, visibleCols, geoid}, falcor);
+
+    const data = assignMeta({
+        metadata,
+        visibleCols,
+        dataPath,
+        options,
+        groupBy,
+        fn,
+        notNull,
+        geoAttribute,
+        geoid,
+        metaLookupByViewId
+    }, falcor);
+
+    const columns = visibleCols
+        .map(c => metadata.find(md => md.name === c))
+        .filter(c => c && !hiddenCols.includes(c.name))
+        .map(col => {
+            return {
+                Header: col.display_name || col.name,
+                accessor: fn[col.name] || col.name,
+                align: col.align || 'right',
+                width: colSizes[col.name] || '15%',
+                filter: col.filter || filters[col.name],
+                info: col.desc,
+                ...col,
+                type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
+            }
+        })
+
+    addTotalRow({showTotal, data, columns, setLoading: () => {}});
+
+    const attributionData =  get(falcor.getCache(), attributionPath, {});
+
+    return {
+        attributionData,
+        geoid,
+        pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
+        data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
+        dataSource, dataSources, version
+    }
+}
+
+
 const Edit = ({value, onChange}) => {
     const {falcor, falcorCache} = useFalcor();
 
@@ -61,30 +237,12 @@ const Edit = ({value, onChange}) => {
     const [notNull, setNotNull] = useState(cachedData?.notNull || []);
     const [showTotal, setShowTotal] = useState(cachedData?.showTotal || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
-    const [metaLookupByViewId, setMetaLookupByViewId] = useState({});
     const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
     const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
 
     const category = 'Cenrep';
 
-    const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
-        aggregatedLen: Boolean(groupBy.length),
-        filter: {
-            ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
-        },
-        exclude: {
-            ...notNull.length && notNull.reduce((acc, col) => ({...acc, [col]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
-        },
-        groupBy: groupBy,
-    });
-
-    const lenPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
-    const dataPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
     const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
-    const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
-          attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
-
-    // const columnsToFetch = useMemo(() => visibleCols.map(vc => vc), [visibleCols, fn]);
 
     useEffect(() => {
         async function getData() {
@@ -94,7 +252,6 @@ const Edit = ({value, onChange}) => {
             // fetch data sources from categories that match passed prop
             await falcor.get(dataSourceByCategoryPath);
             setDataSources(get(falcor.getCache(), [...dataSourceByCategoryPath, 'value'], []))
-            // fetch columns, data
 
             setLoading(false);
 
@@ -111,10 +268,11 @@ const Edit = ({value, onChange}) => {
         geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
     }, [dataSources, dataSource]);
 
+
+
     useEffect(() => {
-        // gets 250 rows
-        async function getData() {
-            if(!visibleCols?.length || !version || !dataSource) {
+        async function load(){
+            if(dataSources && (!visibleCols?.length || !version || !dataSource)) {
                 !dataSource && setStatus('Please select a Datasource.');
                 !version && setStatus('Please select a version.');
                 !visibleCols?.length && setStatus('Please select columns.');
@@ -131,163 +289,34 @@ const Edit = ({value, onChange}) => {
 
             setLoading(true);
             setStatus(undefined);
-            await falcor.get(lenPath(options({groupBy, notNull, geoAttribute, geoid})));
-            const len = Math.min(
-                get(falcor.getCache(), lenPath(options({groupBy, notNull, geoAttribute, geoid})), 0),
-                590);
 
-            await falcor.get(
-                [...dataPath(options({groupBy, notNull, geoAttribute, geoid})),
-                {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
-            await falcor.get([...attributionPath, attributionAttributes]);
+            const data = await getData({
+                dataSources, dataSource, geoAttribute, geoid,
+                pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
+                filters, filterValue, visibleCols, hiddenCols,
+                version
+            }, falcor);
+
+            onChange(JSON.stringify({
+                ...data,
+            }));
 
             setLoading(false);
+
         }
 
-        getData()
-    }, [dataSource, version, geoid, visibleCols, fn, groupBy, notNull, geoAttribute]);
+        load()
+    }, [dataSources, dataSource, geoid, geoAttribute,
+        pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
+        filters, filterValue, visibleCols, hiddenCols,
+        version
+    ]);
 
-    useEffect(() => {
-        // make this a general purpose util?
-        async function getMeta(){
-            const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns;
-            const metaViewIdLookupCols =
-                metadata?.filter(md => visibleCols.includes(md.name) && ['meta-variable', 'geoid-variable'].includes(md.display) && md.meta_lookup);
+    const data = cachedData.data;
 
-            if(metaViewIdLookupCols?.length){
-                const data =
-                    await metaViewIdLookupCols
-                    .filter(md => parseJson(md.meta_lookup)?.view_id)
-                    .reduce(async (acc, md) => {
-                        const prev = await acc;
-                            const metaLookup = parseJson(md.meta_lookup);
-                            const options = JSON.stringify({
-                                aggregatedLen: metaLookup.aggregatedLen,
-                                filter: {
-                                    ...metaLookup?.geoAttribute && {[`substring(${metaLookup.geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
-                                    ...(metaLookup?.filter || {})
-                                }
-                            });
-                            const attributes = metaLookup.attributes;
-                            const keyAttribute = metaLookup.keyAttribute;
+    const attributionData = cachedData.attributionData;
 
-                            const lenPath = ['dama', pgEnv, 'viewsbyId', metaLookup.view_id, 'options', options, 'length'];
-
-                            const lenRes = await falcor.get(lenPath);
-                            const len = get(lenRes, ['json', ...lenPath], 0);
-
-                            if(!len) return Promise.resolve();
-
-                            const dataPath = ['dama', pgEnv, 'viewsbyId', metaLookup.view_id, 'options', options, 'databyIndex'];
-                            const dataRes = await falcor.get([...dataPath, {from: 0, to: len - 1}, attributes]);
-                            const data = Object.values(get(dataRes, ['json', ...dataPath], {}))
-                                .reduce((acc, d) => (
-                                    {
-                                        ...acc,
-                                        ...{[d[keyAttribute]]: {...attributes.reduce((acc, attr) => ({...acc, ...{[attr]: d[attr]}}), {})}}
-                                    }
-                                ), {})
-
-                            return {...prev, ...{[md.name]: data}};
-                        }, {});
-                setMetaLookupByViewId(data)
-            }
-        }
-
-        getMeta();
-    }, [dataSource, visibleCols, geoid]);
-
-    // const fetchData = useCallback(async ({currentPage, pageSize}) => {
-    //     const from = currentPage * pageSize,
-    //         to = (currentPage * pageSize) + pageSize - 1;
-    //     console.log('called', currentPage, pageSize, from, to)
-    //
-    //     await falcor.get(lenPath);
-    //     const len = Math.min(get(falcor.getCache(), lenPath, 0), 250);
-    //
-    //     const dataRes = await falcor.get([...dataPath, {from, to}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
-    //     const data = Object.values(get(dataRes, ['json', ...dataPath], {}))
-    //
-    //     console.log('returning', len, data)
-    //     return {length: len, data }
-    // }, [dataSource, version, geoid, visibleCols, fn, groupBy, notNull, geoAttribute]);
-
-    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns;
-
-    const data = useMemo(() => {
-        const metaLookupCols =
-            metadata?.filter(md =>
-                visibleCols.includes(md.name) &&
-                ['meta-variable', 'geoid-variable'].includes(md.display)
-            );
-
-        if(metaLookupCols?.length){
-            return Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {}))
-                .map(row => {
-                    metaLookupCols.forEach(mdC => {
-                        const currentMetaLookup = parseJson(mdC.meta_lookup);
-                        const currentColName = fn[mdC.name] || mdC.name;
-                        if(currentMetaLookup?.view_id){
-                            const currentViewIdLookup = metaLookupByViewId[mdC.name] || [];
-                            const currentKeys = row[currentColName];
-                            if(currentKeys?.includes(',')){
-                                row[currentColName] = currentKeys.split(',').map(ck => currentViewIdLookup[ck.trim()]?.name || ck.trim()).join(', ')
-                            }else{
-                                row[currentColName] = currentViewIdLookup[currentKeys]?.name || currentKeys;
-                            }
-                        }else{
-                            row[currentColName] = currentMetaLookup[row[currentColName]] || row[currentColName];
-                        }
-                    })
-                    return row;
-                })
-        }
-
-        return Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {}))
-
-        }, [falcorCache, metaLookupByViewId, metadata, visibleCols,
-                  groupBy, notNull, geoAttribute, geoid]);
-
-    const attributionData = get(falcorCache, attributionPath, {});
-
-    const columns =
-        visibleCols
-            .map(c => metadata.find(md => md.name === c))
-            .filter(c => c && !hiddenCols.includes(c.name))
-            .map(col => {
-                return {
-                    Header: col.display_name || col.name,
-                    accessor: fn[col.name] || col.name,
-                    align: col.align || 'right',
-                    width: colSizes[col.name] || '15%',
-                    filter: col.filter || filters[col.name],
-                    info: col.desc,
-                    ...col,
-                    type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
-                }
-            });
-
-    useEffect(() => {
-        addTotalRow({showTotal, data, columns, setLoading});
-    }, [showTotal, data, columns])
-
-    useEffect(() => {
-            if (!loading) {
-                onChange(JSON.stringify(
-                    {
-                        attributionData,
-                        status,
-                        geoid,
-                        pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
-                        data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
-                        dataSource, dataSources, version
-                    }))
-            }
-        },
-        [attributionData, status, geoid, pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
-            data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
-            dataSource, dataSources, version
-        ]);
+    const columns = cachedData.columns;
 
     return (
         <div className='w-full'>
@@ -401,6 +430,74 @@ const View = ({value}) => {
 export default {
     "name": 'Table: Cenrep',
     "type": 'Table',
+    "variables": [
+        {
+            name: 'dataSources',
+            hidden: true
+        },
+        {
+            name: 'dataSource',
+            hidden: true
+        },
+        {
+            name: 'version',
+            hidden: true
+        },
+        {
+            name: 'geoAttribute',
+            hidden: true
+        },
+        {
+            name: 'geoid',
+            default: '36',
+            hidden: true
+        },
+        {
+            name: 'pageSize',
+            hidden: true
+        },
+        {
+            name: 'sortBy',
+            hidden: true
+        },
+        {
+            name: 'groupBy',
+            hidden: true
+        },
+        {
+            name: 'fn',
+            hidden: true
+        },
+        {
+            name: 'notNull',
+            hidden: true
+        },
+        {
+            name: 'showTotal',
+            hidden: true
+        },
+        {
+            name: 'colSizes',
+            hidden: true
+        },
+        {
+            name: 'filters',
+            hidden: true
+        },
+        {
+            name: 'filterValue',
+            hidden: true
+        },
+        {
+            name: 'visibleCols',
+            hidden: true
+        },
+        {
+            name: 'hiddenCols',
+            hidden: true
+        },
+    ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }

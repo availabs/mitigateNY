@@ -29,15 +29,89 @@ const isValid = ({groupBy, fn, columnsToFetch}) => {
     }
 }
 
+async function getData({   formsConfig, actionType, form,
+                           geoAttribute, geoid, metaLookupByViewId,
+                           pageSize, sortBy, groupBy, fn, notNull, colSizes,
+                           filters, filterValue, visibleCols, hiddenCols
+                       }, falcor) {
+    const d = await dmsDataLoader(
+        {
+            format: formsConfig,
+            children: [
+                {
+                    type: () => {
+                    },
+                    action: 'load',
+                    path: '/0/250',
+                    filter: {
+                        // fromIndex: path => path.split('/')[1],
+                        // toIndex: path => path.split('/')[2],
+                        options: JSON.stringify({
+                            aggregatedLen: groupBy?.length,
+                            filter: {
+                                ...form === 'Actions' && actionType && {[`data->>'idKey'`]: [actionType]}
+                            },
+                            exclude: {
+                                ...notNull.length &&
+                                notNull.reduce((acc, col) => (
+                                    {...acc,
+                                        [
+                                            formsConfig?.attributes?.find(attr =>
+                                                attr.name.toLowerCase().split(' as ')[0] === col.toLowerCase())?.origin === 'calculated-column' ? col :
+                                                `${getAccessor(col, form)}'${col}'`
+                                            ]:
+                                            ['number', 'integer'].includes(formsConfig?.attributes?.find(attr => attr.name.toLowerCase().split(' as ')[0] === col.toLowerCase())?.type) ? ['null'] : ['null', '', ' ']}) , {}) // , '', ' ' error out for numeric columns.
+                            },
+                            groupBy: groupBy.map(gb => formsConfig?.attributes?.find(attr => attr.name.toLowerCase().split(' as ')[0] === gb.toLowerCase())?.origin === 'calculated-column' ? gb : `${getAccessor(gb, form)}'${gb}'`)
+                        }),
+                        attributes: [...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin, form))]
+                    },
+                }
+            ]
+        },
+        '/0/250'
+    );
+
+    const data = await setMeta({
+        formsConfig: formsConfig,
+        visibleCols,
+        data: d,
+        metaLookupByViewId,
+        geoAttribute, geoid, actionType, fn, form
+    })
+
+    const columns = visibleCols
+        .map(c => formsConfig?.attributes?.find(md => md.name === c))
+        .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
+        .map(col => {
+            const acc = getColAccessor(fn, col.name, col.origin, form);
+            return {
+                Header: col.display_name,
+                accessor: acc,
+                align: col.align || 'right',
+                width: colSizes[col.name] || '15%',
+                filter: col.filter || filters[col.display_name],
+                info: col.desc,
+                ...col,
+                type: fn[col.display_name]?.includes('array_to_string') ? 'string' : col.type
+            }
+        });
+
+    return {
+        geoid,
+        pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes, form, formsConfig,
+        data, columns, metaLookupByViewId, filters, filterValue, visibleCols, geoAttribute, actionType,
+    }
+}
+
 const Edit = ({value, onChange}) => {
     const {falcor, falcorCache} = useFalcor();
 
     let cachedData = value && isJson(value) ? JSON.parse(value) : {};
     const baseUrl = '/';
     const [form, setForm] = useState(cachedData?.form || 'Actions');
-    const [data, setData] = useState(cachedData?.data || []);
     const [geoAttribute, setGeoAttribute] = useState(cachedData?.geoAttribute);
-    const [metaLookupByViewId, setMetaLookupByViewId] = useState({}); // not caching
+    const [metaLookupByViewId, setMetaLookupByViewId] = useState(cachedData.metaLookupByViewId || {});
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(cachedData?.status);
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
@@ -50,7 +124,7 @@ const Edit = ({value, onChange}) => {
     const [notNull, setNotNull] = useState(cachedData?.notNull || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [actionType, setActionType] = useState(cachedData?.actionType || 'shmp')
-    const [formsConfig, setFormsConfig] = useState()
+    const [formsConfig, setFormsConfig] = useState(cachedData.formsConfig)
     const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
     const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
 
@@ -97,8 +171,7 @@ const Edit = ({value, onChange}) => {
     useEffect(() => {
         if (!formsConfig) return;
 
-        // gets 250 rows
-        async function getData() {
+        async function load(){
             if (!visibleCols?.length) {
                 !visibleCols?.length && setStatus('Please select columns.');
 
@@ -115,94 +188,28 @@ const Edit = ({value, onChange}) => {
             setLoading(true);
             setStatus(undefined);
 
-            const d = await dmsDataLoader(
-                {
-                    format: formsConfig,
-                    children: [
-                        {
-                            type: () => {
-                            },
-                            action: 'load',
-                            path: '/0/250',
-                            filter: {
-                                // fromIndex: path => path.split('/')[1],
-                                // toIndex: path => path.split('/')[2],
-                                options: JSON.stringify({
-                                    aggregatedLen: groupBy?.length,
-                                    filter: {
-                                        ...form === 'Actions' && actionType && {[`data->>'idKey'`]: [actionType]}
-                                    },
-                                    exclude: {
-                                        ...notNull.length &&
-                                        notNull.reduce((acc, col) => (
-                                            {...acc,
-                                                [
-                                                    formsConfig?.attributes?.find(attr =>
-                                                        attr.name.toLowerCase().split(' as ')[0] === col.toLowerCase())?.origin === 'calculated-column' ? col :
-                                                        `${getAccessor(col, form)}'${col}'`
-                                                    ]:
-                                                ['number', 'integer'].includes(formsConfig?.attributes?.find(attr => attr.name.toLowerCase().split(' as ')[0] === col.toLowerCase())?.type) ? ['null'] : ['null', '', ' ']}) , {}) // , '', ' ' error out for numeric columns.
-                                    },
-                                    groupBy: groupBy.map(gb => formsConfig?.attributes?.find(attr => attr.name.toLowerCase().split(' as ')[0] === gb.toLowerCase())?.origin === 'calculated-column' ? gb : `${getAccessor(gb, form)}'${gb}'`)
-                                }),
-                                attributes: [...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin, form))]
-                            },
-                        }
-                    ]
-                },
-                '/0/250'
-            );
+            const data = await getData({
+                formsConfig, actionType, form,
+                geoAttribute, geoid, metaLookupByViewId,
+                pageSize, sortBy, groupBy, fn, notNull, colSizes,
+                filters, filterValue, visibleCols, hiddenCols
+            }, falcor);
 
-            await setMeta({
-                formsConfig: formsConfig,
-                visibleCols,
-                data: d,
-                setData,
-                metaLookupByViewId,
-                geoAttribute, geoid, actionType, fn, form
-            })
+            onChange(JSON.stringify({
+                ...data,
+            }));
 
             setLoading(false);
+
         }
 
-        getData()
-    }, [form, formsConfig, geoid, visibleCols, fn, groupBy, notNull, geoAttribute, metaLookupByViewId, actionType]);
-
-
-    // const attributionData = get(falcorCache, attributionPath, {});
-
-    const columns =
-        visibleCols
-            .map(c => formsConfig?.attributes?.find(md => md.name === c))
-            .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
-            .map(col => {
-                const acc = getColAccessor(fn, col.name, col.origin, form);
-                return {
-                    Header: col.display_name,
-                    accessor: acc,
-                    align: col.align || 'right',
-                    width: colSizes[col.name] || '15%',
-                    filter: col.filter || filters[col.display_name],
-                    info: col.desc,
-                    ...col,
-                    type: fn[col.display_name]?.includes('array_to_string') ? 'string' : col.type
-                }
-            });
-    console.log('cols', columns, fn)
-    useEffect(() => {
-            if (!loading) {
-                onChange(JSON.stringify(
-                    {
-                        status,
-                        geoid,
-                        pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes, form,
-                        data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
-                    }))
-            }
-        },
-        [status, geoid, pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes, form,
-            data, columns, filters, filterValue, visibleCols, geoAttribute, actionType
-        ]);
+        load()
+    }, [
+        formsConfig, actionType, form,
+        geoAttribute, geoid, metaLookupByViewId,
+        pageSize, sortBy, groupBy, fn, notNull, colSizes,
+        filters, filterValue, visibleCols, hiddenCols
+    ]);
 
     return (
         <div className='w-full'>
@@ -219,7 +226,7 @@ const Edit = ({value, onChange}) => {
                         ]}
                         type={form}
                         setType={e => {
-                            setData([]);
+                            // setData([]);
                             setVisibleCols([]);
                             setActionType(undefined);
                             setGeoAttribute(undefined);
@@ -278,8 +285,8 @@ const Edit = ({value, onChange}) => {
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <FormsTable
                                 geoid={geoid}
-                                data={data}
-                                columns={columns}
+                                data={cachedData.data}
+                                columns={cachedData.columns}
                                 hiddenCols={hiddenCols}
                                 filterValue={filterValue}
                                 pageSize={pageSize}
@@ -319,6 +326,74 @@ const View = ({value}) => {
 export default {
     "name": 'Table: Forms',
     "type": 'Table',
+    "variables": [
+        {
+            name: 'form',
+            hidden: true
+        },
+        {
+            name: 'formsConfig',
+            hidden: true
+        },
+        {
+            name: 'actionType',
+            hidden: true
+        },
+        {
+            name: 'metaLookupByViewId',
+            hidden: true
+        },
+        {
+            name: 'geoAttribute',
+            hidden: true
+        },
+        {
+            name: 'geoid',
+            default: '36',
+            hidden: true
+        },
+        {
+            name: 'pageSize',
+            hidden: true
+        },
+        {
+            name: 'sortBy',
+            hidden: true
+        },
+        {
+            name: 'groupBy',
+            hidden: true
+        },
+        {
+            name: 'fn',
+            hidden: true
+        },
+        {
+            name: 'notNull',
+            hidden: true
+        },
+        {
+            name: 'colSizes',
+            hidden: true
+        },
+        {
+            name: 'filters',
+            hidden: true
+        },
+        {
+            name: 'filterValue',
+            hidden: true
+        },
+        {
+            name: 'visibleCols',
+            hidden: true
+        },
+        {
+            name: 'hiddenCols',
+            hidden: true
+        },
+    ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }

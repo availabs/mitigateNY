@@ -35,10 +35,10 @@ const ComponentRegistry = {
     "Table: Disasters": DisastersTable,
     "Table: FEMA Disaster Loss by Program": DisasterLossTables,
     "Table: NRI": NRITable,
-    "Table: Social Vulnerability": SocialVulnerabilityTable,
+    "Table: Social Vulnerability": SocialVulnerabilityTable, // deprecated
     "Table: Social Vulnerability Summary": SocialVulnerabilitySummaryTable,
-    "Table: Buildings": BuildingsTable,
-    "Table: Open Fema Data": OpenFemaDataTable,
+    "Table: Buildings": BuildingsTable, // deprecated
+    "Table: Open Fema Data": OpenFemaDataTable, // deprecated
     "Table: Forms": FormsTable,
     "Table: Cenrep": CenrepTable,
     "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
