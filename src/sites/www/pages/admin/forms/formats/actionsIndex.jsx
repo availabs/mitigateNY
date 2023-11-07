@@ -211,6 +211,7 @@ const TableComp = ({format, ...rest}) => {
             pageSize={pageSize} sortBy={sortBy} groupBy={groupBy} fn={fn} notNull={notNull} colSizes={colSizes}
             filters={filters} filterValue={filterValue} manualFilters={manualFilters} hiddenCols={hiddenCols}
             falcor={falcor}
+            getNestedValue={getNestedValue}
         />
 
         {

@@ -18,13 +18,15 @@ export const DownloadModal = ({
                                   geoAttribute,
                                   pageSize, sortBy, groupBy, fn, notNull, colSizes,
                                   filters, filterValue, manualFilters, hiddenCols,
-                                  metaLookupByViewId, setMetaLookupByViewId
+                                  metaLookupByViewId, setMetaLookupByViewId,
+                                  getNestedValue
 }) => {
     const [loading, setLoading] = useState(false)
     const [finalCols, setFinalCols] = useState(columns.filter(c => visibleCols.includes(c.name)).map(c => ({key: c.name, label: c.display_name})));
     const [finalData, setFinalData] = useState([['data', 'did not', 'change']])
     const cancelButtonRef = useRef(null)
     const [filterData, setFilterData] = useState('Filtered')
+    const [downloaded, setDownloaded] = useState(false);
     // const [metaLookupByViewId, setMetaLookupByViewId] = useState({});
     const csvLink = useRef();
 
@@ -53,8 +55,12 @@ export const DownloadModal = ({
                 return filterData === 'Full' || !Object.keys(manualFilters)?.length ||
                     Object.keys(manualFilters).reduce((acc, filterCol) => acc && manualFilters[filterCol]?.includes(row[filterCol]), true)
             })
-            .map(d => columnsToDownload.map(col =>  Array.isArray(d[col]) ? d[col].join(', ') : typeof d[col] === 'object' ? '' : d[col]));
-
+            .map(d => columnsToDownload.map(col =>  {
+                let value = getNestedValue(d[col]);
+                return Array.isArray(value) ? value.join(', ') : typeof value === 'object' ? '' : value
+                })
+            );
+        setDownloaded(false)
         setFinalData([columnsToDownloadHeaders, ...finalData]);
         console.log('getting data?',filterData, manualFilters, data, columnsToDownload, finalData, metaLookupByViewId)
 
@@ -64,7 +70,10 @@ export const DownloadModal = ({
     }
 
     useEffect(() => {
-        csvLink?.current?.link.click();
+        if(!downloaded){
+            csvLink?.current?.link.click();
+        }
+        setDownloaded(true)
     }, [finalData]);
 
     // pick oclumns
