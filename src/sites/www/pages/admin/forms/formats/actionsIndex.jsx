@@ -49,7 +49,7 @@ const TableComp = ({format, ...rest}) => {
     const [groupBy, setGroupBy] = useState(cachedData?.groupBy || []);
     const [notNull, setNotNull] = useState(cachedData?.notNull || []);
     const [fn, setFn] = useState(cachedData?.fn || []);
-    const [actionType, setActionType] = useState(cachedData?.actionType || 'lhmp')
+    const [actionType, setActionType] = useState(cachedData?.actionType || 'shmp')
     const [formsConfig, setFormsConfig] = useState(format);
     const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
     const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
@@ -60,6 +60,7 @@ const TableComp = ({format, ...rest}) => {
 
     const app = "dms-site",
         type = "forms-actions-test";
+    const actionButtonClass = 'px-2 py-1 bg-blue-300 hover:bg-blue-500 text-xs hover:text-white rounded-md transition ease-in';
 
     useEffect(() => {
         setLoading(true)
@@ -217,7 +218,25 @@ const TableComp = ({format, ...rest}) => {
         {
             loading ? <Loading/> :
                 <Table data={filteredData} // filter data from fromIndex
-                       columns={columns}
+                       columns={[
+                           ...columns,
+                           {
+                               Header: ' ',
+                               accessor: 'edit',
+                               Cell: d => {
+                                   return (
+                                       <div className={'flex flex-row flex-wrap justify-between'}>
+                                           <Link
+                                               className={actionButtonClass}
+                                               to={`/admin/forms/form/93165/view/${d?.cell?.row?.original?.id}`}> view </Link>
+                                           <Link
+                                               className={actionButtonClass}
+                                               to={`/admin/forms/form/93165/edit/${d?.cell?.row?.original?.id}`}> edit </Link>
+                                       </div>
+                                   )
+                               },
+                               width: '3%'
+                           }]}
                        initialPageSize={pageSize}
                        pageSize={pageSize}
                        sortBy={sortColRaw}
@@ -326,7 +345,7 @@ const siteConfig = {
                         />,
                     // type: 'dms-table',
                     action: "",
-                    path: "/list/:from?/:to?",
+                    path: "/list/",
                     // filter: {
                     //     fromIndex: 'from',
                     //     toIndex: 'to',

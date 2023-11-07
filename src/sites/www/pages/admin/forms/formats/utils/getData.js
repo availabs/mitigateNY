@@ -52,7 +52,8 @@ export async function getData({
                             },
                             groupBy: groupBy.map(gb => formsConfig?.attributes?.find(attr => attr.name.toLowerCase().split(' as ')[0] === gb.toLowerCase())?.origin === 'calculated-column' ? gb : `${getAccessor(gb, form)}'${gb}'`)
                         }),
-                        attributes: [...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin, form))]
+                        attributes: ['id', ...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin, form))]
+                        // using id to get to view and edit pages. can't group now.
                     },
                 }
             ]
