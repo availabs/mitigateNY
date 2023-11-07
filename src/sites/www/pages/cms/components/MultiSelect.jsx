@@ -7,9 +7,11 @@ const handleSearch = (text, selected, setSelected) => {
 
 const onChangeFilter = (selected, setSelected, onChange, hazards) => {
     let value = selected.map(s => s.key);
-    value = value.includes('all') ? hazards.map(h => h.key).filter(k => k && k !== 'all') : value.includes(null) ? [] : value;
-    setSelected(value.includes('all') ? hazards.filter(h => h.key && h.key !== 'all') : value.includes(null) ? [] : selected);
-    onChange && onChange(value.includes('all') ? hazards.filter(h => h.key && h.key !== 'all') : value.includes(null) ? [] : selected);
+    let isSelectAll = value.includes('all');
+    let isClearAll = value.includes(null);
+
+    setSelected(isSelectAll ? hazards.filter(h => h.key && h.key !== 'all') : isClearAll ? [] : selected);
+    onChange && onChange(isSelectAll ? hazards.filter(h => h.key && h.key !== 'all') : isClearAll ? [] : selected);
 }
 
 const RenderToken = ({props, selected, setSelected, onChange}) => {
@@ -44,6 +46,7 @@ const renderMenu = (results, menuProps, labelKey, ...props) => {
 export default ({
                     className,
                     label = 'Select',
+                    noLabel=false,
                     value,
                     onChange,
                     showAll = false,
@@ -65,7 +68,9 @@ export default ({
 
     return (
         <div className={'flex justify-between'}>
-            <label className={'shrink-0 pr-2 py-1 my-1 w-1/4'}>{label}:</label>
+            {
+                !noLabel && <label className={'shrink-0 pr-2 py-1 my-1 w-1/4'}>{label}:</label>
+            }
             <div className={`flex flex row ${className} w-full shrink my-1 bg-white p-1 pl-3 rounded-l-md`}>
                 <i className={`fa fa-search font-light text-xl bg-white rounded-r-md`}/>
                 <Typeahead
