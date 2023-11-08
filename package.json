@@ -78,6 +78,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap-typeahead": "^6.2.2",
     "react-color": "^2.19.3",
+    "react-csv": "^2.2.2",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
     "react-popper": "^2.3.0",

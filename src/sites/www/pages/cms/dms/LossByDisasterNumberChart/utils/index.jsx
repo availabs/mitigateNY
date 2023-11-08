@@ -2,7 +2,7 @@ import React from "react";
 import get from "lodash/get.js";
 import {hazardsMeta} from "~/utils/colors.jsx";
 
-export const ProcessDataForMap = (data=[], disasterNames) => React.useMemo(() => {
+export const ProcessDataForMap = (data=[], disasterNames) => {
     const years = [...new Set(data.map(d => d.year))];
     const disaster_numbers = new Set(['Non-declared Disasters']);
     const event_ids = new Set();
@@ -56,5 +56,5 @@ export const ProcessDataForMap = (data=[], disasterNames) => React.useMemo(() =>
     });
 
     return { processed_data, total: [{...swdTotal, ...ofdTotal, ...{ "year": "Loss Distribution" }}], disaster_numbers: [...disaster_numbers], event_ids: [...event_ids] };
-}, [data, disasterNames]);
+};
 

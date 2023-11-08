@@ -1,7 +1,7 @@
 import React from "react";
 import get from "lodash/get.js";
 
-export const ProcessDataForMap = (data=[], disasterNames) => React.useMemo(() => {
+export const ProcessDataForMap = (data=[], disasterNames) =>  {
     const years = [...new Set(data.map(d => d.year))];
     const swdTotal = {swd_tpd: 0, swd_tcd: 0, swd_ttd: 0};
     const ofdTotal = {ofd_tpd: 0, ofd_tcd: 0, ofd_ttd: 0};
@@ -30,5 +30,5 @@ export const ProcessDataForMap = (data=[], disasterNames) => React.useMemo(() =>
     });
 
     return { total: [{...swdTotal, ...ofdTotal, ...{ "year": "Loss Distribution" }}] };
-}, [data, disasterNames]);
+};
 

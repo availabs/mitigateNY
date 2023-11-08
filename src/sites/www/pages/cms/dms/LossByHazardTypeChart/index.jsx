@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import get from "lodash/get";
 import { useFalcor } from '~/modules/avl-falcor';
 import { pgEnv } from "~/utils/";
@@ -11,30 +11,78 @@ import { Loading } from "~/utils/loading.jsx"
 import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 
+async function getData({
+                           ealSourceId,
+                           ealViewId,
+                           fusionSourceId,
+                           status,
+                           geoid,
+                           hazard,
+                           consequence,
+                           base
+                       }, falcor){
+
+
+
+    const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
+    const res = await falcor.get(dependencyPath);
+    const deps = get(res, ["json", ...dependencyPath, "dependencies"]);
+
+    const fusionView = deps.find(d => d.type === "fusion")?.view_id;
+    if(!fusionView) {
+        return {}
+    }
+
+    const dataPath =
+        ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView,
+            "byGeoid", geoid,
+            base === 'year' ? "lossByYearByHazardType" : "lossByMonthByHazardType"
+        ];
+
+    await falcor.get(
+        dataPath,
+        ['dama', pgEnv, 'views', 'byId', fusionView, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
+    );
+
+    const falcorCache = falcor.getCache();
+
+    const lossByYearByHazardType = get(falcorCache, [...dataPath, "value"], []),
+        { processed_data: chartDataActiveView } = ProcessDataForMap(lossByYearByHazardType, base);
+    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', fusionView, 'attributes'], {});
+
+    return {
+        chartDataActiveView,
+        attributionData,
+        ealSourceId,
+        ealViewId,
+        fusionSourceId,
+        status,
+        geoid,
+        hazard,
+        dataPath,
+        consequence,
+        base
+    }
+}
+
 const Edit = ({value, onChange}) => {
     const { falcor, falcorCache } = useFalcor();
 
     let data = value && isJson(value) ? JSON.parse(value) : {};
     const baseUrl = '/';
 
-    const [disasterDecView, setDisasterDecView] = useState();
-    const ealSourceId = 343;
+    const ealSourceId = data.ealSourceId || 343;
     const [ealViewId, setEalViewId] = useState(data?.ealViewId || 837);
-    const fusionSourceId= 336;
-    const [fusionViewId, setFusionViewId] = useState(data?.fusionViewId || 834);
-
+    const fusionSourceId = data?.fusionSourceId || 336;
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState(data?.status);
     const [geoid, setGeoid] = useState(data?.geoid || '36');
     const [hazard, setHazard] = useState(data?.hazard || 'total');
     const [consequence, setConsequence] = useState(data?.consequence || '_td');
     const [base, setBase] = useState(data?.base || 'year');
-    const [dataPath, setDataPath] = useState([]);
-
-    const dependencyPath = ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId];
 
     useEffect( () => {
-        async function getData(){
+        async function load(){
             if(!geoid){
                 setStatus('Please Select a Geography');
             }else{
@@ -42,58 +90,26 @@ const Edit = ({value, onChange}) => {
             }
             setLoading(true);
             setStatus(undefined);
-            return falcor.get(dependencyPath).then(async res => {
 
-                const deps = get(res, ["json", ...dependencyPath, "dependencies"]);
+            const data = await getData({
+                ealSourceId,
+                ealViewId,
+                fusionSourceId,
+                geoid,
+                hazard,
+                consequence,
+                base
+            }, falcor);
 
-                const fusionView = deps.find(d => d.type === "fusion");
-                if(!fusionView) {
-                    setLoading(false)
-                    setStatus('This component only supports EAL versions that use Fusion data.')
-                    return Promise.resolve();
-                }
+            onChange(JSON.stringify({
+                ...data
+            }));
 
-                setFusionViewId(fusionView.view_id)
-                const dataPath =
-                    ["fusion", pgEnv, "source", fusionSourceId, "view", fusionView.view_id,
-                        "byGeoid", geoid,
-                        base === 'year' ? "lossByYearByHazardType" : "lossByMonthByHazardType"
-                    ];
-
-                setDataPath(dataPath);
-
-                await falcor.get(
-                    dataPath,
-                    ['dama', pgEnv, 'views', 'byId', fusionView.view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']]
-                );
-
-                setLoading(false);
-            })
+            setLoading(false);
         }
 
-        getData()
-    }, [geoid, ealViewId, geoid, hazard, base]);
-
-    const lossByYearByHazardType = get(falcorCache, [...dataPath, "value"], []),
-        { processed_data: chartDataActiveView } = ProcessDataForMap(lossByYearByHazardType, base);
-    console.log('??', base, dataPath, lossByYearByHazardType, chartDataActiveView)
-    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', fusionViewId, 'attributes'], {});
-
-    useEffect(() =>
-            onChange(JSON.stringify(
-                {
-                    chartDataActiveView,
-                    attributionData,
-                    ealViewId,
-                    fusionViewId,
-                    status,
-                    geoid,
-                    hazard,
-                    dataPath,
-                    consequence,
-                    base
-                })),
-        [chartDataActiveView, attributionData, status, ealViewId, fusionViewId, geoid, hazard, dataPath, consequence, base]);
+        load()
+    }, [geoid, ealViewId, fusionSourceId, hazard, consequence, base]);
 
     return (
         <div className='w-full'>
@@ -111,7 +127,6 @@ const Edit = ({value, onChange}) => {
                         ]}
                         type={base}
                         setType={e => {
-                            setDataPath([])
                             setBase(e)
                         }}
                     />
@@ -132,8 +147,8 @@ const Edit = ({value, onChange}) => {
                             <>
                                 <RenderBarChart
                                     base={base}
-                                    chartDataActiveView={chartDataActiveView}
-                                    attributionData={attributionData}
+                                    chartDataActiveView={data.chartDataActiveView}
+                                    attributionData={data.attributionData}
                                     hazard={hazard}
                                     consequence={consequence}
                                     baseUrl={baseUrl}
@@ -171,6 +186,48 @@ const View = ({value}) => {
 export default {
     "name": 'Graph: Historic Loss by Hazard Type',
     "type": 'Bar Chart',
+    "variables": [
+        {
+            name: 'ealSourceId',
+            default: 343,
+            hidden: true
+        },
+        {
+            name: 'ealViewId',
+            default: 837,
+            hidden: true
+        },
+        {
+            name: 'fusionSourceId',
+            default: 336,
+            hidden: true
+        },
+        {
+            name: 'fusionViewId',
+            default: 834,
+            hidden: true
+        },
+        {
+            name: 'geoid',
+            default: '36'
+        },
+        {
+            name: 'hazard',
+            default: 'total',
+            hidden: true
+        },
+        {
+            name: 'consequence',
+            default: '_td',
+            hidden: true
+        },
+        {
+            name: 'base',
+            default: 'year',
+            hidden: true
+        },
+    ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }
