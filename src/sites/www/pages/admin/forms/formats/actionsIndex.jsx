@@ -131,17 +131,21 @@ const TableComp = ({format, ...rest}) => {
             })
 
     return <>
-        <div className={'w-full p-2 my-2 flex justify-end'}>
-            <i className={'fa fa-download px-2 text-lg text-blue-300 hover:text-blue-700 float-right transition ease-in'}
-               title={'Download'}
-               onClick={e => setDisplayDownload(!displayDownload)}
-            />
-            <i className={
-                displaySettings ?
-                    'fa fa-close text-lg text-red-300 hover:text-red-700 float-right transition ease-in' :
-                    'fa fa-gear text-lg text-blue-300 hover:text-blue-700 float-right transition ease-in'}
-               title={displaySettings ? 'Close Settings' : 'Open Settings'}
-               onClick={e => setDisplaySettings(!displaySettings)}/>
+        <div className={'w-full p-2 my-2 flex justify-end items-center font-semibold'}>
+            <div className={'flex items-center px-2 text-blue-300 hover:text-blue-500 transition ease-in'}
+                 title={'Download'}
+                 onClick={e => setDisplayDownload(!displayDownload)}
+            >
+                <i className={'fa fa-download text-lg px-1'} />
+                <label className={'text-sm'}>Download</label>
+            </div>
+            <div className={`flex items-center px-2 ${displaySettings ? `text-red-300 hover:text-red-500` : `text-blue-300 hover:text-blue-500`} transition ease-in`}
+                 title={displaySettings ? 'Close Settings' : 'Open Settings'}
+                 onClick={e => setDisplaySettings(!displaySettings)}
+            >
+                <i className={displaySettings ? 'fa fa-close text-lg px-1' : 'fa fa-gear text-lg px-1'}/>
+                <label className={'text-sm'}>{displaySettings ? 'Close Settings' : 'Open Settings'}</label>
+            </div>
         </div>
         <div className={`${displaySettings ? 'block' : 'hidden'} border rounded-md border-blue-500 bg-blue-50 p-2`}>
             <ButtonSelector
