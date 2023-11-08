@@ -15,7 +15,7 @@ import {RenderColorPicker} from "../../components/colorPicker.jsx";
 import {scaleThreshold} from "d3-scale";
 import {getColorRange} from "../../../../../../pages/DataManager/utils/color-ranges.js";
 import ckmeans from '~/utils/ckmeans';
-import {RenderMap} from "../../components/Map/RenderMap.jsx";
+import {EditMap,ViewMap} from "../../components/TemplateMap";
 import {Attribution} from "../../components/attribution.jsx";
 
 
@@ -60,7 +60,7 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
 
 
 
-async function getData({geoid,disasterNumber,ealViewId, type='total_losses', numColors='5', colors}, falcor) {
+async function getData({geoid,disasterNumber,ealViewId, type='total_losses', numColors='5', colors=defaultColors, size="1", height=500}, falcor) {
     //return {}
     if(!ealViewId ||  !geoid || !disasterNumber ) {
         console.log('getdata not running')
@@ -92,11 +92,11 @@ async function getData({geoid,disasterNumber,ealViewId, type='total_losses', num
 
     const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
 
-    console.log('deps', res, deps, dependencyPath(ealViewId))
+    //console.log('deps', res, deps, dependencyPath(ealViewId))
 
     const stateView = deps.find(dep => dep.type === "tl_state");
     const typeId = deps.find(dep => dep.type === metaData[type]?.type);
-    console.log('typeID', typeId, deps)
+    //console.log('typeID', typeId, deps)
     if(!typeId?.view_id) {
         return {}
     }
@@ -135,9 +135,54 @@ async function getData({geoid,disasterNumber,ealViewId, type='total_losses', num
     //const colors =  metaData[type].colors || defaultColors
 
     // const columns = Array.isArray(metaData[type]?.columns) ? metaData[type]?.columns : Object.values(metaData[type]?.columns || {})
+    //console.log('getGeoCOlors', geoid, data,columns, metaData[type].paintFn, colors)
     const {geoColors, domain} = getGeoColors({geoid, data, columns, paintFn: metaData[type].paintFn, colors});
     const attributionData = {} //get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
+    //console.log('test', geoColors)
+    const geoids = [...new Set(Object.keys(geoColors).map(geoId => geoId.substring(0, 5)))]
+
+
+   
+    const sources = [{
+      id: "counties",
+      source: {
+        "type": "vector",
+        "url": "https://dama-dev.availabs.org/tiles/data/hazmit_dama_s365_v778_1694455888142.json"
+      },
+    }]
+
+    const layers = [{
+      "id": "counties",
+      "source": "counties",
+      "source-layer": "s365_v778",
+      "type": "fill",
+      "filter" :  ["in", ['get', "geoid"], ['literal', geoids]],
+      
+      "paint": {
+        "fill-color": ["get", ["get", "geoid"], ["literal", geoColors]],
+      }
+    },
+    {
+      "id": "counties-line",
+      "source": "counties",
+      "source-layer": "s365_v778",
+      "type": "line",
+      "filter" :  ["in", ['get', "geoid"], ['literal', geoids]],
+      "paint": {
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          5, 0.5,
+          22, 2
+        ],
+        "line-color": "#efefef",
+        "line-opacity": 0.5
+      }
+    }]
     
+    console.log('mapfocus', geom ? get(JSON.parse(geom), 'bbox', null ) : null)
+
             
     return {
         view: metaData[type],
@@ -146,11 +191,20 @@ async function getData({geoid,disasterNumber,ealViewId, type='total_losses', num
         geoid,
         type,
         title,
-        data,
-        columns,
-        geoColors,
         domain,
+        sources,
+        layers,
         attributionData,
+        size,
+        height,
+        colors,
+        // legend: {
+        //     size,
+        //     domain, 
+        //     range: colors, 
+        //     title, 
+        //     show: metaData[type].legend !== false
+        // },
         mapFocus: geom ? get(JSON.parse(geom), 'bbox', null ) : null,
         showLegend:  metaData[type].legend !== false
     }
@@ -164,6 +218,7 @@ const Edit = ({value, onChange, size}) => {
         return value && isJson(value) ? JSON.parse(value) : {}
     }, [value]);
 
+    //console.log('Edit: value,', size)
    
     const baseUrl = '/';
 
@@ -186,17 +241,18 @@ const Edit = ({value, onChange, size}) => {
     })
 
     useEffect(() => {
+        // if data is set outside map delete image
+        delete compData.img;
         setCompData({...compData, ...cachedData})   
     },[cachedData])
 
     
-
     useEffect(() => {
         const load = async () => {
             const {
-                geoid,disasterNumber,ealViewId, type ,colors
+                geoid,disasterNumber,ealViewId, type ,colors, height
             } = compData
-            console.log(geoid, disasterNumber)
+            //console.log(geoid, disasterNumber)
             
             if (!geoid || !disasterNumber) {
                 console.log('not going to load mfer')
@@ -206,17 +262,23 @@ const Edit = ({value, onChange, size}) => {
             } else {
                 setStatus(undefined);
                 setLoading(true);
-                console.log('EDIT: get data',geoid,disasterNumber,ealViewId, type)
+                //console.log('EDIT: get data',geoid,disasterNumber,ealViewId, type)
         
                 let data = await getData({
                     geoid,
                     disasterNumber,
                     ealViewId, 
                     type,
-                    colors
+                    colors,
+                    size,
+                    height
                 }, falcor)
-                //console.log('testing 123', data, {...cachedData, ...data})
-                onChange(JSON.stringify({...cachedData, ...data}))
+                console.log(
+                    'testing got data', value === JSON.stringify({...cachedData, ...data}), 
+                    'args', )
+                if(value !== JSON.stringify({...cachedData, ...data})) {
+                    onChange(JSON.stringify({...cachedData, ...data}))
+                }
                 setLoading(false)
             }
         }
@@ -224,17 +286,18 @@ const Edit = ({value, onChange, size}) => {
     }, [compData]);
 
     
-    
-    
-    
     const layerProps = useMemo(() => { 
+        console.log('setting Layer Props', cachedData)
         return {
             ccl: {
                 ...cachedData,
-                change: e => onChange(JSON.stringify({
-                    ...e,
-                    ...cachedData
-                }))
+                change: e => {
+                    
+                    if(value !== JSON.stringify({...cachedData, ...e})){
+                        console.log('change from map')
+                        onChange(JSON.stringify({...cachedData,...e}))
+                    }
+                }
             }
         }
     },[cachedData])
@@ -297,10 +360,11 @@ const Edit = ({value, onChange, size}) => {
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <React.Fragment>
                                 <div className={`flex-none w-full p-1`} style={{height: `${compData.height}px`}}>
-                                    <RenderMap
+                                    <EditMap
                                         falcor={falcor}
                                         layerProps={layerProps}
                                         legend={{
+                                            size,
                                             domain: compData?.domain || [], 
                                             range: compData.colors, 
                                             title: compData.title, 
@@ -329,17 +393,32 @@ const View = ({value}) => {
         JSON.parse(value)
     const baseUrl = '/';
     const attributionData = data?.attributionData;
+    const layerProps =  {ccl: {...data }}
+    console.log('render view', data)
 
     return (
         <div className='relative w-full p-6'>
             {
-                data?.status ?
-                    <div className={'p-5 text-center'}>{data?.status}</div> :
+               data.img  ?
                     <div className='h-80vh flex-1 flex flex-col'>
                         <img alt='Choroplath Map' src={get(data, ['img'])}/>
-                        <Attribution baseUrl={baseUrl} attributionData={attributionData} />
-                    </div>
+                        
+                    </div> : 
+                    <div className={`flex-none w-full p-1`} style={{height: `${data.height}px`}}>
+                        <ViewMap
+                            layerProps={layerProps}
+                            legend={{
+                                size: data.size,
+                                domain: data?.domain || [], 
+                                range: data.colors, 
+                                title: data.title, 
+                                show: data.showLegend
+                            }}
+                        />
+                    </div> 
+                    
             }
+            <Attribution baseUrl={baseUrl} attributionData={attributionData} />
         </div>
     )
 }
@@ -364,6 +443,14 @@ export default {
         },
         {
             name: 'type',
+            hidden: true
+        },
+        {
+            name: 'size',
+            hidden: true
+        },
+        {
+            name: 'height',
             hidden: true
         }
     ],

@@ -11,6 +11,7 @@ import DisasterLossStats from "./DisasterLossStats/index.jsx";
 import DisasterLossTables from "./DisasterLossTables/index.jsx";
 import DisasterLossMap from "./DisasterLossMap/index.jsx";
 import NRIMap from "./NRIMap/index.jsx";
+import DFIRMMap from "./DFIRMMap/index.jsx";
 import BuildingsMap from "./BuildingsMap/index.jsx";
 import SocialVulnerabilityTable from "./SocialVulnerabilityTable/index.jsx"
 import SocialVulnerabilitySummaryTable from "./SocialVulnerabilitySummaryTable/index.jsx"
@@ -49,6 +50,7 @@ const ComponentRegistry = {
     "Map: NRI": NRIMap,
     "Map: Social Vulnerability": SocialVulnerabilityMap,
     "Map: Buildings": BuildingsMap,
+    "Map: Floodplains": DFIRMMap,
     "lexical": {
         ...CalloutBox,
         name: 'Rich Text',

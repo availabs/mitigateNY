@@ -73,15 +73,17 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
 
         let args = {...controlVars, ...updateVars}
         console.log('new args', section.id, section?.element?.['element-type'], args)
-        return comp.getData(args,falcor).then(data => ({section_id, data}))
-      })
+        return comp?.getData ? comp.getData(args,falcor).then(data => ({section_id, data})) : null
+      }).filter(d => d)
+
+
       let updates = await Promise.all(dataFetchers)
       if(updates.length > 0) {
         let newSections = cloneDeep(item.sections)
         updates.forEach(({section_id, data}) => {
           let section = newSections.filter(d => d.id === section_id)?.[0]  || {}
           section.element['element-data'] = JSON.stringify(data)
-          console.log('updating section', section_id)
+          console.log('updating section', section_id, data)
         })
         updateAttribute('sections', newSections)
       }
