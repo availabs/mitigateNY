@@ -28,8 +28,11 @@ export const RenderBuildingsTable = ({
             ...c,
             Cell: cell => {
                 let value = getNestedValue(cell.value);
-                value = ['integer', 'number'].includes(cell.column.type) ?  fnum(value || 0, c.isDollar) : value
-
+                value =
+                    ['integer', 'number'].includes(cell.column.type) ?
+                        fnum(value || 0, c.isDollar) :
+                        Array.isArray(value) ? value.join(', ') : value
+                if(typeof value === 'object') return  <div></div>
                 return( <div>{value}</div>);
             }
         }
@@ -47,20 +50,16 @@ export const RenderBuildingsTable = ({
     return (
         <>
             <div className={'py-5'}>
-                {
-                    Object.values(filteredData[0] || {}).find(v => typeof v === 'object') ?
-                        'Something went wrong. Please try changing the selection / settings.' :
-                        <Table
-                            columns={updatedColumns}
-                            data={filteredData}
-                            initialPageSize={pageSize}
-                            pageSize={pageSize}
-                            striped={striped}
-                            sortBy={sortColRaw}
-                            sortOrder={Object.values(sortBy)?.[0] || 'asc'}
-                            fetchData={fetchData}
-                        />
-                }
+                <Table
+                    columns={updatedColumns}
+                    data={filteredData}
+                    initialPageSize={pageSize}
+                    pageSize={pageSize}
+                    striped={striped}
+                    sortBy={sortColRaw}
+                    sortOrder={Object.values(sortBy)?.[0] || 'asc'}
+                    fetchData={fetchData}
+                />
             </div>
             <Attribution baseUrl={baseUrl} attributionData={attributionData} />
         </>
