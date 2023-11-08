@@ -14,12 +14,14 @@ const widths = {
     [undefined]: 370
 }
 
-const RenderChoroplethLegend = ({size, domain, range, fmt, title,}) => {
+const RenderChoroplethLegend = ({size, domain, range, fmt, title,hideNA}) => {
+    console.log('domain', domain, fmt)
+
     const RenderLegendBox = ({value, color, fmt, className}) => {
         const width = `${widths[size] / (range.length + 1)}px`,
             heightParent = '',
             heightChild = '20px';
-        // console.log('RenderLegendBox', width, size)
+        console.log('RenderLegendBox', value)
         return (
             <div key={value} className={`flex flex-col h-[40px] flex-1 ${className}`}>
                 <div className={`h-[20px]`} style={{backgroundColor: color}}/>
@@ -29,8 +31,9 @@ const RenderChoroplethLegend = ({size, domain, range, fmt, title,}) => {
             </div>
         )
     }
+
     return (
-        <div className={`relative w-full max-w-[${widths[size]}px]  -mb-[100px] `}
+        <div className={`relative w-full max-w-[300px] ml-4 -mb-[100px] `}
              style={{zIndex: 10}}>
             {
                 title && <label className={'font-sm pl-2'}>{title}</label>
@@ -41,7 +44,7 @@ const RenderChoroplethLegend = ({size, domain, range, fmt, title,}) => {
                         return <RenderLegendBox key={i} value={domain[i]} color={r} fmt={fmt}/>
                     })
                 }
-                <RenderLegendBox value={'N/A'} color={'#d0d0ce'} className={'ml-1'}/>
+                {!hideNA && <RenderLegendBox value={'N/A'} color={'#d0d0ce'} className={'ml-1'}/>}
             </div>
         </div>
     )
@@ -128,7 +131,8 @@ export const DrawLegend = ({
                         type = 'Choropleth',
                         format = '0.2s',
                         size,
-                        show = true
+                        show = true,
+                        hideNA = false
 }) => {
     if(!show) return null;
 
@@ -160,7 +164,7 @@ export const DrawLegend = ({
     const fmt = (typeof format === "function") ? format : d3Formatter(format);
 
     return type === 'Choropleth' ?
-        <RenderChoroplethLegend domain={domain} range={range} fmt={fmt} size={size} title={title}/> :
+        <RenderChoroplethLegend hideNA={hideNA} domain={domain} range={range} fmt={fmt} size={size} title={title}/> :
         <RenderCirclesLegend domain={domain} range={range} fmt={fmt} size={size} title={title}/>
 
 }

@@ -151,6 +151,8 @@ async function getData({geoid,disasterNumber,ealViewId, type='total_losses', num
       },
     }]
 
+    console.log('geoids', geoids)
+
     const layers = [{
       "id": "counties",
       "source": "counties",
