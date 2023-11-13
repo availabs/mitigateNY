@@ -416,7 +416,7 @@ const Edit = ({value, onChange, size}) => {
                     loading ? <Loading/> :
                         status ? <div className={'p-5 text-center'}>{status}</div> :
                             <React.Fragment>
-                                <RenderLegend floodPlain={floodPlain} hazard={hazard} />
+                                <RenderLegend floodPlain={floodPlain} hazard={hazard} buildingType={buildingType}/>
                                 <div className={`flex-none w-full p-1`} style={{height: `${height}px`}}>
                                     <RenderMap
                                         falcor={falcor}
@@ -453,7 +453,7 @@ const View = ({value}) => {
                 data?.status ?
                     <div className={'p-5 text-center'}>{data?.status}</div> :
                     <div className='h-80vh flex-1 flex flex-col'>
-                        <RenderLegend floodPlain={data?.floodPlain} hazard={data?.hazard} />
+                        <RenderLegend floodPlain={data?.floodPlain} hazard={data?.hazard} buildingType={data?.buildingType}/>
                         <img alt='Choroplath Map' src={get(data, ['img'])}/>
                         <Attribution baseUrl={baseUrl} attributionData={attributionData}/>
                     </div>
