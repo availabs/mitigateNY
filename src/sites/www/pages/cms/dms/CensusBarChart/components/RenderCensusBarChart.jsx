@@ -21,7 +21,7 @@ export const RenderCensusBarChart = ({
                 keys={[geoid]}
                 indexBy={"id"}
                 xScale={{domain: data.map(d => d.id)}}
-                axisBottom={{tickDensity: 3, axisColor: '#000', axisOpacity: 0}}
+                axisBottom={{tickDensity: 3, axisColor: '#000', axisOpacity: 0, rotateDeg: -90}}
                 yScale={{domain: [0, maxValue]}}
                 axisLeft={{
                     format: d => fnumIndex(d, 0),

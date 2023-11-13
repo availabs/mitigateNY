@@ -150,7 +150,7 @@ const Edit = ({value, onChange}) => {
                         label={'Category:'}
                         type={category}
                         setType={setCategory}
-                        types={Object.keys(BASE_GRAPH_CONFIG)}
+                        types={Object.keys(BASE_GRAPH_CONFIG).filter(configKey => BASE_GRAPH_CONFIG[configKey].find(c => c.type === 'CensusLineChart'))}
                     />
                     <div className={`flex justify-between`}>
                         <label
