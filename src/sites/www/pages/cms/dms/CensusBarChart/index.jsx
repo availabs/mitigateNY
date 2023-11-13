@@ -123,7 +123,7 @@ async function getData ({geoid, category, title}, falcor) {
         geoid,
         year,
         data: data.map(d => ({...d, id: graph_config?.censusKeyLabels?.[d.id.split('-')[1]] ||
-                getCensusKeyLabel(d.id.split('-')[1], acsGraph) ||
+                getCensusKeyLabel(d.id.includes('-') ? d.id.split('-')[1] : d.id, acsGraph) ||
                 d.id})),
         title,
         category
