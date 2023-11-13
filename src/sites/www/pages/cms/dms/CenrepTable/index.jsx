@@ -10,7 +10,7 @@ import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
 import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
-import {addTotalRow} from "../../utils.js";
+import {addTotalRow} from "../../utils/addTotalRow.js";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
     const fns = columnsToFetch.map(ctf => ctf.includes(' AS') ? ctf.split(' AS')[0] : ctf.split(' as')[0]);

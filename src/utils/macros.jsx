@@ -14,7 +14,7 @@ export const HoverComp = ({ data, keys, indexFormat, keyFormat, valueFormat }) =
     return (
         <div className={`
       flex flex-col px-2 pt-1 rounded bg-white
-      ${keys.length <= 1 ? "pb-2" : "pb-1"}`}>
+      ${keys?.length <= 1 ? "pb-2" : "pb-1"}`}>
             <div className="font-bold text-lg leading-6 border-b-2 mb-1 pl-2">
                 {indexFormat(get(data, "index", null))}
             </div>
@@ -40,7 +40,7 @@ export const HoverComp = ({ data, keys, indexFormat, keyFormat, valueFormat }) =
                     </div>
                 ))
             }
-            {keys.length <= 1 ? null :
+            {keys?.length <= 1 ? null :
                 <div className="flex pr-2">
                     <div className="w-5 mr-2" />
                     <div className="mr-4 pl-2">

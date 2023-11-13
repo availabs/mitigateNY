@@ -60,7 +60,7 @@ const TableComp = ({format, ...rest}) => {
 
     const app = "dms-site",
         type = "forms-actions-test";
-    const actionButtonClass = 'px-2 py-1 bg-blue-300 hover:bg-blue-500 text-xs hover:text-white rounded-md transition ease-in';
+    const actionButtonClass = 'px-2 py-0.5 m-1 border border-blue-300 hover:bg-blue-600 text-sm text-blue-500 hover:text-white rounded-md transition ease-in shadow';
 
     useEffect(() => {
         setLoading(true)
@@ -132,14 +132,14 @@ const TableComp = ({format, ...rest}) => {
 
     return <>
         <div className={'w-full p-2 my-2 flex justify-end items-center font-semibold'}>
-            <div className={'flex items-center px-2 text-blue-300 hover:text-blue-500 transition ease-in'}
+            <div className={'flex items-center px-2 text-blue-300 hover:text-blue-600 transition ease-in'}
                  title={'Download'}
                  onClick={e => setDisplayDownload(!displayDownload)}
             >
                 <i className={'fa fa-download text-lg px-1'} />
                 <label className={'text-sm'}>Download</label>
             </div>
-            <div className={`flex items-center px-2 ${displaySettings ? `text-red-300 hover:text-red-500` : `text-blue-300 hover:text-blue-500`} transition ease-in`}
+            <div className={`flex items-center px-2 ${displaySettings ? `text-red-300 hover:text-red-500` : `text-blue-300 hover:text-blue-600`} transition ease-in`}
                  title={displaySettings ? 'Close Settings' : 'Open Settings'}
                  onClick={e => setDisplaySettings(!displaySettings)}
             >
@@ -147,7 +147,7 @@ const TableComp = ({format, ...rest}) => {
                 <label className={'text-sm'}>{displaySettings ? 'Close Settings' : 'Open Settings'}</label>
             </div>
         </div>
-        <div className={`${displaySettings ? 'block' : 'hidden'} border rounded-md border-blue-500 bg-blue-50 p-2`}>
+        <div className={`${displaySettings ? 'block' : 'hidden'} border rounded-md border-blue-600 bg-blue-50 p-2`}>
             <ButtonSelector
                 label={'Action Level'}
                 types={[

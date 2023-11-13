@@ -24,6 +24,10 @@ import OpenFemaDataTable from "./OpenFemaDataTable/index.jsx";
 import CenrepTable from "./CenrepTable/index.jsx";
 import CountyTextBox from "./CountyTextBox/index.jsx";
 import FormsTable from "./FormsTable/index.jsx";
+import CensusStatBox from "./CensusStatBox/index.jsx"
+import CensusBarChart from "./CensusBarChart/index.jsx";
+import CensusStackedBarChart from "./CensusStackedBarChart/index.jsx";
+import CensusLineChart from "./CensusLineChart/index.jsx";
 
 const ComponentRegistry = {
     // "ColorBox": ColorBox,
@@ -32,6 +36,7 @@ const ComponentRegistry = {
     "Card: Declared vs Non-Declared Loss": LossDistributionHeroStats,
     "Card: FEMA Disaster Info": DisasterInfoStats,
     "Card: FEMA Disaster Loss Summary": DisasterLossStats,
+    "Card: Census": CensusStatBox,
     "Table: Disasters": DisastersTable,
     "Table: FEMA Disaster Loss by Program": DisasterLossTables,
     "Table: NRI": NRITable,
@@ -44,6 +49,9 @@ const ComponentRegistry = {
     "Graph: Historic Loss by Disaster Number": LossByDisasterNumberChart,
     "Graph: Historic Loss by Hazard Type": LossByHazardTypeChart,
     "Graph: Declared vs Non-Declared Loss": LossDistributionPieChart,
+    "Graph: Census Bar": CensusBarChart,
+    "Graph: Census Stacked Bar": CensusStackedBarChart,
+    "Graph: Census Line": CensusLineChart,
     "Map: Fusion Events Map": FusionEventsMap,
     "Map: FEMA Disaster Loss": DisasterLossMap,
     "Map: NRI": NRIMap,
