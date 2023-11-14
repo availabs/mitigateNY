@@ -70,7 +70,7 @@ async function getData ({geoid, category, title}, falcor) {
         return {}
     }
 
-    const {censusKeys=[], divisorKeys=[], subtractKeys=[], groupBy} = graph_config;
+    const {censusKeys=[], divisorKeys=[], subtractKeys=[], sumType} = graph_config;
     const compareYear = 2016
     const year = 2021
     const years = range(2010, 2021, 1)
@@ -99,7 +99,8 @@ async function getData ({geoid, category, title}, falcor) {
                                                 d.id
                                     })),
         title,
-        category
+        category,
+        sumType
     }
 }
 
@@ -177,6 +178,7 @@ const Edit = ({value, onChange}) => {
                         data={cachedData.data}
                         year={cachedData.year}
                         compareYear={cachedData.compareYear}
+                        sumType={cachedData.sumType}
                         // labels={cachedData.labels}
                     />
                 }

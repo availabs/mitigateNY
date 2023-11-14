@@ -24,7 +24,7 @@ const LegendFactory = ({data, colors, getLegendLabel}) =>
     )
 
 export const RenderCensusLineChart = ({
-                                         title, data = [], geoid
+                                         title, data = [], geoid, sumType
                                      }) => {
     return (
         <>
@@ -38,7 +38,7 @@ export const RenderCensusLineChart = ({
                     axisBottom={{tickDensity: 3, axisColor: '#000', axisOpacity: 0.1, showGridLines: true}}
                     // yScale={{domain: [0, maxValue]}}
                     axisLeft={{
-                        format: d => fnumIndex(d, 0),
+                        format: d => fnumIndex(d, sumType === 'pct' ? 2 : 0),
                         gridLineOpacity: 0.1,
                         showGridLines: true,
                         ticks: 5,
