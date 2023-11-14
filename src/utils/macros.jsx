@@ -69,7 +69,7 @@ export const d3Formatter = (format = '0.2', currency = false) => {
 }
 
 export const fnumIndex = (d, fractions = 2, currency = false) => {
-    if(d < 1) return `${currency ? '$' : ``} ${d?.toFixed(fractions)}`
+    if(typeof d === 'number' && d < 1) return `${currency ? '$' : ``} ${d?.toFixed(fractions)}`
         if (d >= 1_000_000_000_000_000) {
             return `${currency ? '$' : ``} ${(d / 1_000_000_000_000_000).toFixed(fractions)} Q`;
         }else if (d >= 1_000_000_000_000) {
