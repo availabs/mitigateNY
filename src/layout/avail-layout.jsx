@@ -1,5 +1,5 @@
 import React from "react";
-import { useTheme, TopNav, SideNav } from "~/modules/avl-components/src/";
+import { useTheme, TopNav, SideNav, AwesomeTopNav } from "~/modules/avl-components/src/";
 import { Link, Outlet } from "react-router-dom";
 import AuthMenu from "~/pages/Auth/AuthMenu"
 import MNYLogo from './mny-logo'
@@ -89,7 +89,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 								`fixed w-full z-20 ${paddingSizes[sideNavOptions.size]}` 
 								: ''
 							}`}>
-							<TopNav
+							<AwesomeTopNav
 								themeOptions={topNavOptions}
 								// subMenuActivate={'onHover'}
 								leftMenu={
