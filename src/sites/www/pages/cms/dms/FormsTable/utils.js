@@ -56,7 +56,7 @@ const handleExpandableRows = (data, attributes, columns) => {
             newRow.expand.push(
                 ...expandableColumns.map(col => ({
                     key: attributes.find(attr => attr.name === col.name)?.display_name || col.name,
-                    value: row[col.accessor]
+                    value: typeof row[col.accessor] === 'object' ? '' : row[col.accessor]
                 }))
             )
             expandableColumns.forEach(col => delete newRow[col.accessor])
