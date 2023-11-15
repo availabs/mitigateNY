@@ -90,7 +90,7 @@ async function getData({   formsConfig, actionType, form,
                 accessor: acc,
                 align: col.align || 'right',
                 width: colSizes[col.name] || '15%',
-                filter: col.filter || filters[col.display_name],
+                filter: col.filter || filters[col.name],
                 info: col.desc,
                 ...col,
                 type: fn[col.display_name]?.includes('array_to_string') ? 'string' : col.type
