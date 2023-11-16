@@ -165,7 +165,6 @@ async function getData({geoid='36',ealViewId, size="1", height=500}, falcor) {
         ealViewId,
         geoid,
         title: 'Flood Plain Map',
-        domain: [],
         sources,
         layers,
         attributionData: {},

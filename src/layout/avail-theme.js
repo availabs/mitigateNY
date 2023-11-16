@@ -247,15 +247,15 @@ const ppdaf = () => {
                 subMenuParentWrapper: `flex flex-row  `,
                 subMenuWrapperChild: `divide-x overflow-x-auto`,
                 subMenuWrapperTop: `absolute top-full left-0 border-y border-gray-200 w-full bg-white normal-case`,
-                subMenuWrapperInactiveFlyout: `absolute -ml-40 mt-4 normal-case bg-white shadow-lg z-10 p-2`,
-                subMenuWrapperInactiveFlyoutBelow: `-mt-8 left-44 absolute normal-case bg-white shadow-lg z-10 p-2`,
+                subMenuWrapperInactiveFlyout: `absolute  mt-8 normal-case bg-white shadow-lg z-10 p-2`,
+                subMenuWrapperInactiveFlyoutBelow: ` absolute ml-40 normal-case bg-white shadow-lg z-10 p-2`,
                 subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
             },
         }
 
 
         return {
-        topnavWrapper: `w-full ${colors[color].contentBg} border-b border-gray-200`,
+        topnavWrapper: `w-full hidden lg:block ${colors[color].contentBg} border-b border-gray-200`,
         topnavContent: `flex w-full h-full`,
         topnavMenu: `${sizes[size].menu} h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
         menuIconTop: `text-${colors[color].accentColor} ${sizes[size].icon} group-hover:${colors[color].highlightColor}`,
