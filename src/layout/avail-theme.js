@@ -246,8 +246,9 @@ const ppdaf = () => {
                 subMenuWrapper: `absolute bg-white ml-${sizes[size].width - 8}`,
                 subMenuParentWrapper: `flex flex-row  `,
                 subMenuWrapperChild: `divide-x overflow-x-auto`,
-                subMenuWrapperTop: `absolute top-full left-0  border-y border-gray-200 w-full bg-white normal-case`,
-                subMenuWrapperInactiveFlyout: `absolute normal-case top-12 bg-white shadow-lg z-10 p-2`,
+                subMenuWrapperTop: `absolute top-full left-0 border-y border-gray-200 w-full bg-white normal-case`,
+                subMenuWrapperInactiveFlyout: `absolute -ml-40 mt-4 normal-case bg-white shadow-lg z-10 p-2`,
+                subMenuWrapperInactiveFlyoutBelow: `-mt-8 left-44 absolute normal-case bg-white shadow-lg z-10 p-2`,
                 subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
             },
         }
