@@ -89,7 +89,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 								`fixed w-full z-20 ${paddingSizes[sideNavOptions.size]}` 
 								: ''
 							}`}>
-							<AwesomeTopNav
+							<TopNav
 								themeOptions={topNavOptions}
 								// subMenuActivate={'onHover'}
 								leftMenu={
