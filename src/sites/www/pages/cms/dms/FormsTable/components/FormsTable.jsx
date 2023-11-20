@@ -5,9 +5,8 @@ import {Table} from "~/modules/avl-components/src";
 import { fnum } from "~/utils/macros.jsx";
 import {hazardsMeta} from "~/utils/colors.jsx";
 import {Attribution} from "../../../components/attribution.jsx";
+import {getNestedValue, mapColName} from "../utils.js";
 
-const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
-const mapColName = (columns, col) => columns.find(c => c.name === col)?.accessor;
 
 export const FormsTable = ({
                                        data=[],
