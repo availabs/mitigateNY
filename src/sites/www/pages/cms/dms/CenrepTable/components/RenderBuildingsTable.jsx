@@ -1,10 +1,8 @@
-import React, {useMemo} from "react";
-import get from "lodash/get";
-import {Link} from "react-router-dom";
+import React, {useState} from "react";
 import {Table} from "~/modules/avl-components/src";
-import { fnum } from "~/utils/macros.jsx";
-import {hazardsMeta} from "~/utils/colors.jsx";
+import {fnum} from "~/utils/macros.jsx";
 import {Attribution} from "../../../components/attribution.jsx";
+import {RenderExternalTableFilter} from "../../../components/externalTableFilter.jsx";
 
 const colAccessNameMapping = {
     'disaster_number': 'distinct disaster_number as disaster_number',
@@ -12,18 +10,26 @@ const colAccessNameMapping = {
 
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
+
 export const RenderBuildingsTable = ({
-                                       data=[],
-                                       columns=[],
-                                       filterValue = {},
-                                       pageSize,
-                                       sortBy = {},
-                                       baseUrl,
-                                       attributionData,
-                                       striped,
-                                         fetchData
-}) => {
-    const updatedColumns = columns.map(c => {
+                                         data = [],
+                                         columns = [],
+                                         filterValue = {},
+                                         extFilterValues = {},
+                                         setExtFilterValues,
+                                         pageSize,
+                                         sortBy = {},
+                                         baseUrl,
+                                         attributionData,
+                                         striped,
+                                         fetchData,
+                                         hiddenCols
+                                     }) => {
+    const [filters, setFilters] = useState(extFilterValues);
+
+    const updatedColumns = columns
+        .filter(c => !hiddenCols.includes(c.name))
+        .map(c => {
         return {
             ...c,
             Cell: cell => {
@@ -32,8 +38,8 @@ export const RenderBuildingsTable = ({
                     ['integer', 'number'].includes(cell.column.type) ?
                         fnum(value || 0, c.isDollar) :
                         Array.isArray(value) ? value.join(', ') : value
-                if(typeof value === 'object') return  <div></div>
-                return( <div>{value}</div>);
+                if (typeof value === 'object') return <div></div>
+                return (<div>{value}</div>);
             }
         }
     })
@@ -47,8 +53,23 @@ export const RenderBuildingsTable = ({
                 return acc && value?.toString().toLowerCase().includes(filterValue[col]?.toLowerCase())
             }, true)
     )
+        .filter(row => !Object.keys(filters)?.length ||
+            Object.keys(filters)
+                .filter(f => filters[f].length)
+                .reduce((acc, col) => {
+                    const value = getNestedValue(row[col]);
+                    return acc && filters[col].includes(value);
+                }, true)
+        )
     return (
         <>
+            <RenderExternalTableFilter
+                columns={columns.filter(c => c.extFilter)}
+                data={data}
+                filters={filters}
+                setFilters={setFilters}
+                setExtFilterValues={setExtFilterValues}
+            />
             <div className={'py-5'}>
                 <Table
                     columns={updatedColumns}
@@ -61,7 +82,7 @@ export const RenderBuildingsTable = ({
                     fetchData={fetchData}
                 />
             </div>
-            <Attribution baseUrl={baseUrl} attributionData={attributionData} />
+            <Attribution baseUrl={baseUrl} attributionData={attributionData}/>
         </>
     )
 };

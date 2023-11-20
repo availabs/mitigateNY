@@ -8,8 +8,6 @@ import VersionSelectorSearchable from "../../components/versionSelector/searchab
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
-import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
-import {ButtonSelector} from "../../components/buttonSelector.jsx";
 import {addTotalRow} from "../../utils/addTotalRow.js";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
@@ -136,7 +134,7 @@ async function getData({
                            geoid,
                            pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                            filters, filterValue, visibleCols, hiddenCols,
-                           version
+                           version, extFilterCols
                        }, falcor) {
     const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
         aggregatedLen: Boolean(groupBy.length),
@@ -186,7 +184,7 @@ async function getData({
 
     const columns = visibleCols
         .map(c => metadata.find(md => md.name === c))
-        .filter(c => c && !hiddenCols.includes(c.name))
+        .filter(c => c)
         .map(col => {
             return {
                 Header: col.display_name || col.name,
@@ -194,6 +192,7 @@ async function getData({
                 align: col.align || 'right',
                 width: colSizes[col.name] || '15%',
                 filter: col.filter || filters[col.name],
+                extFilter: extFilterCols.includes(col.name),
                 info: col.desc,
                 ...col,
                 type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
@@ -209,7 +208,7 @@ async function getData({
         geoid,
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
-        dataSource, dataSources, version
+        dataSource, dataSources, version, extFilterCols
     }
 }
 
@@ -239,6 +238,8 @@ const Edit = ({value, onChange}) => {
     const [fn, setFn] = useState(cachedData?.fn || []);
     const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
     const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
+    const [extFilterCols, setExtFilterCols] = useState(cachedData?.extFilterCols || []);
+    const [extFilterValues, setExtFilterValues] = useState(cachedData?.extFilterValues || {});
 
     const category = 'Cenrep';
 
@@ -294,7 +295,7 @@ const Edit = ({value, onChange}) => {
                 dataSources, dataSource, geoAttribute, geoid,
                 pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
-                version
+                version, extFilterCols
             }, falcor);
 
             onChange(JSON.stringify({
@@ -309,8 +310,15 @@ const Edit = ({value, onChange}) => {
     }, [dataSources, dataSource, geoid, geoAttribute,
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         filters, filterValue, visibleCols, hiddenCols,
-        version
+        version, extFilterCols
     ]);
+
+    useEffect(() => {
+        onChange(JSON.stringify({
+            ...cachedData,
+            extFilterValues
+        }))
+    }, [extFilterValues]);
 
     const data = cachedData.data;
 
@@ -334,6 +342,8 @@ const Edit = ({value, onChange}) => {
                             value={dataSource}
                             onChange={e => {
                                 setVisibleCols([])
+                                setExtFilterCols([])
+                                setGeoAttribute(undefined)
                                 setDataSource(+e.target.value);
                             } }
                         >
@@ -381,6 +391,8 @@ const Edit = ({value, onChange}) => {
                         setShowTotal={setShowTotal}
                         colSizes={colSizes}
                         setColSizes={setColSizes}
+                        extFilterCols={extFilterCols}
+                        setExtFilterCols={setExtFilterCols}
                     />
                 </div>
                 {
@@ -390,7 +402,10 @@ const Edit = ({value, onChange}) => {
                                 geoid={geoid}
                                 data={data}
                                 columns={columns}
+                                hiddenCols={hiddenCols}
                                 filterValue={filterValue}
+                                extFilterValues={extFilterValues}
+                                setExtFilterValues={setExtFilterValues}
                                 pageSize={pageSize}
                                 sortBy={sortBy}
                                 attributionData={attributionData}
@@ -495,6 +510,11 @@ export default {
         {
             name: 'hiddenCols',
             hidden: true
+        },
+        {
+            name: 'extFilterCols',
+            hidden: true,
+            default: []
         },
     ],
     getData,

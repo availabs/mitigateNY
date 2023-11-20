@@ -43,6 +43,9 @@ export const getColAccessor = (fn, col, origin, form) => (origin === 'calculated
                 `${fn[col].replace(col, `${getAccessor(col, form)}'${col}'`)} as ${col}` :
                 `${getAccessor(col, form)}'${col}' as ${col}`;
 
+export const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
+export const mapColName = (columns, col) => columns.find(c => c.name === col)?.accessor;
+
 const handleExpandableRows = (data, attributes, columns) => {
     const openOutAttributes =
         attributes
@@ -54,10 +57,15 @@ const handleExpandableRows = (data, attributes, columns) => {
             const newRow = {...row}
             newRow.expand = []
             newRow.expand.push(
-                ...expandableColumns.map(col => ({
-                    key: attributes.find(attr => attr.name === col.name)?.display_name || col.name,
-                    value: typeof row[col.accessor] === 'object' ? '' : row[col.accessor]
-                }))
+                ...expandableColumns.map(col => {
+                    const value = getNestedValue(row[col.accessor]);
+
+                    return {
+                        key: attributes.find(attr => attr.name === col.name)?.display_name || col.name,
+                        value: Array.isArray(value) ? value.join(', ') :
+                            typeof value === 'object' ? '' : value
+                    }
+                })
             )
             expandableColumns.forEach(col => delete newRow[col.accessor])
             return newRow;
