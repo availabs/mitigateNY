@@ -207,7 +207,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                     <div className={`flex w-full h-[50px] items-center mt-4 ${(value?.['level']) === '1' ? `border-b` : ``}`}>
 
                         <div id={`#${value?.title?.replace(/ /g, '_')}`}
-                             className={`flex-1 flex-row py-2  font-sans font-medium uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
+                             className={`flex-1 flex-row py-2  font-display font-medium uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
                             <TitleComp
                                 className={`w-full ${
                                     (value?.['level']) === '1' ? 

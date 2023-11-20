@@ -9,12 +9,6 @@ const ppdaf = () => {
   return {
     graphColors: [ '#1e40af','#93c5fd','#1d4ed8','#bfdbfe',],
     graphCategorical:  ['#fde72f','#95d840','#55a488','#2f708e','#453781','#472354'],
-    // ['#e5496d', '#fad264', '#76d9a2'],
-    // ['#e96835','#f5dc50','#a63b6e','#e54249','#49969b'],
-    // ['#1e4b5a','#e75148','#0f1e37','#8c786e',],
-    // ['#fde72f','#95d840','#55a488','#2f708e','#453781','#472354'],
-    //  ['#5fc0c8','#5559d3','#ed8534','#7e84fa','#7fe06a']
-
     sidenav: (opts={}) =>  {
         let {color = 'white', size = 'compact',  subMenuStyle = 'inline', responsive = 'top'} = opts
           
@@ -263,7 +257,7 @@ const ppdaf = () => {
         menuOpenIcon: `fa-light fa-bars fa-fw`,
         menuCloseIcon: `fa-light fa-xmark fa-fw"`,
         navitemTop: `
-            w-fit group font-sans whitespace-nowrap
+            w-fit group font-display whitespace-nowrap
             ${sizes[size].topItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
             transition cursor-pointer
@@ -272,7 +266,7 @@ const ppdaf = () => {
         topmenuRightNavContainer: "hidden md:block h-full",
         topnavMobileContainer: "bg-slate-50",
         navitemTopActive:
-          ` w-fit group font-sans whitespace-nowrap
+          ` w-fit group font-display whitespace-nowrap
             ${sizes[size].activeItem}
             focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
             transition cursor-pointer 

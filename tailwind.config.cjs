@@ -9,7 +9,32 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['Proxima Nova','IBM Plex Sans','Inter','Roboto','Work Sans', ...defaultTheme.fontFamily.sans],
+        'sans': [
+          'Poppins',
+          'Inter',
+          'Roboto',
+          'Proxima Nova',
+          'IBM Plex Sans',
+          'Montserrat',
+          'Poppins', 
+          'Work Sans',
+          'Inter',
+          'Roboto',
+          'Rubik',
+          ...defaultTheme.fontFamily.sans],
+
+        'display': [
+          'Rubik',
+          'Montserrat',
+          'Inter',
+          'Roboto',
+          'Proxima Nova',
+          'Poppins',
+          'Oswald',
+          'Rubik',
+          'Roboto',
+          'IBM Plex Sans',
+          ...defaultTheme.fontFamily.sans],
       },
       gridTemplateColumns: {
         "footer": "1fr 190px 190px 190px 190px 190px 190px 1fr",

@@ -32,7 +32,7 @@ export function PageView ({item, dataItems, attributes}) {
       {item?.sidebar === 'show' ? 
           (<div className='w-64 hidden xl:block'>
             <div className='w-64 fixed hidden xl:block h-screen'> 
-              <div className='h-[calc(100%_-_5rem)] overflow-y-auto overflow-x-hidden'>
+              <div className='h-[calc(100%_-_5rem)] overflow-y-auto overflow-x-hidden font-display'>
                 <SideNav {...inPageNav} /> 
               </div>
             </div>
