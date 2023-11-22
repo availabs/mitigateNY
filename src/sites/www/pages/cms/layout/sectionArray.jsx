@@ -201,10 +201,10 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
     let interactCondition = typeof onEdit !== 'function' && value?.element?.['element-type']?.includes('Map:');
 
     return (
-        <div className={`${i === 0 ? '-mt-5' : ''} `}>
+        <div className={`${i === 0 ? '-m' : ''} `}>
                 {
                     (sectionTitleCondition || helpTextCondition || interactCondition) &&
-                    <div className={`flex w-full h-[50px] items-center mt-4 ${(value?.['level']) === '1' ? `border-b` : ``}`}>
+                    <div className={`flex w-full h-[50px] items-center ${(value?.['level']) === '1' ? `border-b` : ``}`}>
 
                         <div id={`#${value?.title?.replace(/ /g, '_')}`}
                              className={`flex-1 flex-row py-2  font-display font-medium uppercase scroll-mt-36 ${sectionTitleCondition ? '' : 'invisible'}`}>
@@ -320,7 +320,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
 const AddSectionButton = ({onClick}) => (
     <div className='flex w-full'>
         <div className='flex-1'/>
-        <div>
+        <div className='z-50'>
             <button 
                 className={'pl-6 py-0.5 text-lg cursor-pointer hover:text-blue-500 text-slate-400'}
                 onClick={onClick}
@@ -396,8 +396,12 @@ const Edit = ({Component, value, onChange, attr}) => {
     // col-start for md and lg depends upon previous components from the same row
     // every time component size total reaches 1, row changes
 
+    const layouts = {
+        centered: 'md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]',
+        fullwidth:'md:grid-cols-[_minmax(_0px,0px)_repeat(6,_1fr)_minmax(_0px,0px)]'
+    }
     return (
-        <div className={`mb-12 grid sm:grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr] gap-2`}>
+        <div className={`mb-12 grid grid-cols-6 ${layouts['centered']} gap-1`}>
             {values.map((v,i) => {
                 const size = (edit.index === i ? edit?.value?.size : v?.size) || "1";
                 const requiredSpace = sizeOptionsSVG.find(s => s.name === size)?.value;
@@ -449,7 +453,10 @@ const Edit = ({Component, value, onChange, attr}) => {
 
                         {/* add section below */}
                         { edit.index == -1 && v !== '' ? 
-                            <AddSectionButton onClick={() => setEditIndex(i+1)}/> : <div className='h-[36px]' />
+                            <div className='-mt-[36px]'>
+                                <AddSectionButton onClick={() => setEditIndex(i+1)}/> 
+                            </div>  : <div className='h-[36px] -mt-[36px]' />
+                            
                         }
                     </div>
                 )
@@ -462,8 +469,12 @@ const Edit = ({Component, value, onChange, attr}) => {
 const View = ({Component, value, attr}) => {
     if (!value || !value.map) { return '' }
     let runningColTotal = 8;
+    let layouts = {
+        centered: 'md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr]',
+        fullwidth:'md:grid-cols-[_minmax(_0px,0px)_repeat(6,_1fr)_minmax(_0px,0px)]'
+    }
     return (
-        <div className={`mb-12 grid grid-cols-6 md:grid-cols-[1fr_repeat(6,_minmax(_100px,_170px))_1fr] gap-2`}   >
+        <div className={`mb-12 grid grid-cols-6 ${layouts['centered']} gap-1`}>
         
         { 
             value.map((v,i) =>{
