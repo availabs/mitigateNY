@@ -46,6 +46,11 @@ const cmsPageFormat = {
       key: 'data_controls',
       type: "text",
       hidden: true
+    },
+    {
+      'key': 'generated-pages',
+      type: 'text',
+      isArray: true
     }
   ]
 }

@@ -15,13 +15,13 @@ const widths = {
 }
 
 const RenderChoroplethLegend = ({size, domain, range, fmt, title,hideNA}) => {
-    console.log('domain', domain, fmt)
+    // console.log('domain', domain, fmt)
 
     const RenderLegendBox = ({value, color, fmt, className}) => {
         const width = `${widths[size] / (range.length + 1)}px`,
             heightParent = '',
             heightChild = '20px';
-        console.log('RenderLegendBox', value)
+        // console.log('RenderLegendBox', value)
         return (
             <div key={value} className={`flex flex-col h-[40px] flex-1 ${className}`}>
                 <div className={`h-[20px]`} style={{backgroundColor: color}}/>

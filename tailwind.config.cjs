@@ -10,16 +10,9 @@ module.exports = {
     extend: {
       fontFamily: {
         'sans': [
+          'Figtree',
           'Poppins',
-          'Inter',
-          'Roboto',
           'Proxima Nova',
-          'IBM Plex Sans',
-          'Montserrat',
-          'Poppins', 
-          'Work Sans',
-          'Inter',
-          'Roboto',
           'Rubik',
           ...defaultTheme.fontFamily.sans],
 

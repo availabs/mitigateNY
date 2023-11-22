@@ -68,11 +68,17 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
           out[curr] = dataControls?.active_row?.[dataControls?.sectionControls?.[section_id]?.[curr]?.name] ||
                       dataControls?.active_row?.[dataControls?.sectionControls?.[section_id]?.[curr]] || null
           
+          // console.log('curr', curr, out[curr], 
+          //   dataControls?.sectionControls?.[section_id]?.[curr]?.name, 
+          //   dataControls?.sectionControls?.[section_id]?.[curr],
+          //   dataControls?.active_row
+          // )          
+          
           return out
         },{})
 
         let args = {...controlVars, ...updateVars}
-        console.log('new args', section.id, section?.element?.['element-type'], args)
+        console.log('new args', section.id, section?.element?.['element-type'], updateVars, args)
         return comp?.getData ? comp.getData(args,falcor).then(data => ({section_id, data})) : null
       }).filter(d => d)
 

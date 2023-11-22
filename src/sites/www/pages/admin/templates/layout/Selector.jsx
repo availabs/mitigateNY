@@ -10,7 +10,7 @@ export default function Selector({options=[], onChange, value, nameAccessor=d =>
     query === ''
       ? options
       : options.filter((option) =>
-          (nameAccessor(option))
+          (nameAccessor(option) + '')
             .toLowerCase()
             .replace(/\s+/g, '')
             .startsWith(query.toLowerCase().replace(/\s+/g, ''))
