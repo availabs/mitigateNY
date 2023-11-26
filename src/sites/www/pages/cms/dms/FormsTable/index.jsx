@@ -222,7 +222,8 @@ const Edit = ({value, onChange}) => {
                             {label: 'Actions', value: 'Actions'},
                             {label: 'Capabilities', value: 'Capabilities'},
                             {label: 'Mitigation Measures', value: 'Mitigation Measures'},
-                            {label: 'R+V Matrix', value: 'R+V Matrix'}
+                            {label: 'R+V Matrix', value: 'R+V Matrix'},
+                            {label: 'Policy Documents', value: 'Policy Documents'}
                         ]}
                         type={form}
                         setType={e => {

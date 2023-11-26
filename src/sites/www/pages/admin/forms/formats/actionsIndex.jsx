@@ -232,10 +232,10 @@ const TableComp = ({format, ...rest}) => {
                                        <div className={'flex flex-row flex-wrap justify-between'}>
                                            <Link
                                                className={actionButtonClass}
-                                               to={`/admin/forms/form/93165/view/${d?.cell?.row?.original?.id}`}> view </Link>
+                                               to={`/admin/forms/form/134526/view/${d?.cell?.row?.original?.id}`}> view </Link>
                                            <Link
                                                className={actionButtonClass}
-                                               to={`/admin/forms/form/93165/edit/${d?.cell?.row?.original?.id}`}> edit </Link>
+                                               to={`/admin/forms/form/134526/edit/${d?.cell?.row?.original?.id}`}> edit </Link>
                                        </div>
                                    )
                                },
@@ -284,7 +284,7 @@ const siteConfig = {
     },
     children: [
         {
-            type: (props) => <Layout {...props} title={'Actions'} baseUrl={'/admin/forms/form/93165'}/>,
+            type: (props) => <Layout {...props} title={'Actions'} baseUrl={'/admin/forms/form/134526'}/>,
             path: '/*',
             action: 'list',
             filter: {
@@ -341,7 +341,7 @@ const siteConfig = {
                                 // },
                                 // { type: 'link',
                                 //     name: '',
-                                //     to: '/admin/forms/form/93165/edit/:id',
+                                //     to: '/admin/forms/form/134526/edit/:id',
                                 //     text: "edit"
                                 // }
                             ]}
@@ -390,7 +390,7 @@ const siteConfig = {
 export default {
     ...dmsPageFactory(
         siteConfig,
-        "/admin/forms/form/93165/",
+        "/admin/forms/form/134526/",
         withAuth,
         dmsFormsTheme
     ),
