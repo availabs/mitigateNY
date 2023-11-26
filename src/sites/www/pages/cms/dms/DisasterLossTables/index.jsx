@@ -29,7 +29,12 @@ async function getData({
 
     const res = await falcor.get(dependencyPath(ealViewId));
     const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
-    const countyView = deps.find(dep => dep.type === "tl_county");
+    const countyView = deps?.find(dep => dep.type === "tl_county");
+
+    if(!countyView) {
+        return {};
+    }
+
 
     const geoNameLenRes = await falcor.get([...geoNamesPath(countyView.view_id), "length"]);
     const geoNameLen = get(geoNameLenRes, ["json", ...geoNamesPath(countyView.view_id), "length"], 0);

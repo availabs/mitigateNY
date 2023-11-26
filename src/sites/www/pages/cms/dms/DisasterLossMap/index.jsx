@@ -63,7 +63,7 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
 async function getData({geoid,disasterNumber,ealViewId, type='total_losses', numColors='5', colors=defaultColors, size="1", height=500}, falcor) {
     //return {}
     if(!ealViewId ||  !geoid || !disasterNumber ) {
-        console.log('getdata not running')
+        console.log('getdata not running',ealViewId ,  geoid , disasterNumber  )
         return {}
     }
     // console.log('test', ealViewId)
@@ -92,10 +92,10 @@ async function getData({geoid,disasterNumber,ealViewId, type='total_losses', num
 
     const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
 
-    //console.log('deps', res, deps, dependencyPath(ealViewId))
+    console.log('deps', res, deps, dependencyPath(ealViewId))
 
-    const stateView = deps.find(dep => dep.type === "tl_state");
-    const typeId = deps.find(dep => dep.type === metaData[type]?.type);
+    const stateView = deps?.find(dep => dep.type === "tl_state");
+    const typeId = deps?.find(dep => dep.type === metaData[type]?.type);
     //console.log('typeID', typeId, deps)
     if(!typeId?.view_id) {
         return {}
@@ -139,7 +139,7 @@ async function getData({geoid,disasterNumber,ealViewId, type='total_losses', num
     const {geoColors, domain} = getGeoColors({geoid, data, columns, paintFn: metaData[type].paintFn, colors});
     const attributionData = {} //get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
     //console.log('test', geoColors)
-    const geoids = [...new Set(Object.keys(geoColors).map(geoId => geoId.substring(0, 5)))]
+    const geoids = [...new Set(Object.keys(geoColors || {}).map(geoId => geoId.substring(0, 5)))]
 
 
    
@@ -183,7 +183,7 @@ async function getData({geoid,disasterNumber,ealViewId, type='total_losses', num
       }
     }]
     
-    console.log('mapfocus', geom ? get(JSON.parse(geom), 'bbox', null ) : null)
+    //console.log('mapfocus', geom ? get(JSON.parse(geom), 'bbox', null ) : null)
 
             
     return {
@@ -396,7 +396,7 @@ const View = ({value}) => {
     const baseUrl = '/';
     const attributionData = data?.attributionData;
     const layerProps =  {ccl: {...data }}
-    console.log('render view', data)
+    // console.log('render view', data)
 
     return (
         <div className='relative w-full p-6'>

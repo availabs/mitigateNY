@@ -61,7 +61,7 @@ export const ViewMap = ({falcor, layerProps, legend}) => {
     
     const mapLayer = React.useRef(SimpleMapLayerFactory())
 
-    console.log('ViewMap', legend)
+    // console.log('ViewMap', legend)
 
     return (
         <div className='w-full h-full'>
