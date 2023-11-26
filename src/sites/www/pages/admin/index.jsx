@@ -77,6 +77,11 @@ export const menuItems = [
     path: '/admin/forms/form/131450/list/0/10'
   },
   {
+    name: 'Policy Documents',
+    icon: 'far fa-building fa-fw',
+    path: '/admin/forms/form/149258/list/0/10'
+  },
+  {
     name: 'Roles',
     icon: 'far fa-people-arrows',
     path: '/admin/forms/roles'
