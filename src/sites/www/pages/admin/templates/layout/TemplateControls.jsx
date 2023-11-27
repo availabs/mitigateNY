@@ -78,7 +78,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
         },{})
 
         let args = {...controlVars, ...updateVars}
-        console.log('new args', section.id, section?.element?.['element-type'], updateVars, args)
+        // console.log('new args', section.id, section?.element?.['element-type'], updateVars, args)
         return comp?.getData ? comp.getData(args,falcor).then(data => ({section_id, data})) : null
       }).filter(d => d)
 
@@ -89,7 +89,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
         updates.forEach(({section_id, data}) => {
           let section = newSections.filter(d => d.id === section_id)?.[0]  || {}
           section.element['element-data'] = JSON.stringify(data)
-          console.log('updating section', section_id, data)
+          // console.log('updating section', section_id, data)
         })
         updateAttribute('sections', newSections)
       }
@@ -185,10 +185,12 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
                 dataControls={dataControls}
                 setDataControls={setDataControls}
                 saveDataControls={saveDataControls}
+                baseUrl={baseUrl}
               />
             </div>
             {dataControls?.id_column && <div>
               <ViewInfo
+                  item={item}
                 source={dataControls?.source}
                 view={dataControls?.view}
                 id_column={dataControls?.id_column}
@@ -201,6 +203,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
                     setDataControls({...dataControls, ...v})
                   }
                 }}
+                baseUrl={baseUrl}
               />
             </div>}
             {/*<div onClick={() => setShowDelete(true)}
