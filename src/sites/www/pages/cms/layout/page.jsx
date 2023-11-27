@@ -96,7 +96,7 @@ export function PageView ({item, dataItems, attributes, user}) {
                 <div className='w-full text-right relative py-2 z-10 h-[40px]'>
                   {user?.authLevel >= 5 ?  
                     <Link to={`${baseUrl}/edit/${item.url_slug}`}>
-                      <i className='fad fa-money-check-pen fa-fw flex-shrink-0  pr-1 text-blue-500'/>
+                      <i className='fad fa-edit fa-fw flex-shrink-0  pr-1 text-blue-500'/>
                     </Link> : ''}
                 </div>
               
