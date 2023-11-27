@@ -95,11 +95,11 @@ const Home = () => {
             const res = await Object.keys(locationNameMap).reduce(async (acc, type) => {
                 const prevPages = await acc;
                 const currentPages = await dmsDataLoader(getConfig({app: 'dms-site', type, id}), '/');
-                console.log('acc', prevPages, currentPages, type)
+
                 return [...prevPages, ...currentPages];
             }, Promise.resolve([]));
 
-            console.log('res', res)
+
             setValue(res)
         })()
     }, [id]);
