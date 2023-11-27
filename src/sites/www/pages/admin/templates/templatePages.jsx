@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {dmsDataLoader} from "../../../../../modules/dms/src/index.js";
 import {DeleteModal} from "./layout/TemplateList.jsx";
+import {menuItems} from "../index.jsx";
 
 const locationNameMap = {
     'docs-play': 'Playground',
@@ -130,8 +131,9 @@ const Home = () => {
 
 export const authMenuConfig = {
     sideNav: {
-        size: 'none',
+        size: 'compact',
         color: 'white',
+        menuItems
     },
     topNav: {
         position: 'fixed',
