@@ -18,25 +18,15 @@ const theme = {
   } 
 }
 
-export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...props}) {
+export default function SiteLayout ({children, baseUrl='', ...props}) {
   const [open, setOpen] = React.useState(false)
   const [historyOpen, setHistoryOpen] = React.useState(false)
-  // console.log('siteLayout', open)
+  console.log('layout',props.user)
   
-  const menuItems = React.useMemo(() => {
-    let items = dataItemsNav(dataItems,baseUrl,edit)
-    return items
-  }, [dataItems,edit])
-
-  const level = detectNavLevel(dataItems, baseUrl);
-
-  const inPageNav = getInPageNav(dataItems, baseUrl);
   return (
-    
-          <CMSContext.Provider value={{baseUrl, open, setOpen, historyOpen, setHistoryOpen}}>
-            {children}
-          </CMSContext.Provider>
-    
+    <CMSContext.Provider value={{baseUrl, open, setOpen, historyOpen, setHistoryOpen}}>
+      {children}
+    </CMSContext.Provider>
   )
 }
 

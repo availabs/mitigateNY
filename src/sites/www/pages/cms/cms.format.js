@@ -91,6 +91,17 @@ const cmsPageFormat = {
       hidden: true
     },
     {
+      key: 'header',
+      type: "text",
+      hidden: true
+    },
+    {
+      key: 'footer',
+      type: "text",
+      hidden: true
+    },
+
+    {
       key: 'sections',
       type: 'dms-format',
       isArray: true,

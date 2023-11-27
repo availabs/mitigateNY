@@ -7,6 +7,7 @@ const siteConfig = {
   format: cmsFormat,
   check: ({user}, activeConfig, navigate) =>  {
 
+    console.log('check', user)
     const getReqAuth = (configs) => {
       return configs.reduce((out,config) => {
         let authLevel = config.authLevel || -1

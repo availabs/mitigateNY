@@ -81,36 +81,33 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 					</div>
 				)
 			}
-			<div className={`flex-1 flex items-start flex-col items-stretch min-h-screen`}>
+			<div className={`flex-1 flex items-start flex-col items-stretch min-h-screen w-full`}>
 				{
 					topNavOptions.size === 'none' ? '' : (<>
 						<div className={`${
 							topNavOptions.position === 'fixed' ? 
-								`fixed w-full z-20 ${paddingSizes[sideNavOptions.size]}` 
+								`sticky top-0 z-20 w-full ${paddingSizes[sideNavOptions.size]}` 
 								: ''
 							}`}>
-							<TopNav
-								themeOptions={topNavOptions}
-								// subMenuActivate={'onHover'}
-								leftMenu={
-									
-									<div className='flex items-center justify-center h-12'>
-										<div to="/" className={`${['none'].includes(sideNavOptions.size)  ? '' : 'md:hidden'}` }>
-											<Logo sideNav={sideNavOptions}/>
+								<TopNav
+									themeOptions={topNavOptions}
+									// subMenuActivate={'onHover'}
+									leftMenu={
+										
+										<div className='flex items-center justify-center h-12'>
+											<div to="/" className={`${['none'].includes(sideNavOptions.size)  ? '' : 'md:hidden'}` }>
+												<Logo sideNav={sideNavOptions}/>
+											</div>
+											{title}
 										</div>
-										{title}
-									</div>
 
+										
+									}
+									menuItems={topNavOptions.menuItems}
+									rightMenu={<AuthMenu />}
 									
-								}
-								menuItems={topNavOptions.menuItems}
-								rightMenu={<AuthMenu />}
-								
-							/>
+								/>
 						</div>
-						{topNavOptions.position !== 'fixed' ? '' :
-							<div className='pb-12' ></div>
-						}
 					</>)
 				}
 				<div id={'content'} className={`h-full flex-1 bg-slate-100`}>

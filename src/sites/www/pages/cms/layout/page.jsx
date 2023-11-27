@@ -29,11 +29,32 @@ const theme = {
   } 
 }
 
+function Header ({bgImg='/img/header.png', logo='/img/nygov-logo.png', title='MitigateNY', subTitle='New York State Hazard Mitigation Plan', note='2023 Update'}) {
+  return (
+    <div className='h-[300px] bg-cover bg-center w-full flex ' style={{ backgroundImage: `url("${bgImg}")` }}>
+      <div className='p-2'>
+        {logo && <img src={logo} alt="NYS Logo" />}
+      </div>
+      <div className='flex-1 flex flex-col  items-center p-4'>
+        <div className='flex-1'/>
+        <div className='text-3xl sm:text-7xl font-bold text-[#f2a91a] text-right w-full text-display'>
+          {title && <div>{title}</div>}
+        </div>
+        <div className='text-lg tracking-wider pt-2 sm:text-3xl font-bold text-slate-200 text-right w-full uppercase'>
+          {subTitle && <div>{subTitle}</div>}
+        </div>
+        <div className='text-lg tracking-wider sm:text-xl font-bold text-slate-200 text-right w-full uppercase'>
+          {note && <div>{note}</div>}
+        </div>
+        <div className='flex-1'/>
+      </div>
+    </div>
+  )
+}
 
-export function PageView ({item, dataItems, attributes}) {
+export function PageView ({item, dataItems, attributes, user}) {
   if(!item) return <div> No Pages </div>
 
-  // console.log('page view', item, dataItems)
   const {baseUrl} = React.useContext(CMSContext)
   const ContentView = attributes['sections'].ViewComp
   const menuItems = React.useMemo(() => {
@@ -44,8 +65,13 @@ export function PageView ({item, dataItems, attributes}) {
   const level = detectNavLevel(dataItems, baseUrl);
 
   const inPageNav = getInPageNav(dataItems, baseUrl);
+
   
   return (
+    <div>
+    {/* Header */}
+    {item?.header && <Header {...item.header}/>} 
+    {/* Layout */}
     <Layout topNav={{menuItems, position: 'fixed' }} sideNav={item.sideNav ? item.sideNav : inPageNav}>
       <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
         <div className={theme.layout.container}>
@@ -61,12 +87,20 @@ export function PageView ({item, dataItems, attributes}) {
                   </div>
                 </div>)
               : ''}
-            <div className='flex-1 flex border shadow bg-white px-4'>
+            
+            <div className='flex-1 flex border  shadow bg-white px-4'>
               <div className={theme.page.container + ' '}>
                 {/*<div className='px-6 py-4 font-sans font-medium text-xl text-slate-700 uppercase max-w-5xl mx-auto'>
                   {item['title']}
                 </div>*/}
-                <div className='text-md font-light leading-7'>
+                <div className='w-full text-right relative py-2 z-10 h-[40px]'>
+                  {user?.authLevel >= 5 ?  
+                    <Link to={`${baseUrl}/edit/${item.url_slug}`}>
+                      <i className='fad fa-money-check-pen fa-fw flex-shrink-0  pr-1 text-blue-500'/>
+                    </Link> : ''}
+                </div>
+              
+                <div className='text-md font-light leading-7 -mt-[40px]'>
                   <ContentView 
                     value={item['sections']} 
                     {...attributes['sections']}
@@ -80,6 +114,9 @@ export function PageView ({item, dataItems, attributes}) {
         </div>
       </div>
     </Layout>
+    {/*Footer*/}
+    {item?.footer && <div className='h-[300px] bg-slate-100' />}
+    </div>
   ) 
 }
 
@@ -108,74 +145,73 @@ export function PageEdit ({
   
   React.useEffect(() => {
     if(!item?.url_slug ) { 
-      //console.log('navigate', item, item.id,dataItems[0].id)
       let defaultUrl = dataItems
         .sort((a,b) => a.index-b.index)
         .filter(d=> !d.parent && d.url_slug)[0]
-      //console.log('defaultUrl', defaultUrl)
       defaultUrl && defaultUrl.url_slug && navigate(`edit/${defaultUrl.url_slug}`)
     }
   },[])
 
   const saveSection = (v) => {
-    //console.log('saving section', )
     updateAttribute('sections', v)
     const newItem = cloneDeep(item)
     newItem.sections = v
     submit(json2DmsForm(newItem), { method: "post", action: `${baseUrl}/edit/${newItem.url_slug}` })
-
-    // save section
   }
 
   //console.log('page edit', attributes['sections'])
   const ContentEdit = attributes['sections'].EditComp
  
   return (
-    <Layout topNav={{menuItems, position: 'fixed' }} sideNav={inPageNav}>
-      <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
-        <div className={theme.layout.container}>
-          {/* PAGE EDIT */}
-          <div className='flex flex-1 h-full w-full px-1 md:px-6 py-6'>
-            <Nav dataItems={dataItems}  edit={true} />
-            <EditHistory item={item} />
-            {item?.sidebar === 'show' ? 
-                (<div className='w-64 hidden xl:block'>
-                  <div className='w-64 fixed hidden xl:block h-screen'> 
-                    <div className='h-[calc(100%_-_8rem)] overflow-y-auto overflow-x-hidden'>
-                      <SideNav {...inPageNav} /> 
+    <div>
+       {item?.header && <Header {...item.header}/>} 
+      <Layout topNav={{menuItems, position: 'fixed' }} sideNav={inPageNav}>
+        <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
+          <div className={theme.layout.container}>
+            {/* PAGE EDIT */}
+            <div className='flex flex-1 h-full w-full px-1 md:px-6 py-6'>
+              <Nav dataItems={dataItems}  edit={true} />
+              <EditHistory item={item} />
+              {item?.sidebar === 'show' ? 
+                  (<div className='w-64 hidden xl:block'>
+                    <div className='w-64 fixed hidden xl:block h-screen'> 
+                      <div className='h-[calc(100%_-_8rem)] overflow-y-auto overflow-x-hidden'>
+                        <SideNav {...inPageNav} /> 
+                      </div>
                     </div>
+                  </div>)
+                : ''}
+              <div className='flex-1 flex border shadow bg-white px-4 '>
+                <div className={theme.page.container}>
+                  <div className='text-base font-light leading-7'>
+                    <ContentEdit
+                      value={item['sections']} 
+                      onChange={saveSection}         
+                      {...attributes['sections']}
+                    />
                   </div>
-                </div>)
-              : ''}
-            <div className='flex-1 flex border shadow bg-white px-4 '>
-              <div className={theme.page.container}>
-                <div className='text-base font-light leading-7'>
-                  <ContentEdit
-                    value={item['sections']} 
-                    onChange={saveSection}         
-                    {...attributes['sections']}
+                </div>
+              </div>
+              <div className='w-52 hidden xl:block'>
+                <div className='w-52 fixed hidden xl:block h-screen'> 
+                  <PageControls 
+                    item={item} 
+                    dataItems={dataItems}
+                    setItem={setItem}
+                    edit={true}
+                    status={status}
+                    attributes={attributes}
+                    updateAttribute={updateAttribute}
                   />
                 </div>
               </div>
-            </div>
-            <div className='w-52 hidden xl:block'>
-              <div className='w-52 fixed hidden xl:block h-screen'> 
-                <PageControls 
-                  item={item} 
-                  dataItems={dataItems}
-                  setItem={setItem}
-                  edit={true}
-                  status={status}
-                  attributes={attributes}
-                  updateAttribute={updateAttribute}
-                />
-              </div>
-            </div>
-          </div>  
-          {/* PAGE EDIT END */}
+            </div>  
+            {/* PAGE EDIT END */}
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+      {item?.footer && <div className='h-[300px] bg-slate-100' />} 
+    </div>
   ) 
 }
 

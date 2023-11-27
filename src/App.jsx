@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 
 // import { Messages } from '~/modules/avl-components/src'
-import { withAuth, Messages } from '~/modules/ams/src'
+import { Messages } from '~/modules/ams/src'
 
 import Layout from '~/layout/avail-layout'
 import LayoutWrapper from '~/layout/LayoutWrapper'

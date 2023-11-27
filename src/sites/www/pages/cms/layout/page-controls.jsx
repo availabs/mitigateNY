@@ -114,10 +114,10 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
     setType(item.type);
   }
 
-  const toggleSidebar = async (value='') => {
+  const toggleSidebar = async (type, value='') => {
     const newItem = cloneDeep(item)
-    newItem.sidebar = value
-    updateAttribute('sidebar', value)
+    newItem[type] = value
+    updateAttribute(type, value)
     submit(json2DmsForm(newItem), { method: "post", action: pathname })
   }
 
@@ -200,27 +200,46 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
                 setOpen={setShowDelete}
               />
             </div>
+            <div className='h-[20px]'/>
             <div className={theme.pageControls.controlItem } >
               <SidebarSwitch
                 item={item}
+                type='sidebar'
                 toggleSidebar={toggleSidebar}
               />
               Show Sidebar
               
             </div>
+            <div className={theme.pageControls.controlItem } >
+              <SidebarSwitch
+                type='header'
+                item={item}
+                toggleSidebar={toggleSidebar}
+              />
+              Show Header
+              
+            </div>
+            <div className={theme.pageControls.controlItem } >
+              <SidebarSwitch
+                type='footer'
+                item={item}
+                toggleSidebar={toggleSidebar}
+              />
+              Show Footer
+            </div>
           </div>
         }
-          <ToastContainer />
+        <ToastContainer />
     </>
   )
 }
 
-export function SidebarSwitch({item,toggleSidebar}) {
-  let enabled = item.sidebar === 'show'
+export function SidebarSwitch({type,item,toggleSidebar}) {
+  let enabled = item[type] === 'show'
   return (
     <Switch
       checked={enabled}
-      onChange={(e) => toggleSidebar(enabled ? '' : 'show')}
+      onChange={(e) => toggleSidebar(type,enabled ? '' : 'show')}
       className="group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
     >
       <span className="sr-only">Use setting</span>
