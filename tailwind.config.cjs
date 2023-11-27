@@ -12,8 +12,9 @@ module.exports = {
         'sans': [
           'Figtree',
           'Poppins',
-          'Proxima Nova',
           'Rubik',
+          'Proxima Nova',
+          
           ...defaultTheme.fontFamily.sans],
 
         'display': [
