@@ -6,11 +6,12 @@ import Selector from './Selector'
 import get from 'lodash/get'
 import {getAttributes} from '~/pages/DataManager/Source/attributes'
 import ComponentRegistry from '~/sites/www/pages/cms/dms/ComponentRegistry'
+import cloneDeep from "lodash/cloneDeep.js";
+import {dmsDataEditor} from "../../../../../../modules/dms/src/index.js";
 
 const pgEnv = 'hazmit_dama'
 
-export default function DataControls ({item, dataItems,dataControls, setDataControls, open, setOpen, saveDataControls}) {
-  
+export default function DataControls ({item, dataItems,dataControls, setDataControls, open, setOpen, saveDataControls, baseUrl}) {
   const updateDataControls = (k,v) => {
     setDataControls({...dataControls, [k]: v})
   }
@@ -75,6 +76,7 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
                        dataControls?.view?.view_id? 
                         <div>
                           <ViewInfo
+                              item={item}
                             source={dataControls?.source}
                             view={dataControls?.view}
                             id_column={dataControls?.id_column}
@@ -91,6 +93,7 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
                                 setDataControls({...dataControls, ...v})
                               }
                             }}
+                            baseUrl={baseUrl}
                           />
                           <PathControl />
                           <SectionListControls 
@@ -292,7 +295,7 @@ const ViewsSelect = ({source_id, value, onChange}) => {
   );
 };
 
-export const ViewInfo = ({source,view, id_column, active_row, onChange}) => {
+export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) => {
   
   // console.log('ViewInfo', id_column, active_id)
   const { falcor, falcorCache } = useFalcor();
@@ -351,7 +354,87 @@ export const ViewInfo = ({source,view, id_column, active_row, onChange}) => {
   },[id_column,view.view_id,falcorCache])
 
   // console.log('view info', id_column, active_row, dataRows)
-    
+   const generatePages = async ({id_column, dataRows}) => {
+    const disaster_numbers = ['4020', '4031']
+    // const disaster_numbers = dataRows.map(d => d[id_column.name]).filter(d => d).slice(0, 2);
+
+     await disaster_numbers.reduce(async(acc, idColAttrVal) => {
+       await acc;
+
+       const dataControls = item.data_controls;
+       let dataFetchers = Object.keys(dataControls.sectionControls)
+           .map(section_id => {
+             let section = item.sections.filter(d => d.id === section_id)?.[0]  || {}
+             let data = parseJSON(section?.element?.['element-data']) || {}
+             let type = section?.element?.['element-type'] || ''
+             let comp = ComponentRegistry[type] || {}
+
+             let controlVars = (comp?.variables || []).reduce((out,curr) => {
+               out[curr.name] = data[curr.name]
+               return out
+             },{})
+
+             let updateVars = Object.keys(dataControls.sectionControls[section_id]) // check for id_col
+                 .reduce((out,curr) => {
+                   const attrName = dataControls?.sectionControls?.[section_id]?.[curr]?.name || dataControls?.sectionControls?.[section_id]?.[curr];
+
+                   out[curr] = attrName === id_column.name ? idColAttrVal :
+                       (
+                           dataControls?.active_row?.[attrName] ||
+                           dataControls?.active_row?.[attrName] ||
+                           null
+                       )
+                   return out
+                 },{})
+
+             let args = {...controlVars, ...updateVars}
+             console.log('new args', controlVars, updateVars, args)
+             return comp?.getData ? comp.getData(args,falcor).then(data => ({section_id, data})) : null
+           }).filter(d => d)
+
+
+       let updates = await Promise.all(dataFetchers)
+       if(updates.length > 0) {
+         let newSections = cloneDeep(item.sections)
+         const sectionsToUpload = updates.map(({section_id, data}) => {
+           let section = newSections.filter(d => d.id === section_id)?.[0]  || {}
+           section.element['element-data'] = JSON.stringify(data)
+           delete section.id;
+           // console.log('new section', section)
+           return section;
+         })
+
+         // genetate
+         const app = 'dms-site'
+         const type = 'docs-play' // defaults to play
+         const sectionType = 'cms-section'
+
+         const sectionConfig = {format: {app, type: sectionType}};
+         const pageConfig = {format: {app, type}};
+
+         //create all sections first, get their ids and then create the page.
+         const newSectionIds = await Promise.all(sectionsToUpload.map((section) => dmsDataEditor(sectionConfig, section)));
+
+         console.log('section ids', newSectionIds);
+
+         const newPage = {
+           app, type,
+           templatePage: true,
+           url_slug: `/${id_column.name}/${idColAttrVal}`,
+           title: `generated by script for ${id_column.name} ${idColAttrVal}`,
+           sections: newSectionIds.map(sectionRes => ({
+             "id": sectionRes.id,
+             "ref": "dms-site+cms-section"
+           }))
+         }
+         const resPage = await dmsDataEditor(pageConfig, newPage);
+
+         console.log('created', resPage)
+
+       }
+
+     }, Promise.resolve())
+    }
   return (
      <div className='flex flex-col'>
       {/*<div>View Info</div>*/}
@@ -374,6 +457,12 @@ export const ViewInfo = ({source,view, id_column, active_row, onChange}) => {
             }
           )}
         /> : ''}
+
+       <button className={'mt-4 p-2 text-white bg-blue-500 hover:bg-blue-300 rounded-lg'}
+               onClick={e => generatePages({id_column, dataRows})}
+       >
+         Generate Pages
+       </button>
      </div>
   );
 };
