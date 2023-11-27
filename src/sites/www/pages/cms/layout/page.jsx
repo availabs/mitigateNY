@@ -66,18 +66,17 @@ export function PageView ({item, dataItems, attributes}) {
                 {/*<div className='px-6 py-4 font-sans font-medium text-xl text-slate-700 uppercase max-w-5xl mx-auto'>
                   {item['title']}
                 </div>*/}
-                
                 <div className='text-md font-light leading-7'>
                   <ContentView 
                     value={item['sections']} 
                     {...attributes['sections']}
                   />
                 </div>
-              </div>
-               
+              </div>    
             </div>
-             {/*---- END Page ---*/}
           </div>
+             {/*---- END Page ---*/}
+          
         </div>
       </div>
     </Layout>
@@ -130,50 +129,53 @@ export function PageEdit ({
 
   //console.log('page edit', attributes['sections'])
   const ContentEdit = attributes['sections'].EditComp
-
- 
-
-  
  
   return (
-    <div className='flex flex-1 h-full w-full px-1 md:px-6 py-6'>
-      <Nav dataItems={dataItems}  edit={true} />
-      <EditHistory item={item} />
-      {item?.sidebar === 'show' ? 
-          (<div className='w-64 hidden xl:block'>
-            <div className='w-64 fixed hidden xl:block h-screen'> 
-              <div className='h-[calc(100%_-_8rem)] overflow-y-auto overflow-x-hidden'>
-                <SideNav {...inPageNav} /> 
+    <Layout topNav={{menuItems, position: 'fixed' }} sideNav={inPageNav}>
+      <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
+        <div className={theme.layout.container}>
+          {/* PAGE EDIT */}
+          <div className='flex flex-1 h-full w-full px-1 md:px-6 py-6'>
+            <Nav dataItems={dataItems}  edit={true} />
+            <EditHistory item={item} />
+            {item?.sidebar === 'show' ? 
+                (<div className='w-64 hidden xl:block'>
+                  <div className='w-64 fixed hidden xl:block h-screen'> 
+                    <div className='h-[calc(100%_-_8rem)] overflow-y-auto overflow-x-hidden'>
+                      <SideNav {...inPageNav} /> 
+                    </div>
+                  </div>
+                </div>)
+              : ''}
+            <div className='flex-1 flex border shadow bg-white px-4 '>
+              <div className={theme.page.container}>
+                <div className='text-base font-light leading-7'>
+                  <ContentEdit
+                    value={item['sections']} 
+                    onChange={saveSection}         
+                    {...attributes['sections']}
+                  />
+                </div>
               </div>
             </div>
-          </div>)
-        : ''}
-      <div className='flex-1 flex border shadow bg-white px-4 '>
-        <div className={theme.page.container}>
-          <div className='text-base font-light leading-7'>
-            <ContentEdit
-              value={item['sections']} 
-              onChange={saveSection}         
-              {...attributes['sections']}
-            />
-          </div>
+            <div className='w-52 hidden xl:block'>
+              <div className='w-52 fixed hidden xl:block h-screen'> 
+                <PageControls 
+                  item={item} 
+                  dataItems={dataItems}
+                  setItem={setItem}
+                  edit={true}
+                  status={status}
+                  attributes={attributes}
+                  updateAttribute={updateAttribute}
+                />
+              </div>
+            </div>
+          </div>  
+          {/* PAGE EDIT END */}
         </div>
       </div>
-      <div className='w-52 hidden xl:block'>
-        <div className='w-52 fixed hidden xl:block h-screen'> 
-          <PageControls 
-            item={item} 
-            dataItems={dataItems}
-            setItem={setItem}
-            edit={true}
-            status={status}
-            attributes={attributes}
-            updateAttribute={updateAttribute}
-          />
-        </div>
-      </div>
-      
-    </div>   
+    </Layout>
   ) 
 }
 

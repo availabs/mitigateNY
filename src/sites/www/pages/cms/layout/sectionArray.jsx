@@ -320,7 +320,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
 const AddSectionButton = ({onClick}) => (
     <div className='flex w-full'>
         <div className='flex-1'/>
-        <div className='z-50'>
+        <div className='z-10'>
             <button 
                 className={'pl-6 py-0.5 text-lg cursor-pointer hover:text-blue-500 text-slate-400'}
                 onClick={onClick}
