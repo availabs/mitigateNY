@@ -1,11 +1,26 @@
 import React, {useState} from "react";
 import {Button} from "~/modules/avl-components/src";
-import {RenderTextArea, RenderTextBox} from "./Edit.jsx";
+import {RenderArray, RenderTextArea, RenderTextBox} from "./Edit.jsx";
 import {value} from "lodash/seq.js";
 import {editMetadata} from "../utils/editMetadata.js";
 import {falcor} from "~/modules/avl-falcor";
+import {isJson} from "../../../../../../utils/macros.jsx";
 
-export const ManageMetaLookup = ({
+const RenderViewOptions = ({options}) => {
+    const optionsToRender = Array.isArray(options) ? options :
+        isJson(options) ? JSON.parse(options) : []
+
+    if(!Array.isArray(optionsToRender) || Array.isArray(optionsToRender) && !optionsToRender?.length) return <div>{options}</div>;
+
+    return (
+        <div className={'flex flex-row flex-wrap'}>
+            {
+                optionsToRender.map(option => <div className={'border border-blue-300 p-2 m-1'}>{option?.label || option}</div>)
+            }
+        </div>
+    )
+}
+export const ManageOptionsSelector = ({
                                      update,
                                      metadata, setMetadata,
                                      col,
@@ -14,12 +29,12 @@ export const ManageMetaLookup = ({
                                  }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [value, setValue] = useState(typeof startValue === 'object' ? JSON.stringify(startValue) : startValue);
-
+    console.log('value in options selector', value)
     const save = value => {
         editMetadata({
             update,
             metadata, setMetadata,
-            col, value: {'meta_lookup': value}
+            col, value: {'options': value}
         }).then(() => {
             setEditing(null)
             setIsEditing(false)
@@ -28,16 +43,16 @@ export const ManageMetaLookup = ({
 
     return (
         isEditing ?
-            <RenderTextBox value={value} setValue={setValue} save={save} cancel={() => setIsEditing(false)}/> :
+            <RenderArray value={Array.isArray(value) ? value : isJson(value) ? JSON.parse(value) : []}
+                         setValue={setValue}
+                         save={save}
+                         cancel={() => setIsEditing(false)}
+            /> :
             <div className={'flex group'}>
-                <label className={'py-2 text-xs'}>Meta: </label>
+                <label className={'py-2 text-xs'}>Options: </label>
 
                 <div className={'px-2 text-xs flex flex-row'}>
-                    <div className={'h-20 overflow-auto  border border-4 border-dotted p-1'}>
-                        {
-                            value
-                        }
-                    </div>
+                    <RenderViewOptions options={value}/>
                     <div className={'self-begin my-1'}>
                         <div className='group-hover:block text-blue-500 cursor-pointer'
                              onClick={e => setIsEditing(!isEditing)}>

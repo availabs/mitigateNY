@@ -10,7 +10,7 @@ export const IsOpenOutSwitch = ({update, metadata, setMetadata, col, value}) => 
 
     return (
         <div className={'block w-full flex mt-1 items-center'}>
-            <label className={'align-bottom shrink py-2 my-1 text-sm'}> Open Out: </label>
+            <label className={'py-2 text-xs'}> Open Out: </label>
             <div className={'align-bottom p-2 my-1 rounded-md shrink self-center'}>
                 <Switch
                     key={`openOut-${col}`}

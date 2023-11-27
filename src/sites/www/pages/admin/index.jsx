@@ -59,7 +59,7 @@ export const menuItems = [
   {
     name: 'Actions',
     icon: 'far fa-building fa-fw',
-    path: '/admin/forms/form/93165/list/'
+    path: '/admin/forms/form/134526/list/'
   },
   {
     name: 'Capabilities',
@@ -75,6 +75,11 @@ export const menuItems = [
     name: 'R+V Matrix',
     icon: 'far fa-warehouse-full fa-fw',
     path: '/admin/forms/form/131450/list/0/10'
+  },
+  {
+    name: 'Policy Documents',
+    icon: 'far fa-building fa-fw',
+    path: '/admin/forms/form/149258/list/0/10'
   },
   {
     name: 'Roles',
