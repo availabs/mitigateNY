@@ -10,7 +10,6 @@ const theme = {
   layout: {
     page: 'h-full w-full bg-slate-100 flex flex-col',
     container: 'w-full flex-1 flex flex-col',
-    // content: 'border flex-1 bg-white'
   },
   navPadding: {
     1: 'pt-0 ',
@@ -26,19 +25,6 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
   
   const menuItems = React.useMemo(() => {
     let items = dataItemsNav(dataItems,baseUrl,edit)
-    // if(edit) {
-    //   items.push( {
-    //     id: '',
-    //     onClick: () => console.log('add page'),
-    //     name: 'Add Page'
-    //   })
-    // }
-    // console.log('updated menuItems', 
-    //   items, 
-    //   dataItems
-    //     .filter(d => ['1412','1414'].includes(d.id))
-    //     .map(d => ({title:d.title, index:d.index}))
-    // )
     return items
   }, [dataItems,edit])
 
@@ -46,15 +32,11 @@ export default function SiteLayout ({children, dataItems, edit, baseUrl='', ...p
 
   const inPageNav = getInPageNav(dataItems, baseUrl);
   return (
-    <Layout topNav={{menuItems, position: 'fixed' }} sideNav={edit || props.sideNav ? props.sideNav : inPageNav}>
-      <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
-        <div className={theme.layout.container}>
+    
           <CMSContext.Provider value={{baseUrl, open, setOpen, historyOpen, setHistoryOpen}}>
             {children}
           </CMSContext.Provider>
-        </div>
-      </div>
-    </Layout>
+    
   )
 }
 
