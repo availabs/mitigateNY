@@ -19,6 +19,10 @@ function TemplateRow ({ item={} }) {
       <div></div>
       <div></div>
       <div className='text-right flex items-center flex-row justify-end px-2 '>
+          <Link to={`/admin/templates/pages/${item.id}`}
+                className={'fa-thin fa-memo px-2 py-1 mx-2 text-bold cursor-pointer'}
+                title={'pages'}
+          />
         <i 
           className='fa fa-trash text-red-300 hover:text-red-500 cursor-pointer' 
           onClick={() =>setShowDelete(!showDelete)}

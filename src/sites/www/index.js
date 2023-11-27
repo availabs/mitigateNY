@@ -11,6 +11,7 @@ import Admin, { authMenuConfig } from "./pages/admin"
 import Playground from './pages/admin/playground'
 import Drafts from './pages/admin/drafts'
 import Templates from './pages/admin/templates'
+import TemplatePages from "./pages/admin/templates/templatePages.jsx";
 import Interactive from "./pages/interactive/index.jsx";
 
 import Forms from './pages/forms'
@@ -36,6 +37,7 @@ const Routes = [
   Playground,
   Drafts,
   Templates,
+    TemplatePages,
   Interactive,
   // -- Managed Data Routes -- //
     Forms,
