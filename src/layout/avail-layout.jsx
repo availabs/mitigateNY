@@ -81,12 +81,12 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 					</div>
 				)
 			}
-			<div className={`flex-1 flex items-start flex-col items-stretch min-h-screen w-full border-2 border-pink-400`}>
+			<div className={`flex-1 flex items-start flex-col items-stretch min-h-screen w-full`}>
 				{
 					topNavOptions.size === 'none' ? '' : (<>
 						<div className={`${
 							topNavOptions.position === 'fixed' ? 
-								`sticky top-0 z-20 w-full border-2 border-yellow-400 ` 
+								`sticky top-0 z-20 w-full ` 
 								: ''
 							}`}>
 								<TopNav
