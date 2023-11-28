@@ -534,7 +534,11 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
            let pageSection = newSections.find(d => d.data.value.element['template-section-id'] === section_id)  || {};
            let section = pageSection?.data?.value || templateSection;
 
-           section.id = pageSection?.id;
+           if(pageSection?.id){
+               section.id = pageSection?.id;
+           }else{
+               section['template-section-id'] = templateSection.id;
+           }
            section.title = templateSection.title;
            section.element['element-data'] = JSON.stringify(data);
            section.element['element-type'] = type;
