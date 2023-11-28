@@ -249,7 +249,7 @@ const ppdaf = () => {
 
 
         return {
-        topnavWrapper: `w-full hidden lg:block ${colors[color].contentBg} border-b border-gray-200`,
+        topnavWrapper: `w-full ${colors[color].contentBg} border-b border-gray-200`,
         topnavContent: `flex w-full h-full`,
         topnavMenu: `${sizes[size].menu} h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
         menuIconTop: `text-${colors[color].accentColor} ${sizes[size].icon} group-hover:${colors[color].highlightColor}`,
