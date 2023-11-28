@@ -48,7 +48,8 @@ export function dataItemsNav(dataItems, baseUrl = '', edit = false) {
             let item = {
                 id: d.id,
                 path: `${edit ? `${baseUrl}/edit` : baseUrl}/${/*i === 0 && !edit ? '' : */d.url_slug || d.id}`,
-                name: d.title
+                name: d.title,
+                hideInNav: d.hide_in_nav
             }
 
             if (getChildNav(item, dataItems, baseUrl, edit)) {
