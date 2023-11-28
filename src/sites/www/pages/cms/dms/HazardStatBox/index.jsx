@@ -377,6 +377,7 @@ export default {
         {
             name: 'hazard',
             default: 'total',
+            hidden: true
         },
         {
             name: 'isTotal',

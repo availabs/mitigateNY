@@ -7,7 +7,8 @@ import get from 'lodash/get'
 import {getAttributes} from '~/pages/DataManager/Source/attributes'
 import ComponentRegistry from '~/sites/www/pages/cms/dms/ComponentRegistry'
 import cloneDeep from "lodash/cloneDeep.js";
-import {dmsDataEditor} from "../../../../../../modules/dms/src/index.js";
+import {dmsDataEditor, dmsDataLoader} from "../../../../../../modules/dms/src/index.js";
+import {getConfig, locationNameMap} from "../templatePages.jsx";
 
 const pgEnv = 'hazmit_dama'
 
@@ -299,8 +300,44 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
   
   // console.log('ViewInfo', id_column, active_id)
   const { falcor, falcorCache } = useFalcor();
+  const [generatedPages, setGeneratedPages] = useState([]);
+  const [generatedSections, setGeneratedSections] = useState([]);
+
   //const [idCol, setIdCol] = useState('')
-  
+  React.useEffect(() => {
+      // get generated pages and sections
+      (async function () {
+          const pages = await Object.keys(locationNameMap).reduce(async (acc, type) => {
+              const prevPages = await acc;
+              const currentPages = await dmsDataLoader(getConfig({app: 'dms-site', type, filter: {[`data->>'template_id'`]: [item.id]}}), '/');
+
+              return [...prevPages, ...currentPages];
+          }, Promise.resolve([]));
+          setGeneratedPages(pages);
+
+          if(!item.data_controls.sectionControls) return;
+
+          const sectionIds = pages.map(page => page.data.value.sections.map(section => section.id));
+          const sections = await sectionIds.reduce(async (acc, sectionId) => {
+              const prevSections = await acc;
+              const currentSections = await dmsDataLoader(
+                  getConfig({
+                      app: 'dms-site',
+                      type: 'cms-section',
+                      filter: {
+                          [`data->'element'->>'template-section-id'`]: Object.keys(item.data_controls.sectionControls),
+                          'id': sectionId // [] of ids
+                      }
+                  }), '/');
+
+              return [...prevSections, ...currentSections];
+          }, Promise.resolve([]));
+
+          setGeneratedSections(sections);
+
+          console.log('res', sections)
+      })()
+  }, [item.id, item.data_controls.sectionControls])
   React.useEffect(() => {
     if(view.view_id){
       falcor.get(["dama", pgEnv, "viewsbyId", view.view_id, "data", "length"])
@@ -354,6 +391,10 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
   },[id_column,view.view_id,falcorCache])
 
   // console.log('view info', id_column, active_row, dataRows)
+    // to update generated pages,check if:
+    // 1. existing section has changed
+    // 2. new sections have been added
+    // 3. existing section has been deleted
    const generatePages = async ({id_column, dataRows}) => {
     // const disaster_numbers = ['4020', '4031']
     const idColAttr = dataRows.map(d => d[id_column.name]).filter(d => d).slice(0, 2);
@@ -398,7 +439,8 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
          let newSections = cloneDeep(item.sections)
          const sectionsToUpload = updates.map(({section_id, data}) => {
            let section = newSections.filter(d => d.id === section_id)?.[0]  || {}
-           section.element['element-data'] = JSON.stringify(data)
+           section.element['element-data'] = JSON.stringify(data);
+           section.element['template-section-id'] = section_id; // to update sections in future
            delete section.id;
            // console.log('new section', section)
            return section;
@@ -433,6 +475,109 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
 
      }, Promise.resolve())
     }
+
+    const updatePages = async ({id_column, dataRows}) => {
+      console.log('update pages', generatedPages, generatedSections, item)
+        // while updating existing sections, keep in mind to not change the id_column attribute.
+
+     await generatedPages.reduce(async(acc, page) => {
+       await acc;
+        const sections = generatedSections.filter(section => page.data.value.sections.map(s => s.id).includes(section.id));
+         console.log('page', page, sections)
+
+       const dataControls = item.data_controls;
+
+       let dataFetchers = Object.keys(dataControls.sectionControls)
+           .filter(section_id => sections.find(s => s.data.value.element['template-section-id'] === section_id))
+           .map(section_id => {
+             let templateSection = item.sections.filter(d => d.id === section_id)?.[0]  || {};
+             let pageSection = sections.find(s => s.data.value.element['template-section-id'] === section_id);
+             let pageSectionData = parseJSON(pageSection?.data?.value?.element?.['element-data']) || {}
+
+             let data = parseJSON(templateSection?.element?.['element-data']) || {}
+             let type = templateSection?.element?.['element-type'] || ''
+             let comp = ComponentRegistry[type] || {}
+
+             console.log('section', templateSection, data, type)
+
+             // update control variables
+             let controlVars = (comp?.variables || []).reduce((out,curr) => {
+               out[curr.name] = curr.name === id_column.name ? pageSectionData[curr.name] : data[curr.name]
+               return out
+             },{})
+
+             // update
+             let updateVars = Object.keys(dataControls.sectionControls[section_id]) // check for id_col
+                 .reduce((out,curr) => {
+                   const attrName = dataControls?.sectionControls?.[section_id]?.[curr]?.name || dataControls?.sectionControls?.[section_id]?.[curr];
+                   console.log('updating attr', attrName, pageSectionData)
+                   out[curr] = attrName === id_column.name ? pageSectionData[attrName] :
+                       (
+                           dataControls?.active_row?.[attrName] || null
+                       )
+                   return out
+                 },{})
+
+             let args = {...controlVars, ...updateVars}
+             console.log('new args', controlVars, updateVars, args)
+             return comp?.getData ? comp.getData(args,falcor).then(data => ({section_id, data, type})) : null
+           }).filter(d => d)
+
+
+       let updates = await Promise.all(dataFetchers)
+         console.log('updates', updates)
+       if(updates.length > 0) {
+         let newSections = cloneDeep(sections)
+           console.log('new sections ', newSections)
+         const updatedSections = updates.map(({section_id, data, type}) => {
+           let templateSection = item.sections.filter(d => d.id === section_id)?.[0]  || {};
+           let pageSection = newSections.find(d => d.data.value.element['template-section-id'] === section_id)  || {};
+           let section = pageSection?.data?.value;
+
+           section.id = pageSection.id;
+           section.title = templateSection.title;
+           section.element['element-data'] = JSON.stringify(data);
+           section.element['element-type'] = type;
+           section.element['template-section-id'] = section_id; // to update sections in future
+           // console.log('new section', section)
+           return section;
+         })
+           console.log('updated sections', updatedSections)
+
+         // genetate
+         const app = 'dms-site'
+         const type = 'docs-play' // defaults to play
+         const sectionType = 'cms-section'
+
+         const sectionConfig = {format: {app, type: sectionType}};
+         const pageConfig = {format: {app, type}};
+
+         //create all sections first, get their ids and then create the page.
+         const newSectionIds = await Promise.all(updatedSections.map((section) => dmsDataEditor(sectionConfig, section)));
+
+         // a page should only be updated IF sections have been added or removed. to check this, just compare section ids and template-section-ids.
+           // any pageSection that has template-section-id (if it doesn't, it means it was added to the page after page generation and should be left alone)
+           // should have a matching section id on the page. add or remove sections based on that.
+    //      const newPage = {
+    //          template_id: item.id,
+    //          hide_in_nav: 'true', // not pulling though?
+    //        url_slug: `/${id_column.name}/${idColAttrVal}`,
+    //        title: `generated by script for ${id_column.name} ${idColAttrVal}`,
+    //        sections: newSectionIds.map(sectionRes => ({
+    //          "id": sectionRes.id,
+    //          "ref": "dms-site+cms-section"
+    //        }))
+    //      }
+    //      const resPage = await dmsDataEditor(pageConfig, newPage);
+    //
+    //      console.log('created', resPage)
+    //
+       }
+
+     }, Promise.resolve())
+    }
+
+
   return (
      <div className='flex flex-col'>
       {/*<div>View Info</div>*/}
@@ -456,11 +601,19 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
           )}
         /> : ''}
 
-       <button className={'mt-4 p-2 text-white bg-blue-500 hover:bg-blue-300 rounded-lg'}
-               onClick={e => generatePages({id_column, dataRows})}
-       >
-         Generate Pages
-       </button>
+         {
+             generatedPages?.length ?
+                 <button className={'mt-4 p-2 text-white bg-blue-500 hover:bg-blue-300 rounded-lg'}
+                         onClick={e => updatePages({id_column, dataRows})}
+                 >
+                     Update Pages
+                 </button> :
+                 <button className={'mt-4 p-2 text-white bg-blue-500 hover:bg-blue-300 rounded-lg'}
+                         onClick={e => generatePages({id_column, dataRows})}
+                 >
+                     Generate Pages
+                 </button>
+         }
      </div>
   );
 };
