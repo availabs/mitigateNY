@@ -51,7 +51,7 @@ async function getMeta({dataSources, dataSource, visibleCols, geoid}, falcor){
                     const options = JSON.stringify({
                         aggregatedLen: metaLookup.aggregatedLen,
                         filter: {
-                            ...metaLookup?.geoAttribute && {[`substring(${metaLookup.geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
+                            ...metaLookup?.geoAttribute && {[`substring(${metaLookup.geoAttribute}::text, 1, ${geoid?.toString()?.length})`]: [geoid]},
                             ...(metaLookup?.filter || {})
                         }
                     });
@@ -139,7 +139,7 @@ async function getData({
     const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
         aggregatedLen: Boolean(groupBy.length),
         filter: {
-            ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
+            ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.toString()?.length})`]: [geoid]},
         },
         exclude: {
             ...notNull.length && notNull.reduce((acc, col) => ({...acc, [col]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
@@ -465,7 +465,6 @@ export default {
         {
             name: 'geoid',
             default: '36',
-            hidden: true
         },
         {
             name: 'pageSize',
