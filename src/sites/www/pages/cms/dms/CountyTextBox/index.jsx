@@ -12,57 +12,30 @@ import VersionSelectorSearchable from "../../components/versionSelector/searchab
 import {RenderColumnControls} from "../../components/columnControls.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 
-const getCountyData = async ({ falcor, pgEnv, geoid, setGeoName }) => {
-    const countyViewId = 286
-
-    const geoAttributesMapping = {'geoid': 'geoid', 'name': 'namelsad as name'},
-        geoAttributes = Object.values(geoAttributesMapping),
-        geoOptions = JSON.stringify({
-            filter: {geoid: [geoid]}
-        }),
-        geoRoute = ['dama', pgEnv, 'viewsbyId', countyViewId, 'options', geoOptions]
-
-
-    const geoRouteIndices = {from: 0, to:  0}
-    const indexRes = await falcor.get([...geoRoute, 'databyIndex', geoRouteIndices, geoAttributes]);
-
-    const geoData = Object.values(get(indexRes, ['json', ...geoRoute, 'databyIndex'], {}))
-        .filter(county => county.geoid)
-        .map(county => {
-            // return {geoid: county.geoid, name: county[geoAttributesMapping.name]};
-            return county[geoAttributesMapping.name];
-        })
-
-
-    return geoData[0]
-}
-
 async function getData({pgEnv, geoid, version, geoAttribute, visibleCols, id, bgColor}, falcor) {
     const lenPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
     const dataPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
     const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
         attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
-    const options = ({geoAttribute, geoName}) => JSON.stringify({
+    const options = ({geoAttribute, geoid}) => JSON.stringify({
         filter: {
-            ...geoAttribute && {[geoAttribute]: [geoName]},
+            ...geoAttribute && {[geoAttribute]: [geoid]},
         }
     });
-
-    const geoName = await getCountyData({falcor, pgEnv, geoid});
-
-    await falcor.get(lenPath(options({geoAttribute, geoName})));
+    
+    await falcor.get(lenPath(options({geoAttribute, geoid})));
     const len = Math.min(
-        get(falcor.getCache(), lenPath(options({geoAttribute, geoName})), 0),
+        get(falcor.getCache(), lenPath(options({geoAttribute, geoid})), 0),
         1);
 
     await falcor.get(
-        [...dataPath(options({geoAttribute, geoName})),
+        [...dataPath(options({geoAttribute, geoid})),
             {from: 0, to: len - 1}, visibleCols]);
     await falcor.get([...attributionPath, attributionAttributes]);
 
     const textToSave = visibleCols.map(vc =>
         Object.values(
-            get(falcor.getCache(), dataPath(options({geoAttribute, geoName})), {})
+            get(falcor.getCache(), dataPath(options({geoAttribute, geoid})), {})
         )[0]?.[vc] || '');
 
     return {
@@ -135,7 +108,7 @@ const Edit = ({value, onChange}) => {
     const [status, setStatus] = useState(cachedData?.status);
     const [dataSources, setDataSources] = useState(cachedData?.dataSources || []);
     const [dataSource, setDataSource] = useState(cachedData?.dataSource);
-    const [version, setVersion] = useState(cachedData?.version || 850);
+    const [version, setVersion] = useState(cachedData?.version || 857);
     const [geoAttribute, setGeoAttribute] = useState(cachedData?.geoAttribute || 'county');
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
     const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
@@ -145,7 +118,7 @@ const Edit = ({value, onChange}) => {
             setLoading(true);
             setStatus(undefined);
 
-            const category = 'County Descriptions ';
+            const category = 'County Descriptions';
             const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
 
             // fetch data sources from categories that match passed prop
