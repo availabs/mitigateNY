@@ -62,7 +62,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 		size: topNav.size || 'compact',
 		menu: topNav.menu || 'left',
 		subMenuStyle: topNav.subMenuStyle || 'row',
-		menuItems: topNav.menuItems || []
+		menuItems: (topNav.menuItems || []).filter(page => !page.hideInNav)
 
 	}
 	

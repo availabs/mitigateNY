@@ -30,7 +30,7 @@ const siteConfig = {
       lazyLoad: true,
       filter: {
         mainNav: true, 
-        // attributes:['title', 'index', 'url_slug', 'parent' ]
+        // attributes:['title', 'index', 'url_slug', 'parent', 'hide_in_nav' ]
       },
       children: [
         { 
@@ -49,7 +49,7 @@ const siteConfig = {
       lazyLoad: true,
       filter: {
         mainNav: true, 
-        // attributes:['title', 'index', 'url_slug', 'parent' ]
+        // attributes:['title', 'index', 'url_slug', 'parent', 'hide_in_nav' ]
       },
       children: [
         { 

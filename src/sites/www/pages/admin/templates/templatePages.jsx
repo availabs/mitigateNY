@@ -4,7 +4,7 @@ import {dmsDataLoader} from "../../../../../modules/dms/src/index.js";
 import {DeleteModal} from "./layout/TemplateList.jsx";
 import {menuItems} from "../index.jsx";
 
-const locationNameMap = {
+export const locationNameMap = {
     'docs-play': 'Playground',
     'docs-page': 'Live',
     'docs-draft': 'Draft'
@@ -49,7 +49,7 @@ function TemplateRow ({ id, app, type, data={} }) {
     )
 }
 
-const getConfig = ({app, type, id}) => ({
+export const getConfig = ({app, type, filter}) => ({
     format: {
         app: app,
         type: type,
@@ -76,9 +76,7 @@ const getConfig = ({app, type, id}) => ({
             action: 'load',
             filter: {
                 options: JSON.stringify({
-                    filter: {
-                        [`data->>'template_id'`]: [id]
-                    }
+                    filter
                 }),
                 attributes: ['id', 'app', 'type', 'data']
             },
@@ -95,7 +93,7 @@ const Home = () => {
         (async function () {
             const res = await Object.keys(locationNameMap).reduce(async (acc, type) => {
                 const prevPages = await acc;
-                const currentPages = await dmsDataLoader(getConfig({app: 'dms-site', type, id}), '/');
+                const currentPages = await dmsDataLoader(getConfig({app: 'dms-site', type, filter: {[`data->>'template_id'`]: [id]}}), '/');
 
                 return [...prevPages, ...currentPages];
             }, Promise.resolve([]));
