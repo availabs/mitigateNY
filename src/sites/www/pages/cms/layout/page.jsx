@@ -122,7 +122,7 @@ export function PageView ({item, dataItems, attributes, user}) {
 
 
 export function PageEdit ({
-  item, dataItems, updateAttribute ,attributes, setItem, status
+  item, dataItems, updateAttribute ,attributes, setItem, status, user
 }) {
   const navigate = useNavigate()
   const submit = useSubmit()
@@ -183,14 +183,20 @@ export function PageEdit ({
                 : ''}
               <div className='flex-1 flex border shadow bg-white px-4 '>
                 <div className={theme.page.container}>
-                  <div className='text-base font-light leading-7'>
+                  <div className='w-full text-right relative py-2 z-10 h-[40px]'>
+                  {user?.authLevel >= 5 ?  
+                    <Link to={`${baseUrl}${item.url_slug}`}>
+                      <i className='fad fa-eye fa-fw flex-shrink-0  pr-1 text-blue-500'/>
+                    </Link> : ''}
+                </div>
+                <div className='text-base font-light leading-7 -mt-[40px]'>
                     <ContentEdit
                       value={item['sections']} 
                       onChange={saveSection}         
                       {...attributes['sections']}
                     />
-                  </div>
                 </div>
+              </div>
               </div>
               <div className='w-52 hidden xl:block'>
                 <div className='w-52 fixed hidden xl:block h-screen'> 
