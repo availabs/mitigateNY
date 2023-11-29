@@ -532,8 +532,8 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
          const updatedSections = updates.map(({section_id, data, type}) => {
            let templateSection = item.sections.filter(d => d.id === section_id)?.[0]  || {};
            let pageSection = newSections.find(d => d.data.value.element['template-section-id'] === section_id)  || {};
-           let section = pageSection?.data?.value || templateSection;
-
+           let section = pageSection?.data?.value || {element:{}};
+            console.log(section)
            if(pageSection?.id){
                section.id = pageSection?.id;
            }else{
