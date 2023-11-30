@@ -36,7 +36,7 @@ const siteConfig = {
       type: (props) => (
         <Layout 
         {...props}
-        sideNav={{size: 'miniPad'}} 
+        sideNav={{size: 'miniPad'}}
         baseUrl={'/playground'}
         />
       ),
@@ -48,7 +48,7 @@ const siteConfig = {
       },
       children: [
         { 
-          type: PageView,
+          type: (props) => <PageView {...props} logo={<div/>}/>,
           path: "/*",
           action: "view"
         },
@@ -58,7 +58,6 @@ const siteConfig = {
       type: (props) => (
         <Layout 
           {...props} 
-          edit={true} 
           sideNav={{size: 'miniPad'}} 
           baseUrl={'/playground'}
         />
@@ -72,7 +71,7 @@ const siteConfig = {
       },
       children: [
         { 
-          type: PageEdit,
+          type: (props) => <PageEdit {...props} logo={<div/>}/>,
           action: "edit",
           path: "/edit/*"
         },

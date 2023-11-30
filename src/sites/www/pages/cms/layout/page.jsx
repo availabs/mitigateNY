@@ -52,7 +52,7 @@ function Header ({bgImg='/img/header.png', logo='/img/nygov-logo.png', title='Mi
   )
 }
 
-export function PageView ({item, dataItems, attributes, user}) {
+export function PageView ({item, dataItems, attributes, user, logo}) {
   if(!item) return <div> No Pages </div>
 
   const {baseUrl} = React.useContext(CMSContext)
@@ -72,7 +72,7 @@ export function PageView ({item, dataItems, attributes, user}) {
     {/* Header */}
     {item?.header && <Header {...item.header}/>} 
     {/* Layout */}
-    <Layout topNav={{menuItems, position: 'fixed' }} sideNav={item.sideNav ? item.sideNav : inPageNav}>
+    <Layout topNav={{menuItems, position: 'fixed', logo }} sideNav={item.sideNav ? item.sideNav : inPageNav}>
       <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
         <div className={theme.layout.container}>
           {/*----Page ---*/}
@@ -122,7 +122,7 @@ export function PageView ({item, dataItems, attributes, user}) {
 
 
 export function PageEdit ({
-  item, dataItems, updateAttribute ,attributes, setItem, status, user
+  item, dataItems, updateAttribute ,attributes, setItem, status, user, logo
 }) {
   const navigate = useNavigate()
   const submit = useSubmit()
@@ -165,7 +165,7 @@ export function PageEdit ({
   return (
     <div>
        {item?.header && <Header {...item.header}/>} 
-      <Layout topNav={{menuItems, position: 'fixed' }} sideNav={inPageNav}>
+      <Layout topNav={{menuItems, position: 'fixed', logo: logo }} sideNav={inPageNav}>
         <div className={`${theme.layout.page} ${theme.navPadding[level]}`}>
           <div className={theme.layout.container}>
             {/* PAGE EDIT */}
@@ -185,7 +185,7 @@ export function PageEdit ({
                 <div className={theme.page.container}>
                   <div className='w-full text-right relative py-2 z-10 h-[40px]'>
                   {user?.authLevel >= 5 ?  
-                    <Link to={`${baseUrl}${item.url_slug}`}>
+                    <Link to={`${baseUrl}/${item.url_slug}`}>
                       <i className='fad fa-eye fa-fw flex-shrink-0  pr-1 text-blue-500'/>
                     </Link> : ''}
                 </div>
