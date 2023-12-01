@@ -32,7 +32,6 @@ const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(
 const mapColName = (columns, col) => columns.find(c => c.name === col)?.accessor;
 
 const TableComp = ({format, ...rest}) => {
-    console.log('rest', format, rest)
     const navigate = useNavigate();
     const params = useParams();
     const cachedData = {};

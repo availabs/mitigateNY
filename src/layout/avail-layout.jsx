@@ -62,9 +62,18 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 		size: topNav.size || 'compact',
 		menu: topNav.menu || 'left',
 		subMenuStyle: topNav.subMenuStyle || 'row',
-		menuItems: (topNav.menuItems || []).filter(page => !page.hideInNav)
-
+		menuItems: (topNav.menuItems || []).filter(page => !page.hideInNav),
+		logo: topNav.logo || (
+			<div className='flex items-center justify-center h-12'>
+				<div to="/" className={`${['none'].includes(sideNavOptions.size)  ? '' : 'md:hidden'}` }>
+					<Logo sideNav={sideNavOptions}/>
+				</div>
+				{title}
+			</div>
+		)
 	}
+
+	console.log('layout', topNav)
 	
 	return (
 		<div className='flex' >
@@ -92,17 +101,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 								<TopNav
 									themeOptions={topNavOptions}
 									// subMenuActivate={'onHover'}
-									leftMenu={
-										
-										<div className='flex items-center justify-center h-12'>
-											<div to="/" className={`${['none'].includes(sideNavOptions.size)  ? '' : 'md:hidden'}` }>
-												<Logo sideNav={sideNavOptions}/>
-											</div>
-											{title}
-										</div>
-
-										
-									}
+									leftMenu={topNavOptions.logo}
 									menuItems={topNavOptions.menuItems}
 									rightMenu={<AuthMenu />}
 									

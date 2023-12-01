@@ -48,7 +48,7 @@ const siteConfig = {
       },
       children: [
         { 
-          type: PageView,
+          type: (props) => <PageView {...props} logo={<div/>}/>,
           path: "/*",
           action: "view"
         },
@@ -72,7 +72,7 @@ const siteConfig = {
       },
       children: [
         { 
-          type: PageEdit,
+          type: (props) => <PageEdit {...props} logo={<div/>}/>,
           action: "edit",
           path: "/edit/*"
         },
