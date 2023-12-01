@@ -11,7 +11,8 @@ export const RenderExternalTableFilter = ({data, columns, filters, setFilters, s
     const uniqueValues = React.useMemo(() => columns.reduce((acc, column) => ({
         ...acc,
         [column.accessor]: [...new Set(data.map(d => {
-            let value = getNestedValue(d[column.accessor]);
+            const originalValue = column.openOut ? d.expand.find(c => c.accessor === column.accessor)?.value : d[column.accessor];
+            let value = getNestedValue(originalValue);
             value = Array.isArray(value) ? value.join(', ') : value;
             return typeof value === 'object' ? null : value;
         }))]

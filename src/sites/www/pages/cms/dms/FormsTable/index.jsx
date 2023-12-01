@@ -32,7 +32,7 @@ const isValid = ({groupBy, fn, columnsToFetch}) => {
 async function getData({   formsConfig, actionType, form,
                            geoAttribute, geoid, metaLookupByViewId,
                            pageSize, sortBy, groupBy, fn, notNull, colSizes,
-                           filters, filterValue, visibleCols, hiddenCols
+                           filters, filterValue, visibleCols, hiddenCols, extFilterCols
                        }, falcor) {
     const d = await dmsDataLoader(
         {
@@ -82,7 +82,8 @@ async function getData({   formsConfig, actionType, form,
 
     const columns = visibleCols
         .map(c => formsConfig?.attributes?.find(md => md.name === c))
-        .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
+        .filter(c => c)
+        // .filter(c => c && !c.openOut && !defaultOpenOutAttributes.includes(c.name))
         .map(col => {
             const acc = getColAccessor(fn, col.name, col.origin, form);
             return {
@@ -91,6 +92,7 @@ async function getData({   formsConfig, actionType, form,
                 align: col.align || 'right',
                 width: colSizes[col.name] || '15%',
                 filter: col.filter || filters[col.name],
+                extFilter: extFilterCols.includes(col.name),
                 info: col.desc,
                 ...col,
                 type: fn[col.display_name]?.includes('array_to_string') ? 'string' : col.type
@@ -101,6 +103,7 @@ async function getData({   formsConfig, actionType, form,
         geoid,
         pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes, form, formsConfig,
         data, columns, metaLookupByViewId, filters, filterValue, visibleCols, geoAttribute, actionType,
+        extFilterCols
     }
 }
 
@@ -127,6 +130,8 @@ const Edit = ({value, onChange}) => {
     const [formsConfig, setFormsConfig] = useState(cachedData.formsConfig)
     const [hiddenCols, setHiddenCols] = useState(cachedData?.hiddenCols || []);
     const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
+    const [extFilterCols, setExtFilterCols] = useState(cachedData?.extFilterCols || []);
+    const [extFilterValues, setExtFilterValues] = useState(cachedData?.extFilterValues || {});
 
     useEffect(() => {
         async function getFormsConfig() {
@@ -192,7 +197,8 @@ const Edit = ({value, onChange}) => {
                 formsConfig, actionType, form,
                 geoAttribute, geoid, metaLookupByViewId,
                 pageSize, sortBy, groupBy, fn, notNull, colSizes,
-                filters, filterValue, visibleCols, hiddenCols
+                filters, filterValue, visibleCols, hiddenCols,
+                extFilterCols
             }, falcor);
 
             onChange(JSON.stringify({
@@ -208,7 +214,8 @@ const Edit = ({value, onChange}) => {
         formsConfig, actionType, form,
         geoAttribute, geoid, metaLookupByViewId,
         pageSize, sortBy, groupBy, fn, notNull, colSizes,
-        filters, filterValue, visibleCols, hiddenCols
+        filters, filterValue, visibleCols, hiddenCols,
+        extFilterCols
     ]);
 
     return (
@@ -279,6 +286,8 @@ const Edit = ({value, onChange}) => {
                         setNotNull={setNotNull}
                         colSizes={colSizes}
                         setColSizes={setColSizes}
+                        extFilterCols={extFilterCols}
+                        setExtFilterCols={setExtFilterCols}
                     />
                 </div>
                 {
@@ -290,6 +299,8 @@ const Edit = ({value, onChange}) => {
                                 columns={cachedData.columns}
                                 hiddenCols={hiddenCols}
                                 filterValue={filterValue}
+                                extFilterValues={extFilterValues}
+                                setExtFilterValues={setExtFilterValues}
                                 pageSize={pageSize}
                                 sortBy={sortBy}
                                 baseUrl={baseUrl}
@@ -392,6 +403,11 @@ export default {
         {
             name: 'hiddenCols',
             hidden: true
+        },
+        {
+            name: 'extFilterCols',
+            hidden: true,
+            default: []
         },
     ],
     getData,

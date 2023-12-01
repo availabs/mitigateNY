@@ -1,11 +1,8 @@
-import React, {useMemo} from "react";
-import get from "lodash/get";
-import {Link} from "react-router-dom";
+import React, {useState} from "react";
 import {Table} from "~/modules/avl-components/src";
 import { fnum } from "~/utils/macros.jsx";
-import {hazardsMeta} from "~/utils/colors.jsx";
-import {Attribution} from "../../../components/attribution.jsx";
 import {getNestedValue, mapColName} from "../utils.js";
+import {RenderExternalTableFilter} from "../../../components/externalTableFilter.jsx";
 
 
 export const FormsTable = ({
@@ -18,11 +15,15 @@ export const FormsTable = ({
                                        baseUrl,
                                        attributionData,
                                        striped,
-                                         fetchData
+                                         fetchData,
+                               extFilterValues = {},
+                               setExtFilterValues,
 }) => {
+    const [filters, setFilters] = useState(extFilterValues);
+
     const updatedColumns =
         columns
-            .filter(c => !hiddenCols.includes(c.name))
+            .filter(c => !hiddenCols.includes(c.name) && !c.openOut)
             .map(c => {
         return {
             ...c,
@@ -47,9 +48,26 @@ export const FormsTable = ({
                 const value = getNestedValue(row[mappedName]);
                 return acc && value?.toString().toLowerCase().includes(filterValue[col]?.toLowerCase())
             }, true))
+        .filter(row => !Object.keys(filters)?.length ||
+            Object.keys(filters)
+                .filter(f => filters[f].length)
+                .reduce((acc, col) => {
+                    const currentCol = columns.find(c => c.accessor === col);
+                    const originalValue = currentCol.openOut ? row.expand.find(r => r.accessor === col) : row[col];
+                    const value = getNestedValue(originalValue);
+                    return acc && filters[col].includes(value);
+                }, true)
+        )
 
     return (
         <>
+            <RenderExternalTableFilter
+                columns={columns.filter(c => c.extFilter)}
+                data={data}
+                filters={filters}
+                setFilters={setFilters}
+                setExtFilterValues={setExtFilterValues}
+            />
             <div className={'py-5'}>
                 <Table
                     columns={updatedColumns}

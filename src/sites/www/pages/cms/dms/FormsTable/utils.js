@@ -62,6 +62,7 @@ const handleExpandableRows = (data, attributes, columns) => {
 
                     return {
                         key: attributes.find(attr => attr.name === col.name)?.display_name || col.name,
+                        accessor: col.accessor,
                         value: Array.isArray(value) ? value.join(', ') :
                             typeof value === 'object' ? '' : value
                     }
