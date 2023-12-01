@@ -456,12 +456,27 @@ const RenderSizeControls = ({column, colSizes, setColSizes}) => {
         />
     )
 }
+
+const RenderJustifyControls = ({column, colJustify, setColJustify}) => {
+    if (!colJustify) return null;
+    const currentValue = colJustify[column] || 'right';
+
+    return (
+        <ButtonSelector
+            label={'Justify:'}
+            types={[{label: 'Left', value: 'left'},{label: 'Center', value: 'center'},{label: 'Right', value: 'right'}]}
+            type={currentValue}
+            setType={e => setColJustify({...colJustify, [column]: e})}
+        />
+    )
+}
 const RenderColumnBoxes = ({
                                cols,
                                anchorCols=[],
                                visibleCols=[], setVisibleCols,
                                hiddenCols=[], setHiddenCols,
                                openOutCols, setOpenOutCols,
+                               colJustify, setColJustify,
                                extFilterCols, setExtFilterCols,
                                filters, setFilters,
                                filterValue, setFilterValue,
@@ -571,6 +586,9 @@ const RenderColumnBoxes = ({
                                 <RenderSizeControls column={col}
                                                     colSizes={colSizes} setColSizes={setColSizes} />
 
+                                <RenderJustifyControls column={col}
+                                                       colJustify={colJustify} setColJustify={setColJustify}/>
+
                                 <RenderNullControls column={col}
                                                     notNull={notNull} setNotNull={setNotNull}/>
 
@@ -623,7 +641,8 @@ export const RenderColumnControls = (
         //     showTotal: 'original'
         // }
         colSizes = {}, setColSizes,
-        openOutCols = [], setOpenOutCols
+        openOutCols = [], setOpenOutCols,
+        colJustify = {}, setColJustify
     }) => {
 
     return (
@@ -656,6 +675,7 @@ export const RenderColumnControls = (
                                stateNamePreferences={stateNamePreferences}
                                colSizes={colSizes} setColSizes={setColSizes}
                                openOutCols={openOutCols} setOpenOutCols={setOpenOutCols}
+                               colJustify={colJustify} setColJustify={setColJustify}
             />
         </div>
     )

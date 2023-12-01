@@ -9,6 +9,7 @@ import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../../components/columnControls.jsx";
 import {addTotalRow} from "../../utils/addTotalRow.js";
+import {Switch} from "@headlessui/react";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
     const fns = columnsToFetch.map(ctf => ctf.includes(' AS') ? ctf.split(' AS')[0] : ctf.split(' as')[0]);
@@ -134,7 +135,7 @@ async function getData({
                            geoid,
                            pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                            filters, filterValue, visibleCols, hiddenCols,
-                           version, extFilterCols, openOutCols
+                           version, extFilterCols, openOutCols, colJustify, striped
                        }, falcor) {
     const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
         aggregatedLen: Boolean(groupBy.length),
@@ -189,7 +190,7 @@ async function getData({
             return {
                 Header: col.display_name || col.name,
                 accessor: fn[col.name] || col.name,
-                align: col.align || 'right',
+                align: colJustify[col.name] || col.align || 'right',
                 width: colSizes[col.name] || '15%',
                 filter: col.filter || filters[col.name],
                 extFilter: extFilterCols.includes(col.name),
@@ -209,7 +210,7 @@ async function getData({
         geoid,
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
-        dataSource, dataSources, version, extFilterCols
+        dataSource, dataSources, version, extFilterCols, colJustify, striped
     }
 }
 
@@ -242,6 +243,8 @@ const Edit = ({value, onChange}) => {
     const [extFilterCols, setExtFilterCols] = useState(cachedData?.extFilterCols || []);
     const [extFilterValues, setExtFilterValues] = useState(cachedData?.extFilterValues || {});
     const [openOutCols, setOpenOutCols] = useState(cachedData?.openOutCols || []);
+    const [colJustify, setColJustify] = useState(cachedData?.colJustify || {});
+    const [striped, setStriped] = useState(cachedData?.striped || false);
 
     const category = 'Cenrep';
 
@@ -297,7 +300,7 @@ const Edit = ({value, onChange}) => {
                 dataSources, dataSource, geoAttribute, geoid,
                 pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
-                version, extFilterCols, openOutCols
+                version, extFilterCols, openOutCols, colJustify, striped
             }, falcor);
 
             onChange(JSON.stringify({
@@ -312,15 +315,16 @@ const Edit = ({value, onChange}) => {
     }, [dataSources, dataSource, geoid, geoAttribute,
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         filters, filterValue, visibleCols, hiddenCols,
-        version, extFilterCols, openOutCols
+        version, extFilterCols, openOutCols, colJustify
     ]);
 
     useEffect(() => {
         onChange(JSON.stringify({
             ...cachedData,
-            extFilterValues
+            extFilterValues,
+            striped
         }))
-    }, [extFilterValues]);
+    }, [extFilterValues, striped]);
 
     const data = cachedData.data;
 
@@ -363,6 +367,39 @@ const Edit = ({value, onChange}) => {
                     />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
 
+                    <div className={'block w-full flex mt-1'}>
+                        <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> Striped: </label>
+                        <div className={'align-bottom p-2 pl-0 my-1 rounded-md shrink self-center'}>
+                            <Switch
+                                key={`striped-table`}
+                                checked={striped}
+                                onChange={e => setStriped(!striped)}
+                                className={
+                                    `
+                                    ${striped ? 'bg-indigo-600' : 'bg-gray-200'}
+                                    relative inline-flex 
+                                     h-4 w-10 shrink
+                                     cursor-pointer rounded-full border-2 border-transparent 
+                                     transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
+                                     focus:ring-indigo-600 focus:ring-offset-2`
+                                }
+                            >
+                                <span className="sr-only">toggle striped table by</span>
+                                <span
+                                    aria-hidden="true"
+                                    className={
+                                        `
+                                        ${striped ? 'translate-x-5' : 'translate-x-0'}
+                                        pointer-events-none inline-block 
+                                        h-3 w-4
+                                        transform rounded-full bg-white shadow ring-0 t
+                                        transition duration-200 ease-in-out`
+                                    }
+                                />
+                            </Switch>
+                        </div>
+                    </div>
+
                     <RenderColumnControls
                         cols={
                            (dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns || [])
@@ -397,6 +434,8 @@ const Edit = ({value, onChange}) => {
                         setExtFilterCols={setExtFilterCols}
                         // openOutCols={openOutCols}
                         // setOpenOutCols={setOpenOutCols}
+                        colJustify={colJustify}
+                        setColJustify={setColJustify}
                     />
                 </div>
                 {
@@ -413,6 +452,7 @@ const Edit = ({value, onChange}) => {
                                 pageSize={pageSize}
                                 sortBy={sortBy}
                                 attributionData={attributionData}
+                                striped={striped}
                                 baseUrl={baseUrl}
                                 // fetchData={fetchData}
                             />

@@ -315,7 +315,7 @@ const ppdaf = () => {
               tableInfoBar: "bg-white",
               tableRow: `${colors[color]} transition ease-in-out duration-150 hover:bg-blue-100`,
               tableOpenOutRow: 'flex flex-col',
-              tableRowStriped: `bg-white odd:bg-tigGray-25 hover:bg-tigGray-100 bg-opacity-25 transition ease-in-out duration-150`,
+              tableRowStriped: `bg-white odd:bg-blue-50 hover:bg-blue-100 bg-opacity-25 transition ease-in-out duration-150`,
               tableCell: `${sizes[size]} break-words border border-gray-200 pl-1 align-top font-light text-sm`,
               inputSmall: 'w-24',
               sortIconDown: 'fas fa-sort-amount-down text-tigGray-300 opacity-75',
