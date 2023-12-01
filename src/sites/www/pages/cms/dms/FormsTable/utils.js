@@ -63,8 +63,8 @@ const handleExpandableRows = (data, attributes, openOutCols, columns) => {
                     return {
                         key: attributes.find(attr => attr.name === col.name)?.display_name || col.name,
                         accessor: col.accessor,
-                        value: Array.isArray(value) ? value.join(', ') :
-                            typeof value === 'object' ? '' : value
+                        value: Array.isArray(value) ? value.join(', ') : typeof value === 'object' ? '' : value, // to display arrays
+                        originalValue: Array.isArray(value) ? value : typeof value === 'object' ? '' : value // to filter arrays
                     }
                 })
             )
@@ -181,7 +181,7 @@ export async function setMeta({
                         const currentViewIdLookup = metaLookupByViewId?.[mdC.name] || [];
                         const currentRawValue = row[modifiedName];
                         if (currentRawValue?.includes(',')) {
-                            row[modifiedName] = currentRawValue.split(',').reduce((acc, curr) => [...acc, currentViewIdLookup?.[curr?.trim()]?.name || curr], []).join(', ')
+                            row[modifiedName] = currentRawValue.split(',').reduce((acc, curr) => [...acc, currentViewIdLookup?.[curr?.trim()]?.name || curr], [])//.join(', ')
                         } else {
                             row[modifiedName] = currentViewIdLookup?.[row[modifiedName]]?.name || row[modifiedName];
                         }

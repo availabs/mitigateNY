@@ -10,12 +10,15 @@ export const RenderExternalTableFilter = ({data, columns, filters, setFilters, s
 
     const uniqueValues = React.useMemo(() => columns.reduce((acc, column) => ({
         ...acc,
-        [column.accessor]: [...new Set(data.map(d => {
-            const originalValue = column.openOut ? d.expand?.find(c => c.accessor === column.accessor)?.value : d[column.accessor];
+        [column.accessor]: [...new Set(
+            data.reduce((acc, d) => {
+            const originalValue = column.openOut ? d.expand?.find(c => c.accessor === column.accessor)?.originalValue : d[column.accessor];
             let value = getNestedValue(originalValue);
-            value = Array.isArray(value) ? value.join(', ') : value;
-            return typeof value === 'object' ? null : value;
-        }))]
+
+            return Array.isArray(value) ? [...acc, ...value] :
+                typeof value === 'object' ? acc : [...acc, value]
+        }, [])
+        )]
     }), {}), [columns, data]);
 
     if(!columns.length) return null;
