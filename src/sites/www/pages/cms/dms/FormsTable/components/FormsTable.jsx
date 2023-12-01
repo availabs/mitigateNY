@@ -53,7 +53,7 @@ export const FormsTable = ({
                 .filter(f => filters[f].length)
                 .reduce((acc, col) => {
                     const currentCol = columns.find(c => c.accessor === col);
-                    const originalValue = currentCol.openOut ? row.expand.find(r => r.accessor === col) : row[col];
+                    const originalValue = currentCol.openOut ? row.expand?.find(r => r.accessor === col) : row[col];
                     const value = getNestedValue(originalValue);
                     return acc && filters[col].includes(value);
                 }, true)

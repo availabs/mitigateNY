@@ -134,7 +134,7 @@ async function getData({
                            geoid,
                            pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                            filters, filterValue, visibleCols, hiddenCols,
-                           version, extFilterCols
+                           version, extFilterCols, openOutCols
                        }, falcor) {
     const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
         aggregatedLen: Boolean(groupBy.length),
@@ -194,6 +194,7 @@ async function getData({
                 filter: col.filter || filters[col.name],
                 extFilter: extFilterCols.includes(col.name),
                 info: col.desc,
+                openOut: openOutCols.includes(col.name),
                 ...col,
                 type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
             }
@@ -240,6 +241,7 @@ const Edit = ({value, onChange}) => {
     const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
     const [extFilterCols, setExtFilterCols] = useState(cachedData?.extFilterCols || []);
     const [extFilterValues, setExtFilterValues] = useState(cachedData?.extFilterValues || {});
+    const [openOutCols, setOpenOutCols] = useState(cachedData?.openOutCols || []);
 
     const category = 'Cenrep';
 
@@ -295,7 +297,7 @@ const Edit = ({value, onChange}) => {
                 dataSources, dataSource, geoAttribute, geoid,
                 pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
-                version, extFilterCols
+                version, extFilterCols, openOutCols
             }, falcor);
 
             onChange(JSON.stringify({
@@ -310,7 +312,7 @@ const Edit = ({value, onChange}) => {
     }, [dataSources, dataSource, geoid, geoAttribute,
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         filters, filterValue, visibleCols, hiddenCols,
-        version, extFilterCols
+        version, extFilterCols, openOutCols
     ]);
 
     useEffect(() => {
@@ -393,6 +395,8 @@ const Edit = ({value, onChange}) => {
                         setColSizes={setColSizes}
                         extFilterCols={extFilterCols}
                         setExtFilterCols={setExtFilterCols}
+                        // openOutCols={openOutCols}
+                        // setOpenOutCols={setOpenOutCols}
                     />
                 </div>
                 {

@@ -46,10 +46,10 @@ export const getColAccessor = (fn, col, origin, form) => (origin === 'calculated
 export const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 export const mapColName = (columns, col) => columns.find(c => c.name === col)?.accessor;
 
-const handleExpandableRows = (data, attributes, columns) => {
+const handleExpandableRows = (data, attributes, openOutCols, columns) => {
     const openOutAttributes =
         attributes
-            .filter(attr => attr.openOut || defaultOpenOutAttributes.includes(attr.name))
+            .filter(attr => openOutCols.includes(attr.name) || defaultOpenOutAttributes.includes(attr.name))
             .map(attr => attr.name);
     const expandableColumns = columns.filter(c => openOutAttributes.includes(c.name))
     if (expandableColumns?.length) {
@@ -146,6 +146,7 @@ const filterData = ({geoAttribute, geoid, data, actionType}) =>
 export async function setMeta({
                                   formsConfig,
                                   visibleCols,
+                                  openOutCols,
                                   data,
                                   metaLookupByViewId,
                                   geoAttribute, geoid,
@@ -193,6 +194,7 @@ export async function setMeta({
         return handleExpandableRows(
             dataWithMeta,
             formsConfig.attributes,
+            openOutCols,
             visibleCols.map(vc => ({
                 name: vc,
                 accessor: getColAccessor(fn, vc, formsConfig.attributes?.find(attr => attr.name === vc)?.origin, form)
@@ -207,6 +209,7 @@ export async function setMeta({
                 actionType
             }),
             formsConfig.attributes,
+            openOutCols,
             visibleCols.map(vc => ({
                 name: vc,
                 accessor: getColAccessor(fn, vc, formsConfig.attributes?.find(attr => attr.name === vc)?.origin, form)

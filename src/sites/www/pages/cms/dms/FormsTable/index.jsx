@@ -32,7 +32,7 @@ const isValid = ({groupBy, fn, columnsToFetch}) => {
 async function getData({   formsConfig, actionType, form,
                            geoAttribute, geoid, metaLookupByViewId,
                            pageSize, sortBy, groupBy, fn, notNull, colSizes,
-                           filters, filterValue, visibleCols, hiddenCols, extFilterCols
+                           filters, filterValue, visibleCols, hiddenCols, extFilterCols, openOutCols
                        }, falcor) {
     const d = await dmsDataLoader(
         {
@@ -75,6 +75,7 @@ async function getData({   formsConfig, actionType, form,
     const data = await setMeta({
         formsConfig: formsConfig,
         visibleCols,
+        openOutCols,
         data: d,
         metaLookupByViewId,
         geoAttribute, geoid, actionType, fn, form
@@ -94,6 +95,7 @@ async function getData({   formsConfig, actionType, form,
                 filter: col.filter || filters[col.name],
                 extFilter: extFilterCols.includes(col.name),
                 info: col.desc,
+                openOut: openOutCols.includes(col.name),
                 ...col,
                 type: fn[col.display_name]?.includes('array_to_string') ? 'string' : col.type
             }
@@ -132,6 +134,7 @@ const Edit = ({value, onChange}) => {
     const [colSizes, setColSizes] = useState(cachedData?.colSizes || {});
     const [extFilterCols, setExtFilterCols] = useState(cachedData?.extFilterCols || []);
     const [extFilterValues, setExtFilterValues] = useState(cachedData?.extFilterValues || {});
+    const [openOutCols, setOpenOutCols] = useState(cachedData?.openOutCols || []);
 
     useEffect(() => {
         async function getFormsConfig() {
@@ -198,7 +201,7 @@ const Edit = ({value, onChange}) => {
                 geoAttribute, geoid, metaLookupByViewId,
                 pageSize, sortBy, groupBy, fn, notNull, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
-                extFilterCols
+                extFilterCols, openOutCols
             }, falcor);
 
             onChange(JSON.stringify({
@@ -215,7 +218,7 @@ const Edit = ({value, onChange}) => {
         geoAttribute, geoid, metaLookupByViewId,
         pageSize, sortBy, groupBy, fn, notNull, colSizes,
         filters, filterValue, visibleCols, hiddenCols,
-        extFilterCols
+        extFilterCols, openOutCols
     ]);
 
     return (
@@ -288,6 +291,8 @@ const Edit = ({value, onChange}) => {
                         setColSizes={setColSizes}
                         extFilterCols={extFilterCols}
                         setExtFilterCols={setExtFilterCols}
+                        openOutCols={openOutCols}
+                        setOpenOutCols={setOpenOutCols}
                     />
                 </div>
                 {
