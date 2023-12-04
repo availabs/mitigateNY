@@ -118,7 +118,7 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
 
   const saveItem = async () => {
     const newItem = cloneDeep(item)
-    newItem.url_slug = getUrlSlug(newItem, dataItems)
+    newItem.url_slug = newItem.url_slug || getUrlSlug(newItem, dataItems) // in case of a template generated page
     submit(json2DmsForm(newItem), { method: "post", action: pathname })
 
   }

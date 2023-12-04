@@ -143,8 +143,7 @@ const SectionThumb =({section,source,sectionControl={},updateSectionControl}) =>
   let type = section?.element?.['element-type'] || ''
   let comp = ComponentRegistry[type] || {}
   let controlVars = comp?.variables || []
-
-
+    console.log('sc?', sectionControl)
   const attributes = React.useMemo(() => {
     
     let md = get(source, ["metadata", "columns"], get(source, "metadata", []));
@@ -315,7 +314,7 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
           }, Promise.resolve([]));
           setGeneratedPages(pages);
 
-          if(!item.data_controls.sectionControls) return;
+          if(!item.data_controls?.sectionControls) return;
 
           const sectionIds = pages.map(page => page.data.value.sections.map(section => section.id));
           const sections = await sectionIds.reduce(async (acc, sectionId) => {
@@ -325,7 +324,7 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
                       app: 'dms-site',
                       type: 'cms-section',
                       filter: {
-                          [`data->'element'->>'template-section-id'`]: Object.keys(item.data_controls.sectionControls),
+                          [`data->'element'->>'template-section-id'`]: Object.keys(item.data_controls?.sectionControls),
                           'id': sectionId // [] of ids
                       }
                   }), '/');
@@ -337,7 +336,7 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
 
           console.log('res', sections)
       })()
-  }, [item.id, item.data_controls.sectionControls])
+  }, [item.id, item.data_controls?.sectionControls])
   React.useEffect(() => {
     if(view.view_id){
       falcor.get(["dama", pgEnv, "viewsbyId", view.view_id, "data", "length"])
@@ -527,11 +526,12 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
        let updates = await Promise.all(dataFetchers)
          console.log('updates', updates)
        if(updates.length > 0) {
-         let newSections = cloneDeep(sections)
+         let newSections = cloneDeep(item.sections)
            console.log('new sections ', newSections)
+
          const updatedSections = updates.map(({section_id, data, type}) => {
            let templateSection = item.sections.filter(d => d.id === section_id)?.[0]  || {};
-           let pageSection = newSections.find(d => d.data.value.element['template-section-id'] === section_id)  || {};
+           let pageSection = sections.find(d => d.data.value.element['template-section-id'] === section_id)  || {};
            let section = pageSection?.data?.value || {element:{}};
             console.log(section)
            if(pageSection?.id){
@@ -599,8 +599,8 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
           valueAccessor={d => d?.name}
           onChange={d => onChange('id_column',d)}
         />
-        {id_column?.name ? 
-        <Selector 
+        {id_column?.name ?
+        <Selector
           options={dataRows}
           value={active_row}
           nameAccessor={d => d?.[id_column?.name] }
