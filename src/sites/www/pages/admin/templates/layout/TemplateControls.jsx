@@ -45,6 +45,8 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
       const newItem = cloneDeep(item)
       newItem.data_controls = dataControls
       submit(json2DmsForm(newItem), { method: "post", action: pathname })
+    }else{
+      console.log('equal', item.data_controls, dataControls)
     }
   }
 

@@ -102,6 +102,7 @@ export default function DataControls ({item, dataItems,dataControls, setDataCont
                             sectionControls={dataControls.sectionControls}
                             source={dataControls?.source}
                             onChange={e => {
+                                console.log('updating...............', e)
                               updateDataControls('sectionControls', {...dataControls.sectionControls, ...e})
                             }}
                           />
@@ -191,7 +192,7 @@ const SectionThumb =({section,source,sectionControl={},updateSectionControl}) =>
 }
 
 const SectionListControls = ({sections, sectionControls, source, onChange}) => {
-  // console.log('SectionListControls',sectionControls)
+  console.log('SectionListControls',sectionControls)
   return (
     <div>
       {sections.map(s => (
@@ -457,6 +458,7 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
          const newSectionIds = await Promise.all(sectionsToUpload.map((section) => dmsDataEditor(sectionConfig, section)));
 
          const newPage = {
+             id_column_value: idColAttrVal,
             template_id: item.id,
             hide_in_nav: 'true', // not pulling though?
             url_slug: `${id_column.name}/${idColAttrVal}`,
@@ -491,7 +493,6 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
              let templateSection = item.sections.find(d => d.id === section_id)  || {};
              let pageSection = sections.find(s => s.data.value.element['template-section-id'] === section_id);
              let pageSectionData = parseJSON(pageSection?.data?.value?.element?.['element-data']) || {}
-
              let data = parseJSON(templateSection?.element?.['element-data']) || {}
              let type = templateSection?.element?.['element-type'] || ''
              let comp = ComponentRegistry[type] || {}
@@ -500,17 +501,18 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
 
              // update control variables
              let controlVars = (comp?.variables || []).reduce((out,curr) => {
-               out[curr.name] = curr.name === id_column.name && pageSectionData?.[curr.name] ? pageSectionData[curr.name] : data[curr.name]
+
+                 out[curr.name] = curr.name === id_column.name ? page.data.value.id_column_value : data[curr.name]
                return out
              },{})
 
              // update
-               console.log('??', dataControls.sectionControls, section_id)
-             let updateVars = Object.keys(dataControls.sectionControls[section_id]) // check for id_col
+               console.log('??', page.data.value.id_column_value)
+             let updateVars = Object.keys(dataControls?.sectionControls?.[section_id] || {}) // check for id_col
                  .reduce((out,curr) => {
                    const attrName = dataControls?.sectionControls?.[section_id]?.[curr]?.name || dataControls?.sectionControls?.[section_id]?.[curr];
                    console.log('updating attr', attrName, pageSectionData)
-                   out[curr] = attrName === id_column.name &&  pageSectionData?.[attrName] ? pageSectionData[attrName] :
+                   out[curr] = attrName === id_column.name ? page.data.value.id_column_value :
                        (
                            dataControls?.active_row?.[attrName] || null
                        )
@@ -524,22 +526,22 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
 
 
        let updates = await Promise.all(dataFetchers)
-         console.log('updates', updates)
+         // console.log('updates', updates)
        if(updates.length > 0) {
-         let newSections = cloneDeep(item.sections)
-           console.log('new sections ', newSections)
-
          const updatedSections = updates.map(({section_id, data, type}) => {
            let templateSection = item.sections.filter(d => d.id === section_id)?.[0]  || {};
            let pageSection = sections.find(d => d.data.value.element['template-section-id'] === section_id)  || {};
            let section = pageSection?.data?.value || {element:{}};
-            console.log(section)
+
            if(pageSection?.id){
                section.id = pageSection?.id;
            }else{
                section['template-section-id'] = templateSection.id;
            }
+           console.log('????????', templateSection)
            section.title = templateSection.title;
+           section.level = templateSection.level;
+           section.tags = templateSection.tags;
            section.element['element-data'] = JSON.stringify(data);
            section.element['element-type'] = type;
            section.element['template-section-id'] = section_id; // to update sections in future
