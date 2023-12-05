@@ -92,7 +92,7 @@ async function getData({geoid,disasterNumber,ealViewId, type='total_losses', num
 
     const deps = get(res, ["json", ...dependencyPath(ealViewId), "dependencies"]);
 
-    console.log('deps', res, deps, dependencyPath(ealViewId))
+    // console.log('deps', res, deps, dependencyPath(ealViewId))
 
     const stateView = deps?.find(dep => dep.type === "tl_state");
     const typeId = deps?.find(dep => dep.type === metaData[type]?.type);
@@ -151,7 +151,7 @@ async function getData({geoid,disasterNumber,ealViewId, type='total_losses', num
       },
     }]
 
-    console.log('geoids', geoids)
+    // console.log('geoids', geoids)
 
     const layers = [{
       "id": "counties",

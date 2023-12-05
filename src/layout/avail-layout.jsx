@@ -73,7 +73,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 		)
 	}
 
-	console.log('layout', topNav)
+	// console.log('layout', topNav)
 	
 	return (
 		<div className='flex' >
