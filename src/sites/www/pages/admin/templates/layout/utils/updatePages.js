@@ -40,7 +40,7 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
                     },{})
 
                 let args = {...controlVars, ...updateVars}
-                return comp?.getData ? comp.getData(args,falcor).then(data => ({section_id, data, type})) : null
+                return comp?.getData ? comp.getData(args,falcor).then(data => ({section_id, data, type})) : ({section_id, data})
             }).filter(d => d)
 
 
