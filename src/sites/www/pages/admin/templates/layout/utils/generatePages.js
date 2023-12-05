@@ -14,8 +14,7 @@ export const generatePages = async ({
         await acc;
 
         const dataControls = item.data_controls;
-        let dataFetchers = Object.keys(dataControls.sectionControls)
-            .filter(section_id => item.sections.find(s => s.id === section_id))
+        let dataFetchers = item.sections.map(s => s.id)
             .map(section_id => {
                 let section = item.sections.filter(d => d.id === section_id)?.[0]  || {}
                 let data = parseJSON(section?.element?.['element-data']) || {}
@@ -26,7 +25,7 @@ export const generatePages = async ({
                     return out
                 },{})
 
-                let updateVars = Object.keys(dataControls.sectionControls[section_id]) // check for id_col
+                let updateVars = Object.keys(dataControls?.sectionControls?.[section_id] || {}) // check for id_col
                     .reduce((out,curr) => {
                         const attrName = dataControls?.sectionControls?.[section_id]?.[curr]?.name || dataControls?.sectionControls?.[section_id]?.[curr];
 
@@ -45,7 +44,7 @@ export const generatePages = async ({
 
 
         let updates = await Promise.all(dataFetchers);
-
+        console.log('updates', updates)
         if(updates.length > 0) {
             let newSections = cloneDeep(item.sections)
             const sectionsToUpload = updates.map(({section_id, data}) => {
