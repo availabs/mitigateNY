@@ -33,10 +33,15 @@ async function getData({pgEnv, geoid, version, geoAttribute, visibleCols, id, bg
             {from: 0, to: len - 1}, visibleCols]);
     await falcor.get([...attributionPath, attributionAttributes]);
 
-    const textToSave = visibleCols.map(vc =>
-        Object.values(
+    const textToSave = visibleCols.map(vc =>{
+        let val = Object.values(
             get(falcor.getCache(), dataPath(options({geoAttribute, geoid})), {})
-        )[0]?.[vc] || '');
+        )[0]?.[vc] || ''
+        return val
+    }).map((v,i,all) => {
+        //if not last element add blank line
+        return i < all.length ? v + '\n\n' : v
+    });
 
     return {
         id: id + 1,
