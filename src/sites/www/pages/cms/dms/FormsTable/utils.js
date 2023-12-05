@@ -49,7 +49,7 @@ export const mapColName = (columns, col) => columns.find(c => c.name === col)?.a
 const handleExpandableRows = (data, attributes, openOutCols, columns) => {
     const openOutAttributes =
         attributes
-            .filter(attr => openOutCols.includes(attr.name) || defaultOpenOutAttributes.includes(attr.name))
+            .filter(attr => openOutCols?.includes(attr.name) || defaultOpenOutAttributes?.includes(attr.name))
             .map(attr => attr.name);
     const expandableColumns = columns.filter(c => openOutAttributes.includes(c.name))
     if (expandableColumns?.length) {

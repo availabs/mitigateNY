@@ -23,6 +23,7 @@ export const RenderBuildingsTable = ({
                                          attributionData,
                                          striped,
                                          fetchData,
+                                         extFiltersDefaultOpen,
                                          hiddenCols
                                      }) => {
     const [filters, setFilters] = useState(extFilterValues);
@@ -66,6 +67,7 @@ export const RenderBuildingsTable = ({
     return (
         <>
             <RenderExternalTableFilter
+                defaultOpen={extFiltersDefaultOpen}
                 columns={columns.filter(c => c.extFilter)}
                 data={data}
                 filters={filters}

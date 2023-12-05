@@ -4,8 +4,8 @@ import Multiselect from "~/sites/www/pages/cms/components/MultiSelect.jsx";
 
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;
 
-export const RenderExternalTableFilter = ({data, columns, filters, setFilters, setExtFilterValues}) => {
-    const [open, setOpen] = useState(false);
+export const RenderExternalTableFilter = ({defaultOpen=false, data, columns, filters, setFilters, setExtFilterValues}) => {
+    const [open, setOpen] = useState(defaultOpen);
 
 
     const uniqueValues = React.useMemo(() => columns.reduce((acc, column) => ({

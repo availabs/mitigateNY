@@ -450,7 +450,13 @@ const RenderSizeControls = ({column, colSizes, setColSizes}) => {
     return (
         <ButtonSelector
             label={'Size:'}
-            types={[{label: 'small', value: '15%'},{label: 'medium', value: '20%'},{label: 'large', value: '25%'}]}
+            types={[
+                {label: 'x-small', value: '5%'},
+                {label: 'small', value: '15%'},
+                {label: 'medium', value: '20%'},
+                {label: 'large', value: '25%'},
+                {label: 'x-large', value: '35%'}
+            ]}
             type={currentSize}
             setType={e => setColSizes({...colSizes, [column]: e})}
         />
@@ -458,7 +464,7 @@ const RenderSizeControls = ({column, colSizes, setColSizes}) => {
 }
 
 const RenderJustifyControls = ({column, colJustify, setColJustify}) => {
-    if (!colJustify) return null;
+    if (!setColJustify) return null;
     const currentValue = colJustify[column] || 'right';
 
     return (

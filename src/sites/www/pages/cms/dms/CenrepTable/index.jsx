@@ -135,7 +135,7 @@ async function getData({
                            geoid,
                            pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                            filters, filterValue, visibleCols, hiddenCols,
-                           version, extFilterCols, openOutCols, colJustify, striped
+                           version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen
                        }, falcor) {
     const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
         aggregatedLen: Boolean(groupBy.length),
@@ -210,7 +210,7 @@ async function getData({
         geoid,
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
-        dataSource, dataSources, version, extFilterCols, colJustify, striped
+        dataSource, dataSources, version, extFilterCols, colJustify, striped, extFiltersDefaultOpen
     }
 }
 
@@ -245,6 +245,7 @@ const Edit = ({value, onChange}) => {
     const [openOutCols, setOpenOutCols] = useState(cachedData?.openOutCols || []);
     const [colJustify, setColJustify] = useState(cachedData?.colJustify || {});
     const [striped, setStriped] = useState(cachedData?.striped || false);
+    const [extFiltersDefaultOpen, setExtFiltersDefaultOpen] = useState(cachedData?.extFiltersDefaultOpen || false);
 
     const category = 'Cenrep';
 
@@ -300,7 +301,7 @@ const Edit = ({value, onChange}) => {
                 dataSources, dataSource, geoAttribute, geoid,
                 pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
-                version, extFilterCols, openOutCols, colJustify, striped
+                version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen
             }, falcor);
 
             onChange(JSON.stringify({
@@ -315,16 +316,17 @@ const Edit = ({value, onChange}) => {
     }, [dataSources, dataSource, geoid, geoAttribute,
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         filters, filterValue, visibleCols, hiddenCols,
-        version, extFilterCols, openOutCols, colJustify
+        version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen
     ]);
 
     useEffect(() => {
         onChange(JSON.stringify({
             ...cachedData,
             extFilterValues,
-            striped
+            striped,
+            extFiltersDefaultOpen
         }))
-    }, [extFilterValues, striped]);
+    }, [extFilterValues, striped, extFiltersDefaultOpen]);
 
     const data = cachedData.data;
 
@@ -400,6 +402,39 @@ const Edit = ({value, onChange}) => {
                         </div>
                     </div>
 
+                    <div className={'block w-full flex mt-1'}>
+                        <label className={'align-bottom shrink-0pr-2 py-2 my-1 w-1/4'}> External filters default open: </label>
+                        <div className={'align-bottom p-2 pl-0 my-1 rounded-md shrink self-center'}>
+                            <Switch
+                                key={`striped-table`}
+                                checked={extFiltersDefaultOpen}
+                                onChange={e => setExtFiltersDefaultOpen(!extFiltersDefaultOpen)}
+                                className={
+                                    `
+                                ${extFiltersDefaultOpen ? 'bg-indigo-600' : 'bg-gray-200'}
+                                relative inline-flex 
+                                 h-4 w-10 shrink
+                                 cursor-pointer rounded-full border-2 border-transparent 
+                                 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
+                                 focus:ring-indigo-600 focus:ring-offset-2`
+                                }
+                            >
+                                <span className="sr-only">toggle External filters default open by</span>
+                                <span
+                                    aria-hidden="true"
+                                    className={
+                                        `
+                                    ${extFiltersDefaultOpen ? 'translate-x-5' : 'translate-x-0'}
+                                    pointer-events-none inline-block 
+                                    h-3 w-4
+                                    transform rounded-full bg-white shadow ring-0 t
+                                    transition duration-200 ease-in-out`
+                                    }
+                                />
+                            </Switch>
+                        </div>
+                    </div>
+
                     <RenderColumnControls
                         cols={
                            (dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns || [])
@@ -449,6 +484,7 @@ const Edit = ({value, onChange}) => {
                                 filterValue={filterValue}
                                 extFilterValues={extFilterValues}
                                 setExtFilterValues={setExtFilterValues}
+                                extFiltersDefaultOpen={extFiltersDefaultOpen}
                                 pageSize={pageSize}
                                 sortBy={sortBy}
                                 attributionData={attributionData}

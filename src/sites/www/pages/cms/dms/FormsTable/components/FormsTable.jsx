@@ -16,6 +16,7 @@ export const FormsTable = ({
                                        attributionData,
                                        striped,
                                          fetchData,
+                               extFiltersDefaultOpen,
                                extFilterValues = {},
                                setExtFilterValues,
 }) => {
@@ -68,6 +69,7 @@ export const FormsTable = ({
     return (
         <>
             <RenderExternalTableFilter
+                defaultOpen={extFiltersDefaultOpen}
                 columns={columns.filter(c => c.extFilter)}
                 data={data}
                 filters={filters}
