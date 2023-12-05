@@ -44,7 +44,9 @@ async function getData({pgEnv, geoid, version, geoAttribute, visibleCols, id, bg
         text: convertToEditorText(textToSave),
         geoAttribute,
         geoid,
-        visibleCols
+        visibleCols,
+        pgEnv, version
+
     }
 }
 const convertToEditorText = text => ({
