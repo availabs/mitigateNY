@@ -10,7 +10,7 @@ export const SectionThumb =({section,source,sectionControl={},updateSectionContr
     let type = section?.element?.['element-type'] || ''
     let comp = ComponentRegistry[type] || {}
     let controlVars = comp?.variables || []
-    console.log('sc?', sectionControl)
+    // console.log('sc?', sectionControl)
     const attributes = React.useMemo(() => {
 
         let md = get(source, ["metadata", "columns"], get(source, "metadata", []));

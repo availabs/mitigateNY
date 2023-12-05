@@ -32,28 +32,28 @@ const freqToText = (f, suffix='%') =>
     </span>;
 
 export const RenderHazardStatBox = ({
-                                        isTotal,
-                                        hazard,
-                                        statePercentile,
-                                        nationalPercentile,
-                                        hazardPercentileArray,
-                                        hazardPercentile,
-                                        actualLoss,
-                                        actualLossWithPop,
-                                        eal,
-                                        exposure,
-                                        frequency,
-                                        frequencySum,
-                                        numEvents,
-                                        numSevereEvents,
-                                        numFEMADeclared,
-                                        deaths,
-                                        injuries,
-                                        size,
-                                        style,
-                                        visibleCols,
-                                        isGrid = true
-                                    }) => {
+    isTotal,
+    hazard,
+    statePercentile,
+    nationalPercentile,
+    hazardPercentileArray,
+    hazardPercentile,
+    actualLoss,
+    actualLossWithPop,
+    eal,
+    exposure,
+    frequency,
+    frequencySum,
+    numEvents,
+    numSevereEvents,
+    numFEMADeclared,
+    deaths,
+    injuries,
+    size,
+    style,
+    visibleCols,
+    isGrid = true
+}) => {
 
     const blockClass = {
         large: "flex flex-col pt-2 text-sm",
