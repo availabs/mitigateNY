@@ -17,6 +17,8 @@ import {useFalcor} from '~/modules/avl-falcor';
 const theme = {
   pageControls: {
     controlItem: 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400 flex items-center',
+    select: 'bg-transparent border-none rounded-sm focus:ring-0 focus:border-0 pl-1',
+    selectOption: 'p-4 text-md cursor-pointer hover:text-blue-500 text-slate-400 hover:bg-blue-600',
     content: '',
   }
 }
@@ -38,6 +40,9 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
     active_row: {},
     sectionControls: {}
   })
+  const [ url, setUrl ] = useState(item.url || `${dataControls?.id_column?.name}/`);
+  const [ destination, setDestination ] = useState(item.destination || 'docs-play');
+
   // const { baseUrl, setOpen, setHistoryOpen} = React.useContext(CMSContext)
   const baseUrl = '/admin/templates'
   const NoOp = () => {}
@@ -134,6 +139,20 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
     submit(json2DmsForm(newItem), { method: "post", action: pathname })
   }
 
+  const saveUrl = async (value='') => {
+    const newItem = cloneDeep(item)
+    newItem.url = value
+    updateAttribute('url', value)
+    submit(json2DmsForm(newItem), { method: "post", action: pathname })
+  }
+
+  const saveDestination = async (value='') => {
+    const newItem = cloneDeep(item)
+    newItem.destination = value
+    updateAttribute('destination', value)
+    submit(json2DmsForm(newItem), { method: "post", action: pathname })
+  }
+
   const TitleEdit = attributes['title'].EditComp
   
   //console.log('showDelete', showDelete)
@@ -163,6 +182,29 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
               />
             </div>
             {/*<div className='pl-6 pb-2 text-gray-500 text-xs'>{item['id']}</div>*/}
+            <div className={theme.pageControls.controlItem} >
+              <i className={'text-xs pr-1 fa fa-link'} />
+              <input
+                  className={'w-full'}
+                  type={'text'} value={url} onChange={e => saveUrl(e.target.value) && setUrl(e.target.value)} />
+            </div>
+
+            <div className={theme.pageControls.controlItem}>
+              <i className={'fa-solid fa-up-down-left-right text-sm'} />
+              <select
+                  title={'Move Page'}
+                  className={theme.pageControls.select}
+                  value={destination}
+                  onChange={e => {
+                    return saveDestination(e.target.value) && setDestination(e.target.value);
+                  }}
+              >
+                <option key={'cms'} value={'docs-page'} className={theme.pageControls.selectOption}>Live</option>
+                <option key={'draft'} value={'docs-draft'} className={theme.pageControls.selectOption}>Draft</option>
+                <option key={'playground'} value={'docs-play'} className={theme.pageControls.selectOption}>Playground</option>
+              </select>
+            </div>
+
             <div className={theme.pageControls.controlItem + ' pb-6' } >
               <SidebarSwitch
                 item={item}
@@ -188,11 +230,14 @@ export function PageControls({ item, dataItems, updateAttribute,attributes, edit
             </div>
             {dataControls?.id_column && <div>
               <ViewInfo
+                  submit={submit}
                   item={item}
                 source={dataControls?.source}
                 view={dataControls?.view}
                 id_column={dataControls?.id_column}
                 active_row={dataControls?.active_row}
+                  url={url}
+                  destination={destination}
                 onChange={(k,v) => {
                   if(k === 'id_column') {
                     setDataControls({...dataControls, ...{id_column: v, active_row: {}}})

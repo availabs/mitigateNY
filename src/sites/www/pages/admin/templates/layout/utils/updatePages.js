@@ -2,8 +2,9 @@ import {dmsDataEditor} from "../../../../../../../modules/dms/src/index.js";
 import {parseJSON} from "./parseJSON.js";
 import ComponentRegistry from "../../../../cms/dms/ComponentRegistry.js";
 import cloneDeep from "lodash/cloneDeep";
+import {json2DmsForm} from "../../../../cms/layout/nav.jsx";
 
-export const updatePages = async ({item, id_column, generatedPages, generatedSections, falcor}) => {
+export const updatePages = async ({submit, item, url, destination, id_column, generatedPages, generatedSections, falcor}) => {
     // while updating existing sections, keep in mind to not change the id_column attribute.
 
     await generatedPages.reduce(async(acc, page) => {
@@ -71,7 +72,7 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
 
             // genetate
             const app = 'dms-site'
-            const type = 'docs-play' // defaults to play
+            const type = destination || 'docs-play' // defaults to play
             const sectionType = 'cms-section'
 
             const sectionConfig = {format: {app, type: sectionType}};
@@ -87,9 +88,14 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
             // loop over templatePAge sections, and arrange newSections in the same order except when an unknown section id appears in generated page
             // if(newSectionIds.find(nsi => nsi.id)){
                 console.log('page', page, page.data.value.sections, newSectionIds, updatedSections)
+
+            const newItem = {id: page.id, type}
+            await submit(json2DmsForm(newItem, 'updateType'), { method: "post", action: `${window.location.pathname}` })
+
                 const newPage = {
                     id: page.id,
                     ...cloneDeep(page.data.value),
+                    url_slug: `${url || id_column.name}/${page.data.value.id_column_value}`,
                     sections: [
                         ...updatedSections.map((section, i) => ({ // updatedSections contains correct order
                             "id": section.id || newSectionIds[i]?.id,

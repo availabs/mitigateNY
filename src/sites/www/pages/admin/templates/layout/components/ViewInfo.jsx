@@ -8,7 +8,7 @@ import {updatePages} from "../utils/updatePages.js";
 import {generatePages} from "../utils/generatePages.js";
 import {pgEnv} from "../constants.js";
 
-export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) => {
+export const ViewInfo = ({submit, item, url, destination, source,view, id_column, active_row, onChange}) => {
 
     // console.log('ViewInfo', id_column, active_id)
     const { falcor, falcorCache } = useFalcor();
@@ -136,12 +136,12 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
             {
                 generatedPages?.length ?
                     <button className={'mt-4 p-2 text-white bg-blue-500 hover:bg-blue-300 rounded-lg'}
-                            onClick={e => updatePages({item, id_column, generatedPages, generatedSections, falcor})}
+                            onClick={e => updatePages({submit, item, url, destination, id_column, generatedPages, generatedSections, falcor})}
                     >
                         Update Pages
                     </button> :
                     <button className={'mt-4 p-2 text-white bg-blue-500 hover:bg-blue-300 rounded-lg'}
-                            onClick={e => generatePages({item, id_column, dataRows, falcor})}
+                            onClick={e => generatePages({item, url, destination, id_column, dataRows, falcor})}
                     >
                         Generate Pages
                     </button>
