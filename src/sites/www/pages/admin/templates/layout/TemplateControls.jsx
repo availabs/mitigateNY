@@ -7,7 +7,9 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import { useSubmit, useLocation } from "react-router-dom";
 import {json2DmsForm, getUrlSlug, toSnakeCase} from '~/sites/www/pages/cms/layout/nav'
 import 'react-toastify/dist/ReactToastify.css';
-import DataControls, {parseJSON, ViewInfo} from './TemplateDataControls'
+import DataControls from './TemplateDataControls'
+import {parseJSON} from "./utils/parseJSON.js";
+import {ViewInfo} from "./components/ViewInfo.jsx";
 import ComponentRegistry from '~/sites/www/pages/cms/dms/ComponentRegistry'
 import {useFalcor} from '~/modules/avl-falcor';
 
