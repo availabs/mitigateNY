@@ -1,6 +1,7 @@
 import {dmsDataEditor} from "../../../../../../../modules/dms/src/index.js";
 import {parseJSON} from "./parseJSON.js";
 import ComponentRegistry from "../../../../cms/dms/ComponentRegistry.js";
+import cloneDeep from "lodash/cloneDeep";
 
 export const updatePages = async ({item, id_column, generatedPages, generatedSections, falcor}) => {
     // while updating existing sections, keep in mind to not change the id_column attribute.
@@ -88,18 +89,19 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
                 console.log('page', page, page.data.value.sections, newSectionIds, updatedSections)
                 const newPage = {
                     id: page.id,
-                    ...page.data.value,
+                    ...cloneDeep(page.data.value),
                     sections: [
-                        ...updatedSections.map(section => ({ // updatedSections contains correct order
-                            "id": section.id,
+                        ...updatedSections.map((section, i) => ({ // updatedSections contains correct order
+                            "id": section.id || newSectionIds[i]?.id,
                             "ref": "dms-site+cms-section"
                         })),
-                        ...newSectionIds
-                            .filter(s => s.id)
-                            .map(sectionRes => ({
-                                "id": sectionRes.id,
-                                "ref": "dms-site+cms-section"
-                            }))
+                        //
+                        // ...newSectionIds
+                        //     .filter(s => s.id)
+                        //     .map(sectionRes => ({
+                        //         "id": sectionRes.id,
+                        //         "ref": "dms-site+cms-section"
+                        //     }))
                     ]
                 }
                 const resPage = await dmsDataEditor(pageConfig, newPage);

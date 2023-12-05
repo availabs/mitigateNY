@@ -40,7 +40,7 @@ export const generatePages = async ({
                     },{})
 
                 let args = {...controlVars, ...updateVars}
-                return comp?.getData ? comp.getData(args,falcor).then(data => ({section_id, data})) : null
+                return comp?.getData ? comp.getData(args,falcor).then(data => ({section_id, data})) : ({section_id, data})
             }).filter(d => d)
 
 

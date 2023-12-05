@@ -14,7 +14,7 @@ export const ViewInfo = ({item, source,view, id_column, active_row, onChange}) =
     const { falcor, falcorCache } = useFalcor();
     const [generatedPages, setGeneratedPages] = useState([]);
     const [generatedSections, setGeneratedSections] = useState([]);
-
+    console.log('generated stuuff', generatedPages, generatedSections)
     //const [idCol, setIdCol] = useState('')
     React.useEffect(() => {
         // get generated pages and sections
