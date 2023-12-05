@@ -43,11 +43,12 @@ const freqCol =
             ), {});
 
 
-async function getData({ealSourceId, ealViewId, isTotal, geoid, hazard, severeEventThreshold,
+async function getData({ealSourceId=343, ealViewId, isTotal, geoid, hazard, severeEventThreshold,
                            type, visibleCols, style},  falcor) {
     const npCol = isTotal ? "total_rank" : "hazard_rank",
         ealCol = isTotal ? "nri_eal_total" : "nri_eal";
 
+    geoid = ''+geoid
     let
         fipsCol = `substring(stcofips, 1, ${geoid.length})`,
         nriOptions = JSON.stringify({
@@ -83,6 +84,10 @@ async function getData({ealSourceId, ealViewId, isTotal, geoid, hazard, severeEv
         }),
         fusionPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptions],
         fusionPathTotal = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options", fusionOptionsTotal];
+    // console.log('falcor get', 
+    //      ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId],
+    //     ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid]
+    // )
     const res = await falcor.get(
         ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", ealViewId],
         ["comparative_stats", pgEnv, "byEalIds", "source", ealSourceId, "view", ealViewId, "byGeoid", geoid]
