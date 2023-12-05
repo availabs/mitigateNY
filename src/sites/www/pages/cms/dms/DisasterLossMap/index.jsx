@@ -36,7 +36,7 @@ const getColorScale = (data, colors) => {
 const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...rest}) => {
     if (!data?.length || !colors?.length) return {};
     const geoids = data.map(d => d.geoid);
-    const stateFips = (geoid?.substring(0, 2) || geoids[0] || '00').substring(0, 2);
+    const stateFips = ((geoid+'' || '')?.substring(0, 2) || geoids[0] || '00').substring(0, 2);
     const geoColors = {}
 
     const colorScale = getColorScale(
