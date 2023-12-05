@@ -8,7 +8,6 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
     await generatedPages.reduce(async(acc, page) => {
         await acc;
         const sections = generatedSections.filter(section => page.data.value.sections.map(s => s.id).includes(section.id));
-        console.log('page', page, sections, generatedSections)
 
         const dataControls = item.data_controls;
 
@@ -32,7 +31,7 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
                 let updateVars = Object.keys(dataControls?.sectionControls?.[section_id] || {}) // check for id_col
                     .reduce((out,curr) => {
                         const attrName = dataControls?.sectionControls?.[section_id]?.[curr]?.name || dataControls?.sectionControls?.[section_id]?.[curr];
-                        console.log('updating attr', attrName, pageSectionData)
+
                         out[curr] = attrName === id_column.name ? page.data.value.id_column_value :
                             (
                                 dataControls?.active_row?.[attrName] || null
@@ -48,7 +47,10 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
         let updates = await Promise.all(dataFetchers)
 
         if(updates.length > 0) {
-            const updatedSections = updates.map(({section_id, data, type}) => {
+            const updatedSections = item.sections
+                .map(s => updates.find(u => u.section_id === s.id)) // to preserve order
+                .filter(u => u)
+                .map(({section_id, data, type}) => {
                 let templateSection = item.sections.filter(d => d.id === section_id)?.[0]  || {};
                 let pageSection = sections.find(d => d.data.value.element['template-section-id'] === section_id)  || {};
                 let section = pageSection?.data?.value || {element:{}};
@@ -65,7 +67,6 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
                 section.element['template-section-id'] = section_id; // to update sections in future
                 return section;
             })
-            console.log('updated sections', updatedSections)
 
             // genetate
             const app = 'dms-site'
@@ -83,13 +84,16 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
             // should have a matching section id on the page. add or remove sections based on that.
 
             // loop over templatePAge sections, and arrange newSections in the same order except when an unknown section id appears in generated page
-            if(newSectionIds.find(nsi => nsi.id)){
-                console.log('page', page, newSectionIds)
+            // if(newSectionIds.find(nsi => nsi.id)){
+                console.log('page', page, page.data.value.sections, newSectionIds, updatedSections)
                 const newPage = {
                     id: page.id,
                     ...page.data.value,
                     sections: [
-                        ...page.data.value.sections,
+                        ...updatedSections.map(section => ({ // updatedSections contains correct order
+                            "id": section.id,
+                            "ref": "dms-site+cms-section"
+                        })),
                         ...newSectionIds
                             .filter(s => s.id)
                             .map(sectionRes => ({
@@ -100,7 +104,7 @@ export const updatePages = async ({item, id_column, generatedPages, generatedSec
                 }
                 const resPage = await dmsDataEditor(pageConfig, newPage);
                 console.log('created', resPage)
-            }
+            // }
         }
 
     }, Promise.resolve())
