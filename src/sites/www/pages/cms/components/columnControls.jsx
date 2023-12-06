@@ -445,21 +445,51 @@ const RenderSortControls = ({column, sortBy, setSortBy, fn, stateNamePreferences
 
 const RenderSizeControls = ({column, colSizes, setColSizes}) => {
     if (!setColSizes) return null;
+    const [ customSize, setCustomSize ] = useState(false);
     const currentSize = colSizes[column] || '15%';
 
+    const sizeOptions = [
+        {label: 'x-small (5%)', value: '5%'},
+        {label: 'small (15%)', value: '15%'},
+        {label: 'medium (20%)', value: '20%'},
+        {label: 'large (25%)', value: '25%'},
+        {label: 'x-large (35%)', value: '35%'},
+        {label: 'custom', value: 'custom'}
+    ];
+
+    const sizes = sizeOptions.map(s => s.value).filter(s => s !== 'custom')
+
+    useEffect(() => {
+        setCustomSize(!sizes.includes(currentSize))
+    }, [currentSize]);
+
     return (
-        <ButtonSelector
-            label={'Size:'}
-            types={[
-                {label: 'x-small', value: '5%'},
-                {label: 'small', value: '15%'},
-                {label: 'medium', value: '20%'},
-                {label: 'large', value: '25%'},
-                {label: 'x-large', value: '35%'}
-            ]}
-            type={currentSize}
-            setType={e => setColSizes({...colSizes, [column]: e})}
-        />
+        <>
+            <ButtonSelector
+                label={'Size:'}
+                types={sizeOptions}
+                type={currentSize}
+                setType={e => {
+                    sizes.includes(e) ?
+                        setColSizes({...colSizes, [column]: e}) :
+                        setCustomSize(true);
+                }}
+            />
+            {
+                customSize ?
+                    <input
+                        key={'colSizeInput'}
+                        className={'p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
+                        type={"number"}
+                        placeholder={'size in %'}
+                        value={currentSize.replace('%', '')}
+                        onChange={e => {
+                            if (e.target.value > 0) setColSizes({colSizes, [column]: `${e.target.value}%`});
+                        }}
+                        onWheel={e => e.target.blur()}
+                    /> : null
+            }
+        </>
     )
 }
 
