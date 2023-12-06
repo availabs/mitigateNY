@@ -506,6 +506,35 @@ const RenderJustifyControls = ({column, colJustify, setColJustify}) => {
         />
     )
 }
+
+const RenderCustomColNameControls = ({column, customColName, setCustomColName, metadata}) => {
+    if (!setCustomColName) return null;
+
+    return (
+        <div className={'w-full pt-2 mt-1 flex flex-row text-sm'}>
+            <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> Label: </label>
+            <input
+                type={'text'}
+                className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
+                value={customColName[column] || metadata.display_name}
+                placeholder={'filter by'}
+                onChange={e => {
+                    const tmpVal = JSON.parse(JSON.stringify(customColName));
+                    if (!e.target.value) delete tmpVal[column];
+                    const newValue = e.target.value ?
+                        {
+                            ...tmpVal,
+                            ...{[column]: e.target.value ? e.target.value : undefined}
+                        } : tmpVal;
+
+                    setCustomColName(newValue)
+                }
+                }
+            />
+        </div>
+    )
+
+}
 const RenderColumnBoxes = ({
                                cols,
                                anchorCols=[],
@@ -523,7 +552,8 @@ const RenderColumnBoxes = ({
                                sortBy, setSortBy,
                                metadata,
                                stateNamePreferences,
-                               colSizes, setColSizes
+                               colSizes, setColSizes,
+                               customColName, setCustomColName
                            }) => {
     const [list, setList] = useState([...new Set([...anchorCols, ...visibleCols])]);
     const dragItem = useRef();
@@ -599,6 +629,9 @@ const RenderColumnBoxes = ({
                                         <i className={`fa-light fa-xmark fa-fw float-right`} title={'remove'}></i>
                                     </button>
                                 </div>
+
+                                <RenderCustomColNameControls column={col}
+                                                             customColName={customColName} setCustomColName={setCustomColName} metadata={currentMetaData}/>
 
                                 <RenderFilterControls column={col}
                                                       anchorCols={anchorCols}
@@ -678,7 +711,8 @@ export const RenderColumnControls = (
         // }
         colSizes = {}, setColSizes,
         openOutCols = [], setOpenOutCols,
-        colJustify = {}, setColJustify
+        colJustify = {}, setColJustify,
+        customColName = {}, setCustomColName
     }) => {
 
     return (
@@ -712,6 +746,7 @@ export const RenderColumnControls = (
                                colSizes={colSizes} setColSizes={setColSizes}
                                openOutCols={openOutCols} setOpenOutCols={setOpenOutCols}
                                colJustify={colJustify} setColJustify={setColJustify}
+                               customColName={customColName} setCustomColName={setCustomColName}
             />
         </div>
     )

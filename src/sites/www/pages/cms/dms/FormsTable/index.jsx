@@ -34,7 +34,7 @@ async function getData({   formsConfig, actionType, form,
                            geoAttribute, geoid, metaLookupByViewId,
                            pageSize, sortBy, groupBy, fn, notNull, colSizes,
                            filters, filterValue, visibleCols, hiddenCols, extFilterCols, extFilterValues, openOutCols,
-                           colJustify, striped, extFiltersDefaultOpen
+                           colJustify, striped, extFiltersDefaultOpen, customColName
                        }, falcor) {
     const d = await dmsDataLoader(
         {
@@ -90,7 +90,7 @@ async function getData({   formsConfig, actionType, form,
         .map(col => {
             const acc = getColAccessor(fn, col.name, col.origin, form);
             return {
-                Header: col.display_name,
+                Header: customColName[col.name] || col.display_name,
                 accessor: acc,
                 align: colJustify[col.name] || col.align || 'right',
                 width: colSizes[col.name] || '15%',
@@ -107,7 +107,7 @@ async function getData({   formsConfig, actionType, form,
         geoid,
         pageSize, sortBy, groupBy, fn, notNull, hiddenCols, colSizes, form, formsConfig,
         data, columns, metaLookupByViewId, filters, filterValue, visibleCols, geoAttribute, actionType,
-        extFilterCols, extFilterValues, openOutCols, colJustify, striped, extFiltersDefaultOpen
+        extFilterCols, extFilterValues, openOutCols, colJustify, striped, extFiltersDefaultOpen, customColName
     }
 }
 
@@ -140,6 +140,7 @@ const Edit = ({value, onChange}) => {
     const [colJustify, setColJustify] = useState(cachedData?.colJustify || {});
     const [striped, setStriped] = useState(cachedData?.striped || false);
     const [extFiltersDefaultOpen, setExtFiltersDefaultOpen] = useState(cachedData?.extFiltersDefaultOpen || false);
+    const [customColName, setCustomColName] = useState(cachedData?.customColName || {})
 
     useEffect(() => {
         async function getFormsConfig() {
@@ -215,7 +216,8 @@ const Edit = ({value, onChange}) => {
                 geoAttribute, geoid, metaLookupByViewId,
                 pageSize, sortBy, groupBy, fn, notNull, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
-                extFilterCols, extFilterValues, openOutCols, colJustify, striped, extFiltersDefaultOpen
+                extFilterCols, extFilterValues, openOutCols, colJustify, striped, extFiltersDefaultOpen,
+                customColName
             }, falcor);
 
             onChange(JSON.stringify({
@@ -232,7 +234,8 @@ const Edit = ({value, onChange}) => {
         geoAttribute, geoid, metaLookupByViewId,
         pageSize, sortBy, groupBy, fn, notNull, colSizes,
         filters, filterValue, visibleCols, hiddenCols,
-        extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen
+        extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
+        customColName
     ]);
 
     return (
@@ -378,6 +381,8 @@ const Edit = ({value, onChange}) => {
                         setOpenOutCols={setOpenOutCols}
                         colJustify={colJustify}
                         setColJustify={setColJustify}
+                        customColName={customColName}
+                        setCustomColName={setCustomColName}
                     />
                 </div>
                 {
