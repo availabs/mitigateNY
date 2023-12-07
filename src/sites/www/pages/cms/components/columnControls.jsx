@@ -490,10 +490,10 @@ const RenderSizeControls = ({column, colSizes, setColSizes}) => {
                                 key={'colSizeInput'}
                                 className={'w-full p-2 ml-0 my-1 bg-white rounded-md shrink'}
                                 type={"number"}
-                                placeholder={'size in %'}
-                                value={currentSize.replace('%', '')}
+                                placeholder={'size in px'}
+                                value={currentSize.replace('px', '')}
                                 onChange={e => {
-                                    setColSizes({colSizes, [column]: `${e.target.value}%`});
+                                    setColSizes({colSizes, [column]: `${e.target.value}px`});
                                 }}
                                 onWheel={e => e.target.blur()}
                             /> : null

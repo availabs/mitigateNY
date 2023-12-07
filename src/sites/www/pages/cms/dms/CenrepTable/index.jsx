@@ -193,6 +193,8 @@ async function getData({
                 accessor: fn[col.name] || col.name,
                 align: colJustify[col.name] || col.align || 'right',
                 width: colSizes[col.name] || '15%',
+                minWidth: colSizes[col.name] || '15%',
+                maxWidth: colSizes[col.name] || '15%',
                 filter: col.filter || filters[col.name],
                 extFilter: extFilterCols.includes(col.name),
                 info: col.desc,
