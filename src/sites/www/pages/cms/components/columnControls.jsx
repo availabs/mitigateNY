@@ -518,6 +518,12 @@ const RenderJustifyControls = ({column, colJustify, setColJustify}) => {
 
 const RenderCustomColNameControls = ({column, customColName, setCustomColName, metadata}) => {
     if (!setCustomColName) return null;
+    const currentValue = customColName[column] || metadata.display_name || metadata.name;
+    const [tmpValue, setTmpValue] = useState({[column]: currentValue});
+
+    useEffect(() => {
+        setTimeout(() => setCustomColName({...customColName, ...tmpValue}), 1500)
+    }, [tmpValue]);
 
     return (
         <div className={'w-full pt-2 mt-1 flex flex-row text-sm'}>
@@ -525,18 +531,10 @@ const RenderCustomColNameControls = ({column, customColName, setCustomColName, m
             <input
                 type={'text'}
                 className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
-                value={customColName[column] || metadata.display_name}
-                placeholder={'filter by'}
+                value={tmpValue[column]}
+                placeholder={'Label'}
                 onChange={e => {
-                    const tmpVal = JSON.parse(JSON.stringify(customColName));
-                    if (!e.target.value) delete tmpVal[column];
-                    const newValue = e.target.value ?
-                        {
-                            ...tmpVal,
-                            ...{[column]: e.target.value ? e.target.value : undefined}
-                        } : tmpVal;
-
-                    setCustomColName(newValue)
+                    setTmpValue({[column]: e.target.value});
                 }
                 }
             />
@@ -547,6 +545,11 @@ const RenderCustomColNameControls = ({column, customColName, setCustomColName, m
 const RenderLinkColControls = ({column, linkCols, setLinkCols, metadata}) => {
     if (!setLinkCols) return null;
     const currentValue = linkCols[column];
+    const [tmpValue, setTmpValue] = useState(currentValue);
+
+    useEffect(() => {
+        setTimeout(() => setLinkCols({...linkCols, ...tmpValue}), 1500)
+    }, [tmpValue]);
 
     return (
         <div className={'w-full pt-2 mt-1 flex flex-row text-sm'}>
@@ -589,13 +592,13 @@ const RenderLinkColControls = ({column, linkCols, setLinkCols, metadata}) => {
                             <input
                                 type={'text'}
                                 className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
-                                value={currentValue.linkText}
+                                value={tmpValue.linkText}
                                 placeholder={'link text'}
                                 onChange={e => {
-                                    setLinkCols(
+                                    setTmpValue(
                                         {
-                                            ...linkCols,
-                                            [column]: {...currentValue, linkText: e.target.value}
+                                            // ...linkCols,
+                                            [column]: {...tmpValue, linkText: e.target.value}
                                         }
                                     )
                                 }
@@ -605,13 +608,13 @@ const RenderLinkColControls = ({column, linkCols, setLinkCols, metadata}) => {
                             <input
                                 type={'text'}
                                 className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
-                                value={currentValue.location}
+                                value={tmpValue.location}
                                 placeholder={'location'}
                                 onChange={e => {
-                                    setLinkCols(
+                                    setTmpValue(
                                         {
-                                            ...linkCols,
-                                            [column]: {...currentValue, location: e.target.value}
+                                            // ...linkCols,
+                                            [column]: {...tmpValue, location: e.target.value}
                                         }
                                     )
                                 }

@@ -32,7 +32,6 @@ export const RenderBuildingsTable = ({
     const updatedColumns = columns
         .filter(c => !hiddenCols.includes(c.name))
         .map(c => {
-            if(c.link) console.log('c', c)
         return {
             ...c,
             Cell: cell => {
