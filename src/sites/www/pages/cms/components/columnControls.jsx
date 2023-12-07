@@ -542,8 +542,89 @@ const RenderCustomColNameControls = ({column, customColName, setCustomColName, m
             />
         </div>
     )
-
 }
+
+const RenderLinkColControls = ({column, linkCols, setLinkCols, metadata}) => {
+    if (!setLinkCols) return null;
+    const currentValue = linkCols[column];
+
+    return (
+        <div className={'w-full pt-2 mt-1 flex flex-row text-sm'}>
+            <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> is Link: </label>
+            <div className={'flex flex-col'}>
+                <div className={'p-2 pl-0 my-1 rounded-md shrink'}>
+                    <Switch
+                        key={`islink-${column}`}
+                        checked={currentValue || false}
+                        onChange={e =>
+                            setLinkCols(currentValue ?
+                                {...linkCols, [column]: {...currentValue, isLink: false}} :
+                                {...linkCols, [column]: {isLink: true}})
+                        }
+                        className={classNames(
+                            currentValue ? 'bg-indigo-600' : 'bg-gray-200',
+                            `relative inline-flex 
+                                            h-4 w-10 
+                                             cursor-pointer rounded-full border-2 border-transparent 
+                                            transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
+                                            focus:ring-indigo-600 focus:ring-offset-2`
+                        )}
+                    >
+                        <span className="sr-only">toggle is link</span>
+                        <span
+                            aria-hidden="true"
+                            className={classNames(
+                                currentValue ? 'translate-x-5' : 'translate-x-0',
+                                `pointer-events-none inline-block 
+                                                h-3 w-4
+                                                transform rounded-full bg-white shadow ring-0 t
+                                                transition duration-200 ease-in-out`
+                            )}
+                        />
+                    </Switch>
+                </div>
+                {
+                    currentValue ?
+                        <>
+                            <input
+                                type={'text'}
+                                className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
+                                value={currentValue.linkText}
+                                placeholder={'link text'}
+                                onChange={e => {
+                                    setLinkCols(
+                                        {
+                                            ...linkCols,
+                                            [column]: {...currentValue, linkText: e.target.value}
+                                        }
+                                    )
+                                }
+                                }
+                            />
+
+                            <input
+                                type={'text'}
+                                className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
+                                value={currentValue.location}
+                                placeholder={'location'}
+                                onChange={e => {
+                                    setLinkCols(
+                                        {
+                                            ...linkCols,
+                                            [column]: {...currentValue, location: e.target.value}
+                                        }
+                                    )
+                                }
+                                }
+                            />
+                        </> : null
+                }
+            </div>
+        </div>
+    )
+}
+
+
 const RenderColumnBoxes = ({
                                cols,
                                anchorCols=[],
@@ -562,7 +643,8 @@ const RenderColumnBoxes = ({
                                metadata,
                                stateNamePreferences,
                                colSizes, setColSizes,
-                               customColName, setCustomColName
+                               customColName, setCustomColName,
+                               linkCols, setLinkCols
                            }) => {
     const [displaySettings, setDisplaySettings] = useState(false);
     const [list, setList] = useState([...new Set([...anchorCols, ...visibleCols])]);
@@ -723,6 +805,8 @@ const RenderColumnBoxes = ({
                                                             <RenderOpenOutControls column={col}
                                                                                    openOutCols={openOutCols} setOpenOutCols={setOpenOutCols} fn={fn}
                                                                                    stateNamePreferences={stateNamePreferences?.hideCols}/>
+                                                            <RenderLinkColControls column={col}
+                                                                                   linkCols={linkCols} setLinkCols={setLinkCols}/>
                                                         </div>
 
                                                     </Dialog.Panel>
@@ -767,7 +851,8 @@ export const RenderColumnControls = (
         colSizes = {}, setColSizes,
         openOutCols = [], setOpenOutCols,
         colJustify = {}, setColJustify,
-        customColName = {}, setCustomColName
+        customColName = {}, setCustomColName,
+        linkCols = {}, setLinkCols
     }) => {
 
     return (
@@ -802,6 +887,7 @@ export const RenderColumnControls = (
                                openOutCols={openOutCols} setOpenOutCols={setOpenOutCols}
                                colJustify={colJustify} setColJustify={setColJustify}
                                customColName={customColName} setCustomColName={setCustomColName}
+                               linkCols={linkCols} setLinkCols={setLinkCols}
             />
         </div>
     )

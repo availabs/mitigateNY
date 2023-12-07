@@ -252,7 +252,7 @@ const Edit = ({value, onChange}) => {
 
     const columns =
         visibleCols
-            .map(c => metadata.find(md => md.name === c))
+            .map(c => metadata?.find(md => md.name === c))
             .filter(c => c && !hiddenCols.includes(c.name))
             .map(col => {
                 return {

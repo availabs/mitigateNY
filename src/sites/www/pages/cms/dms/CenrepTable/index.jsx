@@ -136,7 +136,7 @@ async function getData({
                            pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                            filters, filterValue, visibleCols, hiddenCols,
                            version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
-                           customColName
+                           customColName, linkCols
                        }, falcor) {
     const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
         aggregatedLen: Boolean(groupBy.length),
@@ -197,6 +197,7 @@ async function getData({
                 extFilter: extFilterCols.includes(col.name),
                 info: col.desc,
                 openOut: openOutCols.includes(col.name),
+                link: linkCols[col.name],
                 ...col,
                 type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
             }
@@ -212,7 +213,7 @@ async function getData({
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
         dataSource, dataSources, version, extFilterCols, colJustify, striped, extFiltersDefaultOpen,
-        customColName
+        customColName, linkCols
     }
 }
 
@@ -248,8 +249,8 @@ const Edit = ({value, onChange}) => {
     const [colJustify, setColJustify] = useState(cachedData?.colJustify || {});
     const [striped, setStriped] = useState(cachedData?.striped || false);
     const [extFiltersDefaultOpen, setExtFiltersDefaultOpen] = useState(cachedData?.extFiltersDefaultOpen || false);
-    const [customColName, setCustomColName] = useState(cachedData?.customColName || {})
-
+    const [customColName, setCustomColName] = useState(cachedData?.customColName || {});
+    const [linkCols, setLinkCols] = useState(cachedData?.linkCols || {});
     const category = 'Cenrep';
 
     const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
@@ -305,7 +306,7 @@ const Edit = ({value, onChange}) => {
                 pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
                 version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
-                customColName
+                customColName, linkCols
             }, falcor);
 
             onChange(JSON.stringify({
@@ -321,7 +322,7 @@ const Edit = ({value, onChange}) => {
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         filters, filterValue, visibleCols, hiddenCols,
         version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
-        customColName
+        customColName, linkCols
     ]);
 
     useEffect(() => {
@@ -478,6 +479,8 @@ const Edit = ({value, onChange}) => {
                         setColJustify={setColJustify}
                         customColName={customColName}
                         setCustomColName={setCustomColName}
+                        linkCols={linkCols}
+                        setLinkCols={setLinkCols}
                     />
                 </div>
                 {

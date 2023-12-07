@@ -3,6 +3,7 @@ import {Table} from "~/modules/avl-components/src";
 import {fnum} from "~/utils/macros.jsx";
 import {Attribution} from "../../../components/attribution.jsx";
 import {RenderExternalTableFilter} from "../../../components/externalTableFilter.jsx";
+import {Link} from "react-router-dom";
 
 const colAccessNameMapping = {
     'disaster_number': 'distinct disaster_number as disaster_number',
@@ -31,16 +32,18 @@ export const RenderBuildingsTable = ({
     const updatedColumns = columns
         .filter(c => !hiddenCols.includes(c.name))
         .map(c => {
+            if(c.link) console.log('c', c)
         return {
             ...c,
             Cell: cell => {
-                let value = getNestedValue(cell.value);
-                value =
+                const originalValue = getNestedValue(cell.value);
+                let value =
                     ['integer', 'number'].includes(cell.column.type) ?
-                        fnum(value || 0, c.isDollar) :
-                        Array.isArray(value) ? value.join(', ') : value
+                        fnum(originalValue || 0, c.isDollar) :
+                        Array.isArray(originalValue) ? originalValue.join(', ') : originalValue;
+
                 if (typeof value === 'object') return <div></div>
-                return (<div>{value}</div>);
+                return (c.link ? <Link to={`${c.link?.location || ''}${originalValue}`}>{c.link?.linkText || value}</Link> : <div>{value}</div>);
             }
         }
     })
