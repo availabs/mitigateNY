@@ -493,7 +493,7 @@ const RenderSizeControls = ({column, colSizes, setColSizes}) => {
                                 placeholder={'size in px'}
                                 value={currentSize.replace('px', '')}
                                 onChange={e => {
-                                    setColSizes({colSizes, [column]: `${e.target.value}px`});
+                                    setColSizes({...colSizes, [column]: `${e.target.value}px`});
                                 }}
                                 onWheel={e => e.target.blur()}
                             /> : null
