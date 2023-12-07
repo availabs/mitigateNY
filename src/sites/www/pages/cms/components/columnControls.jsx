@@ -469,35 +469,38 @@ const RenderSizeControls = ({column, colSizes, setColSizes}) => {
         <>
             <div className={'w-full flex justify-between'}>
                 <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> Size: </label>
-                <select
-                    key={`size-${column}`}
-                    className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
-                    value={currentSize}
-                    onChange={e => {
-                        sizes.includes(e.target.value) ?
-                            setColSizes({...colSizes, [column]: e.target.value}) :
-                            setCustomSize(true);
-                    }}
-                >
-                    {
-                        sizeOptions.map(option => <option key={`size-${option.value}`} value={option.value}>{option.label}</option> )
-                    }
-                </select>
-            </div>
-            {
-                customSize ?
-                    <input
-                        key={'colSizeInput'}
+                <div className={'flex flex-col w-full'}>
+                    <select
+                        key={`size-${column}`}
                         className={'p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
-                        type={"number"}
-                        placeholder={'size in %'}
-                        value={currentSize.replace('%', '')}
+                        value={currentSize}
                         onChange={e => {
-                            if (e.target.value > 0) setColSizes({colSizes, [column]: `${e.target.value}%`});
+                            sizes.includes(e.target.value) ?
+                                setColSizes({...colSizes, [column]: e.target.value}) :
+                                setCustomSize(true);
                         }}
-                        onWheel={e => e.target.blur()}
-                    /> : null
-            }
+                    >
+                        {
+                            sizeOptions.map(option => <option key={`size-${option.value}`} value={option.value}>{option.label}</option> )
+                        }
+                    </select>
+                    {
+                        customSize ?
+                            <input
+                                key={'colSizeInput'}
+                                className={'w-full p-2 ml-0 my-1 bg-white rounded-md shrink'}
+                                type={"number"}
+                                placeholder={'size in %'}
+                                value={currentSize.replace('%', '')}
+                                onChange={e => {
+                                    setColSizes({colSizes, [column]: `${e.target.value}%`});
+                                }}
+                                onWheel={e => e.target.blur()}
+                            /> : null
+                    }
+                </div>
+            </div>
+
         </>
     )
 }
