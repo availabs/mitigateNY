@@ -304,7 +304,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
 
                                 </div>
                             </> :
-                            isTemplateSectionCondition ?
+                            isTemplateSectionCondition && typeof onEdit === 'function'?
                                 <i className={'pl-5 py-0.5 fa-light fa-lock p-2 text-slate-400'} title={'Template generated section'}/> : <></>
                         }
                     </div>
