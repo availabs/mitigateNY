@@ -199,7 +199,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
     let sectionTitleCondition = value?.['title'] || value?.['tags'] || edit;
     let helpTextCondition = value?.['helpText'];
     let interactCondition = typeof onEdit !== 'function' && value?.element?.['element-type']?.includes('Map:');
-
+    let isTemplateSectionCondition = value?.element?.['template-section-id'];
     return (
         <div className={`${i === 0 ? '-m' : ''} `}>
                 {
@@ -271,7 +271,7 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                             </Popover>
                         </div>
 
-                        { sectionTitleCondition && typeof onEdit === 'function' ?
+                        { sectionTitleCondition && typeof onEdit === 'function' && !isTemplateSectionCondition ?
                             <>
                                 <div className='py-2'>
                                     <button
@@ -303,8 +303,9 @@ function SectionView ({value,i, attributes, edit, onEdit, moveItem}) {
                                     </button>
 
                                 </div>
-                            </>
-                            : <></>
+                            </> :
+                            isTemplateSectionCondition ?
+                                <i className={'pl-5 py-0.5 fa-light fa-lock p-2 text-slate-400'} title={'Template generated section'}/> : <></>
                         }
                     </div>
 
