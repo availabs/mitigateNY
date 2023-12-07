@@ -1,6 +1,8 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
-import {Switch} from '@headlessui/react';
+import React, {Fragment, useEffect, useMemo, useRef, useState} from "react";
+import {Dialog, Switch, Transition} from '@headlessui/react';
 import {ButtonSelector} from "./buttonSelector.jsx";
+import MultiSelect from "./MultiSelect.jsx";
+import {CSVLink} from "react-csv";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -465,16 +467,23 @@ const RenderSizeControls = ({column, colSizes, setColSizes}) => {
 
     return (
         <>
-            <ButtonSelector
-                label={'Size:'}
-                types={sizeOptions}
-                type={currentSize}
-                setType={e => {
-                    sizes.includes(e) ?
-                        setColSizes({...colSizes, [column]: e}) :
-                        setCustomSize(true);
-                }}
-            />
+            <div className={'w-full flex justify-between'}>
+                <label className={'align-bottom shrink-0 pr-2 py-2 my-1 w-1/4'}> Size: </label>
+                <select
+                    key={`size-${column}`}
+                    className={'align-bottom p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}
+                    value={currentSize}
+                    onChange={e => {
+                        sizes.includes(e.target.value) ?
+                            setColSizes({...colSizes, [column]: e.target.value}) :
+                            setCustomSize(true);
+                    }}
+                >
+                    {
+                        sizeOptions.map(option => <option key={`size-${option.value}`} value={option.value}>{option.label}</option> )
+                    }
+                </select>
+            </div>
             {
                 customSize ?
                     <input
@@ -555,9 +564,11 @@ const RenderColumnBoxes = ({
                                colSizes, setColSizes,
                                customColName, setCustomColName
                            }) => {
+    const [displaySettings, setDisplaySettings] = useState(false);
     const [list, setList] = useState([...new Set([...anchorCols, ...visibleCols])]);
     const dragItem = useRef();
     const dragOverItem = useRef();
+    const cancelButtonRef = useRef(null)
 
     useEffect(() => {
         const missingAnchorCols = anchorCols.filter(ac => !visibleCols.includes(ac));
@@ -614,15 +625,17 @@ const RenderColumnBoxes = ({
                                     `m-1 flex flex-col justify-between p-2 cursor-grab
                                     border border-dashed border-blue-${anchorCols.includes(col) ? `500` : `300`}
                                     rounded-md`}>
-                                <div className={'font-normal w-full h-full flex flex-row justify-between'}>
-                                    <label key={`label-${col}`} className={'mb-auto'}>
+                                <div className={'font-normal w-full h-full flex flex-row justify-between items-center'}>
+                                    <label key={`label-${col}`} className={''}>
                                         {currentMetaData?.display_name || col}
                                     </label>
+                                    <i className={`fa fa-gear p-2 text-blue-300 hover:text-blue-500`}
+                                        onClick={e => setDisplaySettings(col)}/>
                                     <button
                                         key={`cancel-${col}`}
                                         className={
                                             anchorCols.includes(col) ? `hidden` :
-                                                `align-top mb-auto pt-1 hover:text-red-500 text-slate-40`
+                                                `align-top hover:text-red-500 text-slate-40`
                                         }
                                         onClick={() => setVisibleCols(visibleCols.filter(v => v !== col))}
                                     >
@@ -630,52 +643,94 @@ const RenderColumnBoxes = ({
                                     </button>
                                 </div>
 
-                                <RenderCustomColNameControls column={col}
-                                                             customColName={customColName} setCustomColName={setCustomColName} metadata={currentMetaData}/>
+                                <Transition.Root show={displaySettings === col} as={Fragment}>
+                                    <Dialog as="div" className="relative z-20" initialFocus={cancelButtonRef} onClose={setDisplaySettings}>
+                                        <Transition.Child
+                                            as={Fragment}
+                                            enter="ease-out duration-300"
+                                            enterFrom="opacity-0"
+                                            enterTo="opacity-100"
+                                            leave="ease-in duration-200"
+                                            leaveFrom="opacity-100"
+                                            leaveTo="opacity-0"
+                                        >
+                                            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                        </Transition.Child>
 
-                                <RenderFilterControls column={col}
-                                                      anchorCols={anchorCols}
-                                                      filters={filters} setFilters={setFilters}/>
+                                        <div className="fixed inset-0 z-20 w-screen overflow-y-auto">
+                                            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                                                <Transition.Child
+                                                    as={Fragment}
+                                                    enter="ease-out duration-300"
+                                                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                                    leave="ease-in duration-200"
+                                                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                >
+                                                    <Dialog.Panel className="relative transform overflow-hidden bg-blue-50 rounded-lg px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                                                        <label className={'text-sm font-semibold'}>Settings</label>
+                                                            <i
+                                                                className="fa fa-close float-right inline-flex justify-right rounded-md hover:text-red-500"
+                                                                onClick={() => setDisplaySettings(undefined)}
+                                                                ref={cancelButtonRef}
+                                                            />
 
-                                <RenderFilterValueControls column={col}
-                                                           filterValue={filterValue} setFilterValue={setFilterValue}/>
+                                                        <div className={'w-full divide-y'}>
+                                                            <RenderCustomColNameControls column={col}
+                                                                                         customColName={customColName} setCustomColName={setCustomColName} metadata={currentMetaData}/>
 
-                                <RenderGroupControls column={col}
-                                                     groupBy={groupBy} setGroupBy={setGroupBy} fn={fn}
-                                                     metadata={currentMetaData}/>
+                                                            <RenderFilterControls column={col}
+                                                                                  anchorCols={anchorCols}
+                                                                                  filters={filters} setFilters={setFilters}/>
 
-                                <RenderFnControls column={col}
-                                                  fn={fn} setFn={setFn} groupBy={groupBy}
-                                                  metadata={currentMetaData}/>
+                                                            <RenderFilterValueControls column={col}
+                                                                                       filterValue={filterValue} setFilterValue={setFilterValue}/>
 
-                                <RenderSortControls column={col}
-                                                    sortBy={sortBy} setSortBy={setSortBy} fn={fn}
-                                                    stateNamePreferences={stateNamePreferences?.sortBy}/>
+                                                            <RenderGroupControls column={col}
+                                                                                 groupBy={groupBy} setGroupBy={setGroupBy} fn={fn}
+                                                                                 metadata={currentMetaData}/>
 
-                                <RenderSizeControls column={col}
-                                                    colSizes={colSizes} setColSizes={setColSizes} />
+                                                            <RenderFnControls column={col}
+                                                                              fn={fn} setFn={setFn} groupBy={groupBy}
+                                                                              metadata={currentMetaData}/>
 
-                                <RenderJustifyControls column={col}
-                                                       colJustify={colJustify} setColJustify={setColJustify}/>
+                                                            <RenderSortControls column={col}
+                                                                                sortBy={sortBy} setSortBy={setSortBy} fn={fn}
+                                                                                stateNamePreferences={stateNamePreferences?.sortBy}/>
 
-                                <RenderNullControls column={col}
-                                                    notNull={notNull} setNotNull={setNotNull}/>
+                                                            <RenderSizeControls column={col}
+                                                                                colSizes={colSizes} setColSizes={setColSizes} />
 
-                                <RenderShowTotalControls column={col} index={i}
-                                                    showTotal={showTotal} setShowTotal={setShowTotal} fn={fn}
-                                                         stateNamePreferences={stateNamePreferences?.showTotal}/>
+                                                            <RenderJustifyControls column={col}
+                                                                                   colJustify={colJustify} setColJustify={setColJustify}/>
 
-                                <RenderHideControls column={col}
-                                                    hiddenCols={hiddenCols} setHiddenCols={setHiddenCols} fn={fn}
-                                                    stateNamePreferences={stateNamePreferences?.hideCols}/>
+                                                            <RenderNullControls column={col}
+                                                                                notNull={notNull} setNotNull={setNotNull}/>
 
-                                <RenderExtFilterControls column={col}
-                                                         extFilterCols={extFilterCols} setExtFilterCols={setExtFilterCols} fn={fn}
-                                                         stateNamePreferences={stateNamePreferences?.hideCols}/>
+                                                            <RenderShowTotalControls column={col} index={i}
+                                                                                     showTotal={showTotal} setShowTotal={setShowTotal} fn={fn}
+                                                                                     stateNamePreferences={stateNamePreferences?.showTotal}/>
 
-                                <RenderOpenOutControls column={col}
-                                                       openOutCols={openOutCols} setOpenOutCols={setOpenOutCols} fn={fn}
-                                                       stateNamePreferences={stateNamePreferences?.hideCols}/>
+                                                            <RenderHideControls column={col}
+                                                                                hiddenCols={hiddenCols} setHiddenCols={setHiddenCols} fn={fn}
+                                                                                stateNamePreferences={stateNamePreferences?.hideCols}/>
+
+                                                            <RenderExtFilterControls column={col}
+                                                                                     extFilterCols={extFilterCols} setExtFilterCols={setExtFilterCols} fn={fn}
+                                                                                     stateNamePreferences={stateNamePreferences?.hideCols}/>
+
+                                                            <RenderOpenOutControls column={col}
+                                                                                   openOutCols={openOutCols} setOpenOutCols={setOpenOutCols} fn={fn}
+                                                                                   stateNamePreferences={stateNamePreferences?.hideCols}/>
+                                                        </div>
+
+                                                    </Dialog.Panel>
+                                                </Transition.Child>
+                                            </div>
+                                        </div>
+                                    </Dialog>
+                                </Transition.Root>
 
                             </div>
                         )
