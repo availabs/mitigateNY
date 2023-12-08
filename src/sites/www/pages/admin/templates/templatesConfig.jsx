@@ -1,5 +1,5 @@
 import checkAuth  from "~/layout/checkAuth"
-import Layout from "~/sites/www/pages/cms/layout/layout"
+import Layout from "~/modules/dms/src/patterns/page/layout/layout"
 import TemplateList from './layout/TemplateList'
 import { TemplateEdit } from './layout/TemplateEdit'
 

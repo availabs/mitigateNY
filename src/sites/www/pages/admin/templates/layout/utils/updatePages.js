@@ -1,8 +1,8 @@
-import {dmsDataEditor} from "../../../../../../../modules/dms/src/index.js";
+import {dmsDataEditor} from "~/modules/dms/src/index.js";
 import {parseJSON} from "./parseJSON.js";
 import ComponentRegistry from "../../../../cms/dms/ComponentRegistry.js";
 import cloneDeep from "lodash/cloneDeep";
-import {json2DmsForm} from "../../../../cms/layout/nav.jsx";
+import {json2DmsForm} from "~/modules/dms/src/patterns/page/layout/nav.jsx";
 
 export const updatePages = async ({submit, item, url, destination, id_column, generatedPages, generatedSections, falcor}) => {
     // while updating existing sections, keep in mind to not change the id_column attribute.

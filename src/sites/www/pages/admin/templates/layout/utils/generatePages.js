@@ -8,7 +8,7 @@ export const generatePages = async ({
                                            item, url, destination, id_column, dataRows, falcor
 }) => {
     // const disaster_numbers = ['4020', '4031']
-    const idColAttr = dataRows.map(d => d[id_column.name]).filter(d => d).slice(0, 2);
+    const idColAttr = dataRows.map(d => d[id_column.name]).filter((d,i) => (d && (i < 100)))
 
     await idColAttr.reduce(async(acc, idColAttrVal) => {
         await acc;

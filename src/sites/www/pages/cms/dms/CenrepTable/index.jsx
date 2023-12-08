@@ -188,20 +188,21 @@ async function getData({
         .map(c => metadata.find(md => md.name === c))
         .filter(c => c)
         .map(col => {
+            console.log('map col Header', customColName?.[col.name] || col?.display_name || col?.name)
             return {
-                Header: customColName[col.name] || col.display_name || col.name,
-                accessor: fn[col.name] || col.name,
-                align: colJustify[col.name] || col.align || 'right',
-                width: colSizes[col.name] || '15%',
-                minWidth: colSizes[col.name] || '15%',
-                maxWidth: colSizes[col.name] || '15%',
-                filter: col.filter || filters[col.name],
-                extFilter: extFilterCols.includes(col.name),
+                Header: customColName?.[col.name] || col?.display_name || col?.name,
+                accessor: fn?.[col?.name] || col?.name,
+                align: colJustify?.[col?.name] || col?.align || 'right',
+                width: colSizes?.[col.name] || '15%',
+                minWidth: colSizes?.[col.name] || '15%',
+                maxWidth: colSizes?.[col.name] || '15%',
+                filter: col?.filter || filters?.[col?.name],
+                extFilter: extFilterCols?.includes(col.name),
                 info: col.desc,
-                openOut: openOutCols.includes(col.name),
-                link: linkCols[col.name],
+                openOut: (openOutCols || [])?.includes(col?.name),
+                link: linkCols?.[col?.name],
                 ...col,
-                type: fn[col.name]?.includes('array_to_string') ? 'string' : col.type
+                type: fn?.[col?.name]?.includes('array_to_string') ? 'string' : col?.type
             }
         })
 

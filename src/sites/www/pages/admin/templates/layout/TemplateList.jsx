@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react'
 import { Link, useSubmit, useLocation } from "react-router-dom";
 import { Dialog  } from '@headlessui/react'
-import { Modal } from "~/sites/www/pages/cms/layout/page-controls"
-import { json2DmsForm } from "~/sites/www/pages/cms/layout/nav"
+import { Modal } from "~/modules/dms/src/patterns/page/layout/page-controls"
+import { json2DmsForm } from "~/modules/dms/src/patterns/page/layout/nav"
 
 function TemplateRow ({ item={} }) {
   const [showDelete, setShowDelete] = useState(false)

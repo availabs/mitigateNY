@@ -1,5 +1,5 @@
-import SectionArray from '../../cms/layout/sectionArray'
-import { cmsSection } from '../../cms/cms.format.js'
+import SectionArray from '~/modules/dms/src/patterns/page/layout/sectionArray'
+import { cmsSection } from '~/modules/dms/src/patterns/page/page.format.js'
 
 const cmsPageFormat = {
   app: "dms-site",

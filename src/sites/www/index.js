@@ -37,15 +37,15 @@ const Routes = [
   Playground,
   Drafts,
   Templates,
-    TemplatePages,
+  TemplatePages,
   Interactive,
   // -- Managed Data Routes -- //
-    Forms,
+  Forms,
   FormsActions,
-    FormsCapabilities,
-    FormsMeasures,
-    FormsRVMatrix,
-    FormPolicy,
+  FormsCapabilities,
+  FormsMeasures,
+  FormsRVMatrix,
+  FormPolicy,
   // -- Front End Routes -- //
   CMS
 ]

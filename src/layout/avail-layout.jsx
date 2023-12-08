@@ -1,25 +1,8 @@
 import React from "react";
-import { useTheme, TopNav, SideNav, AwesomeTopNav } from "~/modules/avl-components/src/";
+import { useTheme, TopNav, SideNav } from "~/modules/avl-components/src/";
 import { Link, Outlet } from "react-router-dom";
 import AuthMenu from "~/pages/Auth/AuthMenu"
-import MNYLogo from './mny-logo'
-//import {getDomain, getSubdomain} from "utils"
-import get from 'lodash/get'
-
-
-const Logo = ({sideNav}) => {
-	const theme = useTheme()
-	const themeOptions = {size: get(sideNav, 'size','micro') ,color: get(sideNav, 'color','dark')}
-	return (
-		<>
-			<Link to="/" className={`flex  border-b`}>
-				<div className='h-12 pl-4 pr-2 flex items-center '>
-					<MNYLogo height={35} width={170} />
-				</div>	
-			</Link>
-		</>
-	)
-}
+import Logo from './Logo'
 
 let marginSizes = {
 	none: '',
@@ -39,17 +22,6 @@ let fixedSizes = {
 	full: 'w-64'
 }
 
-let paddingSizes = {
-	none: '',
-	micro: 'pr-14',
-	mini: 'pr-20',
-	miniPad: 'pr-20',
-	compact: 'pr-44',
-	full: 'md:pr-64'
-}
-
-
-
 const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 	const theme = useTheme()
 	const sideNavOptions = {
@@ -57,6 +29,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 		color: sideNav.color || 'dark',
 		menuItems: sideNav.menuItems || menus
 	}
+
 	const topNavOptions = {
 		position: topNav.position || 'block',
 		size: topNav.size || 'compact',
@@ -110,7 +83,6 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 					</>)
 				}
 				<div id={'content'} className={`h-full flex-1 bg-slate-100`}>
-
 					{children}
 				</div>
 			</div>
