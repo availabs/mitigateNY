@@ -14,7 +14,6 @@ export const ViewInfo = ({submit, item, url, destination, source,view, id_column
     const { falcor, falcorCache } = useFalcor();
     const [generatedPages, setGeneratedPages] = useState([]);
     const [generatedSections, setGeneratedSections] = useState([]);
-    console.log('generated stuuff', generatedPages, generatedSections)
     //const [idCol, setIdCol] = useState('')
     React.useEffect(() => {
         // get generated pages and sections
@@ -28,7 +27,6 @@ export const ViewInfo = ({submit, item, url, destination, source,view, id_column
             setGeneratedPages(pages);
 
             if(!item.data_controls?.sectionControls) return;
-            console.log('sc?', item.sections.map(s => s.id))
             const sectionIds = pages.map(page => page.data.value.sections.map(section => section.id));
             const sections = await sectionIds.reduce(async (acc, sectionId) => {
                 const prevSections = await acc;

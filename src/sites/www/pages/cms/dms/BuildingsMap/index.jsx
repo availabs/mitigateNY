@@ -29,7 +29,7 @@ const getGeoColors = ({
     const geoColors = {}
     const geoLayer = geoids[0]?.toString().length === 5 ? 'counties' : 'tracts';
 
-    if (geoid?.length === 5) {
+    if (geoid?.toString()?.length === 5) {
         geoColors[geoid] = '#d3d3d3'
     } else {
         for (let id = 0; id <= 999; id += 1) {
@@ -119,7 +119,7 @@ const Edit = ({value, onChange, size}) => {
 
     const options = JSON.stringify({
         filter: {
-            ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
+            ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.toString()?.length})`]: [geoid]},
             ...JSON.parse(buildingType),
         },
     });
@@ -168,7 +168,7 @@ const Edit = ({value, onChange, size}) => {
             if (!geoAttribute || !version || !dataSource || !buildingType || !geoid) {
                 !buildingType?.length && setStatus('Please select Building Type.');
                 !geoAttribute?.length && setStatus('No geo attribute found.');
-                !geoid?.length && setStatus('Please select a geography.');
+                !geoid?.toString()?.length && setStatus('Please select a geography.');
                 !version && setStatus('Please select a version.');
                 !dataSource && setStatus('Please select a Datasource.');
                 setLoading(false);
@@ -230,12 +230,12 @@ const Edit = ({value, onChange, size}) => {
             setLoading(true);
             setStatus(undefined);
 
-            const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${geoid?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
+            const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${geoid?.toString()?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
                 geoIndices = {from: 0, to: 0},
                 stateFips = get(data, [0, 'geoid']) || geoid?.substring(0, 2),
                 geoPath = (view_id) =>
                     ['dama', pgEnv, 'viewsbyId', view_id,
-                        'options', JSON.stringify({filter: {geoid: [geoid?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
+                        'options', JSON.stringify({filter: {geoid: [geoid?.toString()?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
                         'databyIndex'
                     ];
             const geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);

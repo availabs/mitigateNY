@@ -12,7 +12,7 @@ import {range} from "~/utils/macros"
 function processConfig(geoid, category) {
     //get you census variables/keys you pass to the comp
     const CONFIG = { [category]: BASE_GRAPH_CONFIG[category] };
-    return processBaseConfig(CONFIG, {geoid: {length: geoid?.length}})[category];
+    return processBaseConfig(CONFIG, {geoid: {length: geoid?.toString()?.length}})[category];
 }
 const getBarData = (state, props) => {
 

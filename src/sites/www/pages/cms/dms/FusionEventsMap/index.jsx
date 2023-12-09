@@ -109,7 +109,7 @@ const Edit = ({value, onChange, size}) => {
         choroplethOptions = JSON.stringify({ //duplicate this route to get loss per event_id
             aggregatedLen: true,
             filter: {
-                [`substring(${geomColName}, 1, ${geoid.length})`]: [geoid],
+                [`substring(${geomColName}, 1, ${geoid?.toString()?.length})`]: [geoid],
                 'nri_category': [hazard]
             },
             groupBy: [geomColName]
@@ -126,7 +126,7 @@ const Edit = ({value, onChange, size}) => {
         eventMagnitudeOptions = JSON.stringify({ //duplicate this route to get loss per event_id
             aggregatedLen: true,
             filter: {
-                [`substring(${geomColName}, 1, ${geoid.length})`]: [geoid],
+                [`substring(${geomColName}, 1, ${geoid?.toString()?.length})`]: [geoid],
                 'nri_category': [hazard]
             },
             exclude: {

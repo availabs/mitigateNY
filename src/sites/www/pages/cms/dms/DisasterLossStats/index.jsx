@@ -24,7 +24,7 @@ async function getData ({ealViewId, geoid, disasterNumber}, falcor) {
     const hmgpView = 798;
     const disasterWebSummariesView = 512;
 
-    const geoIdCol = geoid?.length === 2 ? "substring(geoid, 1, 2)" : geoid?.length === 5 ? "geoid" : `'all'`,
+    const geoIdCol = geoid?.toString()?.length === 2 ? "substring(geoid, 1, 2)" : geoid?.toString()?.length === 5 ? "geoid" : `'all'`,
         disasterDetailsAttributes = {
     // ...disasterNumber && {disaster_number: "disaster_number"},
             geoid: `${geoIdCol} as geoid`,

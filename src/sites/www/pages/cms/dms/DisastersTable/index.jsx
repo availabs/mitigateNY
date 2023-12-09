@@ -105,7 +105,7 @@ async function getData({geoid, type, hazard, ealViewId, visibleCols, filters, fi
             JSON.stringify({
                 aggregatedLen: true,
                 filter: {
-                    [`substring(${fusionGeoCol}, 1, ${geoid.length})`]: [geoid],
+                    [`substring(${fusionGeoCol}, 1, ${geoid?.toString()?.length})`]: [geoid],
                     ...type !== 'declared' && {'disaster_number': ['null']},
                     ...hazard !== 'total' && {nri_category: [hazard]}
                 },
@@ -119,7 +119,7 @@ async function getData({geoid, type, hazard, ealViewId, visibleCols, filters, fi
         fusionOptions =
             JSON.stringify({
                 filter: {
-                    [`substring(${fusionGeoCol}, 1, ${geoid.length})`]: [geoid],
+                    [`substring(${fusionGeoCol}, 1, ${geoid?.toString()?.length})`]: [geoid],
                     ...type !== 'declared' && {'disaster_number': ['null']},
                     ...hazard !== 'total' && {nri_category: [hazard]}
                 },
@@ -151,7 +151,7 @@ async function getData({geoid, type, hazard, ealViewId, visibleCols, filters, fi
 
     const
         geoNamesOptions = JSON.stringify({
-            ...geoid && {filter: {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}}
+            ...geoid && {filter: {[`substring(geoid, 1, ${geoid?.toString()?.length})`]: [geoid]}}
         }),
         geoNamesPath = view_id => ["dama", pgEnv, "viewsbyId", view_id, "options", geoNamesOptions];
 

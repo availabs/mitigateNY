@@ -104,7 +104,7 @@ export async function getMeta({
                     const options = JSON.stringify({
                         aggregatedLen: metaLookup.aggregatedLen,
                         filter: {
-                            ...metaLookup?.geoAttribute && {[`substring(${metaLookup.geoAttribute}::text, 1, ${geoid?.length})`]: [geoid]},
+                            ...metaLookup?.geoAttribute && {[`substring(${metaLookup.geoAttribute}::text, 1, ${geoid?.toString()?.length})`]: [geoid]},
                             ...(metaLookup?.filter || {})
                         }
                     });
@@ -139,7 +139,7 @@ const filterData = ({geoAttribute, geoid, data, actionType}) =>
             return !geoAttribute ||
                 actionType === 'shmp' ||
                 d[geoAttribute] === geoid ||
-                (geoid?.length === 2 && d[geoAttribute]?.substring(0, 2) === geoid) // todo: geofilters should move to data call
+                (geoid?.toString()?.length === 2 && d[geoAttribute]?.substring(0, 2) === geoid) // todo: geofilters should move to data call
         }
     );
 
