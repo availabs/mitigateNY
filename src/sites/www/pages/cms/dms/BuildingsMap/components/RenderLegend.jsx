@@ -26,14 +26,14 @@ export const RenderLegend = ({floodPlain=[], hazard=[], buildingType}) =>
                     Array.isArray(floodPlain) && floodPlain?.length ?
                         floodPlain.map(fp => {
                             return (
-                                <div className={"h-full flex"} key={'nonDeclaredDisasters'}>
-                            <span className={"rounded-full m-1 shrink-0"}
-                                  style={{
-                                      height: "10px",
-                                      width: "10px",
-                                      backgroundColor: floodPlainColors[fp]?.color
-                                  }}
-                            />
+                                <div className={"h-full flex"} key={floodPlainColors[fp]?.name}>
+                                    <span className={"rounded-full m-1 shrink-0"}
+                                          style={{
+                                              height: "10px",
+                                              width: "10px",
+                                              backgroundColor: floodPlainColors[fp]?.color
+                                          }}
+                                    />
                                     <label className={"pl-1"}>{floodPlainColors[fp]?.name}</label>
                                 </div>
                             )

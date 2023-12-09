@@ -37,7 +37,7 @@ export const RenderExternalTableFilter = ({defaultOpen=false, data, columns, fil
                 <label className={'text-xs font-bold'}>Filter table:</label>
                 {
                     columns.map(column => (
-                        <div className={'w-full pt-2 mt-1 flex flex-row text-sm items-top'}>
+                        <div key={column.name} className={'w-full pt-2 mt-1 flex flex-row text-sm items-top'}>
                             <label
                                 className={'shrink-0 pr-2 py-2 my-1 w-1/4 font-medium'}>{column.display_name || column.Header}</label>
                             <div className={'p-2 ml-0 my-1 bg-white rounded-md w-full shrink'}>
