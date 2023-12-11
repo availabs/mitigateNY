@@ -28,6 +28,7 @@ export function PageControls({item, dataItems, updateAttribute, attributes, edit
     const submit = useSubmit()
     const {falcor, falcorCache} = useFalcor();
     const {pathname = '/edit'} = useLocation()
+    const [loadingStatus, setLoadingStatus] = useState();
     const [showDelete, setShowDelete] = useState(false)
     const [showDataControls, setShowDataControls] = useState(false)
     const [statusMessage, setStatusMessage] = useState(status?.message)
@@ -59,9 +60,14 @@ export function PageControls({item, dataItems, updateAttribute, attributes, edit
 
     useEffect(() => {
         async function loadUpdates() {
-            let dataFetchers = Object.keys(dataControls.sectionControls)
+            const totalSections = Object.keys(dataControls.sectionControls)?.filter((id, i) => id && id !== 'undefined')?.length;
+            setLoadingStatus('Loading sections...');
+
+            const updates = await Object.keys(dataControls.sectionControls)
                 .filter((id, i) => id && id !== 'undefined')
-                .map(section_id => {
+                .reduce(async (acc, section_id, i) => {
+                    const prev = await acc;
+                    setLoadingStatus(`Updating section ${i+1}/${totalSections}`)
                     let section = item.sections.filter(d => d.id === section_id)?.[0] || {}
                     let data = parseJSON(section?.element?.['element-data']) || {}
                     let type = section?.element?.['element-type'] || ''
@@ -81,12 +87,11 @@ export function PageControls({item, dataItems, updateAttribute, attributes, edit
                         }, {})
 
                     let args = {...controlVars, ...updateVars}
-                    // console.log('new args', section_id, section, args)
-                    return comp?.getData ? comp.getData(args, falcor).then(data => ({section_id, data})) : null
-                }).filter(d => d)
+                    const curr = comp?.getData ? await comp.getData(args, falcor).then(data => ({section_id, data})) : null
+                    return curr ? [...prev, curr] : prev
+                }, Promise.resolve([]))
 
-
-            let updates = await Promise.all(dataFetchers)
+            // console.log('updates', updates)
             if (updates.length > 0) {
                 let newSections = cloneDeep(item.sections)
                 updates.forEach(({section_id, data}) => {
@@ -96,6 +101,9 @@ export function PageControls({item, dataItems, updateAttribute, attributes, edit
                 })
                 updateAttribute('sections', newSections)
             }
+
+            setLoadingStatus(undefined)
+
 
 
         }
@@ -254,6 +262,8 @@ export function PageControls({item, dataItems, updateAttribute, attributes, edit
                                     setDataControls({...dataControls, ...v})
                                 }
                             }}
+                            loadingStatus={loadingStatus}
+                            setLoadingStatus={setLoadingStatus}
                             baseUrl={baseUrl}
                         />
                     </div>}

@@ -8,16 +8,18 @@ import {updatePages} from "../utils/updatePages.js";
 import {generatePages} from "../utils/generatePages.js";
 import {pgEnv} from "../constants.js";
 
-export const ViewInfo = ({submit, item, url, destination, source,view, id_column, active_row, onChange}) => {
+export const ViewInfo = ({submit, item, url, destination, source,view, id_column, active_row, onChange, loadingStatus, setLoadingStatus}) => {
 
     // console.log('ViewInfo', id_column, active_id)
     const { falcor, falcorCache } = useFalcor();
     const [generatedPages, setGeneratedPages] = useState([]);
     const [generatedSections, setGeneratedSections] = useState([]);
+
     //const [idCol, setIdCol] = useState('')
     React.useEffect(() => {
         // get generated pages and sections
         (async function () {
+            setLoadingStatus('Loading Pages...')
             const pages = await Object.keys(locationNameMap).reduce(async (acc, type) => {
                 const prevPages = await acc;
                 const currentPages = await dmsDataLoader(getConfig({app: 'dms-site', type, filter: {[`data->>'template_id'`]: [item.id]}}), '/');
@@ -44,8 +46,7 @@ export const ViewInfo = ({submit, item, url, destination, source,view, id_column
             }, Promise.resolve([]));
 
             setGeneratedSections(sections);
-
-            console.log('res', sections)
+            setLoadingStatus(undefined);
         })()
     }, [item.id, item.data_controls?.sectionControls])
 
@@ -133,15 +134,25 @@ export const ViewInfo = ({submit, item, url, destination, source,view, id_column
 
             {
                 generatedPages?.length ?
-                    <button className={'mt-4 p-2 text-white bg-blue-500 hover:bg-blue-300 rounded-lg'}
-                            onClick={e => updatePages({submit, item, url, destination, id_column, generatedPages, generatedSections, falcor})}
+                    <button className={`mt-4 p-2 rounded-lg text-white  ${loadingStatus ? `bg-gray-500 cursor-none` : `bg-blue-500 hover:bg-blue-300`}`}
+                            disabled={loadingStatus}
+                            onClick={e =>
+                                updatePages({
+                                    submit, item, url, destination, id_column,
+                                    generatedPages, generatedSections, falcor, setLoadingStatus
+                                })}
                     >
-                        Update Pages
+                        {loadingStatus || 'Update Pages'}
                     </button> :
-                    <button className={'mt-4 p-2 text-white bg-blue-500 hover:bg-blue-300 rounded-lg'}
-                            onClick={e => generatePages({item, url, destination, id_column, dataRows, falcor})}
+                    <button className={`mt-4 p-2 rounded-lg text-white ${loadingStatus ? `bg-gray-500 cursor-none` : `bg-blue-500 hover:bg-blue-300`}`}
+                            disabled={loadingStatus}
+                            onClick={e =>
+                                generatePages({
+                                    item, url, destination, id_column,
+                                    dataRows, falcor, setLoadingStatus
+                                })}
                     >
-                        Generate Pages
+                        {loadingStatus || 'Generate Pages'}
                     </button>
             }
         </div>

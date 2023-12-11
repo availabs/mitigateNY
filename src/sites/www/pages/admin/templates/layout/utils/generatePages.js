@@ -5,14 +5,15 @@ import {parseJSON} from "./parseJSON.js";
 import ComponentRegistry from "../../../../cms/dms/ComponentRegistry.js";
 
 export const generatePages = async ({
-                                           item, url, destination, id_column, dataRows, falcor
+                                           item, url, destination, id_column, dataRows, falcor, setLoadingStatus
 }) => {
     // const disaster_numbers = ['4020', '4031']
+    setLoadingStatus('Generating Pages...')
     const idColAttr = dataRows.map(d => d[id_column.name]).filter((d,i) => (d && (i < 100)))
 
-    await idColAttr.reduce(async(acc, idColAttrVal) => {
+    await idColAttr.reduce(async(acc, idColAttrVal, pageI) => {
         await acc;
-
+        setLoadingStatus(`Generating page ${pageI + 1}/${idColAttr?.length}`)
         const dataControls = item.data_controls;
         let dataFetchers = item.sections.map(s => s.id)
             .map(section_id => {
@@ -84,4 +85,5 @@ export const generatePages = async ({
         }
 
     }, Promise.resolve())
+    setLoadingStatus(undefined)
 }

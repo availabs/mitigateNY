@@ -4,11 +4,12 @@ import ComponentRegistry from "../../../../cms/dms/ComponentRegistry.js";
 import cloneDeep from "lodash/cloneDeep";
 import {json2DmsForm} from "~/modules/dms/src/patterns/page/layout/nav.jsx";
 
-export const updatePages = async ({submit, item, url, destination, id_column, generatedPages, generatedSections, falcor}) => {
+export const updatePages = async ({submit, item, url, destination, id_column, generatedPages, generatedSections, falcor, setLoadingStatus}) => {
     // while updating existing sections, keep in mind to not change the id_column attribute.
-
-    await generatedPages.reduce(async(acc, page) => {
+    setLoadingStatus('Updating Pages...')
+    await generatedPages.reduce(async(acc, page, pageI) => {
         await acc;
+        setLoadingStatus(`Updating page ${pageI + 1}/${generatedPages?.length}`)
         const sections = generatedSections.filter(section => page.data.value.sections.map(s => s.id).includes(section.id));
 
         const dataControls = item.data_controls;
@@ -116,4 +117,5 @@ export const updatePages = async ({submit, item, url, destination, id_column, ge
         }
 
     }, Promise.resolve())
+    setLoadingStatus(undefined)
 }
