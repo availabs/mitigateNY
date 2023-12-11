@@ -29,6 +29,7 @@ import CensusStatBox from "./CensusStatBox/index.jsx"
 import CensusBarChart from "./CensusBarChart/index.jsx";
 import CensusStackedBarChart from "./CensusStackedBarChart/index.jsx";
 import CensusLineChart from "./CensusLineChart/index.jsx";
+import CountyStatusMap from "./CountyStatusMap/index.jsx";
 
 const ComponentRegistry = {
     // "ColorBox": ColorBox,
@@ -59,6 +60,7 @@ const ComponentRegistry = {
     "Map: Social Vulnerability": SocialVulnerabilityMap,
     "Map: Buildings": BuildingsMap,
     "Map: Floodplains": DFIRMMap,
+    "Map: County Status": CountyStatusMap,
     "lexical": {
         ...CalloutBox,
         name: 'Rich Text',
