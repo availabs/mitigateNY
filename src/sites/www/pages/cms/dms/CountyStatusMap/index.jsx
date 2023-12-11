@@ -6,7 +6,6 @@ import {isJson} from "~/utils/macros.jsx";
 import VersionSelectorSearchable from "../../components/versionSelector/searchable.jsx";
 import GeographySearch from "../../components/geographySearch.jsx";
 import {Loading} from "~/utils/loading.jsx";
-import {metaData} from "./config.js";
 import {ButtonSelector} from "../../components/buttonSelector.jsx";
 import {RenderColorPicker} from "../../components/colorPicker.jsx";
 import {scaleThreshold} from "d3-scale";
@@ -16,6 +15,7 @@ import {RenderMap} from "../../components/Map/RenderMap.jsx";
 import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 import {Attribution} from "../../components/attribution.jsx";
+import {useNavigate} from "react-router-dom";
 
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
@@ -28,6 +28,14 @@ const getColorScale = (data, colors) => {
         .domain(domain)
         .range(colors);
 }
+
+const getDateDiff = (date) => {
+    if(!date || date === 'NULL') return null;
+    const date1 = new Date();
+    const date2 = new Date(date);
+    return Math.ceil( (date1.getTime() - date2.getTime()) / (1000 * 60 * 60 * 24))
+};
+
 const getGeoColors = ({geoid, data = [], columns = [], geoAttribute, paintFn, colors = [], ...rest}) => {
     if (!data?.length || !colors?.length) return {};
 
@@ -35,21 +43,29 @@ const getGeoColors = ({geoid, data = [], columns = [], geoAttribute, paintFn, co
     const stateFips = (geoid?.substring(0, 2) || geoids[0] || '00').substring(0, 2);
     const geoColors = {}
     const geoLayer = geoids[0]?.toString().length === 5 ? 'counties' : 'tracts';
+
+    data.map((d) => {
+        const diff = getDateDiff(d[columns?.[0]])
+    })
+
+
     const colorScale = getColorScale(
-        data.map((d) => paintFn ? paintFn(d) : +d[columns?.[0]]).filter(d => d),
+        data.map((d) => paintFn ? paintFn(d) : getDateDiff(d[columns?.[0]])).filter(d => d),
         colors
     );
     const domain = getDomain(
-        data.map((d) => paintFn ? paintFn(d) : +d[columns?.[0]]).filter(d => d && d >= 0),
+        data.map((d) => paintFn ? paintFn(d) : getDateDiff(d[columns?.[0]])).filter(d => d && d >= 0),
         colors
     )
     data.forEach(record => {
-        const value = paintFn ? paintFn(record) : +record[columns?.[0]];
+        const value = paintFn ? paintFn(record) : getDateDiff(record[columns?.[0]]);
         geoColors[record[geoAttribute]] = value ? colorScale(value) : '#d0d0ce';
     })
-    console.log('?????????????', data)
+
     return {geoColors, domain, geoLayer};
 }
+
+
 const Edit = ({value, onChange, size}) => {
 
     const {falcor, falcorCache} = useFalcor();
@@ -61,7 +77,8 @@ const Edit = ({value, onChange, size}) => {
     const [dataSource, setDataSource] = useState(cachedData?.dataSource);
     const [version, setVersion] = useState(cachedData?.version);
 
-    const [attribute, setAttribute] = useState(cachedData?.attribute);
+    // const [attribute, setAttribute] = useState(/*cachedData?.attribute ||*/ 'plan_approval_date');
+    const attribute = 'plan_approval_date';
     const [geoAttribute, setGeoAttribute] = useState(cachedData?.geoAttribute);
 
 
@@ -76,7 +93,7 @@ const Edit = ({value, onChange, size}) => {
     const [title, setTitle] = useState(cachedData?.title);
     const [height, setHeight] = useState(cachedData?.height || 500);
     const stateView = 285; // need to pull this based on categories
-    const category = 'Social Vulnerability';
+    const category = 'County Descriptions';
 
     const options = JSON.stringify({
         filter: {...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.toString()?.length})`]: [geoid]}},
@@ -86,6 +103,8 @@ const Edit = ({value, onChange, size}) => {
     const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
     const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
         attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function getData() {
@@ -113,6 +132,7 @@ const Edit = ({value, onChange, size}) => {
                 .find(c => c.display === 'geoid-variable');
         geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
     }, [dataSources, dataSource]);
+
     useEffect(() => {
         async function getData() {
             if(!attribute || !geoAttribute || !version || !dataSource) {
@@ -143,7 +163,7 @@ const Edit = ({value, onChange, size}) => {
     useEffect(() => {
         setData(Object.values(get(falcorCache, dataPath, {})));
     }, [falcorCache, dataSource, version, geoAttribute, attribute])
-    console.log('data?', data)
+
     useEffect(() => {
         async function getData() {
             if (!geoid || !attribute) {
@@ -197,6 +217,10 @@ const Edit = ({value, onChange, size}) => {
                 geoLayer,
                 height,
                 size,
+                onClick: (layer, features) => {
+                    return navigate(`/drafts/county/${features?.[0]?.properties?.geoid}`) && navigate(0)
+                    // window.location = `/drafts/edit/county/${features?.[0]?.properties?.geoid}`
+                },
                 change: e => onChange(JSON.stringify({
                     ...e,
                     data,
@@ -228,7 +252,7 @@ const Edit = ({value, onChange, size}) => {
                         types={dataSources.map(ds => ({label: ds.name, value: ds.source_id}))}
                         type={dataSource}
                         setType={e => {
-                            setAttribute(undefined);
+                            // setAttribute(undefined);
                             setGeoAttribute(undefined);
                             setVersion(undefined);
                             setData([]);
@@ -244,28 +268,28 @@ const Edit = ({value, onChange, size}) => {
                     />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
 
-                    <div className={`flex justify-between`}>
-                        <label
-                            className={`shrink-0 pr-2 py-1 my-1 w-1/4`}
-                        >
-                            Attribute:
-                        </label>
-                        <select
-                            className={`bg-white w-full pl-3 rounded-md my-1`}
-                            value={attribute}
-                            onChange={e => setAttribute(e.target.value)}
-                        >
-                            <option value={undefined} key={''}>Please select an attribute</option>
-                            {
-                                (
-                                    dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||
-                                    dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
-                                    [])
-                                    .filter(c => ['data-variable', 'meta-variable'].includes(c.display))
-                                    .map(c => <option  value={c.name} key={c.name}>{c.display_name || c.name}</option>)
-                            }
-                        </select>
-                    </div>
+                    {/*<div className={`flex justify-between`}>*/}
+                    {/*    <label*/}
+                    {/*        className={`shrink-0 pr-2 py-1 my-1 w-1/4`}*/}
+                    {/*    >*/}
+                    {/*        Attribute:*/}
+                    {/*    </label>*/}
+                    {/*    <select*/}
+                    {/*        className={`bg-white w-full pl-3 rounded-md my-1`}*/}
+                    {/*        value={attribute}*/}
+                    {/*        onChange={e => setAttribute(e.target.value)}*/}
+                    {/*    >*/}
+                    {/*        <option value={undefined} key={''}>Please select an attribute</option>*/}
+                    {/*        {*/}
+                    {/*            (*/}
+                    {/*                dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||*/}
+                    {/*                dataSources.find(ds => ds.source_id === dataSource)?.metadata ||*/}
+                    {/*                [])*/}
+                    {/*                .filter(c => ['data-variable', 'meta-variable'].includes(c.display))*/}
+                    {/*                .map(c => <option  value={c.name} key={c.name}>{c.display_name || c.name}</option>)*/}
+                    {/*        }*/}
+                    {/*    </select>*/}
+                    {/*</div>*/}
                     <RenderColorPicker
                         title={'Colors: '}
                         numColors={numColors}
@@ -337,7 +361,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'Map: Social Vulnerability',
+    "name": 'Map: County Status',
     "type": 'Map',
     "EditComp": Edit,
     "ViewComp": View

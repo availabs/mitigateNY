@@ -2,7 +2,7 @@ export const metaData = {
     ihp: {
         type: 'individuals_and_households_program_valid_registrations_v1',
         attributes: ({geoid}) => ({
-            [geoid?.length === 5 ? "Damaged City" : "County"]: geoid?.length === 5 ? "damaged_city" : "county",
+            [geoid?.toString()?.length === 5 ? "Damaged City" : "County"]: geoid?.toString()?.length === 5 ? "damaged_city" : "county",
             "# Claims": "count(1) as num_claims",
             "Assessed Building Damage": "sum(rpfvl) as rpfvl",
             "Assessed Contents Damage": "sum(ppfvl) as ppfvl",
@@ -14,9 +14,9 @@ export const metaData = {
             aggregatedLen: true,
             filter: {
                 ...disasterNumber && {"disaster_number": [disasterNumber]},
-                ...geoid && {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}
+                ...geoid && {[`substring(geoid, 1, ${geoid?.toString()?.length})`]: [geoid]}
             },
-            groupBy: [geoid?.length === 5 ? 'damaged_city' : 'county']
+            groupBy: [geoid?.toString()?.length === 5 ? 'damaged_city' : 'county']
         }),
         textCols: ['County', 'Damaged City'],
         numCols: ['# Claims'],
@@ -37,7 +37,7 @@ export const metaData = {
             aggregatedLen: true,
             filter: {
                 ...disasterNumber && {"disaster_number": [disasterNumber]},
-                ...geoid && {[`substring(lpad(state_number_code::text, 2, '0') || lpad(county_code::text, 3, '0'), 1, ${geoid?.length})`]: [geoid]}
+                ...geoid && {[`substring(lpad(state_number_code::text, 2, '0') || lpad(county_code::text, 3, '0'), 1, ${geoid?.toString()?.length})`]: [geoid]}
             },
             exclude: {
                 dcc: ["A", "B", "Z"]
@@ -52,7 +52,7 @@ export const metaData = {
         type: 'sba_disaster_loan_data_new',
         attributes: ({geoid, disasterNumber}) => ({
             ...!disasterNumber && {'Disaster Number': "fema_disaster_number"},
-            [geoid?.length === 5 ? "City" : "County / Parish"]: geoid?.length === 5 ? "damaged_property_city_name" : "damaged_property_county_or_parish_name",
+            [geoid?.toString()?.length === 5 ? "City" : "County / Parish"]: geoid?.toString()?.length === 5 ? "damaged_property_city_name" : "damaged_property_county_or_parish_name",
             "# Loans": "count(1) as num_loans",
             "Verified Loss": "sum(total_verified_loss) as total_verified_loss",
             "Verified Loss Real Estate": "sum(verified_loss_real_estate) as verified_loss_real_estate",
@@ -66,11 +66,11 @@ export const metaData = {
             aggregatedLen: true,
             filter: {
                 ...disasterNumber && {"fema_disaster_number": [disasterNumber]},
-                ...geoid && {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}
+                ...geoid && {[`substring(geoid, 1, ${geoid?.toString()?.length})`]: [geoid]}
             },
             groupBy: [
                 ...!disasterNumber ? ['fema_disaster_number'] : [],
-                ...[geoid?.length === 5 ? "damaged_property_city_name" : "damaged_property_county_or_parish_name"]
+                ...[geoid?.toString()?.length === 5 ? "damaged_property_city_name" : "damaged_property_county_or_parish_name"]
             ]
         }),
         textCols: ["Disaster Number", "City", "County / Parish"],
@@ -93,7 +93,7 @@ export const metaData = {
             aggregatedLen: true,
             filter: {
                 ...disasterNumber && {"disaster_number": [disasterNumber]},
-                ...geoid && {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}
+                ...geoid && {[`substring(geoid, 1, ${geoid?.toString()?.length})`]: [geoid]}
             },
             groupBy: !disasterNumber ? ['disaster_number', 'geoid'] : ['geoid']
         }),
@@ -116,7 +116,7 @@ export const metaData = {
             aggregatedLen: true,
             filter: {
                 ...disasterNumber && {"disaster_number": [disasterNumber]},
-                ...geoid && {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}
+                ...geoid && {[`substring(geoid, 1, ${geoid?.toString()?.length})`]: [geoid]}
             },
             groupBy: !disasterNumber ? ['disaster_number', 'county_name'] : ['county_name']
         }),
@@ -163,7 +163,7 @@ export const metaData = {
             aggregatedLen: true,
             filter: {
                 ...disasterNumber && {"disaster_number": [disasterNumber]},
-                ...geoid && {[`substring(LPAD(state_number_code, 2, '0') || LPAD(county_code, 3, '0'), 1, ${geoid?.length})`]: [geoid]}
+                ...geoid && {[`substring(LPAD(state_number_code, 2, '0') || LPAD(county_code, 3, '0'), 1, ${geoid?.toString()?.length})`]: [geoid]}
             },
             groupBy: ['disaster_number', 'state_number_code', 'county_code']
         }),

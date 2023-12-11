@@ -81,7 +81,7 @@ const Edit = ({value, onChange, size}) => {
         columns = Array.isArray(metaData[type]?.columns) ? metaData[type]?.columns : Object.values(metaData[type]?.columns),
         options = JSON.stringify({
             aggregatedLen: true,
-            filter: false && geoid?.length === 5 ? {
+            filter: false && geoid?.toString()?.length === 5 ? {
                 [disasterNumberColName]: [disasterNumber],
                 [geomColName]: [geoid]
             } : {[disasterNumberColName]: [disasterNumber]},
@@ -148,12 +148,12 @@ const Edit = ({value, onChange, size}) => {
 
                         if (!data?.length) return Promise.resolve();
 
-                        const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${false && geoid?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
+                        const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${false && geoid?.toString()?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
                             geoIndices = {from: 0, to: 0},
                             stateFips = get(data, [0, 'geoid']) || geoid?.substring(0, 2),
                             geoPath = ({view_id}) =>
                                 ['dama', pgEnv, 'viewsbyId', view_id,
-                                    'options', JSON.stringify({filter: {geoid: [false && geoid?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
+                                    'options', JSON.stringify({filter: {geoid: [false && geoid?.toString()?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
                                     'databyIndex'
                                 ];
                         const geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);

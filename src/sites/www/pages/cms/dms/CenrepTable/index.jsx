@@ -138,16 +138,19 @@ async function getData({
                            version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
                            customColName, linkCols
                        }, falcor) {
-    const options = ({groupBy, notNull, geoAttribute, geoid}) => JSON.stringify({
-        aggregatedLen: Boolean(groupBy.length),
-        filter: {
-            ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.toString()?.length})`]: [geoid]},
-        },
-        exclude: {
-            ...notNull.length && notNull.reduce((acc, col) => ({...acc, [col]: ['null']}) , {}) // , '', ' ' error out for numeric columns.
-        },
-        groupBy: groupBy,
-    });
+    const options = ({groupBy, notNull, geoAttribute, geoid}) => {
+
+        return JSON.stringify({
+            aggregatedLen: Boolean(groupBy.length),
+            filter: {
+                ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.toString()?.length})`]: [geoid]},
+            },
+            exclude: {
+                ...notNull.length && notNull.reduce((acc, col) => ({...acc, [col]: ['null']}), {}) // , '', ' ' error out for numeric columns.
+            },
+            groupBy: groupBy,
+        })
+    };
 
     const lenPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
     const dataPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
@@ -188,7 +191,7 @@ async function getData({
         .map(c => metadata.find(md => md.name === c))
         .filter(c => c)
         .map(col => {
-            console.log('map col Header', customColName?.[col.name] || col?.display_name || col?.name)
+            // console.log('map col Header', customColName?.[col.name] || col?.display_name || col?.name)
             return {
                 Header: customColName?.[col.name] || col?.display_name || col?.name,
                 accessor: fn?.[col?.name] || col?.name,

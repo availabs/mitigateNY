@@ -34,11 +34,11 @@ async function getData({
         nriLenOptions =
             JSON.stringify({
                 aggregatedLen: false,
-                filter: {[`substring(${nriGeoCol}, 1, ${geoid?.length})`]: [geoid]},
+                filter: {[`substring(${nriGeoCol}, 1, ${geoid?.toString()?.length})`]: [geoid]},
             }),
         nriOptions =
             JSON.stringify({
-                filter: {[`substring(${nriGeoCol}, 1, ${geoid?.length})`]: [geoid]},
+                filter: {[`substring(${nriGeoCol}, 1, ${geoid?.toString()?.length})`]: [geoid]},
             }),
         nriPath = (view_id) => ["dama", pgEnv, "viewsbyId", view_id, "options"];
 
@@ -46,7 +46,7 @@ async function getData({
 
     const
         geoNamesOptions = JSON.stringify({
-            ...geoid && {filter: {[`substring(geoid, 1, ${geoid?.length})`]: [geoid]}}
+            ...geoid && {filter: {[`substring(geoid, 1, ${geoid?.toString()?.length})`]: [geoid]}}
         }),
         geoNamesPath = view_id => ["dama", pgEnv, "viewsbyId", view_id, "options", geoNamesOptions];
 

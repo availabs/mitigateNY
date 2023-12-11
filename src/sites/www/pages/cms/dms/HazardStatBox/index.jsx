@@ -50,7 +50,7 @@ async function getData({ealSourceId=343, ealViewId, isTotal, geoid, hazard, seve
 
     geoid = ''+geoid
     let
-        fipsCol = `substring(stcofips, 1, ${geoid.length})`,
+        fipsCol = `substring(stcofips, 1, ${geoid?.toString()?.length})`,
         nriOptions = JSON.stringify({
             filter: {[fipsCol]: [geoid]},
             groupBy: [fipsCol]
@@ -67,7 +67,7 @@ async function getData({ealSourceId=343, ealViewId, isTotal, geoid, hazard, seve
         numFEMADeclaredCol = `COALESCE(array_length(array_remove(array_agg(distinct CASE WHEN coalesce((fusion_property_damage), 0) + coalesce((fusion_crop_damage), 0)+ coalesce((swd_population_damage), 0) > 0 THEN disaster_number ELSE null END), null), 1), 0) as num_fema_declared`,
         deathsCol = `sum(deaths_direct) + sum(deaths_indirect) as deaths`,
         injuriesCol = `sum(injuries_direct) + sum(injuries_indirect) as injuries`,
-        geoidCOl = `substring(geoid, 1, ${geoid.length})`,
+        geoidCOl = `substring(geoid, 1, ${geoid?.toString()?.length})`,
         fusionAttributes = [`${geoidCOl} as geoid`, "nri_category", actualLossCol, actualLossWithPopCol, numEventsCol, numSevereEventsCol, numFEMADeclaredCol, deathsCol, injuriesCol],
         fusionAttributesTotal = [`${geoidCOl} as geoid`, actualLossCol, actualLossWithPopCol],
         fusionOptions = JSON.stringify({
