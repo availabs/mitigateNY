@@ -15,6 +15,7 @@ import {RenderMap} from "../../components/Map/RenderMap.jsx";
 import {HazardSelectorSimple} from "../../components/HazardSelector/hazardSelectorSimple.jsx";
 import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 import {Attribution} from "../../components/attribution.jsx";
+import {useNavigate} from "react-router-dom";
 
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
@@ -30,7 +31,6 @@ const getColorScale = (data, colors) => {
 
 const getDateDiff = (date) => {
     if(!date || date === 'NULL') return null;
-    console.log('date', date)
     const date1 = new Date();
     const date2 = new Date(date);
     return Math.ceil( (date1.getTime() - date2.getTime()) / (1000 * 60 * 60 * 24))
@@ -61,9 +61,11 @@ const getGeoColors = ({geoid, data = [], columns = [], geoAttribute, paintFn, co
         const value = paintFn ? paintFn(record) : getDateDiff(record[columns?.[0]]);
         geoColors[record[geoAttribute]] = value ? colorScale(value) : '#d0d0ce';
     })
-    console.log('?????????????', data)
+
     return {geoColors, domain, geoLayer};
 }
+
+
 const Edit = ({value, onChange, size}) => {
 
     const {falcor, falcorCache} = useFalcor();
@@ -102,6 +104,8 @@ const Edit = ({value, onChange, size}) => {
     const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
         attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         async function getData() {
             setLoading(true);
@@ -128,7 +132,7 @@ const Edit = ({value, onChange, size}) => {
                 .find(c => c.display === 'geoid-variable');
         geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
     }, [dataSources, dataSource]);
-    console.log('??????', attribute, geoAttribute)
+
     useEffect(() => {
         async function getData() {
             if(!attribute || !geoAttribute || !version || !dataSource) {
@@ -159,7 +163,7 @@ const Edit = ({value, onChange, size}) => {
     useEffect(() => {
         setData(Object.values(get(falcorCache, dataPath, {})));
     }, [falcorCache, dataSource, version, geoAttribute, attribute])
-    console.log('data?', data)
+
     useEffect(() => {
         async function getData() {
             if (!geoid || !attribute) {
@@ -213,6 +217,10 @@ const Edit = ({value, onChange, size}) => {
                 geoLayer,
                 height,
                 size,
+                onClick: (layer, features) => {
+                    return navigate(`/drafts/county/${features?.[0]?.properties?.geoid}`) && navigate(0)
+                    // window.location = `/drafts/edit/county/${features?.[0]?.properties?.geoid}`
+                },
                 change: e => onChange(JSON.stringify({
                     ...e,
                     data,

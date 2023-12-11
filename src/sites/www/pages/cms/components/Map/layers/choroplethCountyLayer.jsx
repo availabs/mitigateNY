@@ -100,6 +100,13 @@ class EALChoroplethOptions extends LayerContainer {
     show: true
   };
 
+  onClick = {
+    layers: ["counties", "tracts"],
+    callback: (layerId, features) => {
+      this.props.onClick && this.props.onClick(layerId, features)
+    }
+  }
+
   onHover = {
     layers: ["counties", "tracts"],
     HoverComp: ({ data, layer }) => {
