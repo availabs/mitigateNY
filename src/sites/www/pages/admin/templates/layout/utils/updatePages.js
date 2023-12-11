@@ -87,7 +87,7 @@ export const updatePages = async ({submit, item, url, destination, id_column, ge
 
             // loop over templatePAge sections, and arrange newSections in the same order except when an unknown section id appears in generated page
             // if(newSectionIds.find(nsi => nsi.id)){
-                console.log('page', page, page.data.value.sections, newSectionIds, updatedSections)
+            // console.log('page', page, page.data.value.sections, newSectionIds, updatedSections)
 
             const newItem = {id: page.id, type}
             await submit(json2DmsForm(newItem, 'updateType'), { method: "post", action: `${window.location.pathname}` })
