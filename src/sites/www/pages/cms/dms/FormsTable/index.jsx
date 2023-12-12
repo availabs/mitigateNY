@@ -66,7 +66,9 @@ async function getData({   formsConfig, actionType, form,
                             },
                             groupBy: groupBy.map(gb => formsConfig?.attributes?.find(attr => attr.name.toLowerCase().split(' as ')[0] === gb.toLowerCase())?.origin === 'calculated-column' ? gb : `${getAccessor(gb, form)}'${gb}'`)
                         }),
-                        attributes: [...visibleCols.map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin, form))]
+                        attributes: [
+                            ...[geoAttribute, ...visibleCols].map(vc => getColAccessor(fn, vc, formsConfig?.attributes?.find(attr => attr.name === vc)?.origin, form))
+                        ]
                     },
                 }
             ]
