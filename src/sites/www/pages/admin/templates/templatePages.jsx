@@ -84,8 +84,10 @@ export const getConfig = ({app, type, filter}) => ({
         }
     ]
 })
-const Home = () => {
-    const {id} = useParams();
+export const TemplatePages = ({params}) => {
+    const {id} = params;
+    console.log('template pages', params)
+    
     if (!id) return null;
     const [value, setValue] = useState([]);
 
@@ -145,7 +147,9 @@ const config = {
     exact: true,
     // auth: true,
     ...authMenuConfig,
-    component: Home
+    component: TemplatePages
 }
+
+
 
 export default config;

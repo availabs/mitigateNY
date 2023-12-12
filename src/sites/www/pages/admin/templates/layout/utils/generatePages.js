@@ -1,8 +1,8 @@
 import cloneDeep from "lodash/cloneDeep.js";
-import {dmsDataEditor} from "../../../../../../../modules/dms/src/index.js";
+import {dmsDataEditor} from "~/modules/dms/src/index.js";
 import {parseJSON} from "./parseJSON.js";
 
-import ComponentRegistry from "../../../../cms/dms/ComponentRegistry.js";
+import ComponentRegistry from "~/sites/www/pages/cms/dms/ComponentRegistry.js";
 
 export const generatePages = async ({
                                            item, url, destination, id_column, dataRows, falcor, setLoadingStatus

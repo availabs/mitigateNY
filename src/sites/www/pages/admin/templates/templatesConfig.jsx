@@ -2,6 +2,7 @@ import checkAuth  from "~/layout/checkAuth"
 import Layout from "~/modules/dms/src/patterns/page/layout/layout"
 import TemplateList from './layout/TemplateList'
 import { TemplateEdit } from './layout/TemplateEdit'
+import { TemplatePages } from './templatePages'
 
 import templateFormat from "./template.format.js"
 
@@ -38,20 +39,12 @@ const siteConfig = {
           type: TemplateEdit,
           action: "edit",
           path: "/edit/:id"
+    },
+    { 
+          type: TemplatePages,
+          action: "edit",
+          path: "/pages/:id"
     }
-    // { 
-    //   type: (props) => <Layout {...props} edit={true} />,
-    //   action: "list",
-    //   path: "/edit/*",
-    //   authLevel: 5,
-    //   lazyLoad: true,
-    //   filter: {
-    //     attributes:['title', 'index', 'url_slug', 'parent' ]
-    //   },
-    //   children: [
-        
-    //   ]
-    // }
   ]
 }
 
