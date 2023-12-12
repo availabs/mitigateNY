@@ -13,6 +13,8 @@ import Drafts from './pages/admin/drafts'
 import Templates from './pages/admin/templates'
 import Interactive from "./pages/interactive/index.jsx";
 
+import Docs from './pages/admin/docs'
+
 import Forms from './pages/forms'
 import FormsActions from './pages/admin/forms/formats/actionsIndex.jsx';
 import FormsCapabilities from './pages/admin/forms/formats/capabilitiesIndex.jsx';
@@ -35,6 +37,7 @@ const Routes = [
   }),
   Playground,
   Drafts,
+  Docs,
   Templates,
   Interactive,
   // -- Managed Data Routes -- //

@@ -90,18 +90,18 @@ async function getData({   formsConfig, actionType, form,
         .map(col => {
             const acc = getColAccessor(fn, col.name, col.origin, form);
             return {
-                Header: customColName[col.name] || col.display_name,
+                Header: customColName?.[col?.name] || col?.display_name,
                 accessor: acc,
-                align: colJustify[col.name] || col.align || 'right',
-                width: colSizes[col.name] || '15%',
-                minWidth: colSizes[col.name] || '15%',
-                maxWidth: colSizes[col.name] || '15%',
-                filter: col.filter || filters[col.name],
-                extFilter: extFilterCols.includes(col.name),
-                info: col.desc,
+                align: colJustify?.[col?.name] || col?.align || 'right',
+                width: colSizes?.[col?.name] || '15%',
+                minWidth: colSizes?.[col?.name] || '15%',
+                maxWidth: colSizes?.[col?.name] || '15%',
+                filter: col?.filter || filters?.[col?.name],
+                extFilter: extFilterCols.includes(col?.name),
+                info: col?.desc,
                 ...col,
-                openOut: openOutCols.includes(col.name),
-                type: fn[col.display_name]?.includes('array_to_string') ? 'string' : col.type
+                openOut: openOutCols?.includes(col?.name),
+                type: fn?.[col?.display_name]?.includes('array_to_string') ? 'string' : col.type
             }
         });
 
@@ -461,7 +461,6 @@ export default {
         {
             name: 'geoid',
             default: '36',
-            hidden: true
         },
         {
             name: 'pageSize',

@@ -17,6 +17,26 @@ import {hazardsMeta} from "../../../../../../utils/colors.jsx";
 import {Attribution} from "../../components/attribution.jsx";
 import {useNavigate} from "react-router-dom";
 
+
+/*
+
+Expired
+Date is null || > 5 years :  Red
+> 4 years : ..
+> 3 years : ..
+> 2 years : ..
+> 1 years : orange
+
+Approved
+-----------
+approved > 4 years : yellow
+approved > 3 years : ..
+approved > 2 years : ..
+approved > 1 years : green
+
+*/
+
+
 const getDomain = (data = [], range = []) => {
     if (!data?.length || !range?.length) return [];
     return data?.length && range?.length ? ckmeans(data, Math.min(data?.length, range?.length)) : [];

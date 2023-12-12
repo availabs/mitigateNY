@@ -27,6 +27,11 @@ export const menuItems = [
     path: '/admin/templates'
   },
   {
+    name: 'Docs',
+    icon: 'far fa-book fa-fw',
+    path: '/admin/docs'
+  },
+  {
     name: 'Data', 
     //path: '/auth/someplace',
     className: 'px-6 pt-8 pb-1 uppercase text-xs text-blue-400'
