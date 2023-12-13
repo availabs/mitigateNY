@@ -19,7 +19,7 @@ export default {
     rightMenu: <AuthMenu />,
     baseUrl: "/drafts",
     checkAuth
-  }), "/drafts",  withAuth),
+  }), "/drafts/",  withAuth),
   name: "CMS",
   sideNav: {
     size: 'mini',

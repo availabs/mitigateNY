@@ -36,24 +36,28 @@ approved > 1 years : green
 
 */
 
-
+// const colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee08b','#ffffbf','#d9ef8b','#a6d96a','#66bd63','#1a9850','#006837']
 const getDomain = (data = [], range = []) => {
-    if (!data?.length || !range?.length) return [];
-    return data?.length && range?.length ? ckmeans(data, Math.min(data?.length, range?.length)) : [];
+    return [-5,-4,-3,-2,-1,0,1,2,3,4,5];
 }
-const getColorScale = (data, colors) => {
-    const domain = getDomain(data, colors)
 
+const getColorScale = (data, colors) => {
+    
     return scaleThreshold()
-        .domain(domain)
-        .range(colors);
+        .domain([-5,-4,-3,-2,-1,0,1,2,3,4,5])
+        .range(['#a50026','#d73027','#f46d43','#fdae61','#fee08b','#ffffbf','#d9ef8b','#a6d96a','#66bd63','#1a9850','#006837']);
+    
+    
 }
 
 const getDateDiff = (date) => {
     if(!date || date === 'NULL') return null;
     const date1 = new Date();
     const date2 = new Date(date);
-    return Math.ceil( (date1.getTime() - date2.getTime()) / (1000 * 60 * 60 * 24))
+    date2.setFullYear(date2.getFullYear() + 5);
+
+    // console.log(date1.getFullYear(), date2.getFullYear(), date2.getFullYear() - date1.getFullYear() )
+    return (Math.ceil( (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)) / 365)
 };
 
 const getGeoColors = ({geoid, data = [], columns = [], geoAttribute, paintFn, colors = [], ...rest}) => {
@@ -64,21 +68,21 @@ const getGeoColors = ({geoid, data = [], columns = [], geoAttribute, paintFn, co
     const geoColors = {}
     const geoLayer = geoids[0]?.toString().length === 5 ? 'counties' : 'tracts';
 
-    data.map((d) => {
-        const diff = getDateDiff(d[columns?.[0]])
+    const diffData = data.map((d) => {
+        return getDateDiff(d[columns?.[0]]) || -5
     })
 
+    console.log('data diff', diffData)
 
-    const colorScale = getColorScale(
-        data.map((d) => paintFn ? paintFn(d) : getDateDiff(d[columns?.[0]])).filter(d => d),
-        colors
-    );
-    const domain = getDomain(
-        data.map((d) => paintFn ? paintFn(d) : getDateDiff(d[columns?.[0]])).filter(d => d && d >= 0),
-        colors
-    )
+
+    const colorScale = scaleThreshold()
+        .domain([-5,-4,-3,-2,-1,0,1,2,3,4,5])
+        .range(['#a50026','#d73027','#f46d43','#fdae61','#fee08b','#ffffbf','#d9ef8b','#a6d96a','#66bd63','#1a9850','#006837']);
+    
+    const domain = [-5,-4,-3,-2,-1,0,1,2,3,4,5]
+
     data.forEach(record => {
-        const value = paintFn ? paintFn(record) : getDateDiff(record[columns?.[0]]);
+        const value = paintFn ? paintFn(record) : (getDateDiff(record[columns?.[0]]) || -5);
         geoColors[record[geoAttribute]] = value ? colorScale(value) : '#d0d0ce';
     })
 
@@ -109,7 +113,7 @@ const Edit = ({value, onChange, size}) => {
     const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
     const [numColors, setNumColors] = useState(cachedData?.numColors || 5);
     const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
-    const [colors, setColors] = useState(cachedData?.colors || getColorRange(5, "Oranges", false));
+    const [colors, setColors] = useState(['#a50026','#d73027','#f46d43','#fdae61','#fee08b','#ffffbf','#d9ef8b','#a6d96a','#66bd63','#1a9850','#006837']);
     const [title, setTitle] = useState(cachedData?.title);
     const [height, setHeight] = useState(cachedData?.height || 500);
     const stateView = 285; // need to pull this based on categories
@@ -221,6 +225,8 @@ const Edit = ({value, onChange, size}) => {
     const {geoColors, domain, geoLayer} =
         getGeoColors({geoid, data, columns: [attribute], geoAttribute, colors});
 
+    // console.log('testing', geoColors, domain, geoLayer)
+
     const layerProps =
         useMemo(() => ({
             ccl: {
@@ -310,7 +316,7 @@ const Edit = ({value, onChange, size}) => {
                     {/*        }*/}
                     {/*    </select>*/}
                     {/*</div>*/}
-                    <RenderColorPicker
+                    {/*<RenderColorPicker
                         title={'Colors: '}
                         numColors={numColors}
                         setNumColors={setNumColors}
@@ -318,7 +324,7 @@ const Edit = ({value, onChange, size}) => {
                         setShade={setShade}
                         colors={colors}
                         setColors={setColors}
-                    />
+                    />*/}
                     <ButtonSelector
                         label={'Size:'}
                         types={[{label: 'Small', value: 500}, {label: 'Medium', value: 700}, {
