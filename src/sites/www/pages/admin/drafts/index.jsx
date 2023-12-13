@@ -8,7 +8,7 @@ import { menuItems } from "../index"
 
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 
-import Selector from "../../cms/dms/selector"
+import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/selector"
 registerDataType("selector", Selector)
 
 export default { 
