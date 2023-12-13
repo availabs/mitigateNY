@@ -294,37 +294,7 @@ const Edit = ({value, onChange, size}) => {
                     />
                     <GeographySearch value={geoid} onChange={setGeoid} className={'flex-row-reverse'}/>
 
-                    {/*<div className={`flex justify-between`}>*/}
-                    {/*    <label*/}
-                    {/*        className={`shrink-0 pr-2 py-1 my-1 w-1/4`}*/}
-                    {/*    >*/}
-                    {/*        Attribute:*/}
-                    {/*    </label>*/}
-                    {/*    <select*/}
-                    {/*        className={`bg-white w-full pl-3 rounded-md my-1`}*/}
-                    {/*        value={attribute}*/}
-                    {/*        onChange={e => setAttribute(e.target.value)}*/}
-                    {/*    >*/}
-                    {/*        <option value={undefined} key={''}>Please select an attribute</option>*/}
-                    {/*        {*/}
-                    {/*            (*/}
-                    {/*                dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns  ||*/}
-                    {/*                dataSources.find(ds => ds.source_id === dataSource)?.metadata ||*/}
-                    {/*                [])*/}
-                    {/*                .filter(c => ['data-variable', 'meta-variable'].includes(c.display))*/}
-                    {/*                .map(c => <option  value={c.name} key={c.name}>{c.display_name || c.name}</option>)*/}
-                    {/*        }*/}
-                    {/*    </select>*/}
-                    {/*</div>*/}
-                    {/*<RenderColorPicker
-                        title={'Colors: '}
-                        numColors={numColors}
-                        setNumColors={setNumColors}
-                        shade={shade}
-                        setShade={setShade}
-                        colors={colors}
-                        setColors={setColors}
-                    />*/}
+                   
                     <ButtonSelector
                         label={'Size:'}
                         types={[{label: 'Small', value: 500}, {label: 'Medium', value: 700}, {
