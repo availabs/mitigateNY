@@ -370,47 +370,6 @@ const Edit = ({value, onChange, size}) => {
     //----------------------------------------------------------
 
 
-    // const layerProps =
-    //     useMemo(() => ({
-    //         ccl: {
-    //             data,
-    //             geoColors,
-    //             domain,
-    //             mapFocus,
-    //             colors,
-    //             title,
-    //             attribute,
-    //             geoAttribute,
-    //             dataSource,
-    //             version,
-    //             geoLayer,
-    //             height,
-    //             size,
-    //             onClick: (layer, features) => {
-    //                 return navigate(`/drafts/county/${features?.[0]?.properties?.geoid}`) && navigate(0)
-    //                 // window.location = `/drafts/edit/county/${features?.[0]?.properties?.geoid}`
-    //             },
-    //             change: e => onChange(JSON.stringify({
-    //                 ...e,
-    //                 data,
-    //                 geoColors,
-    //                 domain,
-    //                 dataSource,
-    //                 version,
-    //                 geoLayer,
-    //                 geoid,
-    //                 status,
-    //                 attribute,
-    //                 geoAttribute,
-    //                 attributionData,
-    //                 mapFocus,
-    //                 numColors,
-    //                 colors,
-    //                 height
-    //             }))
-    //         }
-    //     }), [geoid, attribute, colors, data, geoColors, height, dataSource, version, geoLayer]);
-
     return (
         <div className='w-full'>
             <div className='relative'>
