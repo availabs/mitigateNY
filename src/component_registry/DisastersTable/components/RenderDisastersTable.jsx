@@ -18,7 +18,7 @@ export const RenderDisastersTable = ({
                                          pageSize,
                                          sortBy = {},
                                          filterValue = {},
-                                         fusionAttributes,
+                                         fusionAttributes={},
                                          baseUrl,
                                          attributionData,
                                          geoid,
@@ -50,7 +50,7 @@ export const RenderDisastersTable = ({
         !Object.keys(filterValue || {}).length ||
         Object.keys(filterValue)
             .reduce((acc, col) => {
-                const value = getNestedValue(row[fusionAttributes[col].raw]);
+                const value = getNestedValue(row[fusionAttributes[col]?.raw]);
                 return acc && value?.toString().toLowerCase().includes(filterValue[col]?.toLowerCase())
             }, true)
     )

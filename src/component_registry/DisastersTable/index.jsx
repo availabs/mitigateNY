@@ -301,6 +301,7 @@ async function getData({geoid, type, hazard, ealViewId, visibleCols, filters, fi
         hazard,
         attributionData,
         pageSize, sortBy,
+        fusionAttributes: fusionAttributes(type)
     }
 
 }
