@@ -31,7 +31,7 @@ const getColorScale = (data, colors) => {
 const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...rest}) => {
     if (!data?.length || !colors?.length) return {};
     const geoids = data.map(d => d.geoid);
-    const stateFips = (geoid?.substring(0, 2) || geoids[0] || '00').substring(0, 2);
+    // const stateFips = (geoid?.toString()?.substring(0, 2) || geoids[0] || '00').substring(0, 2);
     const geoColors = {}
 
     const colorScale = getColorScale(
@@ -49,6 +49,117 @@ const getGeoColors = ({geoid, data = [], columns = [], paintFn, colors = [], ...
     })
     return {geoColors, domain};
 }
+
+async function getData({
+                           geoAttribute, geoid, version, attribute, colors, title, dataSource, size, height,
+                           hazard, consequence, typeId, dataSourceSRCId, dataSourceViewId,
+                           numColors, shade
+                       }, falcor) {
+    const stateView = 285; // need to pull this based on categories
+    const countyView = 286;
+
+    const
+        geomColName = metaData.dataSources.find(d => d.value === dataSource)?.geomCol,
+        columns = [hazard === 'total' ? `eal_val${consequence || `t`}` : `${hazardsMeta[hazard]?.prefix}_${attribute}${consequence || ``}`],
+        options = JSON.stringify({
+            filter: {[`substring(${geomColName}, 1, ${geoid?.toString()?.length})`]: [geoid]},
+        }),
+        attributes = {
+            geoid: `${geomColName} as geoid`,
+            ...(columns || [])
+                .reduce((acc, curr) => ({...acc, [curr]: `${curr}`}), {})
+        },
+        dataPath = view_id => ['dama', pgEnv, 'viewsbyId', view_id, 'options', options];
+
+    const attributionPath = view_id => ['dama', pgEnv, 'views', 'byId', view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
+
+    const dataLenRes = await falcor.get(
+        [...dataPath(typeId), 'length'],
+        attributionPath(typeId)
+    );
+
+    const len = get(dataLenRes, ['json', ...dataPath(typeId), 'length']);
+
+    const dataRes = await falcor.get([...dataPath(typeId), 'databyIndex', {
+        from: 0,
+        to: len - 1
+    }, Object.values(attributes)]);
+
+    let data = Object.values(get(dataRes, ['json', ...dataPath(typeId), 'databyIndex'], {}));
+    data = [...Array(len).keys()].map(i => {
+        return Object.keys(attributes).reduce((acc, curr) => ({
+            ...acc,
+            [curr]: data[i][attributes[curr]]
+        }), {});
+    });
+
+    // mapFocus
+    const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${geoid?.toString()?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
+        geoIndices = {from: 0, to: 0},
+        stateFips = get(data, [0, 'geoid']) || geoid?.toString()?.substring(0, 2),
+        geoPath = (view_id) =>
+            ['dama', pgEnv, 'viewsbyId', view_id,
+                'options', JSON.stringify({
+                filter: {
+                    geoid: [geoid?.toString()?.length >= 5 ? geoid : stateFips.substring(0, 2)]
+                }}),
+                'databyIndex'
+            ];
+    const geomRes = await falcor.get([...geoPath(geoid?.toString()?.length === 5 ? countyView : stateView), geoIndices, geomColTransform]);
+    const geom = get(geomRes, ["json", ...geoPath(geoid?.toString()?.length === 5 ? countyView : stateView), 0, geomColTransform]);
+    const mapFocus = get(JSON.parse(geom), 'bbox');
+
+    const {geoColors, domain} = getGeoColors({geoid, data, columns: columns, paintFn: metaData.paintFn, colors});
+
+    const attributionData = get(falcor.getCache(), ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
+
+    const geoLayer = metaData.dataSources.find(d => d.value === dataSource)?.geoLayer;
+
+    const layerProps = {
+        ccl: {
+            view: metaData,
+            data,
+            geoColors,
+            mapFocus,
+            domain,
+            colors,
+            title,
+            hazard,
+            attribute,
+            consequence,
+            dataSource,
+            dataSourceSRCId,
+            dataSourceViewId,
+            geoLayer,
+            height,
+            size
+        }
+    }
+
+    return {
+        data,
+        geoAttribute,
+        geoid,
+        version,
+        attribute,
+        colors,
+        mapFocus,
+        attributionData,
+        geoColors,
+        domain,
+        geoLayer,
+        layerProps,
+        title,
+        dataSource,
+        size,
+        height,
+        dataSourceSRCId,
+        dataSourceViewId,
+        hazard, consequence, typeId,
+        numColors, shade
+    }
+}
+
 const Edit = ({value, onChange, size}) => {
 
     const {falcor, falcorCache} = useFalcor();
@@ -75,20 +186,7 @@ const Edit = ({value, onChange, size}) => {
     const [title, setTitle] = useState(cachedData?.title);
     const [height, setHeight] = useState(cachedData?.height || 500);
 
-    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id],
-        geomColName = metaData.dataSources.find(d => d.value === dataSource)?.geomCol,
-        columns = [hazard === 'total' ? `eal_val${consequence || `t`}` : `${hazardsMeta[hazard]?.prefix}_${attribute}${consequence || ``}`],
-        options = JSON.stringify({
-            filter: {[`substring(${geomColName}, 1, ${geoid?.toString()?.length})`]: [geoid]},
-        }),
-        attributes = {
-            geoid: `${geomColName} as geoid`,
-            ...(columns || [])
-                .reduce((acc, curr) => ({...acc, [curr]: `${curr}`}), {})
-        },
-        dataPath = view_id => ['dama', pgEnv, 'viewsbyId', view_id, 'options', options];
-
-    const attributionPath = view_id => ['dama', pgEnv, 'views', 'byId', view_id, 'attributes', ['source_id', 'view_id', 'version', '_modified_timestamp']];
+    const dependencyPath = (view_id) => ["dama", pgEnv, "viewDependencySubgraphs", "byViewId", view_id];
 
     useEffect(() => {
         const ealSourceId = 343;
@@ -109,7 +207,7 @@ const Edit = ({value, onChange, size}) => {
             setLoading(true)
             if (dataSource === 'avail_counties') {
                 const dependencyRes = await falcor.get(dependencyPath(dataSourceViewId));
-                const deps = get(dependencyRes, ["json", ...dependencyPath(dataSourceViewId), "dependencies"]);
+                const deps = get(dependencyRes, ["json", ...dependencyPath(dataSourceViewId), "dependencies"], []);
                 const typeId = deps.find(dep => dep.type === 'nri');
 
                 if (!typeId) {
@@ -129,7 +227,8 @@ const Edit = ({value, onChange, size}) => {
 
     useEffect(() => {
         // get required data, pass paint properties as prop.
-        async function getData() {
+
+        async function load(){
             if (!geoid || !hazard || !attribute || (attribute !== 'afreq' && !consequence)) {
                 !consequence && setStatus('Please Select a Consequence.')
                 !attribute && setStatus('Please Select an Attribute.');
@@ -144,108 +243,26 @@ const Edit = ({value, onChange, size}) => {
 
             setTitle(metaData.title(hazard === 'total' ? '' : hazardsMeta[hazard]?.name, attribute, consequence))
 
-            const dataLenRes = await falcor.get(
-                [...dataPath(typeId), 'length'],
-                attributionPath(typeId)
-            );
+            const data = await getData({
+                 geoid, attribute, colors, title, dataSource, size, height,
+                hazard, consequence, typeId, dataSourceSRCId, dataSourceViewId,
+                numColors, shade
+            }, falcor);
 
-            const len = get(dataLenRes, ['json', ...dataPath(typeId), 'length']);
-            if (!len) {
-                setStatus('No data available.')
-                setLoading(false)
-            }
-            const dataRes = await falcor.get([...dataPath(typeId), 'databyIndex', {
-                from: 0,
-                to: len - 1
-            }, Object.values(attributes)]);
-
-            let data = Object.values(get(dataRes, ['json', ...dataPath(typeId), 'databyIndex'], {}));
-            data = [...Array(len).keys()].map(i => {
-                return Object.keys(attributes).reduce((acc, curr) => ({
-                    ...acc,
-                    [curr]: data[i][attributes[curr]]
-                }), {});
-            });
-
-            setData(data);
-
-            if (!data?.length) {
-                setStatus('No data available.')
-                setLoading(false)
-            }
-
-            const geomColTransform = [`st_asgeojson(st_envelope(ST_Simplify(geom, ${false && geoid?.toString()?.length === 5 ? `0.1` : `0.5`})), 9, 1) as geom`],
-            geoIndices = {from: 0, to: 0},
-            stateFips = get(data, [0, 'geoid']) || geoid?.substring(0, 2),
-            geoPath = (view_id) =>
-                ['dama', pgEnv, 'viewsbyId', view_id,
-                    'options', JSON.stringify({filter: {geoid: [false && geoid?.toString()?.length === 5 ? geoid : stateFips.substring(0, 2)]}}),
-                    'databyIndex'
-                ];
-            const stateView = metaData.dataSources.find(d => d.value === dataSource)?.geomView;
-            const geomRes = await falcor.get([...geoPath(stateView), geoIndices, geomColTransform]);
-            const geom = get(geomRes, ["json", ...geoPath(stateView), 0, geomColTransform]);
-
-            if (geom) {
-                setMapfocus(get(JSON.parse(geom), 'bbox'));
-            }
+            onChange(JSON.stringify({
+                ...data,
+            }));
 
             setLoading(false);
         }
 
-        getData()
+        load()
     }, [
         typeId,
         geoid, hazard, attribute, consequence,
-        numColors, shade, colors
+        numColors, shade, colors,
+        title, dataSource, size, height, dataSourceSRCId, dataSourceViewId
     ]);
-
-    const {geoColors, domain} = getGeoColors({geoid, data, columns: columns, paintFn: metaData.paintFn, colors});
-
-    const attributionData = get(falcorCache, ['dama', pgEnv, 'views', 'byId', typeId, 'attributes'], {});
-    const layerProps =
-        useMemo(() => ({
-            ccl: {
-                view: metaData,
-                data,
-                geoColors,
-                mapFocus,
-                domain,
-                colors,
-                title,
-                hazard,
-                attribute,
-                consequence,
-                dataSource,
-                dataSourceSRCId,
-                dataSourceViewId,
-                geoLayer: metaData.dataSources.find(d => d.value === dataSource)?.geoLayer,
-                height,
-                size,
-                change: e => onChange(JSON.stringify({
-                    ...e,
-                    dataSource,
-                    dataSourceSRCId,
-                    dataSourceViewId,
-                    geoLayer: metaData.dataSources.find(d => d.value === dataSource)?.geoLayer,
-                    geoid,
-                    status,
-                    hazard,
-                    attribute,
-                    consequence,
-                    typeId,
-                    attributionData,
-                    data,
-                    geoColors,
-                    mapFocus,
-                    domain,
-                    numColors,
-                    colors,
-                    height
-                }))
-            }
-        }), [geoid, hazard, attribute, consequence, colors, data, geoColors,
-            height, dataSource, dataSourceSRCId, dataSourceViewId, typeId]);
 
     return (
         <div className='w-full'>
@@ -329,12 +346,13 @@ const Edit = ({value, onChange, size}) => {
                             <React.Fragment>
                                 <div className={`flex-none w-full p-1`} style={{height: `${height}px`}}>
                                     <RenderMap
+                                        interactive={true}
                                         falcor={falcor}
-                                        layerProps={layerProps}
-                                        legend={{domain, range: colors, title, size}}
+                                        layerProps={cachedData.layerProps}
+                                        legend={{domain: cachedData.domain, range: colors, title, size}}
                                     />
                                 </div>
-                                <Attribution baseUrl={baseUrl} attributionData={attributionData}/>
+                                <Attribution baseUrl={baseUrl} attributionData={cachedData.attributionData}/>
                             </React.Fragment>
                 }
             </div>
@@ -359,13 +377,26 @@ const View = ({value}) => {
     return (
         <div className='relative w-full p-6'>
             {
-                data?.status ?
-                    <div className={'p-5 text-center'}>{data?.status}</div> :
+                data.img  ?
                     <div className='h-80vh flex-1 flex flex-col'>
                         <img alt='Choroplath Map' src={get(data, ['img'])}/>
-                        <Attribution baseUrl={baseUrl} attributionData={attributionData}/>
+                    </div> :
+                    <div className={`flex-none w-full p-1`} style={{height: `${data.height}px`}}>
+                        <RenderMap
+                            interactive={false}
+                            layerProps={data.layerProps}
+                            legend={{
+                                size: data.size,
+                                domain: data?.domain || [],
+                                range: data.colors,
+                                title: data.title,
+                                show: data.showLegend
+                            }}
+                        />
                     </div>
+
             }
+            <Attribution baseUrl={baseUrl} attributionData={attributionData}/>
         </div>
     )
 }
@@ -374,6 +405,78 @@ const View = ({value}) => {
 export default {
     "name": 'Map: NRI',
     "type": 'Map',
+    "variables": [
+        {
+            name: 'geoid',
+            default: '36',
+        },
+        {
+            name: 'dataSources',
+            hidden: true
+        },
+        {
+            name: 'dataSource',
+            hidden: true
+        },
+        {
+            name: 'version',
+            hidden: true
+        },
+        {
+            name: 'geoAttribute',
+            hidden: true
+        },
+        {
+            name: 'hazard',
+            hidden: true
+        },
+        {
+            name: 'consequence',
+            hidden: true
+        },
+        {
+            name: 'typeId',
+            hidden: true
+        },
+        {
+            name: 'dataSourceSRCId',
+            hidden: true
+        },
+        {
+            name: 'dataSourceViewId',
+            hidden: true
+        },
+        {
+            name: 'title',
+            hidden: true
+        },
+        {
+            name: 'dataSource',
+            hidden: true
+        },
+        {
+            name: 'size',
+            hidden: true
+        },
+        {
+            name: 'height',
+            hidden: true
+        },
+        {
+            name: 'numColors',
+            hidden: true
+        },
+        {
+            name: 'shade',
+            hidden: true
+        },
+        {
+            name: 'colors',
+            hidden: true,
+            default: getColorRange(5, "Oranges", false)
+        }
+    ],
+    getData,
     "EditComp": Edit,
     "ViewComp": View
 }

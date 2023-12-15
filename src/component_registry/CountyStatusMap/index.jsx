@@ -180,7 +180,6 @@ const Edit = ({value, onChange, size}) => {
         data: cachedData?.data || [],
         type: cachedData?.type || 'total_losses',
         typeId: cachedData?.typeId,
-        data: cachedData?.data,
         mapFocus: cachedData.mapFocus,
         numColors: cachedData?.numColors || 5,
         colors: cachedData?.colors || defaultColors,
@@ -424,7 +423,7 @@ const Edit = ({value, onChange, size}) => {
                             // setAttribute(undefined);
                             setGeoAttribute(undefined);
                             setVersion(undefined);
-                            setData([]);
+                            // setData([]);
 
                             setDataSource(e);
                         }}

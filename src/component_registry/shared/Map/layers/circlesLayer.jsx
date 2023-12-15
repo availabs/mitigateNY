@@ -189,7 +189,7 @@ class CirclesOptions extends LayerContainer {
       }
       img = newCanvas.toDataURL();
       this.img = img;
-      this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
+      this.props.change && this.props.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
 
     })
 

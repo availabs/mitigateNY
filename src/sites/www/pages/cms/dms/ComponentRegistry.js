@@ -1,5 +1,5 @@
 
-
+import ComponentRegistry from "../../../../../component_registry/index.js";
 // import ColorBox from "../colorbox";
 import LossByDisasterNumberChart from "./LossByDisasterNumberChart";
 import LossDistributionPieChart from "./LossDistributionPieChart";
@@ -31,7 +31,7 @@ import CensusStackedBarChart from "./CensusStackedBarChart/index.jsx";
 import CensusLineChart from "./CensusLineChart/index.jsx";
 import CountyStatusMap from "./CountyStatusMap/index.jsx";
 
-const ComponentRegistry = {
+const ComponentRegistryOld = {
     // "ColorBox": ColorBox,
     "Card: Callout": CalloutBox,
     "Card: Hazard Risk": HazardStatBox,
@@ -69,5 +69,5 @@ const ComponentRegistry = {
     "County Text Box": CountyTextBox
 }
 
-
 export default ComponentRegistry
+// export default ComponentRegistry
