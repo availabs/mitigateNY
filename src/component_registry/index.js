@@ -23,7 +23,7 @@ import CalloutBox from "./CalloutBox/";
 import FusionEventsMap from "./FusionEventsMap/index.jsx";
 import OpenFemaDataTable from "./OpenFemaDataTable/index.jsx";
 import CenrepTable from "./CenrepTable/index.jsx";
-import CountyTextBox from "./CountyTextBox/index.jsx";
+import DataTextBox from "./DataTextBox/index.jsx";
 import FormsTable from "./FormsTable/index.jsx";
 import CensusStatBox from "./CensusStatBox/index.jsx"
 import CensusBarChart from "./CensusBarChart/index.jsx";
@@ -68,7 +68,7 @@ const ComponentRegistry = {
         name: 'Rich Text',
         hideInSelector: false
     },
-    "County Text Box": CountyTextBox
+    "Data Text Box": DataTextBox
 }
 
 
