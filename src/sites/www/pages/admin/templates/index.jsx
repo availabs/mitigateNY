@@ -9,7 +9,7 @@ import templateConfig from '~/modules/dms/src/patterns/page/template/templatesCo
 // import templatesConfig from './templatesConfig'
 
 
-import Selector from "~/sites/www/pages/cms/dms/selector"
+import Selector from "~/modules/dms/src/patterns/page/selector"
 registerDataType("selector", Selector)
 
 export default { 

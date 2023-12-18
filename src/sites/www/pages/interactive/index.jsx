@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import {falcor} from "~/modules/avl-falcor"
 import get from "lodash/get";
-import ComponentRegistry from '../cms/dms/ComponentRegistry';
+import ComponentRegistry from '~/component_registry';
 import isEqual from "lodash/isEqual.js";
 const Home = () => {
   const {id} = useParams();

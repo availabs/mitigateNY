@@ -180,7 +180,6 @@ const Edit = ({value, onChange, size}) => {
         data: cachedData?.data || [],
         type: cachedData?.type || 'total_losses',
         typeId: cachedData?.typeId,
-        data: cachedData?.data,
         mapFocus: cachedData.mapFocus,
         numColors: cachedData?.numColors || 5,
         colors: cachedData?.colors || defaultColors,
@@ -189,14 +188,7 @@ const Edit = ({value, onChange, size}) => {
         size: 1,
         stateView: 285
     })
-    // const [geoid, setGeoid] = useState(cachedData?.geoid || '36');
-    // const [data, setData] = useState(cachedData?.data);
-    // const [mapFocus, setMapfocus] = useState(cachedData?.mapFocus);
-    // const [numColors, setNumColors] = useState(cachedData?.numColors || 5);
-    // const [shade, setShade] = useState(cachedData?.shade || 'Oranges');
-    // const [colors, setColors] = useState(['#a50026','#d73027','#f46d43','#fdae61','#fee08b','#ffffbf','#d9ef8b','#a6d96a','#66bd63','#1a9850','#006837']);
-    // const [title, setTitle] = useState(cachedData?.title);
-    // const [height, setHeight] = useState(cachedData?.height || 500);
+  
     const stateView = 285; // need to pull this based on categories
     const category = 'County Descriptions';
 
@@ -291,7 +283,6 @@ const Edit = ({value, onChange, size}) => {
     //         if (geom) {
     //             setMapfocus(get(JSON.parse(geom), 'bbox'));
     //         }
-
     //         setLoading(false);
     //     }
 

@@ -1,4 +1,4 @@
-import Multiselect from "~/sites/www/pages/cms/components/MultiSelect.jsx";
+import Multiselect from "~/component_registry/shared/MultiSelect.jsx";
 import {useState} from "react";
 
 export const FilterSelector = ({filters, setFilters, columns, uniqueValues}) => {

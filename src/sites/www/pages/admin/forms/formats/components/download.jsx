@@ -1,11 +1,11 @@
 import {useRef, useState, Fragment, useEffect} from "react";
 import { Dialog, Transition } from '@headlessui/react'
-import Multiselect from "../../../../../../../modules/dms/src/data-types/multiselect.jsx";
-import MultiSelect from "../../../../cms/components/MultiSelect.jsx";
-import {getColAccessor} from "../../../../cms/dms/FormsTable/utils.js";
+// import Multiselect from "~/modules/dms/src/data-types/multiselect.jsx";
+import MultiSelect from "~/component_registry/shared/MultiSelect.jsx";
+import {getColAccessor} from "~/component_registry/FormsTable/utils.js";
 import { CSVLink } from "react-csv";
 import {getData} from "../utils/getData.js";
-import {ButtonSelector} from "../../../../cms/components/buttonSelector.jsx";
+import {ButtonSelector} from "~/component_registry/shared/buttonSelector.jsx";
 import {falcor} from "~/modules/avl-falcor"
 
 export const DownloadModal = ({

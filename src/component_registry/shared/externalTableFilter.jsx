@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Multiselect from "~/sites/www/pages/cms/components/MultiSelect.jsx";
+import Multiselect from "~/component_registry/shared/MultiSelect.jsx";
 
 
 const getNestedValue = (obj) => typeof obj?.value === 'object' ? getNestedValue(obj.value) : obj?.value || obj;

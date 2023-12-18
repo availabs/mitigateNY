@@ -1,18 +1,18 @@
-import {getAccessor, getColAccessor, getMeta, setMeta} from "../../../../cms/dms/FormsTable/utils.js";
+import {getAccessor, getColAccessor, getMeta, setMeta} from "~/component_registry/FormsTable/utils.js";
 import {dmsDataLoader} from "~/modules/dms/src"
 
 export async function getData({
-                                  formsConfig,
-                                  actionType, form,
-                                  metaLookupByViewId,
-                                  setMetaLookupByViewId,
-                                  visibleCols,
-                                  pgEnv,
-                                  geoid,
-                                  geoAttribute,
-                                  pageSize, sortBy, groupBy, fn, notNull, colSizes,
-                                  filters, filterValue, hiddenCols, setData
-                              }, falcor) {
+  formsConfig,
+  actionType, form,
+  metaLookupByViewId,
+  setMetaLookupByViewId,
+  visibleCols,
+  pgEnv,
+  geoid,
+  geoAttribute,
+  pageSize, sortBy, groupBy, fn, notNull, colSizes,
+  filters, filterValue, hiddenCols, setData
+}, falcor) {
     await getMeta({
         formsConfig: formsConfig,
         metaLookupByViewId,
