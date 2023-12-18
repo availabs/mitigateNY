@@ -165,7 +165,7 @@ const DrawLegend = ({
         <RenderCirclesLegend domain={domain} range={range} fmt={fmt} size={size} title={title}/>
 
 }
-export const RenderMap = ({falcor, layerProps, legend, layers=['Choropleth']}) => {
+export const RenderMap = ({falcor, layerProps, legend, interactive=true, layers=['Choropleth']}) => {
     const layersMap = {
         Choropleth: ChoroplethCountyFactory,
         Circles: CirclesFactory
@@ -181,6 +181,8 @@ export const RenderMap = ({falcor, layerProps, legend, layers=['Choropleth']}) =
             <AvlMap
                 falcor={falcor}
                 mapOptions={{
+                    interactive: interactive,
+                    navigationControl: false,
                     styles: [
                         {
                             name: 'blank',
@@ -201,6 +203,7 @@ export const RenderMap = ({falcor, layerProps, legend, layers=['Choropleth']}) =
                         }]
 
                 }}
+                navigationControl={false}
                 layers={mapLayers.current}
                 layerProps={layerProps}
                 CustomSidebar={() => <div/>}

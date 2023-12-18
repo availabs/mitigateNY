@@ -12,7 +12,8 @@ import VersionSelectorSearchable from "../shared/versionSelector/searchable.jsx"
 import {RenderColumnControls} from "../shared/columnControls.jsx";
 import GeographySearch from "../shared/geographySearch.jsx";
 
-async function getData({pgEnv, geoid, version, geoAttribute, visibleCols, id, bgColor}, falcor) {
+async function getData({pgEnv, geoid, dataSource, version, geoAttribute, visibleCols, id, bgColor,
+                           columnHeader, columnColors}, falcor) {
     const lenPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'length'];
     const dataPath = options => ['dama', pgEnv, 'viewsbyId', version, 'options', options, 'databyIndex'];
     const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
@@ -24,9 +25,10 @@ async function getData({pgEnv, geoid, version, geoAttribute, visibleCols, id, bg
     });
     
     await falcor.get(lenPath(options({geoAttribute, geoid})));
-    const len = Math.min(
-        get(falcor.getCache(), lenPath(options({geoAttribute, geoid})), 0),
-        1);
+    // const len = Math.min(
+    //     get(falcor.getCache(), lenPath(options({geoAttribute, geoid})), 0),
+    //     1);
+    const len = 1 // can only display one
 
     await falcor.get(
         [...dataPath(options({geoAttribute, geoid})),
@@ -37,11 +39,12 @@ async function getData({pgEnv, geoid, version, geoAttribute, visibleCols, id, bg
         let val = Object.values(
             get(falcor.getCache(), dataPath(options({geoAttribute, geoid})), {})
         )[0]?.[vc] || ''
-        return val
-    }).map((v,i,all) => {
-        //if not last element add blank line
-        return i < all.length ? v + '\n\n' : v
-    });
+        return {
+            text: val,
+            header: columnHeader[vc],
+            color: columnColors[vc]
+        }
+    }).filter(val => val.text);
 
     return {
         id: id + 1,
@@ -50,8 +53,11 @@ async function getData({pgEnv, geoid, version, geoAttribute, visibleCols, id, bg
         geoAttribute,
         geoid,
         visibleCols,
-        pgEnv, version
-
+        pgEnv,
+        dataSource,
+        version,
+        columnHeader,
+        columnColors
     }
 }
 const convertToEditorText = text => ({
@@ -62,8 +68,16 @@ const convertToEditorText = text => ({
                     "detail": 0,
                     "format": 0,
                     "mode": "normal",
-                    "style": "",
-                    "text": t,
+                    ...t?.color && {"style": `color: ${t.color?.text};background-color: ${t.color?.bg};padding: 4px 12px;border: 1px solid;border-color: #60a5fa;border-radius: 8px;`},
+                    "text": t.text,
+                    "type": 'text',
+                    "version": 1
+                },
+                {
+                    "detail": 0,
+                    "format": 0,
+                    "mode": "normal",
+                    "text": '\n\n',
                     "type": 'text',
                     "version": 1
                 }
@@ -71,7 +85,8 @@ const convertToEditorText = text => ({
             "direction": "ltr",
             "format": "",
             "indent": 0,
-            "type": "paragraph",
+            "type": t.header ? 'heading' : "paragraph",
+            "tag": t.header ? t.header : '',
             "version": 1
         })),
         "direction": "ltr",
@@ -119,13 +134,15 @@ const Edit = ({value, onChange}) => {
     const [geoAttribute, setGeoAttribute] = useState(cachedData?.geoAttribute || 'county');
     const [geoid, setGeoid] = useState(cachedData?.geoid || '36001');
     const [visibleCols, setVisibleCols] = useState(cachedData?.visibleCols || []);
+    const [columnHeader, setColumnHeader] = useState(cachedData?.columnHeader || {});
+    const [columnColors, setColumnColors] = useState(cachedData?.columnColors || {});
 
     useEffect(() => {
         async function getData() {
             setLoading(true);
             setStatus(undefined);
 
-            const category = 'County Descriptions';
+            const category = 'Cenrep';
             const dataSourceByCategoryPath = ['dama', pgEnv, 'sources', 'byCategory', category];
 
             // fetch data sources from categories that match passed prop
@@ -164,7 +181,8 @@ const Edit = ({value, onChange}) => {
             setStatus(undefined);
 
             const data = await getData({
-                pgEnv, geoid, version, geoAttribute, visibleCols, id, bgColor
+                pgEnv, geoid, dataSource, version, geoAttribute, visibleCols, id, bgColor,
+                columnHeader, columnColors
             }, falcor);
 
             setId(data.id);
@@ -177,22 +195,34 @@ const Edit = ({value, onChange}) => {
         }
 
         load()
-    }, [dataSource, version, geoid, geoAttribute, visibleCols, bgColor]);
+    }, [dataSource, version, geoid, geoAttribute, visibleCols, bgColor, columnHeader, columnColors]);
 
     return (
         <div className='w-full'>
             <div className='relative'>
                 <div className={'border rounded-md border-blue-500 bg-blue-50 p-2 m-1'}>
                     Edit Controls
-                    <ButtonSelector
-                        label={'Data Source:'}
-                        types={dataSources.map(ds => ({label: ds.name, value: ds.source_id}))}
-                        type={dataSource}
-                        setType={e => {
-                            setVisibleCols([])
-                            setDataSource(e);
-                        }}
-                    />
+                    <div className={`flex justify-between`}>
+                        <label
+                            className={`shrink-0 pr-2 py-1 my-1 w-1/4`}
+                        >
+                            Data Source:
+                        </label>
+                        <select
+                            className={`bg-white w-full pl-3 rounded-md my-1`}
+                            value={dataSource}
+                            onChange={e => {
+                                setVisibleCols([])
+                                setGeoAttribute(undefined)
+                                setDataSource(+e.target.value);
+                            } }
+                        >
+                            <option key={'undefined'} value={undefined} selected disabled>Please select a data source</option>
+                            {
+                                dataSources.map(ds => <option key={ds.source_id} value={ds.source_id}> {ds.name} </option>)
+                            }
+                        </select>
+                    </div>
                     <VersionSelectorSearchable
                         source_id={dataSource}
                         view_id={version}
@@ -215,6 +245,10 @@ const Edit = ({value, onChange}) => {
                         // anchorCols={anchorCols}
                         visibleCols={visibleCols}
                         setVisibleCols={setVisibleCols}
+                        columnHeader={columnHeader}
+                        setColumnHeader={setColumnHeader}
+                        columnColors={columnColors}
+                        setColumnColors={setColumnColors}
                     />
                 </div>
                 {
@@ -258,7 +292,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'County Text Box',
+    "name": 'Data Text Box',
     "variables": [
         // pgEnv, geoid, version, geoAttribute, visibleCols, id, bgColor
         {
@@ -269,6 +303,10 @@ export default {
         {
             name: 'geoid',
             default: '36001',
+        },
+        {
+            name: 'dataSource',
+            hidden: true
         },
         {
             name: 'version',

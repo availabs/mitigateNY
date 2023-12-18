@@ -3,6 +3,7 @@ import {Dialog, Switch, Transition} from '@headlessui/react';
 import {ButtonSelector} from "./buttonSelector.jsx";
 import MultiSelect from "./MultiSelect.jsx";
 import {CSVLink} from "react-csv";
+import {RenderColorPicker} from "./colorPickerSimple.jsx";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -630,6 +631,41 @@ const RenderLinkColControls = ({column, linkCols, setLinkCols, metadata}) => {
     )
 }
 
+const RenderHeaderControls = ({column, columnHeaders, setColumnHeaders}) => {
+    if (!setColumnHeaders) return null;
+    const currentValue = columnHeaders[column] || 'none';
+
+    return (
+        <ButtonSelector
+            label={'Justify:'}
+            types={[
+                {label: 'H1', value: 'h1'},
+                {label: 'H2', value: 'h2'},
+                {label: 'H3', value: 'h3'},
+                {label: 'H4', value: 'h4'},
+                {label: 'None', value: 'none'},
+            ]}
+            type={currentValue}
+            setType={e => setColumnHeaders({...columnHeaders, [column]: e})}
+        />
+    )
+}
+
+const RenderColorControls = ({column, columnColors, setColumnColors}) => {
+    if (!setColumnColors) return null;
+    const currentValue = columnColors[column] || 'none';
+
+    return (
+        <>
+            <RenderColorPicker title={'Background: '}
+                               className={'w-full py-1 flex flex-row items-center'}
+                               color={currentValue.bg} setColor={e => setColumnColors({...columnColors, [column]: {...currentValue, bg: e}})}/>
+            <RenderColorPicker title={'Text: '}
+                               className={'w-full py-1 flex flex-row items-center'}
+                               color={currentValue.text} setColor={e => setColumnColors({...columnColors, [column]: {...currentValue, text: e}})}/>
+        </>
+    )
+}
 
 const RenderColumnBoxes = ({
                                cols,
@@ -650,7 +686,9 @@ const RenderColumnBoxes = ({
                                stateNamePreferences,
                                colSizes, setColSizes,
                                customColName, setCustomColName,
-                               linkCols, setLinkCols
+                               linkCols, setLinkCols,
+                               columnHeader, setColumnHeader,
+                               columnColors, setColumnColors
                            }) => {
     const [displaySettings, setDisplaySettings] = useState(false);
     const [list, setList] = useState([...new Set([...anchorCols, ...visibleCols])]);
@@ -813,6 +851,12 @@ const RenderColumnBoxes = ({
                                                                                    stateNamePreferences={stateNamePreferences?.hideCols}/>
                                                             <RenderLinkColControls column={col}
                                                                                    linkCols={linkCols} setLinkCols={setLinkCols}/>
+
+                                                            <RenderHeaderControls column={col}
+                                                                                  columnHeaders={columnHeader} setColumnHeaders={setColumnHeader} />
+
+                                                            <RenderColorControls column={col}
+                                                                                  columnColors={columnColors} setColumnColors={setColumnColors} />
                                                         </div>
 
                                                     </Dialog.Panel>
@@ -858,7 +902,9 @@ export const RenderColumnControls = (
         openOutCols = [], setOpenOutCols,
         colJustify = {}, setColJustify,
         customColName = {}, setCustomColName,
-        linkCols = {}, setLinkCols
+        linkCols = {}, setLinkCols,
+        columnHeader = {}, setColumnHeader,
+        columnColors= {}, setColumnColors
     }) => {
 
     return (
@@ -894,6 +940,8 @@ export const RenderColumnControls = (
                                colJustify={colJustify} setColJustify={setColJustify}
                                customColName={customColName} setCustomColName={setCustomColName}
                                linkCols={linkCols} setLinkCols={setLinkCols}
+                               columnHeader={columnHeader} setColumnHeader={setColumnHeader}
+                               columnColors={columnColors} setColumnColors={setColumnColors}
             />
         </div>
     )

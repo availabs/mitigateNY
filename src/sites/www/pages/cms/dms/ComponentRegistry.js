@@ -1,5 +1,5 @@
 
-
+import ComponentRegistry from "../../../../../component_registry/index.js";
 // import ColorBox from "../colorbox";
 import LossByDisasterNumberChart from "./LossByDisasterNumberChart";
 import LossDistributionPieChart from "./LossDistributionPieChart";
@@ -23,16 +23,15 @@ import CalloutBox from "./CalloutBox/";
 import FusionEventsMap from "./FusionEventsMap/index.jsx";
 import OpenFemaDataTable from "./OpenFemaDataTable/index.jsx";
 import CenrepTable from "./CenrepTable/index.jsx";
-import DataTextBox from "./DataTextBox/index.jsx";
+import CountyTextBox from "./CountyTextBox/index.jsx";
 import FormsTable from "./FormsTable/index.jsx";
 import CensusStatBox from "./CensusStatBox/index.jsx"
 import CensusBarChart from "./CensusBarChart/index.jsx";
 import CensusStackedBarChart from "./CensusStackedBarChart/index.jsx";
 import CensusLineChart from "./CensusLineChart/index.jsx";
 import CountyStatusMap from "./CountyStatusMap/index.jsx";
-import CountyHighlightMap from "./CountyHighlightMap/index.jsx";
 
-const ComponentRegistry = {
+const ComponentRegistryOld = {
     // "ColorBox": ColorBox,
     "Card: Callout": CalloutBox,
     "Card: Hazard Risk": HazardStatBox,
@@ -62,14 +61,13 @@ const ComponentRegistry = {
     "Map: Buildings": BuildingsMap,
     "Map: Floodplains": DFIRMMap,
     "Map: County Status": CountyStatusMap,
-    "Map: County Highlight": CountyHighlightMap,
     "lexical": {
         ...CalloutBox,
         name: 'Rich Text',
         hideInSelector: false
     },
-    "Data Text Box": DataTextBox
+    "County Text Box": CountyTextBox
 }
 
-
 export default ComponentRegistry
+// export default ComponentRegistry

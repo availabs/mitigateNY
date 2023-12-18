@@ -374,7 +374,7 @@ const Edit = ({value, onChange, size}) => {
                             // setAttribute(undefined);
                             setGeoAttribute(undefined);
                             setVersion(undefined);
-                            setData([]);
+                            // setData([]);
 
                             setDataSource(e);
                         }}
