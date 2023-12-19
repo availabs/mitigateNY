@@ -115,53 +115,53 @@ class CirclesOptions extends LayerContainer {
     show: true
   };
 
-  onHover = {
-    layers: ['circles'],
-    HoverComp: ({ data, layer }) => {
-      return (
-        <div style={{ maxHeight: "400px" }} className={`rounded relative px-1 overflow-auto scrollbar-sm bg-white`}>
-          {
-            data?.length && data.map((d, i) =>
-              d.map(row => (
-                  <div key={i} className="flex border border-blue-300">
-                    {
-                        row?.length && row.map((d, ii) =>
-                            <div key={ii}
-                                 className={`
-                                  ${ii === 0 ? "flex-1 font-bold" : "overflow-auto scrollbarXsm"}
-                                  ${row.length > 1 && ii === 0 ? "mr-4" : ""}
-                                  ${row.length === 1 && ii === 0 ? `border-b-2 text-lg ${i > 0 ? "mt-1" : ""}` : ""}
-                                  `}>
-                              {d}
-                            </div>
-                        )
-                    }
-                  </div>
-              ))
-            )
-          }
-        </div>
-      );
-    },
-    callback: (layerId, features, lngLat) => {
-      return features.reduce((a, feature) => {
-        let { view: currentView, data, dataFormat, idCol = 'event_id' } = this.props;
-        const fmt = dataFormat || d3Formatter('0.2s');
-        let record = data.find(d => d[idCol] === feature.properties[idCol]),
-          response = [
-            [feature.properties.geoid, ''],
-            ...Object.keys(record || {})
-              .filter(key => key !== 'geoid')
-              .map(key => [key, key === idCol ? get(record, key) : fmt(get(record, key))]),
-            currentView?.paintFn ? ['Total', fmt(currentView.paintFn(record || {}) || 0)] : null,
-          ];
-        return [...a, response];
-      }, []);
-    }
-  };
+  // onHover = {
+  //   layers: ['circles'],
+  //   HoverComp: ({ data, layer }) => {
+  //     return (
+  //       <div style={{ maxHeight: "400px" }} className={`rounded relative px-1 overflow-auto scrollbar-sm bg-white`}>
+  //         {
+  //           data?.length && data.map((d, i) =>
+  //             d.map(row => (
+  //                 <div key={i} className="flex border border-blue-300">
+  //                   {
+  //                       row?.length && row.map((d, ii) =>
+  //                           <div key={ii}
+  //                                className={`
+  //                                 ${ii === 0 ? "flex-1 font-bold" : "overflow-auto scrollbarXsm"}
+  //                                 ${row.length > 1 && ii === 0 ? "mr-4" : ""}
+  //                                 ${row.length === 1 && ii === 0 ? `border-b-2 text-lg ${i > 0 ? "mt-1" : ""}` : ""}
+  //                                 `}>
+  //                             {d}
+  //                           </div>
+  //                       )
+  //                   }
+  //                 </div>
+  //             ))
+  //           )
+  //         }
+  //       </div>
+  //     );
+  //   },
+  //   callback: (layerId, features, lngLat) => {
+  //     return features.reduce((a, feature) => {
+  //       let { view: currentView, data, dataFormat, idCol = 'event_id' } = this.props;
+  //       const fmt = dataFormat || d3Formatter('0.2s');
+  //       let record = data.find(d => d[idCol] === feature.properties[idCol]),
+  //         response = [
+  //           [feature.properties.geoid, ''],
+  //           ...Object.keys(record || {})
+  //             .filter(key => key !== 'geoid')
+  //             .map(key => [key, key === idCol ? get(record, key) : fmt(get(record, key))]),
+  //           currentView?.paintFn ? ['Total', fmt(currentView.paintFn(record || {}) || 0)] : null,
+  //         ];
+  //       return [...a, response];
+  //     }, []);
+  //   }
+  // };
 
   init(map, falcor, props) {
-    map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904]);
+    map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904], {duration: 0});
     // map.on('styledata', () => console.log('styling'));
     map.on('idle', async (e) => {
       console.log('idle')
@@ -198,12 +198,12 @@ class CirclesOptions extends LayerContainer {
   handleMapFocus(map, props) {
     if (props.mapFocus) {
       try {
-          map.fitBounds(props.mapFocus)
+          map.fitBounds(props.mapFocus, {duration: 0})
       } catch (e) {
-        map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904]);
+        map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904], {duration: 0});
       }
     } else {
-    map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904]);
+    map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904], {duration: 0});
     }
   }
 

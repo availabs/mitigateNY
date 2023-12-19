@@ -14,9 +14,11 @@ import { getSubdomain }  from '~/utils'
 
 import DefaultRoutes from '~/routes'
 import www from '~/sites/www'
+import footprints from '~/sites/footprints'
 
 const Sites = {
-  www
+  www,
+  footprints
 }
 
 function App (props) {
@@ -25,6 +27,8 @@ function App (props) {
   const site = useMemo(() => {
       return Sites?.[SUBDOMAIN] || Sites['www']
   },[SUBDOMAIN])
+
+  //console.log('app', site, SUBDOMAIN)
 
   const WrappedRoutes =  useMemo(() => {
     const Routes = [...site.Routes, ...DefaultRoutes]
