@@ -322,6 +322,16 @@ export default {
             hidden: true
         },
         {
+            name: 'columnHeader',
+            default: [],
+            hidden: true
+        },
+        {
+            name: 'columnColors',
+            default: [],
+            hidden: true
+        },
+        {
             name: 'bgColor',
             default: 'rgba(0,0,0,0)',
             hidden: true
