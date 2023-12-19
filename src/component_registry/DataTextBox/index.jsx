@@ -41,8 +41,8 @@ async function getData({pgEnv, geoid, dataSource, version, geoAttribute, visible
         )[0]?.[vc] || ''
         return {
             text: val,
-            header: columnHeader[vc],
-            color: columnColors[vc]
+            header: columnHeader?.[vc],
+            color: columnColors?.[vc]
         }
     }).filter(val => val.text);
 
