@@ -19,14 +19,14 @@ registerDataType("selector", Selector)
 
 const Routes = [
   // -- Admin Routes -- //
-  ...DamaRoutes({
-    baseUrl:'/cenrep',
-    defaultPgEnv : "hazmit_dama",
-    navSettings: authMenuConfig,
-    dataTypes: hazmitDataTypes,
-    useFalcor,
-    useAuth
-  }),
+  // ...DamaRoutes({
+  //   baseUrl:'/cenrep',
+  //   defaultPgEnv : "hazmit_dama",
+  //   navSettings: authMenuConfig,
+  //   dataTypes: hazmitDataTypes,
+  //   useFalcor,
+  //   useAuth
+  // }),
   {
     ...dmsPageFactory(
       siteConfig({ 

@@ -17,12 +17,12 @@ const widths = {
 }
 
 const RenderChoroplethLegend = ({size, domain, range, fmt, title,}) => {
-    const RenderLegendBox = ({value, color, fmt, className}) => {
+    const RenderLegendBox = ({value, color, fmt, className, i}) => {
         const width = `${widths[size] / (range.length + 1)}px`,
             heightParent = '40px',
             heightChild = '20px';
         return (
-            <div key={value} className={`flex flex-col h-[${heightParent}] ${className}`} style={{width}}>
+            <div key={i} className={`flex flex-col h-[${heightParent}] ${className}`} style={{width}}>
                 <div className={`h-[${heightChild}]`} style={{backgroundColor: color, width}}/>
                 <div className={`h-[${heightChild}] text-xs text-right`} style={{width}}>
                     { fmt ? fmt(value) : value }
@@ -39,7 +39,7 @@ const RenderChoroplethLegend = ({size, domain, range, fmt, title,}) => {
             <div className={'flex flex-row justify-center inline-block align-middle pt-2.5'}>
                 {
                     range.map((r, i) => {
-                        return <RenderLegendBox value={domain[i]} color={r} fmt={fmt}/>
+                        return <RenderLegendBox key={i} i={i} value={domain[i]} color={r} fmt={fmt}/>
                     })
                 }
                 <RenderLegendBox value={'N/A'} color={'#d0d0ce'} className={'ml-1'}/>

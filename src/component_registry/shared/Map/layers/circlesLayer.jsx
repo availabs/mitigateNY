@@ -164,7 +164,7 @@ class CirclesOptions extends LayerContainer {
     map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904], {duration: 0});
     // map.on('styledata', () => console.log('styling'));
     map.on('idle', async (e) => {
-      console.log('idle')
+      //console.log('idle')
       const canvas = document.querySelector("canvas.maplibregl-canvas"),
           newCanvas = document.createElement("canvas");
 
