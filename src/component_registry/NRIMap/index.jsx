@@ -435,6 +435,11 @@ export default {
             hidden: true
         },
         {
+            name: 'attribute',
+            default: 'eal',
+            hidden: true
+        },
+        {
             name: 'typeId',
             hidden: true
         },
