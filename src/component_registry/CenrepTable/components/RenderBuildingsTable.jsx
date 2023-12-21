@@ -30,7 +30,7 @@ export const RenderBuildingsTable = ({
     const [filters, setFilters] = useState(extFilterValues);
 
     const updatedColumns = columns
-        .filter(c => !hiddenCols.includes(c.name))
+        .filter(c => !hiddenCols.includes(c.name) && !c.openOut)
         .map(c => {
         return {
             ...c,
