@@ -10,6 +10,7 @@ import {Loading} from "~/utils/loading.jsx";
 import {RenderColumnControls} from "../shared/columnControls.jsx";
 import {addTotalRow} from "../utils/addTotalRow.js";
 import {Switch} from "@headlessui/react";
+import {defaultOpenOutAttributes, getNestedValue} from "../FormsTable/utils.js";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {
     const fns = columnsToFetch.map(ctf => ctf.includes(' AS') ? ctf.split(' AS')[0] : ctf.split(' as')[0]);
@@ -94,7 +95,8 @@ const assignMeta = ({
                         notNull,
                         geoAttribute,
                         geoid,
-                        metaLookupByViewId
+                        metaLookupByViewId,
+                        columns
                     }, falcor) => {
     const falcorCache = falcor.getCache();
 
@@ -105,7 +107,7 @@ const assignMeta = ({
         );
 
     if(metaLookupCols?.length){
-        return Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {}))
+        return handleExpandableRows(Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {}))
             .map(row => {
                 metaLookupCols.forEach(mdC => {
                     const currentMetaLookup = parseJson(mdC.meta_lookup);
@@ -123,11 +125,38 @@ const assignMeta = ({
                     }
                 })
                 return row;
-            })
+            }), columns)
     }
 
-    return Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {}))
+    return handleExpandableRows(Object.values(get(falcorCache, dataPath(options({groupBy, notNull, geoAttribute, geoid})), {})), columns)
 
+}
+
+const handleExpandableRows = (data, columns) => {
+    const expandableColumns = columns.filter(c => c.openOut);
+    if (expandableColumns?.length) {
+        const newData = data.map(row => {
+            const newRow = {...row}
+            newRow.expand = []
+            newRow.expand.push(
+                ...expandableColumns.map(col => {
+                    const value = getNestedValue(row[col.accessor]);
+
+                    return {
+                        key: col.display_name || col.name,
+                        accessor: col.accessor,
+                        value: Array.isArray(value) ? value.join(', ') : typeof value === 'object' ? '' : value, // to display arrays
+                        originalValue: Array.isArray(value) ? value : typeof value === 'object' ? '' : value // to filter arrays
+                    }
+                })
+            )
+            expandableColumns.forEach(col => delete newRow[col.accessor])
+            return newRow;
+        });
+        return newData;
+    } else {
+        return data
+    }
 }
 
 async function getData({
@@ -174,18 +203,6 @@ async function getData({
 
     const metaLookupByViewId = await getMeta({dataSources, dataSource, visibleCols, geoid}, falcor);
 
-    const data = assignMeta({
-        metadata,
-        visibleCols,
-        dataPath,
-        options,
-        groupBy,
-        fn,
-        notNull,
-        geoAttribute,
-        geoid,
-        metaLookupByViewId
-    }, falcor);
 
     const columns = visibleCols
         .map(c => metadata.find(md => md.name === c))
@@ -209,6 +226,20 @@ async function getData({
             }
         })
 
+    const data = assignMeta({
+        metadata,
+        visibleCols,
+        dataPath,
+        options,
+        groupBy,
+        fn,
+        notNull,
+        geoAttribute,
+        geoid,
+        metaLookupByViewId,
+        columns
+    }, falcor);
+
     addTotalRow({showTotal, data, columns, setLoading: () => {}});
 
     const attributionData =  get(falcor.getCache(), attributionPath, {});
@@ -219,7 +250,7 @@ async function getData({
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
         dataSource, dataSources, version, extFilterCols, colJustify, striped, extFiltersDefaultOpen,
-        customColName, linkCols
+        customColName, linkCols, openOutCols
     }
 }
 
@@ -281,8 +312,12 @@ const Edit = ({value, onChange}) => {
         const geoAttribute =
             (dataSources
                 .find(ds => ds.source_id === dataSource)?.metadata?.columns || [])
-                .find(c => c.display === 'geoid-variable');
-        geoAttribute?.name && setGeoAttribute(geoAttribute?.name);
+                .find(c => c.display === 'geoid-variable')?.name
+
+        const geoAttributeMapped = geoAttribute?.includes(' AS') ? geoAttribute.split(' AS')[0] :
+            geoAttribute?.includes(' as') ? geoAttribute.split(' as')[0] : geoAttribute;
+
+        geoAttributeMapped && setGeoAttribute(geoAttributeMapped);
     }, [dataSources, dataSource]);
 
 
@@ -479,8 +514,8 @@ const Edit = ({value, onChange}) => {
                         setColSizes={setColSizes}
                         extFilterCols={extFilterCols}
                         setExtFilterCols={setExtFilterCols}
-                        // openOutCols={openOutCols}
-                        // setOpenOutCols={setOpenOutCols}
+                        openOutCols={openOutCols}
+                        setOpenOutCols={setOpenOutCols}
                         colJustify={colJustify}
                         setColJustify={setColJustify}
                         customColName={customColName}
@@ -610,6 +645,31 @@ export default {
             name: 'extFilterCols',
             hidden: true,
             default: []
+        },
+        {
+            name: 'colJustify',
+            hidden: true,
+            default: {}
+        },
+        {
+            name: 'striped',
+            hidden: true,
+            default: false
+        },
+        {
+            name: 'extFiltersDefaultOpen',
+            hidden: true,
+            default: false
+        },
+        {
+            name: 'customColName',
+            hidden: true,
+            default: {}
+        },
+        {
+            name: 'linkCols',
+            hidden: true,
+            default: {}
         },
     ],
     getData,

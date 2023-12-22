@@ -44,12 +44,13 @@ async function getData({pgEnv, geoid, dataSource, version, geoAttribute, visible
             header: columnHeader?.[vc],
             color: columnColors?.[vc]
         }
-    }).filter(val => val.text);
+    }).filter(val => val.text && val?.text?.trim()?.toLowerCase() !== 'null');
 
     return {
         id: id + 1,
         bgColor,
         text: convertToEditorText(textToSave),
+        hideSection: !textToSave?.length,
         geoAttribute,
         geoid,
         visibleCols,
