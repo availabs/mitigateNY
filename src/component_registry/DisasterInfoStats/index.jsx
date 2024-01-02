@@ -130,6 +130,7 @@ const Edit = ({value, onChange}) => {
                             declarationDate={cachedData?.declarationDate}
                             endDate={cachedData?.endDate}
                             attributionData={cachedData?.attributionData}
+                            disasterNumber={cachedData?.disasterNumber}
                             baseUrl={baseUrl}
                         />
                 }

@@ -9,13 +9,13 @@ import {Attribution} from "../../shared/attribution.jsx";
 const blockLabelClass = `border-b-2`,
     blockValueClass = `font-medium pt-2 text-xl`;
 
-export const RenderDisasterInfoStats = ({ title, incidentType, declarationDate, endDate, attributionData, baseUrl }) => {
+export const RenderDisasterInfoStats = ({ disasterNumber, title, incidentType, declarationDate, endDate, attributionData, baseUrl }) => {
    return (
        <React.Fragment>
            <div className={"w-full shrink-1 flex flex-col mr-5"}>
 
                <div className={"w-full h-[70px] font-bold flex items-center text-3xl"}>
-                   {title}
+                   {title} { disasterNumber ? `(${disasterNumber})` : null}
                </div>
 
                <div className={"w-full  text-center flex flex-row "}>
