@@ -183,7 +183,7 @@ class EALChoroplethOptions extends LayerContainer {
   handleMapFocus(map, props) {
     if (props.mapFocus) {
       try {
-          map.fitBounds(props.mapFocus, {duration: 0})
+          map.fitBounds(props.mapFocus, {duration: 0, padding: 50})
       } catch (e) {
         map.fitBounds([-125.0011, 24.9493, -66.9326, 49.5904], {duration: 0});
       }
