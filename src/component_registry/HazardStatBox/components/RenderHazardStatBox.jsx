@@ -140,7 +140,7 @@ export const RenderHazardStatBox = ({
                                 {isTotal ? `Expected Annual Loss (EAL)` : `EAL`}
                             </label>
                             <span className={valueClass}>
-                                ${fnumIndex(eal)}
+                                {fnumIndex(eal, 2, true)}
                             </span>
                             {!isTotal && visibleCols.includes('Hazard Percentile Bar') &&
                                 <RenderSvgBar
@@ -162,21 +162,21 @@ export const RenderHazardStatBox = ({
                     {!isTotal && visibleCols.includes('Actual Loss') &&
                         <div className={blockClass[size]}><label>Actual Loss</label>
                             <span className={valueClass}>
-                                ${fnumIndex(actualLoss)}
+                                {fnumIndex(actualLoss, 2, true)}
                             </span>
                         </div>
                     }
                     {!isTotal && visibleCols.includes('Actual Loss (with Population)') &&
                         <div className={blockClass[size]}><label>Actual Loss (with Population)</label>
                             <span className={valueClass}>
-                                ${fnumIndex(actualLossWithPop)}
+                                {fnumIndex(actualLossWithPop, 2, true)}
                             </span>
                         </div>
                     }
                     {!isTotal && visibleCols.includes('Exposure') &&
                         <div className={blockClass[size]}><label>Exposure</label>
                             <span className={valueClass}>
-                                    ${fnumIndex(exposure)}
+                                    {fnumIndex(exposure, 2, true)}
                                 </span>
                         </div>
                     }
