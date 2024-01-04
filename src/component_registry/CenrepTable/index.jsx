@@ -187,15 +187,19 @@ const handleExpandableRows = (data, columns, fn, disasterNumber) => {
 }
 
 async function getData({
-                           dataSources, dataSource, geoAttribute,
-                           geoid, disasterNumber,
-                           pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
-                           filters, filterValue, visibleCols, hiddenCols,
-                           version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
-                           customColName, linkCols
+    // settings that require data fetching
+                           dataSources, dataSource, version, geoid, geoAttribute, disasterNumber,
+                           groupBy, fn, visibleCols,
+                           fetchData = true, // when setting that don't require data fetching change, call getData with fetchData = false
+                           data, columns, // if fetchData is false, provide these
+
+    // settings that change appearance
+                           pageSize, sortBy,  notNull,  colSizes,
+                           filters, filterValue, hiddenCols, showTotal,
+                           extFilterCols, openOutCols, colJustify, striped,
+                           extFiltersDefaultOpen, customColName, linkCols,
                        }, falcor) {
     const options = ({groupBy, notNull, geoAttribute, geoid}) => {
-
         return JSON.stringify({
             aggregatedLen: Boolean(groupBy.length),
             filter: {
@@ -216,68 +220,94 @@ async function getData({
     const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns ||
                      dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
                      [];
+    let tmpData, tmpColumns;
 
-    await falcor.get(lenPath(options({groupBy, notNull, geoAttribute, geoid})));
-    const len = Math.min(
-        get(falcor.getCache(), lenPath(options({groupBy, notNull, geoAttribute, geoid})), 0),
-        590);
+    if(fetchData){
+        await falcor.get(lenPath(options({groupBy, notNull, geoAttribute, geoid})));
+        const len = Math.min(
+            get(falcor.getCache(), lenPath(options({groupBy, notNull, geoAttribute, geoid})), 0),
+            590);
 
-    await falcor.get(
-        [...dataPath(options({groupBy, notNull, geoAttribute, geoid})),
-            {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
+        await falcor.get(
+            [...dataPath(options({groupBy, notNull, geoAttribute, geoid})),
+                {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
 
-    await falcor.get([...attributionPath, attributionAttributes]);
+        await falcor.get([...attributionPath, attributionAttributes]);
 
-    const metaLookupByViewId = await getMeta({dataSources, dataSource, visibleCols, geoid}, falcor);
+        const metaLookupByViewId = await getMeta({dataSources, dataSource, visibleCols, geoid}, falcor);
 
+        tmpColumns = visibleCols
+            .map(c => metadata.find(md => md.name === c))
+            .filter(c => c)
+            .map(col => {
+                // console.log('map col Header', customColName?.[col.name] || col?.display_name || col?.name)
+                return {
+                    Header: customColName?.[col.name] || col?.display_name || col?.name,
+                    accessor: fn?.[col?.name] || col?.name,
+                    align: colJustify?.[col?.name] || col?.align || 'right',
+                    width: colSizes?.[col.name] || '15%',
+                    minWidth: colSizes?.[col.name] || '15%',
+                    maxWidth: colSizes?.[col.name] || '15%',
+                    filter: col?.filter || filters?.[col?.name],
+                    extFilter: extFilterCols?.includes(col.name),
+                    info: col.desc,
+                    openOut: (openOutCols || [])?.includes(col?.name),
+                    link: linkCols?.[col?.name],
+                    ...col,
+                    type: fn?.[col?.name]?.includes('array_to_string') ? 'string' : col?.type
+                }
+            });
 
-    const columns = visibleCols
-        .map(c => metadata.find(md => md.name === c))
-        .filter(c => c)
-        .map(col => {
-            // console.log('map col Header', customColName?.[col.name] || col?.display_name || col?.name)
-            return {
-                Header: customColName?.[col.name] || col?.display_name || col?.name,
-                accessor: fn?.[col?.name] || col?.name,
-                align: colJustify?.[col?.name] || col?.align || 'right',
-                width: colSizes?.[col.name] || '15%',
-                minWidth: colSizes?.[col.name] || '15%',
-                maxWidth: colSizes?.[col.name] || '15%',
-                filter: col?.filter || filters?.[col?.name],
-                extFilter: extFilterCols?.includes(col.name),
-                info: col.desc,
-                openOut: (openOutCols || [])?.includes(col?.name),
-                link: linkCols?.[col?.name],
-                ...col,
-                type: fn?.[col?.name]?.includes('array_to_string') ? 'string' : col?.type
-            }
-        })
+        tmpData = assignMeta({
+            metadata,
+            visibleCols,
+            dataPath,
+            options,
+            groupBy,
+            fn,
+            notNull,
+            geoAttribute,
+            geoid,
+            disasterNumber,
+            metaLookupByViewId,
+            columns: tmpColumns
+        }, falcor);
+    } else{
+        tmpColumns = visibleCols
+            .map(c => metadata.find(md => md.name === c))
+            .filter(c => c)
+            .map(col => {
+                // console.log('map col Header', customColName?.[col.name] || col?.display_name || col?.name)
+                return {
+                    Header: customColName?.[col.name] || col?.display_name || col?.name,
+                    accessor: fn?.[col?.name] || col?.name,
+                    align: colJustify?.[col?.name] || col?.align || 'right',
+                    width: colSizes?.[col.name] || '15%',
+                    minWidth: colSizes?.[col.name] || '15%',
+                    maxWidth: colSizes?.[col.name] || '15%',
+                    filter: col?.filter || filters?.[col?.name],
+                    extFilter: extFilterCols?.includes(col.name),
+                    info: col.desc,
+                    openOut: (openOutCols || [])?.includes(col?.name),
+                    link: linkCols?.[col?.name],
+                    ...col,
+                    type: fn?.[col?.name]?.includes('array_to_string') ? 'string' : col?.type
+                }
+            });
+    }
 
-    const data = assignMeta({
-        metadata,
-        visibleCols,
-        dataPath,
-        options,
-        groupBy,
-        fn,
-        notNull,
-        geoAttribute,
-        geoid,
-        disasterNumber,
-        metaLookupByViewId,
-        columns
-    }, falcor);
-
-    addTotalRow({showTotal, data, columns, setLoading: () => {}});
+    addTotalRow({showTotal, data: tmpData || data, columns, setLoading: () => {}});
 
     const attributionData =  get(falcor.getCache(), attributionPath, {});
 
     return {
+        data: tmpData || data, columns: tmpColumns || columns,
         attributionData,
-        geoid, disasterNumber,
+        geoid, disasterNumber, geoAttribute,
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
-        data, columns, filters, filterValue, visibleCols, hiddenCols, geoAttribute,
-        dataSource, dataSources, version, extFilterCols, colJustify, striped, extFiltersDefaultOpen,
+        filters, filterValue, visibleCols, hiddenCols,
+        dataSource, dataSources, version,
+        extFilterCols, colJustify, striped, extFiltersDefaultOpen,
         customColName, linkCols, openOutCols
     }
 }
@@ -376,10 +406,11 @@ const Edit = ({value, onChange}) => {
                 pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
                 version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
-                customColName, linkCols
+                customColName, linkCols, fetchData: true
             }, falcor);
 
             onChange(JSON.stringify({
+                // only save data and columns
                 ...data,
             }));
 
@@ -388,15 +419,45 @@ const Edit = ({value, onChange}) => {
         }
 
         load()
-    }, [dataSources, dataSource, geoid, disasterNumber, geoAttribute,
-        pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
-        filters, filterValue, visibleCols, hiddenCols,
-        version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
-        customColName, linkCols
+    }, [dataSources, dataSource, geoid, disasterNumber, geoAttribute, groupBy, fn, visibleCols, version]);
+
+
+    useEffect(() => {
+        async function load(){
+            setLoading(true);
+            setStatus(undefined);
+
+            // getData that only sets settings, but doesn't fetch data.
+            const tmpData = await getData({
+                dataSources, dataSource, geoAttribute, geoid, disasterNumber,
+                pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
+                filters, filterValue, visibleCols, hiddenCols,
+                version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
+                customColName, linkCols,
+                data, columns,
+                fetchData: false
+            }, falcor);
+
+            onChange(JSON.stringify({
+                // only save data and columns
+                ...tmpData,
+            }));
+
+            setLoading(false);
+        }
+
+        load()
+
+    }, [
+        pageSize, sortBy,  notNull,  colSizes,
+        filters, filterValue, hiddenCols, showTotal,
+        extFilterCols, openOutCols, colJustify, striped,
+        extFiltersDefaultOpen, customColName, linkCols,
     ]);
 
     useEffect(() => {
         onChange(JSON.stringify({
+            // save settings
             ...cachedData,
             extFilterValues,
             striped,
