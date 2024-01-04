@@ -146,6 +146,7 @@ const assignMeta = ({
 const handleExpandableRows = (data, columns, fn, disasterNumber) => {
     const expandableColumns = columns.filter(c => c.openOut);
     const disasterNumberCol = (fn['disaster_number'] || 'disaster_number');
+    // if disaster number is being used to filter data, it should be in visible columns. Hide it if not needed.
 
     if (expandableColumns?.length) {
         const newData = data.map(row => {
@@ -179,7 +180,7 @@ const handleExpandableRows = (data, columns, fn, disasterNumber) => {
         return newData;
     } else {
         return data.filter(row => {
-                return !disasterNumber ||
+                return !disasterNumber || !row[disasterNumberCol] ||
                 (disasterNumber && row[disasterNumberCol] && row[disasterNumberCol]?.includes(disasterNumber))
             }
         )
@@ -196,7 +197,7 @@ async function getData({
     // settings that change appearance
                            pageSize, sortBy,  notNull,  colSizes,
                            filters, filterValue, hiddenCols, showTotal,
-                           extFilterCols, openOutCols, colJustify, striped,
+                           extFilterCols, extFilterValues, openOutCols, colJustify, striped,
                            extFiltersDefaultOpen, customColName, linkCols,
                        }, falcor) {
     const options = ({groupBy, notNull, geoAttribute, geoid}) => {
@@ -272,12 +273,13 @@ async function getData({
             metaLookupByViewId,
             columns: tmpColumns
         }, falcor);
+
+        addTotalRow({showTotal, data: tmpData || data, columns, setLoading: () => {}});
     } else{
         tmpColumns = visibleCols
             .map(c => metadata.find(md => md.name === c))
             .filter(c => c)
             .map(col => {
-                // console.log('map col Header', customColName?.[col.name] || col?.display_name || col?.name)
                 return {
                     Header: customColName?.[col.name] || col?.display_name || col?.name,
                     accessor: fn?.[col?.name] || col?.name,
@@ -296,18 +298,17 @@ async function getData({
             });
     }
 
-    addTotalRow({showTotal, data: tmpData || data, columns, setLoading: () => {}});
-
     const attributionData =  get(falcor.getCache(), attributionPath, {});
 
     return {
-        data: tmpData || data, columns: tmpColumns || columns,
+        data: fetchData ? tmpData : data, // new data is only available if fetchData is true
+        columns: tmpColumns || columns, // always prioritize tmpColumns
         attributionData,
         geoid, disasterNumber, geoAttribute,
         pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
         filters, filterValue, visibleCols, hiddenCols,
         dataSource, dataSources, version,
-        extFilterCols, colJustify, striped, extFiltersDefaultOpen,
+        extFilterCols, extFilterValues, colJustify, striped, extFiltersDefaultOpen,
         customColName, linkCols, openOutCols
     }
 }
@@ -405,7 +406,7 @@ const Edit = ({value, onChange}) => {
                 dataSources, dataSource, geoAttribute, geoid, disasterNumber,
                 pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
-                version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
+                version, extFilterCols, extFilterValues, openOutCols, colJustify, striped, extFiltersDefaultOpen,
                 customColName, linkCols, fetchData: true
             }, falcor);
 
@@ -432,7 +433,7 @@ const Edit = ({value, onChange}) => {
                 dataSources, dataSource, geoAttribute, geoid, disasterNumber,
                 pageSize, sortBy, groupBy, fn, notNull, showTotal, colSizes,
                 filters, filterValue, visibleCols, hiddenCols,
-                version, extFilterCols, openOutCols, colJustify, striped, extFiltersDefaultOpen,
+                version, extFilterCols, extFilterValues, openOutCols, colJustify, striped, extFiltersDefaultOpen,
                 customColName, linkCols,
                 data, columns,
                 fetchData: false
@@ -451,19 +452,9 @@ const Edit = ({value, onChange}) => {
     }, [
         pageSize, sortBy,  notNull,  colSizes,
         filters, filterValue, hiddenCols, showTotal,
-        extFilterCols, openOutCols, colJustify, striped,
+        extFilterCols, extFilterValues, openOutCols, colJustify, striped,
         extFiltersDefaultOpen, customColName, linkCols,
     ]);
-
-    useEffect(() => {
-        onChange(JSON.stringify({
-            // save settings
-            ...cachedData,
-            extFilterValues,
-            striped,
-            extFiltersDefaultOpen
-        }))
-    }, [extFilterValues, striped, extFiltersDefaultOpen]);
 
     const data = cachedData.data;
 
