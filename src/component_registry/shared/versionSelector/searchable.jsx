@@ -76,7 +76,8 @@ export default ({
 
     const views = useMemo(() => {
         return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", source_id, "views", "byIndex"], {}))
-            .map(v => getAttributes(get(falcorCache, v.value, {"attributes": {}})["attributes"]));
+            .map(v => getAttributes(get(falcorCache, v.value, {"attributes": {}})["attributes"]))
+            .sort((a,b) => +b?.view_id - +a?.view_id);
     }, [falcorCache, source_id, pgEnv]);
 
     useEffect(() => {
