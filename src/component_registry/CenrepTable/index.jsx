@@ -767,6 +767,16 @@ export default {
             hidden: true,
             default: {}
         },
+        {
+            name: 'openOutCols',
+            hidden: true,
+            default: []
+        },
+        {
+            name: 'extFilterValues',
+            hidden: true,
+            default: {}
+        },
     ],
     getData,
     "EditComp": Edit,
