@@ -7,44 +7,19 @@ export const menuItems = [
     path: '/admin'
   },
   {
-    name: 'Admin', 
-    //path: '/auth/someplace',
-    className: 'px-6 pt-8 pb-1 uppercase text-xs text-blue-400'
-  },
-  {
     name: 'Plan Status',
     icon: 'far fa-gauge-simple fa-fw',
     path: '/admin/plan_status'
   },
   {
-    name: 'CMS',
-    icon: 'far fa-edit fa-fw',
-    path: '/edit'
-  },
-  {
-    name: 'Templates',
-    icon: 'far fa-paste fa-fw',
-    path: '/admin/templates'
-  },
-  {
-    name: 'Classroom',
-    icon: 'far fa-book fa-fw',
-    path: '/admin/docs'
-  },
-  {
-    name: 'Data', 
+    name: 'Pages', 
     //path: '/auth/someplace',
     className: 'px-6 pt-8 pb-1 uppercase text-xs text-blue-400'
   },
   {
-    name: 'Cen Rep',
-    icon: 'far fa-database fa-fw',
-    path: '/cenrep'
-  },
-  {
-    name: 'Forms',
-    icon: 'far fa-database fa-fw',
-    path: '/admin/forms/list'
+    name: 'CMS',
+    icon: 'far fa-edit fa-fw',
+    path: '/edit'
   },
   {
     name: 'Playground',
@@ -57,50 +32,81 @@ export const menuItems = [
     path: '/drafts/edit'
   },
   {
-    name: 'Forms', 
+    name: 'Templates',
+    icon: 'far fa-paste fa-fw',
+    path: '/admin/templates'
+  },
+  
+  {
+    name: 'Cen Rep', 
     //path: '/auth/someplace',
     className: 'px-6 pt-8 pb-1 uppercase text-xs text-blue-400'
   },
   {
-    name: 'Actions',
-    icon: 'far fa-building fa-fw',
-    path: '/admin/forms/form/134526/list/'
+    name: 'External Data',
+    icon: 'far fa-database fa-fw',
+    path: '/cenrep'
   },
   {
-    name: 'Capabilities',
-    icon: 'far fa-warehouse-full fa-fw',
-    path: '/admin/forms/form/130306/list/0/10'
+    name: 'Managed Data',
+    icon: 'far fa-database fa-fw',
+    path: '/admin/forms/list'
   },
   {
-    name: 'Mitigation Measures',
-    icon: 'far fa-warehouse-full fa-fw',
-    path: '/admin/forms/form/130882/list/0/10'
+    name: 'Docs', 
+    //path: '/auth/someplace',
+    className: 'px-6 pt-8 pb-1 uppercase text-xs text-blue-400'
   },
   {
-    name: 'R+V Matrix',
-    icon: 'far fa-warehouse-full fa-fw',
-    path: '/admin/forms/form/131450/list/0/10'
+    name: 'Classroom',
+    icon: 'far fa-book fa-fw',
+    path: '/admin/docs'
   },
-  {
-    name: 'Policy Documents',
-    icon: 'far fa-building fa-fw',
-    path: '/admin/forms/form/149258/list/0/10'
-  },
-  {
-    name: 'Roles',
-    icon: 'far fa-people-arrows',
-    path: '/admin/forms/roles'
-  },
-  {
-    name: 'Zones',
-    icon: 'far fa-vector-polygon',
-    path: '/admin/forms/zones'
-  },
-  {
-    name: 'Agencies',
-    icon: 'far fa-flag',
-    path: '/admin/forms/agencies'
-  },
+  // {
+  //   name: 'Forms', 
+  //   //path: '/auth/someplace',
+  //   className: 'px-6 pt-8 pb-1 uppercase text-xs text-blue-400'
+  // },
+  // {
+  //   name: 'Actions',
+  //   icon: 'far fa-building fa-fw',
+  //   path: '/admin/forms/form/134526/list/'
+  // },
+  // {
+  //   name: 'Capabilities',
+  //   icon: 'far fa-warehouse-full fa-fw',
+  //   path: '/admin/forms/form/130306/list/0/10'
+  // },
+  // {
+  //   name: 'Mitigation Measures',
+  //   icon: 'far fa-warehouse-full fa-fw',
+  //   path: '/admin/forms/form/130882/list/0/10'
+  // },
+  // {
+  //   name: 'R+V Matrix',
+  //   icon: 'far fa-warehouse-full fa-fw',
+  //   path: '/admin/forms/form/131450/list/0/10'
+  // },
+  // {
+  //   name: 'Policy Documents',
+  //   icon: 'far fa-building fa-fw',
+  //   path: '/admin/forms/form/149258/list/0/10'
+  // },
+  // {
+  //   name: 'Roles',
+  //   icon: 'far fa-people-arrows',
+  //   path: '/admin/forms/roles'
+  // },
+  // {
+  //   name: 'Zones',
+  //   icon: 'far fa-vector-polygon',
+  //   path: '/admin/forms/zones'
+  // },
+  // {
+  //   name: 'Agencies',
+  //   icon: 'far fa-flag',
+  //   path: '/admin/forms/agencies'
+  // },
   {
     name: 'Tools', 
     //path: '/auth/someplace',
