@@ -509,6 +509,36 @@ export default {
             hidden: true,
             default: []
         },
+        {
+            name: 'extFilterValues',
+            hidden: true,
+            default: {}
+        },
+        {
+            name: 'openOutCols',
+            hidden: true,
+            default: []
+        },
+        {
+            name: 'colJustify',
+            hidden: true,
+            default: {}
+        },
+        {
+            name: 'striped',
+            hidden: true,
+            default: false
+        },
+        {
+            name: 'extFiltersDefaultOpen',
+            hidden: true,
+            default: false
+        },
+        {
+            name: 'customColName',
+            hidden: true,
+            default: {}
+        },
     ],
     getData,
     "EditComp": Edit,
