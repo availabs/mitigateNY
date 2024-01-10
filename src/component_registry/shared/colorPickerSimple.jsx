@@ -16,7 +16,7 @@ export const RenderColorPicker = ({title, className, color, setColor}) => (
                     '#713f12', '#854d0e', '#a16207', '#ca8a04', '#eab308', '#facc15', '#fde047', '#fef08a', '#fef9c3', '#fefce8',
 
 
-                ].map(c => <option>{c}</option>)
+                ].map(c => <option key={c}>{c}</option>)
             }
         </datalist>
     </div>
