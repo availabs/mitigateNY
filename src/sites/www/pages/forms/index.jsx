@@ -99,6 +99,12 @@ const siteConfig = {
                             {
                                 type: 'link',
                                 name: '',
+                                to: '/admin/forms/form/:id/list/',
+                                text: 'home'
+                            },
+                            {
+                                type: 'link',
+                                name: '',
                                 to: '/admin/forms/manage/:id',
                                 text: 'manage'
                             },
