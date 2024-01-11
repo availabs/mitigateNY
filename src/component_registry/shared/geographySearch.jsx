@@ -13,9 +13,9 @@ const handleSearch = (text, selected, setSelected) => {
 
 const onChangeFilter = (selected, setSelected, value, geoData, navigate, onChange) => {
   const geoid = get(selected, [0, 'geoid']);
-  if(geoid){
+  if(geoid || geoid === ''){
     setSelected(selected);
-    onChange ? onChange(geoid) : navigate(`/geography/${geoid}`)
+    onChange ? onChange(geoid) : navigate(`/geoid//${geoid}`)
   }else{
     setSelected([])
   }

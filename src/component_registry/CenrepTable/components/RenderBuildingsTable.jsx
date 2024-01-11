@@ -42,7 +42,7 @@ export const RenderBuildingsTable = ({
                         Array.isArray(originalValue) ? originalValue.join(', ') : originalValue;
 
                 if (typeof value === 'object') return <div></div>
-                return (c.link ? <Link to={`${c.link?.location || ''}${originalValue}`}>{c.link?.linkText || value}</Link> : <div>{value}</div>);
+                return (c.link?.isLink ? <Link to={`${c.link?.location || ''}${originalValue}`}>{c.link?.linkText || value}</Link> : <div>{value}</div>);
             }
         }
     })

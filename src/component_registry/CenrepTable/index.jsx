@@ -40,7 +40,7 @@ const parseJson = str => {
 }
 
 async function getMeta({dataSources, dataSource, visibleCols, geoid}, falcor){
-    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns;
+    const metadata = (dataSources || []).find(ds => ds.source_id === dataSource)?.metadata?.columns;
     const metaViewIdLookupCols =
         metadata?.filter(md => visibleCols.includes(md.name) && ['meta-variable', 'geoid-variable'].includes(md.display) && md.meta_lookup);
 
@@ -145,7 +145,7 @@ const assignMeta = ({
 
 const handleExpandableRows = (data, columns, fn, disasterNumber) => {
     const expandableColumns = columns.filter(c => c.openOut);
-    const disasterNumberCol = (fn['disaster_number'] || 'disaster_number');
+    const disasterNumberCol = (fn?.['disaster_number'] || 'disaster_number');
     // if disaster number is being used to filter data, it should be in visible columns. Hide it if not needed.
 
     if (expandableColumns?.length) {
@@ -202,12 +202,12 @@ async function getData({
                        }, falcor) {
     const options = ({groupBy, notNull, geoAttribute, geoid}) => {
         return JSON.stringify({
-            aggregatedLen: Boolean(groupBy.length),
+            aggregatedLen: Boolean(groupBy?.length),
             filter: {
-                ...geoAttribute && {[`substring(${geoAttribute}::text, 1, ${geoid?.toString()?.length})`]: [geoid]},
+                ...geoAttribute && geoid?.length && {[`substring(${geoAttribute}::text, 1, ${geoid?.toString()?.length})`]: [geoid]},
             },
             exclude: {
-                ...notNull.length && notNull.reduce((acc, col) => ({...acc, [col]: ['null']}), {}) // , '', ' ' error out for numeric columns.
+                ...notNull?.length && notNull.reduce((acc, col) => ({...acc, [col]: ['null']}), {}) // , '', ' ' error out for numeric columns.
             },
             groupBy: groupBy,
         })
@@ -218,8 +218,8 @@ async function getData({
     const attributionPath = ['dama', pgEnv, 'views', 'byId', version, 'attributes'],
         attributionAttributes = ['source_id', 'view_id', 'version', '_modified_timestamp'];
 
-    const metadata = dataSources.find(ds => ds.source_id === dataSource)?.metadata?.columns ||
-                     dataSources.find(ds => ds.source_id === dataSource)?.metadata ||
+    const metadata = (dataSources || []).find(ds => ds.source_id === dataSource)?.metadata?.columns ||
+                     (dataSources || []).find(ds => ds.source_id === dataSource)?.metadata ||
                      [];
     let tmpData, tmpColumns;
 
@@ -231,13 +231,13 @@ async function getData({
 
         await falcor.get(
             [...dataPath(options({groupBy, notNull, geoAttribute, geoid})),
-                {from: 0, to: len - 1}, visibleCols.map(vc => fn[vc] ? fn[vc] : vc)]);
+                {from: 0, to: len - 1}, (visibleCols || []).map(vc => fn[vc] ? fn[vc] : vc)]);
 
         await falcor.get([...attributionPath, attributionAttributes]);
 
         const metaLookupByViewId = await getMeta({dataSources, dataSource, visibleCols, geoid}, falcor);
 
-        tmpColumns = visibleCols
+        tmpColumns = (visibleCols || [])
             .map(c => metadata.find(md => md.name === c))
             .filter(c => c)
             .map(col => {
