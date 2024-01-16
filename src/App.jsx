@@ -14,11 +14,11 @@ import { getSubdomain }  from '~/utils'
 
 import DefaultRoutes from '~/routes'
 import www from '~/sites/www'
-import footprints from '~/sites/footprints'
+import buildings from '~/sites/buildings'
 
 const Sites = {
   www,
-  footprints
+  buildings
 }
 
 function App (props) {
