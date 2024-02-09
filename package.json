@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "deploy": "netlify deploy --prod",
-    "deploy-dev" : "netlify deploy --site 4f81b618-a3cf-4f79-baa3-3d4e82edef3a --prod",
+    "deploy-dev": "netlify deploy --site 4f81b618-a3cf-4f79-baa3-3d4e82edef3a --prod",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
@@ -46,6 +46,7 @@
     "@lexical/utils": "^0.12.2",
     "@nivo/bar": "^0.83.0",
     "@reduxjs/toolkit": "^1.9.5",
+    "bluebird": "^3.7.2",
     "colorbrewer": "^1.5.3",
     "d3": "^7.8.4",
     "d3-array": "^3.2.3",
