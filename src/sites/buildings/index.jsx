@@ -12,12 +12,14 @@ import AuthMenu from "~/pages/Auth/AuthMenu"
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
 import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/selector"
+// import BuildingFootprintsDownload from "./buildings_download"
 
 registerComponents(ComponentRegistry)
 registerDataType("selector", Selector)
 
 
 const Routes = [
+  // BuildingFootprintsDownload,
   // -- Admin Routes -- //
   // ...DamaRoutes({
   //   baseUrl:'/cenrep',
