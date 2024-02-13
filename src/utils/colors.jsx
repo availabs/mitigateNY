@@ -126,7 +126,7 @@ export const hazardsMeta = {
 
     // silvery
     'wind': {
-        color: '#dedad2',
+        color: '#b9c3d5',
         name: 'Wind',
         prefix: 'swnd',
         consequences: ['b', 'p', 'pe', 'a', 't'],
