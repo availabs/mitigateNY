@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {dmsDataLoader, dmsPageFactory, registerDataType} from "~/modules/dms/src"
 import {falcor} from "~/modules/avl-falcor"
-import {pgEnv} from "~/utils/";
+import {pgEnv} from "~/utils";
 import {Table} from "~/modules/avl-components/src"
 import {Link, useNavigate, useParams} from 'react-router-dom'
 import {withAuth} from "~/modules/ams/src"

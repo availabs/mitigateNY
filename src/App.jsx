@@ -28,14 +28,12 @@ function App (props) {
       return Sites?.[SUBDOMAIN] || Sites['www']
   },[SUBDOMAIN])
 
-  //console.log('app', site, SUBDOMAIN)
-
+ 
   const WrappedRoutes =  useMemo(() => {
     const Routes = [...site.Routes, ...DefaultRoutes]
     return LayoutWrapper(Routes, Layout)
   }, [site])
-  
-  
+
   return (
     <>
       <RouterProvider router={createBrowserRouter(WrappedRoutes)} />

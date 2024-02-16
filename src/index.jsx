@@ -13,15 +13,9 @@ import {
   ThemeContext
 } from "~/modules/avl-components/src"
 
-// import { 
-//   AVL_THEME
-// } from "~/modules/avl-components/src/Themes"
-
 import AVL_THEME from "~/layout/avail-theme"
 
-import {
-  enableAuth
-} from "~/modules/ams/src"
+import { enableAuth } from "~/modules/ams/src"
 
 import { 
   API_HOST,

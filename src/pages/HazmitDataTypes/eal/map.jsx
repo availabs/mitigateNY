@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { AvlMap } from "~/modules/avl-maplibre/src";
-import config from "~/config.json";
 import { EALFactory } from "./layers/EALChoropleth";
 import { CustomSidebar } from "./mapControls";
 import { useParams, useNavigate } from 'react-router-dom'
