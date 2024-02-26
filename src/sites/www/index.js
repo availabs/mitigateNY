@@ -10,7 +10,7 @@ import hazmitDataTypes from "~/pages/HazmitDataTypes"
 import Admin, { authMenuConfig } from "./pages/admin"
 import Playground from './pages/admin/playground'
 import Drafts from './pages/admin/drafts'
-import Templates from './pages/admin/templates'
+// import Templates from './pages/admin/templates'
 import Interactive from "./pages/interactive/index.jsx";
 
 import Docs from './pages/admin/docs'
@@ -38,7 +38,7 @@ const Routes = [
   Playground,
   Drafts,
   Docs,
-  Templates,
+  // Templates,
   Interactive,
   // -- Managed Data Routes -- //
   Forms,

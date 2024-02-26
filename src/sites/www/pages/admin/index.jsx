@@ -34,7 +34,7 @@ export const menuItems = [
   {
     name: 'Templates',
     icon: 'far fa-paste fa-fw',
-    path: '/admin/templates'
+    path: '/templates'
   },
   
   {

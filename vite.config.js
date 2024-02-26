@@ -1,19 +1,14 @@
-import { defineConfig } from 'vite'
-import path from 'path'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import {resolve} from 'path'
 
+//console.log('what', path.resolve(__dirname, './src'))
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  build: {
-    outDir: './build'
-  },
+  plugins: [react(), splitVendorChunkPlugin()],
   resolve: {
     alias: [
-      { find: '~', replacement: path.resolve(__dirname, 'src') },
-    ],
-  },
-  define: {
-      //global: {},
-  },
+      { find: "~", replacement: resolve(__dirname, "./src") }
+    ]
+  }
 })

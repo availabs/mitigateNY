@@ -14,11 +14,11 @@ import { getSubdomain }  from '~/utils'
 
 import DefaultRoutes from '~/routes'
 import www from '~/sites/www'
-import footprints from '~/sites/footprints'
+import buildings from '~/sites/buildings'
 
 const Sites = {
   www,
-  footprints
+  buildings
 }
 
 function App (props) {
@@ -28,14 +28,12 @@ function App (props) {
       return Sites?.[SUBDOMAIN] || Sites['www']
   },[SUBDOMAIN])
 
-  //console.log('app', site, SUBDOMAIN)
-
+ 
   const WrappedRoutes =  useMemo(() => {
     const Routes = [...site.Routes, ...DefaultRoutes]
     return LayoutWrapper(Routes, Layout)
   }, [site])
-  
-  
+
   return (
     <>
       <RouterProvider router={createBrowserRouter(WrappedRoutes)} />
