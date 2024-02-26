@@ -5,6 +5,7 @@ import { withAuth } from "~/modules/ams/src"
 import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
+import { useFalcor } from "~/modules/avl-falcor"
 
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 
@@ -17,6 +18,7 @@ export default {
     type: "docs-play",
     logo: <div />, 
     rightMenu: <AuthMenu />,
+    useFalcor,
     baseUrl: "/playground",
     checkAuth
   }), "/playground/",  withAuth),

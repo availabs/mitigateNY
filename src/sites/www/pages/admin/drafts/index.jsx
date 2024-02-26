@@ -4,7 +4,7 @@ import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
 import { menuItems } from "../index"
-
+import { useFalcor } from "~/modules/avl-falcor"
 
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 
@@ -15,7 +15,8 @@ export default {
   ...dmsPageFactory(siteConfig({ 
     app: "dms-site",
     type: "docs-draft",
-    logo: <div />, 
+    logo: <div />,
+    useFalcor,
     rightMenu: <AuthMenu />,
     baseUrl: "/drafts",
     checkAuth
