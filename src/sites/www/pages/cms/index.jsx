@@ -4,6 +4,7 @@ import { withAuth } from "~/modules/ams/src"
 import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
+import { useFalcor } from "~/modules/avl-falcor"
 
 
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
@@ -18,6 +19,7 @@ export default {
     siteConfig({ 
       app: "dms-site",
       type: "docs-page",
+      useFalcor,
       logo: <Logo />, 
       rightMenu: <AuthMenu />,
       baseUrl: "",
