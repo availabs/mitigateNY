@@ -2,6 +2,7 @@ import { useFalcor } from '~/modules/avl-falcor';
 import { useAuth } from "~/modules/ams/src";
 
 import DamaRoutes from "~/pages/DataManager"
+import hazmitDataTypes from "~/pages/HazmitDataTypes"
 
 import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
 import { withAuth } from "~/modules/ams/src"
@@ -13,23 +14,33 @@ import AuthMenu from "~/pages/Auth/AuthMenu"
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
 import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/selector"
-// import BuildingFootprintsDownload from "./buildings_download"
+import BuildingFootprintsDownload from "./buildings_download"
 
 registerComponents(ComponentRegistry)
 registerDataType("selector", Selector)
 
+const authMenuConfig = {
+  sideNav: {
+    size: 'none',
+    color: 'white'
+    
+  },
+  topNav: {
+    position: 'fixed',
+    size: 'compact'
+  },
+}
 
 const Routes = [
-  // BuildingFootprintsDownload,
-  // -- Admin Routes -- //
-  // ...DamaRoutes({
-  //   baseUrl:'/cenrep',
-  //   defaultPgEnv : "hazmit_dama",
-  //   navSettings: authMenuConfig,
-  //   dataTypes: hazmitDataTypes,
-  //   useFalcor,
-  //   useAuth
-  // }),
+  BuildingFootprintsDownload,
+  ...DamaRoutes({
+    baseUrl:'/cenrep',
+    defaultPgEnv : "kari",
+    navSettings: authMenuConfig,
+    dataTypes: hazmitDataTypes,
+    useFalcor,
+    useAuth
+  }),
   {
     ...dmsPageFactory(
       siteConfig({ 
