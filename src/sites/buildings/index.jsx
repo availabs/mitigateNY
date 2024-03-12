@@ -4,7 +4,8 @@ import { useAuth } from "~/modules/ams/src";
 import DamaRoutes from "~/pages/DataManager"
 
 import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
-import { withAuth } from "~/modules/ams/src" 
+import { withAuth } from "~/modules/ams/src"
+
 import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
@@ -36,6 +37,7 @@ const Routes = [
         type: "docs-footprints",
         logo: <Logo />, 
         rightMenu: <AuthMenu />,
+        useFalcor,
         baseUrl: "",
         checkAuth
       }), 
