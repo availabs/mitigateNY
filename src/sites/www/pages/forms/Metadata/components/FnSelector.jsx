@@ -7,9 +7,9 @@ export const FnSelector = ({update, metadata, setMetadata, col, value}) => {
         await editMetadata({update, metadata, setMetadata, col, value: {defaultFn: e.target.value}});
     }, [col, metadata]);
 
-    return (<div className={'border w-full h-fit'}>
+    return (<div className={'border border-blue-100 w-full h-fit'}>
         <select
-            className="pl-3 pr-4 py-2.5 h-fit border border-blue-100 bg-blue-50 w-full bg-white mr-2 flex items-center justify-between text-sm"
+            className="appearance-auto pl-3 pr-4 py-2.5 h-fit bg-blue-50 w-full bg-white mr-2 flex items-center justify-between text-sm"
             value={value}
             onChange={onChange}
         >
