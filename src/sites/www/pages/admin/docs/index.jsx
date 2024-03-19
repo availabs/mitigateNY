@@ -52,7 +52,7 @@ export default {
     rightMenu: <AuthMenu />,
     baseUrl: "/admin/docs",
     checkAuth
-  }), "/admin/docs",  withAuth),
+  }), "/admin/docs/",  withAuth),
   name: "Classroom",
   sideNav: {
     size: 'mini',

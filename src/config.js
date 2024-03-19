@@ -1,15 +1,15 @@
 export const PROJECT_NAME = "hazard_mitigation";
 
-let API_HOST = "https://graph2.availabs.org";
-let AUTH_HOST = "https://graph2.availabs.org/auth";
+let API_HOST = "https://graph.availabs.org";
+let AUTH_HOST = "https://graph.availabs.org";
 let CLIENT_HOST = "mitigateny.org";
-let DAMA_HOST = "https://graph2.availabs.org";
+let DAMA_HOST = "https://graph.availabs.org";
 
 if (process.env.NODE_ENV === "development") {
-  API_HOST = "https://graph2.availabs.org";
-  DAMA_HOST = "https://graph2.availabs.org";
-  AUTH_HOST = "https://graph2.availabs.org/auth"
-  // CLIENT_HOST = "localhost:3000";
+  // API_HOST = "http://localhost:4444";
+  // DAMA_HOST = "http://localhost:4444";
+  // AUTH_HOST = "http://localhost:4444"
+  CLIENT_HOST = "localhost:5173";
   // DAMA_HOST = "https://graph.availabs.org";
 }
 
