@@ -15,10 +15,12 @@ import { getSubdomain }  from '~/utils'
 import DefaultRoutes from '~/routes'
 import www from '~/sites/www'
 import buildings from '~/sites/buildings'
+import countytemplate from '~/sites/countytemplate'
 
 const Sites = {
   www,
-  buildings
+  buildings,
+  countytemplate
 }
 
 function App (props) {
