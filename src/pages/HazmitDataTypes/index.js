@@ -37,7 +37,7 @@ import eal from "./eal"
 import disaster_loss_summary from "./disaster_loss_summary";
 import fusion from "./fusion";
 //import open_fema_data from "./open_fema_data";
-
+import gis_least_common_geographic_units from './gis_least_common_geographic_units'
 
 
 const DataTypes = {
@@ -78,8 +78,9 @@ const DataTypes = {
   per_basis_fusion,
   hlr,
   eal,
-  fusion
+  fusion,
 
+  gis_least_common_geographic_units
 };
 
 export default DataTypes;
