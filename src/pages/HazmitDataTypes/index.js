@@ -25,6 +25,7 @@ import ncei_storm_events_enhanced from "./ncei_storm_events_enhanced";
 import zone_to_county from "./zone_to_county";
 import tiger_2017 from "./tiger_2017";
 import tiger_2017_full from "./tiger_2017_full";
+import tiger_full from "./tiger_full/index.jsx";
 import usda_crop_insurance_cause_of_loss from "./usda";
 import usda_crop_insurance_cause_of_loss_enhanced from "./usda_enhanced";
 import sba_disaster_loan_data_new from "./sba";
@@ -39,9 +40,8 @@ import fusion from "./fusion";
 //import open_fema_data from "./open_fema_data";
 import gis_least_common_geographic_units from './gis_least_common_geographic_units'
 
-
 const DataTypes = {
-  
+  tiger_full,
   tiger_2017,
   tiger_2017_full,
 
