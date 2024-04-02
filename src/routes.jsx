@@ -1,7 +1,7 @@
 import Auth from '~/pages/Auth'
 
 const routes = [
-  Auth
+  ...Auth
 ]
 
 export default routes
