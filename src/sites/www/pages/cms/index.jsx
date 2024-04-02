@@ -9,9 +9,10 @@ import { menuItems } from "../admin/index"
 
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
+import Additional_components from "~/additional_components/index.js";
 import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/selector"
 
-registerComponents(ComponentRegistry)
+registerComponents({...ComponentRegistry, ...Additional_components})
 registerDataType("selector", Selector)
 
 export default { 
