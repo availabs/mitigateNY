@@ -14,13 +14,9 @@ import AuthMenu from "~/pages/Auth/AuthMenu"
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
 import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/selector"
-import BuildingFootprintsDownload from "./buildings_download"
-import { DamaMap } from '~/pages/DataManager'
+// import BuildingFootprintsDownload from "./buildings_download"
 
-registerComponents({
-  ...ComponentRegistry,
-  "Map: Dama Map": DamaMap
-})
+registerComponents(ComponentRegistry)
 registerDataType("selector", Selector)
 
 const authMenuConfig = {
@@ -36,26 +32,25 @@ const authMenuConfig = {
 }
 
 const Routes = [
-  BuildingFootprintsDownload,
-  ...DamaRoutes({
-    baseUrl:'/cenrep',
-    defaultPgEnv : "hazmit_dama",
-    navSettings: authMenuConfig,
-    dataTypes: hazmitDataTypes,
-    useFalcor,
-    useAuth
-  }),
+  //BuildingFootprintsDownload,
+  // ...DamaRoutes({
+  //   baseUrl:'/cenrep',
+  //   defaultPgEnv : "kari",
+  //   navSettings: authMenuConfig,
+  //   dataTypes: hazmitDataTypes,
+  //   useFalcor,
+  //   useAuth
+  // }),
   {
     ...dmsPageFactory(
       siteConfig({ 
         app: "dms-site",
-        type: "docs-footprints",
+        type: "docs-countytemplate",
         logo: <Logo />, 
         rightMenu: <AuthMenu />,
         useFalcor,
         baseUrl: "",
-        checkAuth,
-        pgEnv: "hazmit_dama"
+        checkAuth
       }), 
       "/", 
       withAuth

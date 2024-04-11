@@ -5,7 +5,7 @@ import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
 import { useFalcor } from "~/modules/avl-falcor"
-
+import { menuItems } from "../admin/index"
 
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
@@ -24,7 +24,7 @@ export default {
       logo: <Logo />, 
       rightMenu: <AuthMenu />,
       baseUrl: "",
-     checkAuth
+      checkAuth
     }), 
     "/", 
     withAuth

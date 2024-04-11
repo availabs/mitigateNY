@@ -22,7 +22,7 @@ let fixedSizes = {
 	full: 'w-64'
 }
 
-const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
+const Layout = ({ children, menus, sideNav={}, topNav={}, Title }) => {
 	const theme = useTheme()
 	const sideNavOptions = {
 		size: sideNav.size || 'none',
@@ -31,17 +31,17 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 	}
 
 	const topNavOptions = {
-		position: topNav.position || 'block',
-		size: topNav.size || 'compact',
-		menu: topNav.menu || 'left',
-		subMenuStyle: topNav.subMenuStyle || 'row',
-		menuItems: (topNav.menuItems || []).filter(page => !page.hideInNav),
-		logo: topNav.logo || (
+		position: topNav?.position || 'block',
+		size: topNav?.size || 'compact',
+		menu: topNav?.menu || 'left',
+		subMenuStyle: topNav?.subMenuStyle || 'row',
+		menuItems: (topNav?.menuItems || []).filter(page => !page?.hideInNav),
+		logo: topNav?.logo || (
 			<div className='flex items-center justify-center h-12'>
 				<div to="/" className={`${['none'].includes(sideNavOptions.size)  ? '' : 'md:hidden'}` }>
 					<Logo sideNav={sideNavOptions}/>
 				</div>
-				{title}
+				{typeof Title === 'function' ? <Title /> : Title}
 			</div>
 		)
 	}
@@ -67,7 +67,7 @@ const Layout = ({ children, menus, sideNav={}, topNav={}, title }) => {
 				{
 					topNavOptions.size === 'none' ? '' : (<>
 						<div className={`${
-							topNavOptions.position === 'fixed' ? 
+							topNavOptions?.position === 'fixed' ? 
 								`sticky top-0 z-20 w-full ` 
 								: ''
 							}`}>
