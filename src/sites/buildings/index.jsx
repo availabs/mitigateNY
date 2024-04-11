@@ -15,8 +15,12 @@ import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
 import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/selector"
 import BuildingFootprintsDownload from "./buildings_download"
+import { DamaMap } from '~/pages/DataManager'
 
-registerComponents(ComponentRegistry)
+registerComponents({
+  ...ComponentRegistry,
+  "Map: Dama Map": DamaMap
+})
 registerDataType("selector", Selector)
 
 const authMenuConfig = {
@@ -35,7 +39,7 @@ const Routes = [
   BuildingFootprintsDownload,
   ...DamaRoutes({
     baseUrl:'/cenrep',
-    defaultPgEnv : "kari",
+    defaultPgEnv : "hazmit_dama",
     navSettings: authMenuConfig,
     dataTypes: hazmitDataTypes,
     useFalcor,
@@ -50,7 +54,8 @@ const Routes = [
         rightMenu: <AuthMenu />,
         useFalcor,
         baseUrl: "",
-        checkAuth
+        checkAuth,
+        pgEnv: "hazmit_dama"
       }), 
       "/", 
       withAuth
