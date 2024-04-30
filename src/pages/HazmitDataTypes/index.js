@@ -39,6 +39,7 @@ import disaster_loss_summary from "./disaster_loss_summary";
 import fusion from "./fusion";
 //import open_fema_data from "./open_fema_data";
 import gis_least_common_geographic_units from './gis_least_common_geographic_units'
+import parcels2footprints from './parcels2footprints'
 
 const DataTypes = {
   tiger_full,
@@ -80,7 +81,8 @@ const DataTypes = {
   eal,
   fusion,
 
-  gis_least_common_geographic_units
+  gis_least_common_geographic_units,
+  parcels2footprints
 };
 
 export default DataTypes;
