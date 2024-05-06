@@ -40,6 +40,7 @@ import fusion from "./fusion";
 //import open_fema_data from "./open_fema_data";
 import gis_least_common_geographic_units from './gis_least_common_geographic_units'
 import npmrds from './npmrds'
+import parcels2footprints from './parcels2footprints'
 
 const DataTypes = {
   npmrds,
@@ -82,7 +83,8 @@ const DataTypes = {
   eal,
   fusion,
 
-  gis_least_common_geographic_units
+  gis_least_common_geographic_units,
+  parcels2footprints
 };
 
 export default DataTypes;
