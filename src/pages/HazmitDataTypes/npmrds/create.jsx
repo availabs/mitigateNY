@@ -5,7 +5,7 @@ import { DAMA_HOST } from '~/config'
 
 import { DamaContext } from "~/pages/DataManager/store";
 const CallServer = async ({ rtPfx, source, newVersion, navigate, baseUrl='cenrep' }) => {
-    const url = new URL(`${rtPfx}/hazard_mitigation/tigerFullDownloadAction`);
+    const url = new URL(`${rtPfx}/npmrds`);
 
     url.searchParams.append("source_name", source.name);
     url.searchParams.append("existing_source_id", source.source_id);

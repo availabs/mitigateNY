@@ -1,4 +1,4 @@
-import {dmsDataLoader, dmsPageFactory, registerDataType} from "~/modules/dms/src"
+import {dmsPageFactory} from "~/modules/dms/src"
 import {withAuth} from "~/modules/ams/src"
 import {menuItems} from "../../index"
 import dmsFormsTheme from "../dmsFormsTheme"

@@ -42,6 +42,11 @@ export const formsConfigFormat = {
             type: 'text'
         },
         {
+            key: 'url',
+            label: 'Url',
+            type: 'text'
+        },
+        {
             key: 'config',
             label: 'Config',
             prompt: 'Paste full config here.',
@@ -99,7 +104,7 @@ const siteConfig = {
                             {
                                 type: 'link',
                                 name: '',
-                                to: '/admin/forms/form/:id/list/',
+                                to: '/admin/forms/form/:url/list/',
                                 text: 'home'
                             },
                             {
