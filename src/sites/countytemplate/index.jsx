@@ -52,7 +52,6 @@ const Routes = [
         baseUrl: "",
         checkAuth
       }), 
-      "/", 
       withAuth
     ),
     authLevel: 5,

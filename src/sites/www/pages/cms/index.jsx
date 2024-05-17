@@ -26,7 +26,6 @@ export default {
       baseUrl: "",
       checkAuth
     }), 
-    "/", 
     withAuth
   ),
   name: "CMS",

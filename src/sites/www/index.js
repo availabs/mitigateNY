@@ -41,12 +41,12 @@ const Routes = [
   // Templates,
   Interactive,
   // -- Managed Data Routes -- //
-  Forms,
-  FormsActions,
-  FormsCapabilities,
-  FormsMeasures,
-  FormsRVMatrix,
-  FormPolicy,
+  // Forms,
+  // FormsActions,
+  // FormsCapabilities,
+  // FormsMeasures,
+  // FormsRVMatrix,
+  // FormPolicy,
   // -- Front End Routes -- //
   CMS
 ]

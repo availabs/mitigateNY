@@ -56,8 +56,7 @@ const Routes = [
         baseUrl: "",
         checkAuth,
         pgEnv: "hazmit_dama"
-      }), 
-      "/", 
+      }),
       withAuth
     ),
     authLevel: 5,
