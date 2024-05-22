@@ -25,8 +25,7 @@ export default {
       rightMenu: <AuthMenu />,
       baseUrl: "",
       checkAuth
-    }), 
-    "/", 
+    }),
     withAuth
   ),
   name: "CMS",

@@ -56,6 +56,7 @@ export const formsConfigFormat = {
 }
 const siteConfig = {
     format: formsConfigFormat,
+    baseUrl: '/admin/forms/',
     check: ({user}, activeConfig, navigate) => {
 
         const getReqAuth = (configs) => {
@@ -164,7 +165,6 @@ const siteConfig = {
 export default {
     ...dmsPageFactory(
         siteConfig,
-        "/admin/forms/",
         withAuth,
         dmsFormsTheme
     ),
@@ -174,7 +174,7 @@ export default {
         color: 'white',
         menuItems
     },
-    // topNav: {
-    //   size: "none"
-    // }
+    topNav: {
+      size: "none"
+    }
 }

@@ -51,8 +51,7 @@ const Routes = [
         useFalcor,
         baseUrl: "",
         checkAuth
-      }), 
-      "/", 
+      }),
       withAuth
     ),
     authLevel: 5,

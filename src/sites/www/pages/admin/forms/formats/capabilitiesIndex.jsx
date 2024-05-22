@@ -16,7 +16,6 @@ export default {
             columns: ['name'],
             baseUrl
         }),
-        baseUrl,
         withAuth,
         dmsFormsTheme
     ),

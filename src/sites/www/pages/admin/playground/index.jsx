@@ -21,7 +21,7 @@ export default {
     useFalcor,
     baseUrl: "/playground",
     checkAuth
-  }), "/playground/",  withAuth),
+  }), withAuth),
   name: "CMS",
   sideNav: {
     size: 'mini',

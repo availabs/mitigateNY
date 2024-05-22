@@ -16,7 +16,6 @@ export default {
             columns: ['domain', 'subdomain'],
             baseUrl
         }),
-        baseUrl,
         withAuth,
         dmsFormsTheme
     ),
