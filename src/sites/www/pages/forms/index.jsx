@@ -56,7 +56,7 @@ export const formsConfigFormat = {
 }
 const siteConfig = {
     format: formsConfigFormat,
-    baseUrl: '/admin/forms/',
+    baseUrl: "/admin/forms",
     check: ({user}, activeConfig, navigate) => {
 
         const getReqAuth = (configs) => {

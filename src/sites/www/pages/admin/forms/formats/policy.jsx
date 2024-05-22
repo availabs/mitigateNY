@@ -5,7 +5,7 @@ import dmsFormsTheme from "../dmsFormsTheme"
 
 import siteConfig from '~/modules/dms/src/patterns/forms/config'
 
-const baseUrl = "/admin/forms/form/policy/";
+const baseUrl = "/admin/forms/form/policy";
 
 export default {
     ...dmsPageFactory(

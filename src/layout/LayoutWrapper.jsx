@@ -30,6 +30,7 @@ const LayoutWrapper = withAuth(({
       checkAuth({ auth, authLevel, user }, navigate, location);
     }, [auth, authLevel, navigate, location]);
   
+
   // console.log('LayoutWrapper props', props)
   // console.log('LayoutWrapper comp',  typeof Comp, Comp )
   // console.log('LayoutWrapper Element',  typeof Element, Element )
