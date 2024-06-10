@@ -8,7 +8,8 @@ import { useFalcor } from "~/modules/avl-falcor"
 
 import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
 
-import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/selector"
+import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/components/selector"
+import {API_HOST} from "../../../../../config.js";
 registerDataType("selector", Selector)
 
 export default { 
@@ -19,6 +20,7 @@ export default {
     useFalcor,
     rightMenu: <AuthMenu />,
     baseUrl: "/drafts",
+    API_HOST,
     checkAuth
   }), withAuth),
   name: "CMS",

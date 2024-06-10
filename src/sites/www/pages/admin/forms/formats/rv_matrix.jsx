@@ -4,8 +4,9 @@ import {menuItems} from "../../index"
 import dmsFormsTheme from "../dmsFormsTheme"
 
 import siteConfig from '~/modules/dms/src/patterns/forms/config'
+import {API_HOST} from "../../../../../../config.js";
 
-const baseUrl = "/admin/forms/form/rv-matrix/";
+const baseUrl = "/admin/forms/form/rv-matrix";
 
 export default {
     ...dmsPageFactory(
@@ -14,7 +15,8 @@ export default {
             type: 'forms-rv-matrix',
             title: 'R+V Matrix',
             columns: ['domain', 'subdomain'],
-            baseUrl
+            baseUrl,
+            API_HOST,
         }),
         withAuth,
         dmsFormsTheme
