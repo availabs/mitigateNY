@@ -11,7 +11,7 @@ import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
 
-import siteConfig from '~/modules/dms/src/patterns/page/siteConfig'
+import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
 import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/components/selector"
 import BuildingFootprintsDownload from "./buildings_download"
