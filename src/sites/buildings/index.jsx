@@ -12,10 +12,17 @@ import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
 
+<<<<<<< HEAD
 import ComponentRegistry from '~/component_registry'
 
+=======
+import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
+import ComponentRegistry from '~/component_registry'
+import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/components/selector"
+>>>>>>> 0f04baa2a0059a4d6b005ba05553e93aaffe59a6
 import BuildingFootprintsDownload from "./buildings_download"
 import { DamaMap } from '~/pages/DataManager'
+import {API_HOST} from "../../config.js";
 
 registerComponents({
   ...ComponentRegistry,
@@ -55,6 +62,7 @@ const Routes = [
         rightMenu: <AuthMenu />,
         useFalcor,
         baseUrl: "",
+        API_HOST,
         checkAuth,
         authLevel: 5,
         pgEnv: "hazmit_dama"

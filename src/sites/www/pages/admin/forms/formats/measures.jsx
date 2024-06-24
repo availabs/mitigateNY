@@ -4,8 +4,9 @@ import {menuItems} from "../../index"
 import dmsFormsTheme from "../dmsFormsTheme"
 
 import siteConfig from '~/modules/dms/src/patterns/forms/config'
+import {API_HOST} from "../../../../../../config.js";
 
-const baseUrl = "/admin/forms/form/measures/";
+const baseUrl = "/admin/forms/form/measures";
 
 export default {
     ...dmsPageFactory(
@@ -14,7 +15,8 @@ export default {
             type: 'forms-measures',
             title: 'Mitigation Measures',
             columns: ['name'],
-            baseUrl
+            baseUrl,
+            API_HOST,
         }),
         withAuth,
         dmsFormsTheme

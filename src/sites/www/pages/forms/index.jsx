@@ -170,11 +170,11 @@ export default {
     ),
     name: "Forms",
     sideNav: {
-        size: 'compact',
+        size: 'mini',
         color: 'white',
         menuItems
     },
     topNav: {
-      size: "none"
+        size: 'none'
     }
 }

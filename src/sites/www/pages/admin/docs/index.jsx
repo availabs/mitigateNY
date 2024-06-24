@@ -8,6 +8,13 @@ import AuthMenu from "~/pages/Auth/AuthMenu"
 import { menuItems } from "../index"
 import { useFalcor } from "~/modules/avl-falcor"
 
+<<<<<<< HEAD
+=======
+import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
+
+import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/components/selector"
+import {API_HOST} from "../../../../../config.js";
+>>>>>>> 0f04baa2a0059a4d6b005ba05553e93aaffe59a6
 registerDataType("selector", Selector)
 
 export default { 
@@ -18,6 +25,7 @@ export default {
     useFalcor,
     rightMenu: <AuthMenu />,
     baseUrl: "/admin/docs",
+    API_HOST,
     checkAuth
   }), withAuth),
   name: "Classroom",
