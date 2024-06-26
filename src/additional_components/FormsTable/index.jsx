@@ -38,6 +38,7 @@ async function getData({   formsConfig, actionType, form,
                            colJustify, striped, extFiltersDefaultOpen, customColName, showCsvDownload
                        }, falcor) {
     const d = await dmsDataLoader(
+        falcor,
         {
             format: formsConfig,
             children: [
@@ -158,6 +159,7 @@ const Edit = ({value, onChange}) => {
     useEffect(() => {
         async function getFormsConfig() {
             const formConfigs = await dmsDataLoader(
+                falcor,
                 {
                     format: formsConfigFormat,
                     children: [

@@ -29,6 +29,7 @@
     "@availabs/avl-falcor": "^0.0.3",
     "@availabs/dms": "^0.0.7",
     "@headlessui/react": "^1.7.14",
+    "@hello-pangea/dnd": "^16.6.0",
     "@heroicons/react": "^2.0.17",
     "@reduxjs/toolkit": "^1.9.5",
     "colorbrewer": "^1.5.3",
