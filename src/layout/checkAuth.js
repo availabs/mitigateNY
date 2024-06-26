@@ -1,4 +1,3 @@
-import get from 'lodash/get'
 const checkAuth = (props,navigate) => {
   //const isAuthenticating = props?.user?.isAuthenticating
   
@@ -13,21 +12,20 @@ const checkAuth = (props,navigate) => {
   // can we switch to isAuthenticating is true
   //------------------------------------------
 
-  let reqAuthLevel = get(props, "authLevel", -1);
-  const authReq = get(props, "auth", false);
+  const {user = {}} = props
+  let reqAuthLevel = props?.authLevel || -1;
+  const authReq = props?.auth  || false;
+  
   reqAuthLevel = Math.max(reqAuthLevel, authReq ? 0 : -1);
 
-  const userAuthed = get(props, ["user", "authed"], false);
-  const userAuthLevel = get(props, ["user", "authLevel"], -1);
+  const userAuthed = user?.authed || false
+  const userAuthLevel = user?.authLevel || -1 //get(props, ["user", "authLevel"], -1);
 
   const sendToLogin = !userAuthed && (reqAuthLevel >= 0);
   const sendToHome = userAuthLevel < reqAuthLevel;
 
-  // const authLevel = props.auth ? 0 : (props?.authLevel || -1); 
-  // const sendToLogin = authLevel > -1 && !get(props, ["user", "authed"], false)
-  // const sendToHome = (get(props , ["user", "authLevel"], -1) < authLevel);
- // console.log('lw login:', sendToLogin, 'home:',sendToHome, props.path)
-  
+  // console.log('checkAuth', reqAuthLevel, userAuthLevel)
+
   //----------------------------------------
   // if page requires auth
   // && user isn't logged in
@@ -48,7 +46,7 @@ const checkAuth = (props,navigate) => {
   //----------------------------------------
   else if (sendToHome) {
     navigate('/')
-    //return <Navigate to='/' />
+    
   }
 
   return false

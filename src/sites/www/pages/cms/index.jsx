@@ -1,16 +1,18 @@
 
-import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
+import { dmsPageFactory, registerDataType, registerComponents, Selector } from "~/modules/dms/src"
+import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
+
 import { withAuth } from "~/modules/ams/src" 
 import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
 import { useFalcor } from "~/modules/avl-falcor"
 import { menuItems } from "../admin/index"
-import {API_HOST} from "../../../../config.js";
-import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
+
+import {API_HOST} from "~/config.js";
 import ComponentRegistry from '~/component_registry'
 import Additional_components from "~/additional_components/index.js";
-import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/components/selector"
+
 
 registerComponents({...ComponentRegistry, ...Additional_components})
 registerDataType("selector", Selector)

@@ -4,16 +4,17 @@ import { useAuth } from "~/modules/ams/src";
 import DamaRoutes from "~/pages/DataManager"
 import hazmitDataTypes from "~/pages/HazmitDataTypes"
 
-import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
+import { dmsPageFactory, registerDataType, registerComponents, Selector } from "~/modules/dms/src"
+import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
 import { withAuth } from "~/modules/ams/src"
 
 import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
 
-import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
-import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/components/selector"
+
+
 import BuildingFootprintsDownload from "./buildings_download"
 import { DamaMap } from '~/pages/DataManager'
 import {API_HOST} from "../../config.js";
@@ -22,6 +23,7 @@ registerComponents({
   ...ComponentRegistry,
   "Map: Dama Map": DamaMap
 })
+
 registerDataType("selector", Selector)
 
 const authMenuConfig = {
@@ -57,11 +59,11 @@ const Routes = [
         baseUrl: "",
         API_HOST,
         checkAuth,
+        authLevel: 5,
         pgEnv: "hazmit_dama"
       }),
       withAuth
     ),
-    authLevel: 5,
     name: "CMS",
     sideNav: {
       size: "none"
