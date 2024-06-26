@@ -57,22 +57,22 @@ export const formsConfigFormat = {
 const siteConfig = {
     format: formsConfigFormat,
     baseUrl: "/admin/forms",
-    check: ({user}, activeConfig, navigate) => {
-
-        const getReqAuth = (configs) => {
-            return configs.reduce((out, config) => {
-                let authLevel = config.authLevel || -1
-                if (config.children) {
-                    authLevel = Math.max(authLevel, getReqAuth(config.children))
-                }
-                return Math.max(out, authLevel)
-            }, -1)
-        }
-
-        let requiredAuth = getReqAuth(activeConfig)
-        checkAuth({user, authLevel: requiredAuth}, navigate)
-
-    },
+    // check: ({user}, activeConfig, navigate) => {
+    //
+    //     const getReqAuth = (configs) => {
+    //         return configs.reduce((out, config) => {
+    //             let authLevel = config.authLevel || -1
+    //             if (config.children) {
+    //                 authLevel = Math.max(authLevel, getReqAuth(config.children))
+    //             }
+    //             return Math.max(out, authLevel)
+    //         }, -1)
+    //     }
+    //
+    //     let requiredAuth = getReqAuth(activeConfig)
+    //     checkAuth({user, authLevel: requiredAuth}, navigate)
+    //
+    // },
     children: [
         {
             type: (props) => <Layout {...props} title={'Forms'} baseUrl={'/admin/forms'}/>,
