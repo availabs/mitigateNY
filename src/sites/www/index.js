@@ -15,12 +15,12 @@ import Interactive from "./pages/interactive/index.jsx";
 
 import Docs from './pages/admin/docs'
 
-import Forms from './pages/forms'
-import FormsActions from './pages/admin/forms/formats/actionsIndex.jsx';
-import FormsCapabilities from './pages/admin/forms/formats/capabilitiesIndex.jsx';
-import FormsMeasures from './pages/admin/forms/formats/measures.jsx';
-import FormsRVMatrix from './pages/admin/forms/formats/rv_matrix.jsx';
-import FormPolicy from './pages/admin/forms/formats/policy.jsx';
+// import Forms from './pages/forms'
+// import FormsActions from './pages/admin/forms/formats/actionsIndex.jsx';
+// import FormsCapabilities from './pages/admin/forms/formats/capabilitiesIndex.jsx';
+// import FormsMeasures from './pages/admin/forms/formats/measures.jsx';
+// import FormsRVMatrix from './pages/admin/forms/formats/rv_matrix.jsx';
+// import FormPolicy from './pages/admin/forms/formats/policy.jsx';
 
 
 
@@ -41,12 +41,12 @@ const Routes = [
   // Templates,
   Interactive,
   // -- Managed Data Routes -- //
-  Forms,
-  FormsActions,
-  FormsCapabilities,
-  FormsMeasures,
-  FormsRVMatrix,
-  FormPolicy,
+  // Forms,
+  // FormsActions,
+  // FormsCapabilities,
+  // FormsMeasures,
+  // FormsRVMatrix,
+  // FormPolicy,
   // -- Front End Routes -- //
   CMS
 ]
