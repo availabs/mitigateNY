@@ -28,7 +28,7 @@
     "@availabs/ams": "^2.0.6",
     "@availabs/avl-falcor": "^0.0.3",
     "@availabs/dms": "^0.0.7",
-    "@headlessui/react": "^1.7.14",
+    "@headlessui/react": "^2.1.2",
     "@hello-pangea/dnd": "^16.6.0",
     "@heroicons/react": "^2.0.17",
     "@observablehq/plot": "^0.6.15",
