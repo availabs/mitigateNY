@@ -9,13 +9,14 @@ import { menuItems } from "../index"
 import { useFalcor } from "~/modules/avl-falcor"
 
 import {API_HOST} from "~/config.js";
-
+import { pgEnv } from "~/utils";
 registerDataType("selector", Selector)
 
 export default { 
   ...dmsPageFactory(siteConfig({ 
     app: "dms-site",
     type: "docs-draft",
+    pgEnv,
     logo: <div />,
     useFalcor,
     rightMenu: <AuthMenu />,

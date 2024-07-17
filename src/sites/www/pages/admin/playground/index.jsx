@@ -10,13 +10,14 @@ import AuthMenu from "~/pages/Auth/AuthMenu"
 import { useFalcor } from "~/modules/avl-falcor"
 
 import {API_HOST} from "~/config.js";
-
+import { pgEnv } from "~/utils";
 registerDataType("selector", Selector)
 
 export default { 
   ...dmsPageFactory(siteConfig({ 
     app: "dms-site",
     type: "docs-play",
+    pgEnv,
     logo: <div />, 
     rightMenu: <AuthMenu />,
     useFalcor,

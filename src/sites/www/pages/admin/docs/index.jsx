@@ -7,7 +7,7 @@ import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
 import { menuItems } from "../index"
 import { useFalcor } from "~/modules/avl-falcor"
-
+import { pgEnv } from "~/utils";
 import {API_HOST} from "~/config.js";
 
 registerDataType("selector", Selector)
@@ -16,6 +16,7 @@ export default {
   ...dmsPageFactory(siteConfig({ 
     app: "dms-site",
     type: "docs-docs",
+    pgEnv,
     logo: <div />,
     useFalcor,
     rightMenu: <AuthMenu />,

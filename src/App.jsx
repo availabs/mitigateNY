@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   createBrowserRouter,
   RouterProvider
@@ -15,6 +15,7 @@ import { getSubdomain }  from '~/utils'
 import DefaultRoutes from '~/routes'
 import www from '~/sites/www'
 import buildings from '~/sites/buildings'
+import {adminConfig, dmsSiteFactory} from "./modules/dms/src/index.js";
 //import countytemplate from '~/sites/countytemplate'
 
 const Sites = {
@@ -24,7 +25,26 @@ const Sites = {
 }
 
 function App (props) {
-  const SUBDOMAIN = getSubdomain(window.location.host)
+  const SUBDOMAIN = getSubdomain(window.location.host);
+  const [dynamicRoutes, setDynamicRoutes] = useState([]);
+
+  const adminPath = '/forms';
+  useEffect(() => {
+    (async function() {
+      const dynamicRoutes = await dmsSiteFactory({
+        dmsConfig: adminConfig({
+          app: 'admin-new',
+          type: 'pattern-admin',
+          baseUrl: ''
+        }),
+        adminPath,
+        // API_HOST: 'http://localhost:4444'
+      });
+      console.log('routes', dynamicRoutes)
+      setDynamicRoutes(dynamicRoutes);
+    })()
+
+  }, []);
   
   const site = useMemo(() => {
       return Sites?.[SUBDOMAIN] || Sites['www']
@@ -38,7 +58,7 @@ function App (props) {
 
   return (
     <>
-      <RouterProvider router={createBrowserRouter(WrappedRoutes)} />
+      <RouterProvider router={createBrowserRouter([...WrappedRoutes, ...dynamicRoutes])} />
       <Messages />
     </>
   )

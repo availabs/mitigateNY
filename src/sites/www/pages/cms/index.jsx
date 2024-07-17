@@ -8,7 +8,7 @@ import Logo from '~/layout/Logo'
 import AuthMenu from "~/pages/Auth/AuthMenu"
 import { useFalcor } from "~/modules/avl-falcor"
 import { menuItems } from "../admin/index"
-
+import { pgEnv } from "~/utils";
 import {API_HOST} from "~/config.js";
 import ComponentRegistry from '~/component_registry'
 import Additional_components from "~/additional_components/index.js";
@@ -22,6 +22,7 @@ export default {
     siteConfig({
       app: "dms-site",
       type: "docs-page",
+        pgEnv,
       useFalcor,
       logo: <Logo />, 
       rightMenu: <AuthMenu />,
