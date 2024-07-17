@@ -50,7 +50,7 @@ export const menuItems = [
   {
     name: 'Managed Data',
     icon: 'far fa-database fa-fw',
-    path: '/admin/forms/list'
+    path: '/forms'
   },
   {
     name: 'Docs', 
