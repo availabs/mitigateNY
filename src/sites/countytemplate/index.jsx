@@ -4,7 +4,7 @@ import { useAuth } from "~/modules/ams/src";
 import DamaRoutes from "~/pages/DataManager"
 import hazmitDataTypes from "~/pages/HazmitDataTypes"
 
-import { dmsPageFactory, registerDataType } from "~/modules/dms/src"
+import { dmsPageFactory, registerDataType, Selector, registerComponents} from "~/modules/dms/src"
 import { withAuth } from "~/modules/ams/src"
 
 import checkAuth  from "~/layout/checkAuth"
@@ -13,7 +13,6 @@ import AuthMenu from "~/pages/Auth/AuthMenu"
 
 import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
-import Selector, { registerComponents } from "~/modules/dms/src/patterns/page/components/selector"
 import {API_HOST} from "../../config.js";
 // import BuildingFootprintsDownload from "./buildings_download"
 
@@ -33,26 +32,18 @@ const authMenuConfig = {
 }
 
 const Routes = [
-  //BuildingFootprintsDownload,
-  // ...DamaRoutes({
-  //   baseUrl:'/cenrep',
-  //   defaultPgEnv : "kari",
-  //   navSettings: authMenuConfig,
-  //   dataTypes: hazmitDataTypes,
-  //   useFalcor,
-  //   useAuth
-  // }),
   {
     ...dmsPageFactory(
       siteConfig({ 
-        app: "dms-site",
-        type: "docs-countytemplate",
+        app: "mitigate-ny",
+        type: "countytemplate",
         logo: <Logo />, 
         rightMenu: <AuthMenu />,
         useFalcor,
         baseUrl: "",
         API_HOST,
-        checkAuth
+        checkAuth,
+        pgEnv: 'hazmit_dama'
       }),
       withAuth
     ),
