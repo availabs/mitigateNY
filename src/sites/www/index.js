@@ -15,6 +15,8 @@ import Interactive from "./pages/interactive/index.jsx";
 
 import Docs from './pages/admin/docs'
 
+import ManagedData from './pages/admin/managed_data/index.jsx'
+
 // import Forms from './pages/forms'
 // import FormsActions from './pages/admin/forms/formats/actionsIndex.jsx';
 // import FormsCapabilities from './pages/admin/forms/formats/capabilitiesIndex.jsx';
@@ -27,6 +29,7 @@ import Docs from './pages/admin/docs'
 const Routes = [
   // -- Admin Routes -- //
   Admin,
+  ManagedData,
   ...DamaRoutes({
     baseUrl:'/cenrep',
     defaultPgEnv : "hazmit_dama",
@@ -50,6 +53,8 @@ const Routes = [
   // -- Front End Routes -- //
   CMS
 ]
+
+console.log('export routes', Routes, ManagedData)
 
 const site = {
 	Routes
