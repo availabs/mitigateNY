@@ -16,12 +16,12 @@ import DefaultRoutes from '~/routes'
 import www from '~/sites/www'
 import buildings from '~/sites/buildings'
 import {adminConfig, dmsSiteFactory} from "./modules/dms/src/index.js";
-//import countytemplate from '~/sites/countytemplate'
+import countytemplate from '~/sites/countytemplate'
 
 const Sites = {
   www,
   buildings,
-  //countytemplate
+  countytemplate
 }
 
 function App (props) {
@@ -40,7 +40,7 @@ function App (props) {
         adminPath,
         // API_HOST: 'http://localhost:4444'
       });
-      console.log('routes', dynamicRoutes)
+      //console.log('routes', dynamicRoutes)
       setDynamicRoutes(dynamicRoutes);
     })()
 
@@ -50,7 +50,8 @@ function App (props) {
       return Sites?.[SUBDOMAIN] || Sites['www']
   },[SUBDOMAIN])
 
- 
+  
+  console.log('site', site.Routes)
   const WrappedRoutes =  useMemo(() => {
     const Routes = [...site.Routes, ...DefaultRoutes]
     return LayoutWrapper(Routes, Layout)
