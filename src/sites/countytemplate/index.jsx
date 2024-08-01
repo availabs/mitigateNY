@@ -4,7 +4,12 @@ import { useAuth } from "~/modules/ams/src";
 import DamaRoutes from "~/pages/DataManager"
 import hazmitDataTypes from "~/pages/HazmitDataTypes"
 
-import { dmsPageFactory, registerDataType, Selector, registerComponents} from "~/modules/dms/src"
+import { 
+  dmsPageFactory, 
+  registerDataType, 
+  Selector, 
+  registerComponents
+} from "~/modules/dms/src"
 import { withAuth } from "~/modules/ams/src"
 
 import checkAuth  from "~/layout/checkAuth"
@@ -14,6 +19,7 @@ import AuthMenu from "~/pages/Auth/AuthMenu"
 import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
 import ComponentRegistry from '~/component_registry'
 import {API_HOST} from "../../config.js";
+
 // import BuildingFootprintsDownload from "./buildings_download"
 
 registerComponents(ComponentRegistry)
