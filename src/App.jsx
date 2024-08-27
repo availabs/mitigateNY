@@ -1,70 +1,75 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {
-  createBrowserRouter,
-  RouterProvider
-} from "react-router-dom";
+import React, {useState, useEffect} from 'react'
 
-// import { Messages } from '~/modules/avl-components/src'
-import { Messages } from '~/modules/ams/src'
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Layout from '~/layout/avail-layout'
-import LayoutWrapper from '~/layout/LayoutWrapper'
+import { dmsSiteFactory, registerDataType, Selector, adminConfig, registerComponents } from "~/modules/dms/src/"
+import ComponentRegistry from '~/component_registry'
+import themes from '~/dms_themes'
 
-import { getSubdomain }  from '~/utils'
+import { withAuth, useAuth } from "~/modules/ams/src"
+import Auth from '~/pages/Auth'
 
-import DefaultRoutes from '~/routes'
-import www from '~/sites/www'
-import buildings from '~/sites/buildings'
-import {adminConfig, dmsSiteFactory} from "./modules/dms/src/index.js";
-import countytemplate from '~/sites/countytemplate'
+import DamaRoutes from "~/pages/DataManager"
+import hazmitDataTypes from "~/pages/HazmitDataTypes"
+import { authMenuConfig } from "~/layout/authMenuConfig"
+import { useFalcor } from "~/modules/avl-falcor"
+import LayoutWrapper from "~/layout/LayoutWrapper"
+registerComponents(ComponentRegistry)
+registerDataType("selector", Selector)
 
-const Sites = {
-  www,
-  buildings,
-  countytemplate
-}
 
-function App (props) {
-  const SUBDOMAIN = getSubdomain(window.location.host);
+Auth.forEach(f => {
+  f.Component = f.element 
+  delete f.element
+})
+
+function App() {
+  // Load Site Routes
   const [dynamicRoutes, setDynamicRoutes] = useState([]);
-
-  const adminPath = '/forms';
   useEffect(() => {
-    (async function() {
-      const dynamicRoutes = await dmsSiteFactory({
-        dmsConfig: adminConfig({
-          app: 'admin-new',
-          type: 'pattern-admin',
-          baseUrl: ''
-        }),
-        adminPath,
-        // API_HOST: 'http://localhost:4444'
-      });
-      //console.log('routes', dynamicRoutes)
-      setDynamicRoutes(dynamicRoutes);
-    })()
+        (async function() {
+            const dynamicRoutes = await dmsSiteFactory({
+                dmsConfig: adminConfig({
+                    app: 'mitigat-ny-prod',
+                    type: 'prod',
+                    // app: 'admin-new',
+                    // type: 'pattern-admin',
+                }),
+                authWrapper: withAuth,
+                themes   
+            });
+            setDynamicRoutes(dynamicRoutes);
+        })()
+    }, []);
 
-  }, []);
-  
-  const site = useMemo(() => {
-      return Sites?.[SUBDOMAIN] || Sites['www']
-  },[SUBDOMAIN])
+    const PageNotFoundRoute = {
+        path: "/*",
+        Component: () => (<div className={'w-screen h-screen flex items-center bg-blue-50'}> ... </div>)
+    }
 
-  
-  console.log('site', site.Routes)
-  const WrappedRoutes =  useMemo(() => {
-    const Routes = [...site.Routes, ...DefaultRoutes]
-    return LayoutWrapper(Routes, Layout)
-  }, [site])
-
-  return (
-    <>
-      <RouterProvider router={createBrowserRouter([...WrappedRoutes, ...dynamicRoutes])} />
-      <Messages />
-    </>
-  )
-
-  
+    return (
+      <RouterProvider 
+        router={createBrowserRouter([
+            // Site manager
+            // Data Manager
+            ...LayoutWrapper(DamaRoutes({
+              baseUrl:'/cenrep',
+              defaultPgEnv : "hazmit_dama",
+              navSettings: authMenuConfig,
+              dataTypes: hazmitDataTypes,
+              useFalcor,
+              useAuth
+            })),
+            // Auth
+            ...LayoutWrapper(Auth),
+            ...dynamicRoutes,
+            
+            PageNotFoundRoute 
+        ])} 
+      />
+    )
 }
 
-export default App;
+export default App
+
+

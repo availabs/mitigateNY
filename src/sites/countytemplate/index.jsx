@@ -10,7 +10,7 @@ import {
   Selector, 
   registerComponents
 } from "~/modules/dms/src"
-import { withAuth } from "~/modules/ams/src"
+import { withAuth, useAuth } from "~/modules/ams/src"
 
 import checkAuth  from "~/layout/checkAuth"
 import Logo from '~/layout/Logo'
