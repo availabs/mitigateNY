@@ -22,7 +22,7 @@ export default {
     siteConfig({
       app: "dms-site",
       type: "docs-page",
-        pgEnv,
+      pgEnv,
       useFalcor,
       logo: <Logo />, 
       rightMenu: <AuthMenu />,

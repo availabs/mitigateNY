@@ -4,6 +4,7 @@ import { withAuth } from '~/modules/ams/src'
 import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import checkAuth from './checkAuth'
+import Layout from './avail-layout'
 
 const Wrapper = ({children}) => {
   const location = useLocation();
@@ -21,14 +22,14 @@ const LayoutWrapper = withAuth(({
 }) => {
 
   const Child = Element || Comp // support old react router routes
-    const navigate = useNavigate();
-    const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const { auth, authLevel, user } = props;
+  const { auth, authLevel, user } = props;
 
-    React.useEffect(() => {
-      checkAuth({ auth, authLevel, user }, navigate, location);
-    }, [auth, authLevel, navigate, location]);
+  React.useEffect(() => {
+    checkAuth({ auth, authLevel, user }, navigate, location);
+  }, [auth, authLevel, navigate, location]);
   
 
   // console.log('LayoutWrapper props', props)
@@ -52,7 +53,7 @@ const LayoutWrapper = withAuth(({
   )
 })
 
-export default function  DefaultLayoutWrapper ( routes, layout ) {
+export default function  DefaultLayoutWrapper ( routes, layout=Layout ) {
   //console.log('routes', routes)
   const menus = routes.filter(r => r.mainNav)
   return routes.map(route => {

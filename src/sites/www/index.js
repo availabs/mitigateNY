@@ -7,15 +7,15 @@ import CMS from './pages/cms'
 import DamaRoutes from "~/pages/DataManager"
 import hazmitDataTypes from "~/pages/HazmitDataTypes"
 
-import Admin, { authMenuConfig } from "./pages/admin"
-import Playground from './pages/admin/playground'
-import Drafts from './pages/admin/drafts'
+// import Admin, { authMenuConfig } from "./pages/admin"
+// import Playground from './pages/admin/playground'
+// import Drafts from './pages/admin/drafts'
 // import Templates from './pages/admin/templates'
 import Interactive from "./pages/interactive/index.jsx";
 
-import Docs from './pages/admin/docs'
+// import Docs from './pages/admin/docs'
 
-import ManagedData from './pages/admin/managed_data/index.jsx'
+// import ManagedData from './pages/admin/managed_data/index.jsx'
 
 // import Forms from './pages/forms'
 // import FormsActions from './pages/admin/forms/formats/actionsIndex.jsx';
@@ -28,8 +28,8 @@ import ManagedData from './pages/admin/managed_data/index.jsx'
 
 const Routes = [
   // -- Admin Routes -- //
-  Admin,
-  ManagedData,
+  //Admin,
+  //ManagedData,
   ...DamaRoutes({
     baseUrl:'/cenrep',
     defaultPgEnv : "hazmit_dama",
@@ -38,9 +38,9 @@ const Routes = [
     useFalcor,
     useAuth
   }),
-  Playground,
-  Drafts,
-  Docs,
+  // Playground,
+  // Drafts,
+  // Docs,
   // Templates,
   Interactive,
   // -- Managed Data Routes -- //
@@ -51,10 +51,10 @@ const Routes = [
   // FormsRVMatrix,
   // FormPolicy,
   // -- Front End Routes -- //
-  CMS
+  // CMS
 ]
 
-console.log('export routes', Routes, ManagedData)
+//console.log('export routes', Routes, ManagedData)
 
 const site = {
 	Routes
