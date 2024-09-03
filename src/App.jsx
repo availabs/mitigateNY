@@ -36,7 +36,8 @@ function App() {
                     // type: 'pattern-admin',
                 }),
                 authWrapper: withAuth,
-                themes   
+                themes,
+                // API_HOST: 'http://localhost:4444'
             });
             setDynamicRoutes(dynamicRoutes);
         })()
