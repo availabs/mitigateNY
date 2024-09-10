@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import Create from "./create";
-
+import DamaTable from "~/pages/DataManager/DataTypes/gis_dataset/pages/Table";
 import {DamaContext} from "~/pages/DataManager/store";
 import {Table} from "~/modules/avl-components/src";
 import get from "lodash/get";
 import {fnum, fnumIndex} from "../utils/macros"
+
 
 
 const RenderVersions = (domain, value, onchange) => (
@@ -350,6 +351,11 @@ const NceiStormEventsConfig = {
         name: "Stats",
         path: "/stats",
         component: Stats
+    },
+    table: {
+        name: "Table",
+        path: "/table",
+        component: DamaTable,
     },
     sourceCreate: {
         name: "Create",
