@@ -14,7 +14,11 @@ import hazmitDataTypes from "~/pages/HazmitDataTypes"
 import { authMenuConfig } from "~/layout/authMenuConfig"
 import { useFalcor } from "~/modules/avl-falcor"
 import LayoutWrapper from "~/layout/LayoutWrapper"
-registerComponents(ComponentRegistry)
+
+import AdditionalComponents from "./additional_components";
+import {DamaMap} from "./pages/DataManager/"
+
+registerComponents({...ComponentRegistry, ...AdditionalComponents, "Map: Dama": DamaMap})
 registerDataType("selector", Selector)
 
 

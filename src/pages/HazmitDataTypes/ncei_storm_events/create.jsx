@@ -5,39 +5,44 @@ import {useNavigate} from "react-router-dom";
 
 import { DamaContext } from "~/pages/DataManager/store";
 
-const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate}) => {
-    const url = new URL(
-        `${rtPfx}/hazard_mitigation/loadNCEI`
-    );
+const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user}) => {
+    const url = `${rtPfx}/hazard_mitigation/loadNCEI`;
+    const body = JSON.stringify({
+        table_name: 'details',
+        source_name: source.name,
+        existing_source_id: source.source_id,
+        version: newVersion,
+        user_id: user.id,
+        email: user.email
+    })
+    const res = await fetch(url,
+        {
+            method: "POST",
+            body,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
 
-    url.searchParams.append("table_name", 'details');
-    url.searchParams.append("source_name", source.name);
-    url.searchParams.append("existing_source_id", source.source_id);
-    url.searchParams.append("version", newVersion);
-
-    const stgLyrDataRes = await fetch(url);
-
-    await checkApiResponse(stgLyrDataRes);
-
-    const resJson = await stgLyrDataRes.json();
-
+    await checkApiResponse(res);
+    const resJson = await res.json();
     console.log('res', resJson);
 
-    navigate(`${baseUrl}/source/${resJson.payload.source_id}/versions`);
+    navigate(resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 }
 
 const Create = ({ source, newVersion, baseUrl }) => {
     const navigate = useNavigate();
-    const { pgEnv } = React.useContext(DamaContext)
+    const { pgEnv, user } = React.useContext(DamaContext)
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
-
+    console.log('user', source)
     return (
         <div className='w-full'>
             <button
-                className={`align-right p-2 border-2 border-gray-200`}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md `}
                 onClick={() =>
-                    CallServer({rtPfx, baseUrl, source, newVersion, navigate})}>
-                Add New Source
+                    CallServer({rtPfx, baseUrl, source, newVersion, navigate, user})}>
+                {source?.source_id ? 'Add View' : 'Add Source'}
             </button>
         </div>
     )
