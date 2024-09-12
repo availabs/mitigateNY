@@ -18,7 +18,7 @@ import LayoutWrapper from "~/layout/LayoutWrapper"
 import AdditionalComponents from "./additional_components";
 import {DamaMap} from "./pages/DataManager/"
 
-registerComponents({...ComponentRegistry, ...AdditionalComponents, "Map: Dama": DamaMap})
+registerComponents({...ComponentRegistry, ...AdditionalComponents, "Map: Dama Map": DamaMap})
 registerDataType("selector", Selector)
 
 
