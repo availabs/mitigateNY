@@ -14,7 +14,10 @@ import hazmitDataTypes from "~/pages/HazmitDataTypes"
 import { authMenuConfig } from "~/layout/authMenuConfig"
 import { useFalcor } from "~/modules/avl-falcor"
 import LayoutWrapper from "~/layout/LayoutWrapper"
-registerComponents(ComponentRegistry)
+import Additional_components from "~/additional_components/index.js";
+
+
+registerComponents({...ComponentRegistry, ...Additional_components})
 registerDataType("selector", Selector)
 
 
