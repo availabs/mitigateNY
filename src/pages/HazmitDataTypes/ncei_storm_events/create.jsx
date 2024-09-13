@@ -28,14 +28,14 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user}) 
     const resJson = await res.json();
     console.log('res', resJson);
 
-    navigate(resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
+    navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 }
 
 const Create = ({ source, newVersion, baseUrl }) => {
     const navigate = useNavigate();
     const { pgEnv, user } = React.useContext(DamaContext)
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
-    console.log('user', source)
+
     return (
         <div className='w-full'>
             <button
