@@ -99,7 +99,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
             {RenderVersions({value: viewCousubs, setValue: setViewCousubs, versions: versionsCousubs, type: 'Cousubs'})}
             {RenderVersions({value: viewTract, setValue: setViewTract, versions: versionsTract, type: 'Tracts'})}
             <button
-                className={`align-right p-2 border-2 border-gray-200`}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() =>
                     CallServer(
                         {rtPfx, baseUrl, source, user,
@@ -112,7 +112,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
                             viewTract: versionsTract.views.find(v => v.view_id === parseInt(viewTract)),
                             newVersion, navigate
                         })}>
-                Add New Source
+                {source.source_id ? 'Add View' : 'Add Source'}
             </button>
         </div>
     )
