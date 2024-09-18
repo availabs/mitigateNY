@@ -5,52 +5,58 @@ import { RenderVersions, range } from "../utils/macros"
 import { useSelector } from "react-redux";
 import { DamaContext } from "~/pages/DataManager/store";
 
-const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, startYear, endYear,
+const CallServer = async ({rtPfx, baseUrl, source, user, newVersion, navigate, startYear, endYear,
                               viewNCEI={},viewZTC={}, viewCousubs={}, viewCounty={}, viewState={}, viewTract={}}) => {
     const viewMetadata = [viewZTC.view_id, viewState.view_id,  viewCounty.view_id, viewCousubs.view_id, viewTract.view_id, viewNCEI.view_id];
 
-    const url = new URL(
-        `${rtPfx}/hazard_mitigation/enhanceNCEI`
-    );
-    
-    url.searchParams.append("table_name", 'details_enhanced');
-    url.searchParams.append("source_name", source.name);
-    url.searchParams.append("existing_source_id", source.source_id);
-    url.searchParams.append("view_dependencies", JSON.stringify(viewMetadata));
-    url.searchParams.append("version", newVersion);
-    url.searchParams.append("start_year", startYear);
-    url.searchParams.append("end_year", endYear);
-    
-    url.searchParams.append("ncei_schema", viewNCEI.table_schema);
-    url.searchParams.append("ncei_table", viewNCEI.table_name);
-    url.searchParams.append("tract_schema", viewTract.table_schema);
-    url.searchParams.append("tract_table", viewTract.table_name);
-    url.searchParams.append("ztc_schema", viewZTC.table_schema);
-    url.searchParams.append("ztc_table", viewZTC.table_name);
-    url.searchParams.append("state_schema", viewState.table_schema);
-    url.searchParams.append("state_table", viewState.table_name);
-    url.searchParams.append("county_schema", viewCounty.table_schema);
-    url.searchParams.append("county_table", viewCounty.table_name);
-    url.searchParams.append("cousub_schema", viewCousubs.table_schema);
-    url.searchParams.append("cousub_table", viewCousubs.table_name);
+    const url = `${rtPfx}/hazard_mitigation/enhanceNCEI`;
+    const body = JSON.stringify({
+        table_name: 'details_enhanced',
+        source_name: source.name,
+        existing_source_id: source.source_id,
+        view_dependencies: JSON.stringify(viewMetadata),
+        version: newVersion,
+        start_year: startYear,
+        end_year: endYear,
 
-    const stgLyrDataRes = await fetch(url);
+        user_id: user.id,
+        email: user.email,
+
+        ncei_schema: viewNCEI.table_schema,
+        ncei_table: viewNCEI.table_name,
+        tract_schema: viewTract.table_schema,
+        tract_table: viewTract.table_name,
+        ztc_schema: viewZTC.table_schema,
+        ztc_table: viewZTC.table_name,
+        state_schema: viewState.table_schema,
+        state_table: viewState.table_name,
+        county_schema: viewCounty.table_schema,
+        county_table: viewCounty.table_name,
+        cousub_schema: viewCousubs.table_schema,
+        cousub_table: viewCousubs.table_name
+    });
+
+    const stgLyrDataRes = await fetch(url, {
+        method: "POST",
+        body,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
 
     await checkApiResponse(stgLyrDataRes);
-
     const resJson = await stgLyrDataRes.json();
-
     console.log('res', resJson);
 
-    navigate(`${baseUrl}/source/${resJson.payload.source_id}/versions`);
+    navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 };
 
 const Create = ({ source, newVersion, baseUrl }) => {
     const navigate = useNavigate();
-    const { pgEnv } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(DamaContext)
 
     const [startYear, setStartYear] = React.useState(1996);
-    const [endYear, setEndYear] = React.useState(2019);
+    const [endYear, setEndYear] = React.useState(new Date().getFullYear() - 1);
     const years = range(1996, new Date().getFullYear()).reverse();
 
     // selected views/versions
@@ -72,12 +78,12 @@ const Create = ({ source, newVersion, baseUrl }) => {
 
     React.useEffect(() => {
         async function fetchData() {
-            await getSrcViews({rtPfx, setVersions: setVersionsZTC, type: 'zone_to_county'});
-            await getSrcViews({rtPfx, setVersions: setVersionsCousubs, type: 'tl_cousub'});
-            await getSrcViews({rtPfx, setVersions: setVersionsTract, type: 'tl_tract'});
-            await getSrcViews({rtPfx, setVersions: setVersionsState, type: 'tl_state'});
-            await getSrcViews({rtPfx, setVersions: setVersionsCounty, type: 'tl_county'});
-            await getSrcViews({rtPfx, setVersions: setVersionsNCEI, type: 'ncei_storm_events'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsZTC, type: 'zone_to_county'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsCousubs, type: 'tl_cousub'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsTract, type: 'tl_tract'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsState, type: 'tl_state'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsCounty, type: 'tl_county'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsNCEI, type: 'ncei_storm_events'});
         }
         fetchData();
     }, [rtPfx])
@@ -96,7 +102,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
                 className={`align-right p-2 border-2 border-gray-200`}
                 onClick={() =>
                     CallServer(
-                        {rtPfx, baseUrl, source,
+                        {rtPfx, baseUrl, source, user,
                             startYear, endYear,
                             viewNCEI: versionsNCEI.views.find(v => v.view_id === parseInt(viewNCEI)),
                             viewZTC: versionsZTC.views.find(v => v.view_id === parseInt(viewZTC)),
