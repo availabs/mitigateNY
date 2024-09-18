@@ -14,10 +14,12 @@ import hazmitDataTypes from "~/pages/HazmitDataTypes"
 import { authMenuConfig } from "~/layout/authMenuConfig"
 import { useFalcor } from "~/modules/avl-falcor"
 import LayoutWrapper from "~/layout/LayoutWrapper"
-import Additional_components from "~/additional_components/index.js";
 
 
-registerComponents({...ComponentRegistry, ...Additional_components})
+import AdditionalComponents from "./additional_components";
+import {DamaMap} from "./pages/DataManager/"
+
+registerComponents({...ComponentRegistry, ...AdditionalComponents, "Map: Dama Map": DamaMap})
 registerDataType("selector", Selector)
 
 
