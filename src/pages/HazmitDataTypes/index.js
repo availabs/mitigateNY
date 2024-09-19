@@ -42,6 +42,8 @@ import gis_least_common_geographic_units from './gis_least_common_geographic_uni
 import parcels2footprints from './parcels2footprints'
 import npmrds from './npmrds'
 
+import geographies2elevations from "./geographies2elevations"
+
 const DataTypes = {
   npmrds,
   tiger_full,
@@ -84,7 +86,9 @@ const DataTypes = {
   fusion,
 
   gis_least_common_geographic_units,
-  parcels2footprints
+  parcels2footprints,
+
+  geographies2elevations
 };
 
 export default DataTypes;
