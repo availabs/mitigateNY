@@ -4,6 +4,7 @@
 // --------  please put your api calls where you use them for readability
 
 import { DAMA_HOST } from "~/config";
+import get from "lodash/get";
 
 export async function checkApiResponse(res) {
   if (!res.ok) {
@@ -43,22 +44,13 @@ export async function getDamaTileServerUrl() {
   return damaTileServerUrl;
 }
 
-export const getSrcViews = async ({rtPfx, setVersions, type}) => {
-  const url = new URL(
-    `${rtPfx}/hazard_mitigation/versionSelectorUtils`
-  );
-  url.searchParams.append("type", type);
+export const getSrcViews = async ({rtPfx, falcor, pgEnv, setVersions, type}) => {
+  await falcor.get(['dama', pgEnv, 'views', 'bySourceType', type]);
+  const res = get(falcor.getCache(), ['dama', pgEnv, 'views', 'bySourceType', type, 'value']);
+  console.log('res', res)
+  setVersions({views: res})
 
-  const list = await fetch(url);
-
-  await checkApiResponse(list);
-
-  const {
-    sources, views
-  } = await list.json();
-  setVersions({sources, views})
-
-  return {sources, views}
+  return {views: res}
 }
 
 export const makeAuthoritative = async (rtPfx, viewId) => {
