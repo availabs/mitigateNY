@@ -23,7 +23,7 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate,
         existing_source_id: source.source_id,
         view_dependencies: JSON.stringify(viewMetadata),
         version: newVersion,
-        table_name: 'disaster_loss_summary',
+        table_name: 'disaster_loss_summary_v2',
 
         ofd_schema: viewPAFPD.table_schema,
 

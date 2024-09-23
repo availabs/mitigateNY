@@ -36,7 +36,7 @@ import per_basis from "./per_basis_swd";
 import per_basis_fusion from "./per_basis_fusion";
 import hlr from "./hlr";
 import eal from "./eal"
-import disaster_loss_summary from "./disaster_loss_summary";
+import disaster_loss_summary_v2 from "./disaster_loss_summary_v2";
 import fusion from "./fusion";
 //import open_fema_data from "./open_fema_data";
 import gis_least_common_geographic_units from './gis_least_common_geographic_units'
@@ -77,7 +77,7 @@ const DataTypes = {
   hazard_mitigation_assistance_projects_v4,
   hazard_mitigation_assistance_projects_v4_enhanced,
 
-  disaster_loss_summary, // in progress
+  disaster_loss_summary_v2,
 
   // hazmit types: AVAIL processing
   per_basis,
