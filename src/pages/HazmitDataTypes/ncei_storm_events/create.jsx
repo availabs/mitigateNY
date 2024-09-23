@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 import { DamaContext } from "~/pages/DataManager/store";
 
 const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user}) => {
-    const url = `${rtPfx}/hazard_mitigation/loadNCEI`;
+    const url = `${rtPfx}/hazard_mitigation/load-ncei`;
     const body = JSON.stringify({
         table_name: 'details',
         source_name: source.name,

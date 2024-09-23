@@ -9,7 +9,7 @@ const CallServer = async ({rtPfx, baseUrl, source, user, newVersion, navigate, s
                               viewNCEI={},viewZTC={}, viewCousubs={}, viewCounty={}, viewState={}, viewTract={}}) => {
     const viewMetadata = [viewZTC.view_id, viewState.view_id,  viewCounty.view_id, viewCousubs.view_id, viewTract.view_id, viewNCEI.view_id];
 
-    const url = `${rtPfx}/hazard_mitigation/enhanceNCEI`;
+    const url = `${rtPfx}/hazard_mitigation/enhance-ncei`;
     const body = JSON.stringify({
         table_name: 'details_enhanced',
         source_name: source.name,

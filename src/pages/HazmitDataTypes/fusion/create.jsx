@@ -42,7 +42,7 @@ const range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + 
 
 const Create = ({ source, newVersion, baseUrl }) => {
     const navigate = useNavigate();
-    const { pgEnv } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(DamaContext)
 
     // selected views/versions
     const [viewDL, setViewDL] = React.useState();
@@ -66,7 +66,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
             {RenderVersions({value: viewDL, setValue: setViewDL, versions: versionsDL, type: 'Open Fema Data'})}
             {RenderVersions({value: viewNCEIE, setValue: setViewNCEIE, versions: versionsNCEIE, type: 'NCEI Enhanced'})}
             <button
-                className={`align-right p-2 border-2 border-gray-200`}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() =>
                     CallServer(
                         {rtPfx, baseUrl, source, newVersion,
@@ -74,7 +74,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
                             viewNCEIE: versionsNCEIE.views.find(v => v.view_id === parseInt(viewNCEIE)),
                             navigate
                         })}>
-                Add New Source
+                {source.source_id ? 'Add View' : 'Add Source'}
             </button>
         </div>
     )

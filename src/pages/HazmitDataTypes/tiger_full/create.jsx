@@ -31,7 +31,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
     return (
         <div className="w-full">
             <button
-                className={`align-right p-2 border-2 border-gray-200`}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() =>
                     CallServer({
                         rtPfx,
@@ -42,7 +42,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
                     })
                 }
             >
-                Add New Source
+                {source.source_id ? 'Add View' : 'Add Source'}
             </button>
         </div>
     );

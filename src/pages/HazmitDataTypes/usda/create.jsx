@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import { DamaContext } from "~/pages/DataManager/store";
 
 const CallServer = async ({rtPfx, baseUrl, source, table, newVersion, navigate, user}) => {
-    const url = `${rtPfx}/hazard_mitigation/usdaLoader`
+    const url = `${rtPfx}/hazard_mitigation/load-usda`
     const body = JSON.stringify({
         table_name: table,
         source_name: source.name,

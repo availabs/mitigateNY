@@ -227,7 +227,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
 
   const navigate = useNavigate();
 
-  const { pgEnv } = React.useContext(DamaContext);
+  const { pgEnv, user, falcor } = React.useContext(DamaContext);
   const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
   const [polygon_dama_src_list, setPolygonDamaSrcList] = useState(null);

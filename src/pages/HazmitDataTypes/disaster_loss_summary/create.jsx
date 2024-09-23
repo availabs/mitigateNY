@@ -4,6 +4,7 @@ import { checkApiResponse, getDamaApiRoutePrefix, getSrcViews } from "../utils/D
 import { RenderVersions } from "../utils/macros"
 
 import { DamaContext } from "~/pages/DataManager/store";
+import ihp_valid_registrations_v1_enhanced from "../ihp_valid_registrations_v1_enhanced/index.jsx";
 
 const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, 
                               viewPAFPD = {}, viewIHP = {}, 
@@ -16,52 +17,55 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate,
         viewNFIP.view_id, viewUSDA.view_id
     ];
 
-    const url = new URL(
-        `${rtPfx}/hazard_mitigation/disasterLossSummaryLoader`
-    );
-    url.searchParams.append("source_name", source.name);
-    url.searchParams.append("existing_source_id", source.source_id);
-    url.searchParams.append("view_dependencies", JSON.stringify(viewMetadata));
-    url.searchParams.append("version", newVersion);
-    url.searchParams.append("table_name", 'disaster_loss_summary');
+    const url = `${rtPfx}/hazard_mitigation/load-disaster-loss-summary`;
+    const body = JSON.stringify({
+        source_name: source.name,
+        existing_source_id: source.source_id,
+        view_dependencies: JSON.stringify(viewMetadata),
+        version: newVersion,
+        table_name: 'disaster_loss_summary',
 
+        ofd_schema: viewPAFPD.table_schema,
 
-    url.searchParams.append("ofd_schema", viewPAFPD.table_schema);
+        pafpd_table: viewPAFPD.table_name,
+        pafpd_schema: viewPAFPD.table_schema,
 
-    url.searchParams.append("pafpd_table", viewPAFPD.table_name);
-    url.searchParams.append("pafpd_schema", viewPAFPD.table_schema);
+        ihp_table: viewIHP.table_name,
+        ihp_schema: viewIHP.table_schema,
 
-    url.searchParams.append("ihp_table", viewIHP.table_name);
-    url.searchParams.append("ihp_schema", viewIHP.table_schema);
+        dds_table: viewDDS.table_name,
+        dds_schema: viewDDS.table_schema,
 
-    url.searchParams.append("dds_table", viewDDS.table_name);
-    url.searchParams.append("dds_schema", viewDDS.table_schema);
+        sba_table: viewSBA.table_name,
+        sba_schema: viewSBA.table_schema,
 
-    url.searchParams.append("sba_table", viewSBA.table_name);
-    url.searchParams.append("sba_schema", viewSBA.table_schema);
+        nfip_table: viewNFIP.table_name,
+        nfip_schema: viewNFIP.table_schema,
 
-    url.searchParams.append("nfip_table", viewNFIP.table_name);
-    url.searchParams.append("nfip_schema", viewNFIP.table_schema);
+        usda_table: viewUSDA.table_name,
+        usda_schema: viewUSDA.table_schema
+    });
 
-    url.searchParams.append("usda_table", viewUSDA.table_name);
-    url.searchParams.append("usda_schema", viewUSDA.table_schema);
-
-    const stgLyrDataRes = await fetch(url);
+    const stgLyrDataRes = await fetch(url, {
+        method: "POST",
+        body,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
 
     await checkApiResponse(stgLyrDataRes);
-
     const resJson = await stgLyrDataRes.json();
-
     console.log('res', resJson);
 
-    navigate(`${baseUrl}/source/${resJson.payload.source_id}/versions`);
+    navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 }
 
 const range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + start);
 
 const Create = ({ source, newVersion, baseUrl }) => {
     const navigate = useNavigate();
-    const { pgEnv } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(DamaContext)
 
     // selected views/versions
     const [viewPAFPD, setViewPAFPD] = React.useState();
@@ -82,12 +86,12 @@ const Create = ({ source, newVersion, baseUrl }) => {
 
     React.useEffect(() => {
         async function fetchData() {
-            await getSrcViews({rtPfx, setVersions: setVersionsPAFPD, type: 'public_assistance_funded_projects_details_v1_enhanced'});
-            await getSrcViews({rtPfx, setVersions: setVersionsIHP, type: 'individuals_and_households_program_valid_registrations_v1'});
-            await getSrcViews({rtPfx, setVersions: setVersionsDDS, type: 'disaster_declarations_summaries_v2'});
-            await getSrcViews({rtPfx, setVersions: setVersionsSBA, type: 'sba_disaster_loan_data_new'});
-            await getSrcViews({rtPfx, setVersions: setVersionsNFIP, type: 'fima_nfip_claims_v1_enhanced'});
-            await getSrcViews({rtPfx, setVersions: setVersionsUSDA, type: 'usda_crop_insurance_cause_of_loss_enhanced'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsPAFPD, type: 'public_assistance_funded_projects_details_v1_enhanced'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsIHP, type: 'ihp_valid_registrations_enhanced'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsDDS, type: 'disaster_declarations_summaries_v2'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsSBA, type: 'sba_disaster_loan_data_new'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsNFIP, type: 'fima_nfip_claims_v2_enhanced'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsUSDA, type: 'usda_crop_insurance_cause_of_loss_enhanced'});
         }
         fetchData();
     }, [rtPfx])
@@ -101,7 +105,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
             {RenderVersions({value: viewNFIP, setValue: setViewNFIP, versions: versionsNFIP, type: 'NFIP Claims Enhanced'})}
             {RenderVersions({value: viewUSDA, setValue: setViewUSDA, versions: versionsUSDA, type: 'USDA Crop Loss Enhanced'})}
             <button
-                className={`align-right p-2 border-2 border-gray-200`}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() =>
                     CallServer(
                         {rtPfx, baseUrl, source, newVersion,
@@ -113,7 +117,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
                             viewUSDA: versionsUSDA.views.find(v => v.view_id === parseInt(viewUSDA)),
                             navigate
                         })}>
-                Add New Source
+                {source.source_id ? 'Add View' : 'Add Source'}
             </button>
         </div>
     )
