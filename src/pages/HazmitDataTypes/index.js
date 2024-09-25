@@ -38,6 +38,7 @@ import hlr from "./hlr";
 import eal from "./eal"
 import disaster_loss_summary_v2 from "./disaster_loss_summary_v2";
 import fusion from "./fusion";
+import sheldus from "./sheldus"
 //import open_fema_data from "./open_fema_data";
 import gis_least_common_geographic_units from './gis_least_common_geographic_units'
 import parcels2footprints from './parcels2footprints'
@@ -85,6 +86,7 @@ const DataTypes = {
   hlr,
   eal,
   fusion,
+  sheldus,
 
   gis_least_common_geographic_units,
   parcels2footprints,
