@@ -9,7 +9,7 @@ const CallServer = async ({rtPfx, baseUrl, source, user, newVersion, navigate, s
                               viewNCEI={},viewZTC={}, viewCousubs={}, viewCounty={}, viewState={}, viewTract={}}) => {
     const viewMetadata = [viewZTC.view_id, viewState.view_id,  viewCounty.view_id, viewCousubs.view_id, viewTract.view_id, viewNCEI.view_id];
 
-    const url = `${rtPfx}/hazard_mitigation/enhanceNCEI`;
+    const url = `${rtPfx}/hazard_mitigation/enhance-ncei`;
     const body = JSON.stringify({
         table_name: 'details_enhanced',
         source_name: source.name,
@@ -99,7 +99,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
             {RenderVersions({value: viewCousubs, setValue: setViewCousubs, versions: versionsCousubs, type: 'Cousubs'})}
             {RenderVersions({value: viewTract, setValue: setViewTract, versions: versionsTract, type: 'Tracts'})}
             <button
-                className={`align-right p-2 border-2 border-gray-200`}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() =>
                     CallServer(
                         {rtPfx, baseUrl, source, user,
@@ -112,7 +112,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
                             viewTract: versionsTract.views.find(v => v.view_id === parseInt(viewTract)),
                             newVersion, navigate
                         })}>
-                Add New Source
+                {source.source_id ? 'Add View' : 'Add Source'}
             </button>
         </div>
     )

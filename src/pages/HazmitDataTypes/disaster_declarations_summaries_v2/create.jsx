@@ -6,39 +6,46 @@ import {useNavigate} from "react-router-dom";
 
 import { DamaContext } from "~/pages/DataManager/store";
 
-const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate}) => {
-    const url = new URL(
-        `${rtPfx}/hazard_mitigation/disaster_declarations_summary_v2`
-    );
+export const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user, table_name, shouldFetch}) => {
+    const url = `${rtPfx}/hazard_mitigation/load-ofd`;
+    const body = JSON.stringify({
+        table_name, // loading depends on the table name
+        source_name: source.name,
+        existing_source_id: source.source_id,
+        version: newVersion,
 
-    url.searchParams.append("table_name", 'disaster_declarations_summaries_v2');
-    url.searchParams.append("source_name", source.name);
-    url.searchParams.append("existing_source_id", source.source_id);
-    url.searchParams.append("version", newVersion);
+        user_id: user.id,
+        email: user.email,
+        shouldFetch
+    });
 
-    const stgLyrDataRes = await fetch(url);
+    const stgLyrDataRes = await fetch(url, {
+        method: "POST",
+        body,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
 
     await checkApiResponse(stgLyrDataRes);
-
     const resJson = await stgLyrDataRes.json();
-
     console.log('res', resJson);
 
-    navigate(`${baseUrl}/source/${resJson.payload.source_id}/versions`);
+    navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 }
 
 const Create = ({ source, newVersion, baseUrl }) => {
     const navigate = useNavigate();
-    const { pgEnv } = React.useContext(DamaContext)
+    const { pgEnv, user } = React.useContext(DamaContext)
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
     return (
         <div className='w-full'>
             <button
-                className={`align-right p-2 border-2 border-gray-200`}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() => CallServer({
-                rtPfx, baseUrl, source, newVersion, navigate
-            })}> Add New Source</button>
+                rtPfx, baseUrl, source, newVersion, navigate, user, table_name: 'disaster_declarations_summaries_v2'
+            })}> {source.source_id ? 'Add View' : 'Add Source'}</button>
         </div>
     )
 }

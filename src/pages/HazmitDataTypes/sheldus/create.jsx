@@ -1,38 +1,41 @@
 import React from 'react'
-
-
+import { useNavigate } from "react-router-dom";
 import { checkApiResponse, getDamaApiRoutePrefix, getSrcViews } from "../utils/DamaControllerApi";
-import {useNavigate} from "react-router-dom";
+import { RenderVersions } from "../utils/macros"
 
 import { DamaContext } from "~/pages/DataManager/store";
-import { RenderVersions } from "../utils/macros";
 
-const CallServer = async ({rtPfx, baseUrl, source, viewCounty={}, viewState={}, user, newVersion, navigate}) => {
-    const viewMetadata = [viewState.view_id,  viewCounty.view_id];
+const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user,
+                              viewFusion = {}, viewCounty = {}
+                          }) => {
+    const viewMetadata = [
+        viewFusion.view_id, viewCounty.view_id
+    ];
 
-    const url = `${rtPfx}/hazard_mitigation/load-sba`;
+    const url = `${rtPfx}/hazard_mitigation/load-sheldus`;
     const body = JSON.stringify({
-        table_name: 'sba_disaster_loan_data_new',
         source_name: source.name,
         existing_source_id: source.source_id,
-        version: newVersion,
         view_dependencies: JSON.stringify(viewMetadata),
+        version: newVersion,
+        table_name: 'sheldus',
 
-        state_schema: viewState.table_schema,
-        state_table: viewState.table_name,
+        user_id: user.id,
+        email: user.email,
+
         county_schema: viewCounty.table_schema,
         county_table: viewCounty.table_name,
 
-        user_id: user.id,
-        email: user.email
+        fusion_table: viewFusion.table_name,
+        fusion_schema: viewFusion.table_schema,
     });
 
     const stgLyrDataRes = await fetch(url, {
-        method: "POST",
+        method: 'POST',
         body,
         headers: {
-            "Content-Type": "application/json",
-        },
+            'Content-Type': 'application/json',
+        }
     });
 
     await checkApiResponse(stgLyrDataRes);
@@ -45,32 +48,39 @@ const CallServer = async ({rtPfx, baseUrl, source, viewCounty={}, viewState={}, 
 const Create = ({ source, newVersion, baseUrl }) => {
     const navigate = useNavigate();
     const { pgEnv, user, falcor } = React.useContext(DamaContext)
-    const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
-    const [viewState, setViewState] = React.useState();
+    // selected views/versions
+    const [viewFusion, setViewFusion] = React.useState();
     const [viewCounty, setViewCounty] = React.useState();
-
-    const [versionsState, setVersionsState] = React.useState({sources:[], views: []});
+    // all versions
+    const [versionsFusion, setVersionsFusion] = React.useState({sources:[], views: []});
     const [versionsCounty, setVersionsCounty] = React.useState({sources:[], views: []});
+
+    const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
     React.useEffect(() => {
         async function fetchData() {
-            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsState, type: 'tl_state'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsFusion, type: 'fusion'});
             await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsCounty, type: 'tl_county'});
         }
         fetchData();
     }, [rtPfx])
+
     return (
         <div className='w-full'>
-            {RenderVersions({value: viewState, setValue: setViewState, versions: versionsState, type: 'State'})}
+            {RenderVersions({value: viewFusion, setValue: setViewFusion, versions: versionsFusion, type: 'Fusion'})}
             {RenderVersions({value: viewCounty, setValue: setViewCounty, versions: versionsCounty, type: 'County'})}
             <button
                 className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
-                onClick={() => CallServer({
-                    rtPfx, baseUrl, source, user,
-                    viewState: versionsState.views.find(v => v.view_id === parseInt(viewState)),
-                    viewCounty: versionsCounty.views.find(v => v.view_id === parseInt(viewCounty)), newVersion, navigate
-            })}> {source.source_id ? 'Add View' : 'Add Source'}</button>
+                onClick={() =>
+                    CallServer(
+                        {rtPfx, baseUrl, source, newVersion, user,
+                            viewFusion: versionsFusion.views.find(v => v.view_id === parseInt(viewFusion)),
+                            viewCounty: versionsCounty.views.find(v => v.view_id === parseInt(viewCounty)),
+                            navigate
+                        })}>
+                {source.source_id ? 'Add View' : 'Add Source'}
+            </button>
         </div>
     )
 }
