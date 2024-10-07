@@ -41,7 +41,7 @@ const CallServer = async ({rtPfx, baseUrl, source, startYear, endYear, newVersio
 
 const Create = ({ source, newVersion, baseUrl }) => {
     const navigate = useNavigate();
-    const { pgEnv } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(DamaContext)
     // selected views/versions
     const [startYear, setStartYear] = React.useState(1996);
     const [endYear, setEndYear] = React.useState(2019);
@@ -75,7 +75,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
             {RenderVersions({value: viewFusion, setValue: setViewFusion, versions: versionsFusion, type: 'Fusion'})}
             {RenderVersions({value: viewNRI, setValue: setViewNRI, versions: versionsNRI, type: 'NRI'})}
             <button
-                className={`align-right p-2 border-2 border-gray-200`}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() =>
                     CallServer(
                         {rtPfx, baseUrl, source,
@@ -85,7 +85,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
                             viewNRI: versionsNRI.views.find(v => v.view_id === parseInt(viewNRI)),
                             newVersion, navigate
                         })}>
-                Add New Source
+                {source.source_id ? 'Add View' : 'Add Source'}
             </button>
         </div>
     )

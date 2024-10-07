@@ -30,16 +30,16 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate}) => {
 
 const Create =  ({ source, newVersion, baseUrl }) => {
     const navigate = useNavigate();
-    const { pgEnv } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(DamaContext)
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
     return (
         <div className='w-full'>
             <button
-                className={`align-right p-2 border-2 border-gray-200`}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() => CallServer({
                 rtPfx, baseUrl, source, newVersion, navigate
-            })}> Add New Source</button>
+            })}> {source.source_id ? 'Add View' : 'Add Source'}</button>
         </div>
     )
 }

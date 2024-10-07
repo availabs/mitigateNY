@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 import { DamaContext } from "~/pages/DataManager/store";
 
 const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user}) => {
-    const url = `${rtPfx}/hazard_mitigation/loadNCEI`;
+    const url = `${rtPfx}/hazard_mitigation/load-ncei`;
     const body = JSON.stringify({
         table_name: 'details',
         source_name: source.name,
@@ -39,7 +39,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
     return (
         <div className='w-full'>
             <button
-                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md `}
+                className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() =>
                     CallServer({rtPfx, baseUrl, source, newVersion, navigate, user})}>
                 {source?.source_id ? 'Add View' : 'Add Source'}

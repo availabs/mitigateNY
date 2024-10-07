@@ -94,7 +94,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
         domain: ["STATE", "COUNTY", "COUSUB", "TRACT"],
       })}
       <button
-        className={`align-right p-2 border-2 border-gray-200`}
+        className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
         onClick={() =>
           CallServer({
             rtPfx,
@@ -109,7 +109,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
         }
         disabled={!tigerTable}
       >
-        Add New Source
+        {source.source_id ? 'Add View' : 'Add Source'}
       </button>
 
       {!isNewSource ? (
@@ -117,7 +117,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
           <br />
           <span> Source with type {tigerTable} already created </span>&nbsp;
           <button
-            className={`align-right p-2 border-2 border-gray-200`}
+            className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
             onClick={() => {
               if (sourceValues?.source_id && sourceValues?.etl_context_id) {
                 navigate(

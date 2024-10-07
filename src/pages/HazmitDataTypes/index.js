@@ -4,22 +4,23 @@
 // ---------------------------
 import disaster_declarations_summaries_v2 from "./disaster_declarations_summaries_v2";
 import fema_web_disaster_summaries_v1 from "./fema_web_disaster_summaries_v1/index.jsx";
-import fima_nfip_claims_v1 from "./fema_nfip_claims_v1";
-import fima_nfip_claims_v1_enhanced from "./fema_nfip_claims_v1_enhanced";
+import fima_nfip_claims_v2 from "./fema_nfip_claims_v2";
+import fima_nfip_claims_v2_enhanced from "./fema_nfip_claims_v2_enhanced";
 import individuals_and_households_program_valid_registrations_v1
   from "./individuals_and_households_program_valid_registrations_v1";
+import ihp_valid_registrations_v1_enhanced from "./ihp_valid_registrations_v1_enhanced/index.jsx";
 import public_assistance_funded_projects_details_v1
   from "./public_assistance_funded_projects_details_v1";
 import public_assistance_funded_projects_details_v1_enhanced
   from "./public_assistance_funded_projects_details_v1_enhanced";
 import hazard_mitigation_grant_program_disaster_summaries_v2
   from "./hazard_mitigation_grant_program_disaster_summaries_v2/index.jsx";
-import hazard_mitigation_assistance_mitigated_properties_v3
-  from "./hazard_mitigation_assistance_mitigated_properties_v3/index.jsx";
-import hazard_mitigation_assistance_projects_v3
-  from "./hazard_mitigation_assistance_projects_v3/index.jsx";
-import hazard_mitigation_assistance_projects_v3_enhanced
-  from "./hazard_mitigation_assistance_projects_v3_enhanced/index.jsx";
+import hazard_mitigation_assistance_mitigated_properties_v4
+  from "./hazard_mitigation_assistance_mitigated_properties_v4/index.jsx";
+import hazard_mitigation_assistance_projects_v4
+  from "./hazard_mitigation_assistance_projects_v4/index.jsx";
+import hazard_mitigation_assistance_projects_v4_enhanced
+  from "./hazard_mitigation_assistance_projects_v4_enhanced/index.jsx";
 import ncei_storm_events from './ncei_storm_events';
 import ncei_storm_events_enhanced from "./ncei_storm_events_enhanced";
 import zone_to_county from "./zone_to_county";
@@ -35,8 +36,9 @@ import per_basis from "./per_basis_swd";
 import per_basis_fusion from "./per_basis_fusion";
 import hlr from "./hlr";
 import eal from "./eal"
-import disaster_loss_summary from "./disaster_loss_summary";
+import disaster_loss_summary_v2 from "./disaster_loss_summary_v2";
 import fusion from "./fusion";
+import sheldus from "./sheldus"
 //import open_fema_data from "./open_fema_data";
 import gis_least_common_geographic_units from './gis_least_common_geographic_units'
 import parcels2footprints from './parcels2footprints'
@@ -52,31 +54,31 @@ const DataTypes = {
 
   // // // hazmit types: swd
   ncei_storm_events,
-  ncei_storm_events_enhanced,
+  ncei_storm_events_enhanced, // lat lon coalesce with centroids
 
 
   // hazmit types: other data
   usda_crop_insurance_cause_of_loss,
   usda_crop_insurance_cause_of_loss_enhanced,
   sba_disaster_loan_data_new,
-  nri,
-  nri_tracts,
+  nri, // done
+  nri_tracts, //done
 
   // // hazmit types: open fema data types
   disaster_declarations_summaries_v2,
   fema_web_disaster_summaries_v1,
-  //fima_nfip_claims_v1,
-  fima_nfip_claims_v1_enhanced,
+  fima_nfip_claims_v2,
+  fima_nfip_claims_v2_enhanced,
   individuals_and_households_program_valid_registrations_v1,
+  ihp_valid_registrations_v1_enhanced,
   public_assistance_funded_projects_details_v1,
   public_assistance_funded_projects_details_v1_enhanced,
   hazard_mitigation_grant_program_disaster_summaries_v2,
-  hazard_mitigation_assistance_mitigated_properties_v3,
-  hazard_mitigation_assistance_projects_v3,
-  hazard_mitigation_assistance_projects_v3_enhanced,
-  // open_fema_data,
+  hazard_mitigation_assistance_mitigated_properties_v4,
+  hazard_mitigation_assistance_projects_v4,
+  hazard_mitigation_assistance_projects_v4_enhanced,
 
-  disaster_loss_summary,
+  disaster_loss_summary_v2,
 
   // hazmit types: AVAIL processing
   per_basis,
@@ -84,6 +86,7 @@ const DataTypes = {
   hlr,
   eal,
   fusion,
+  sheldus,
 
   gis_least_common_geographic_units,
   parcels2footprints,
