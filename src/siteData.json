@@ -1,0 +1,747 @@
+[{
+  "id": "566430",
+  "app": "mitigat-ny-prod",
+  "type": "prod",
+  "patterns": [
+    {
+      "id": "566431",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "theme": {
+        "settings": {
+          "theme": {
+            "theme": "default"
+          }
+        },
+        "navOptions": {
+          "authMenu": {
+            "navItems": [
+              {
+                "icon": "fad fa-screwdriver-wrench fa-fw flex-shrink-0  pr-1",
+                "name": "Admin",
+                "path": "/admin",
+                "authLevel": "5",
+                "className": ""
+              },
+              {
+                "icon": "fad fa-database fa-fw flex-shrink-0  pr-1",
+                "name": "Cenrep",
+                "path": "/cenrep",
+                "authLevel": "1",
+                "className": ""
+              },
+              {
+                "icon": "fad fa-money-check-pen fa-fw flex-shrink-0  pr-1'",
+                "name": "Manage SHMP",
+                "path": "/manage",
+                "authLevel": "5",
+                "className": ""
+              },
+              {
+                "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
+                "name": "Manage Site",
+                "path": "/list",
+                "authLevel": "10",
+                "className": ""
+              }
+            ]
+          }
+        }
+      },
+      "base_url": "/",
+      "doc_type": "shmp",
+      "authLevel": "",
+      "pattern_type": "page"
+    },
+    {
+      "id": "566466",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "theme": {
+        "settings": {
+          "theme": {
+            "theme": "default"
+          }
+        },
+        "navOptions": {
+          "topNav": {
+            "nav": "none",
+            "logo": "none",
+            "search": "none"
+          },
+          "sideNav": {
+            "nav": "secondary",
+            "size": "compact",
+            "color": "white"
+          },
+          "secondaryNav": {
+            "navItems": [
+              {
+                "icon": "far fa-home fa-fw",
+                "name": "Dashboard",
+                "path": "/admin",
+                "authLevel": "1",
+                "className": ""
+              },
+              {
+                "icon": "far fa-gauge-simple fa-fw",
+                "name": "Plan Status",
+                "path": "/admin/plan_status",
+                "authLevel": "1",
+                "className": ""
+              },
+              {
+                "icon": "",
+                "name": "Pages",
+                "path": "",
+                "authLevel": "-1",
+                "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
+              },
+              {
+                "icon": "far fa-edit fa-fw",
+                "name": "CMS",
+                "path": "/edit",
+                "authLevel": "-1",
+                "className": ""
+              },
+              {
+                "icon": "far fa-flask fa-fw",
+                "name": "Playground",
+                "path": "/playground/edit",
+                "authLevel": "1",
+                "className": ""
+              },
+              {
+                "icon": "far fa-paste fa-fw",
+                "name": "Templates",
+                "path": "/manage/templates",
+                "authLevel": "1",
+                "className": ""
+              },
+              {
+                "icon": "",
+                "name": "Cen Rep",
+                "path": "",
+                "authLevel": "1",
+                "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
+              },
+              {
+                "icon": "far fa-database fa-fw",
+                "name": "External Data",
+                "path": "/cenrep",
+                "authLevel": "1",
+                "className": ""
+              },
+              {
+                "icon": "fad fa-database fa-fw",
+                "name": "Managed Data",
+                "path": "/admin/forms",
+                "authLevel": "1",
+                "className": ""
+              },
+              {
+                "icon": "",
+                "name": "Docs",
+                "path": "",
+                "authLevel": "1",
+                "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
+              },
+              {
+                "icon": "far fa-book fa-fw",
+                "name": "Classroom",
+                "path": "/docs",
+                "authLevel": "1",
+                "className": ""
+              }
+            ]
+          }
+        }
+      },
+      "base_url": "/admin",
+      "doc_type": "admin",
+      "authLevel": "1",
+      "pattern_type": "page"
+    },
+    {
+      "id": "566568",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "theme": {
+        "navOptions": {
+          "topNav": {
+            "logo": "none"
+          },
+          "sideNav": {
+            "size": "compact"
+          }
+        }
+      },
+      "base_url": "/playground",
+      "doc_type": "playground",
+      "authLevel": "1",
+      "pattern_type": "page"
+    },
+    {
+      "id": "570441",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "theme": {
+        "navOptions": {
+          "topNav": {
+            "logo": "none"
+          },
+          "sideNav": {
+            "size": "compact"
+          }
+        }
+      },
+      "base_url": "/drafts",
+      "doc_type": "drafts",
+      "authLevel": "1",
+      "pattern_type": "page"
+    },
+    {
+      "id": "570475",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "theme": {
+        "navOptions": {
+          "topNav": {
+            "logo": "none"
+          },
+          "sideNav": {
+            "size": "compact"
+          }
+        }
+      },
+      "base_url": "/docs",
+      "doc_type": "classroom",
+      "authLevel": "1",
+      "pattern_type": "page"
+    },
+    {
+      "id": "572433",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "theme": {
+        "navOptions": {
+          "authMenu": {
+            "navItems": [
+              {
+                "icon": "",
+                "name": "Manager",
+                "path": "/manage",
+                "authLevel": "5",
+                "className": ""
+              },
+              {
+                "icon": "",
+                "name": "Cenrep",
+                "path": "/cenrep",
+                "authLevel": "1",
+                "className": ""
+              }
+            ]
+          }
+        }
+      },
+      "base_url": "/",
+      "doc_type": "bild",
+      "authLevel": "1",
+      "subdomain": "buildings",
+      "pattern_type": "page"
+    },
+    {
+      "id": "572462",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "base_url": "/",
+      "doc_type": "county_template2",
+      "authLevel": "",
+      "subdomain": "countytemplate",
+      "pattern_type": "page"
+    },
+    {
+      "id": "584350",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "base_url": "/",
+      "doc_type": "design",
+      "authLevel": "",
+      "subdomain": "design",
+      "pattern_type": "page"
+    },
+    {
+      "id": "596170",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "config": "{\"attributes\":[{\"name\":\"action_name\",\"display_name\":\"Action Name\",\"type\":\"select\"},{\"name\":\"action_type\",\"display_name\":\"Action Type\",\"type\":\"text\",\"required\":\"yes\",\"options\":[]},{\"name\":\"action_category\",\"display_name\":\"Action Category\",\"type\":\"select\",\"prompt\":\"\",\"options\":[{\"label\":\"Natural Resource Protection & Restoration\",\"value\":\"Natural Resource Protection & Restoration\"},{\"label\":\"Property Protection & Infrastructure\",\"value\":\"Property Protection & Infrastructure\"},{\"label\":\"Preparedness & Response\",\"value\":\"Preparedness & Response\"}]},{\"name\":\"jurisdiction\",\"display_name\":\"Jurisdiction\",\"type\":\"multiselect\",\"options\":[]},{\"name\":\"associated_hazards\",\"display_name\":\"Associated Hazards\",\"type\":\"multiselect\"},{\"name\":\"jurisdiction_geoid\",\"display_name\":\"Jurisdiction Geoid\",\"type\":\"multiselect\"},{\"name\":\"county_geoid\",\"display_name\":\"County Geoid\",\"type\":\"multiselect\"}]}",
+      "base_url": "/test-upload-actions",
+      "doc_type": "test-upload-actions",
+      "templates": [
+        {
+          "id": "542162",
+          "ref": "mitigat-ny-prod+test-upload-actions|template",
+          "title": "list",
+          "history": [
+            {
+              "time": "Wed Aug 21 2024 13:48:29 GMT-0400 (Eastern Daylight Time)",
+              "type": "added section 1",
+              "user": "user"
+            },
+            {
+              "time": "Wed Aug 21 2024 13:48:43 GMT-0400 (Eastern Daylight Time)",
+              "type": "added section 2",
+              "user": "user"
+            },
+            {
+              "time": "Wed Aug 21 2024 13:49:11 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Wed Aug 21 2024 13:58:56 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Thu Aug 22 2024 10:37:16 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 14:04:18 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 14:06:19 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Sat Aug 24 2024 13:47:40 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Sat Aug 24 2024 14:42:35 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Sun Aug 25 2024 10:40:04 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Sun Aug 25 2024 10:40:58 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Sun Aug 25 2024 10:55:03 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Sun Aug 25 2024 10:55:20 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Sun Aug 25 2024 10:58:18 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Mon Aug 26 2024 12:31:03 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "user"
+            },
+            {
+              "time": "Thu Aug 29 2024 12:31:30 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 2",
+              "user": "availabs@gmail.com"
+            }
+          ],
+          "main_nav": "true",
+          "url_slug": "/",
+          "has_changes": true,
+          "draft_sections": [
+            {
+              "id": "597729",
+              "ref": "mitigat-ny-prod+test-upload-actions|template|template-section",
+              "element": {
+                "element-data": "{\"title\":\"Testing Upload\",\"buttons\":[{\"to\":\"upload\",\"text\":\"upload\"}]}",
+                "element-type": "Title"
+              }
+            },
+            {
+              "id": "597730",
+              "ref": "mitigat-ny-prod+test-upload-actions|template|template-section",
+              "element": {
+                "element-data": "{\"visibleAttributes\":[\"action_category\",\"action_type\",\"jurisdiction\",\"action_name\"],\"pageSize\":50,\"attributes\":[{\"name\":\"action_name\",\"display_name\":\"Action Name\",\"type\":\"select\"},{\"name\":\"action_type\",\"display_name\":\"Action Type\",\"type\":\"text\",\"required\":\"yes\",\"options\":[{\"label\":\"type1\",\"value\":\"type1\"},{\"label\":\"type2\",\"value\":\"type2\"},{\"label\":\"type3\",\"value\":\"type3\"},{\"label\":\"Property Protection & Infrastructure\",\"value\":\"Property Protection & Infrastructure\"},{\"label\":\"Natural Resource Protection & Restoration\",\"value\":\"Natural Resource Protection & Restoration\"},{\"label\":\"Planning & Regulatory\",\"value\":\"Planning & Regulatory\"},{\"label\":\"Education, Outreach & Awareness\",\"value\":\"Education, Outreach & Awareness\"}]},{\"name\":\"action_category\",\"display_name\":\"Action Category\",\"type\":\"select\",\"prompt\":\"\",\"options\":[{\"label\":\"Natural Resource Protection & Restoration\",\"value\":\"Natural Resource Protection & Restoration\"},{\"label\":\"Property Protection & Infrastructure\",\"value\":\"Property Protection & Infrastructure\"},{\"label\":\"Preparedness & Response\",\"value\":\"Preparedness & Response\"}]},{\"name\":\"jurisdiction\",\"display_name\":\"Jurisdiction\",\"type\":\"multiselect\",\"options\":[]},{\"name\":\"associated_hazards\",\"display_name\":\"Associated Hazards\",\"type\":\"multiselect\"},{\"name\":\"jurisdiction_geoid\",\"display_name\":\"Jurisdiction Geoid\",\"type\":\"multiselect\"},{\"name\":\"county_geoid\",\"display_name\":\"County Geoid\",\"type\":\"multiselect\"}],\"orderBy\":{},\"colSizes\":{\"action_category\":212.25,\"action_type\":212.25,\"jurisdiction\":212.25,\"action_name\":212.25},\"filters\":[],\"allowEditInView\":true}",
+                "element-type": "Spreadsheet"
+              }
+            }
+          ]
+        },
+        {
+          "id": "542163",
+          "ref": "mitigat-ny-prod+test-upload-actions|template",
+          "title": "upload",
+          "history": [
+            {
+              "time": "Wed Aug 21 2024 13:49:31 GMT-0400 (Eastern Daylight Time)",
+              "type": "added section 1",
+              "user": "user"
+            }
+          ],
+          "main_nav": "true",
+          "url_slug": "upload",
+          "has_changes": true,
+          "draft_sections": [
+            {
+              "element": {
+                "element-type": "Upload"
+              }
+            }
+          ]
+        },
+        {
+          "id": "542361",
+          "ref": "mitigat-ny-prod+test-upload-actions|template",
+          "title": "view",
+          "history": [
+            {
+              "time": "Fri Aug 23 2024 09:57:20 GMT-0400 (Eastern Daylight Time)",
+              "type": "added section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 09:57:26 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 09:57:35 GMT-0400 (Eastern Daylight Time)",
+              "type": "added section 2",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 11:20:55 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 11:34:57 GMT-0400 (Eastern Daylight Time)",
+              "type": "removed section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 11:34:59 GMT-0400 (Eastern Daylight Time)",
+              "type": "removed section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 11:38:05 GMT-0400 (Eastern Daylight Time)",
+              "type": "added section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 12:02:02 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 23 2024 12:10:52 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            }
+          ],
+          "main_nav": "false",
+          "url_slug": "view/:id",
+          "has_changes": true,
+          "draft_sections": [
+            {
+              "element": {
+                "element-data": "{\"visibleAttributes\":[\"action_category\",\"action_name\",\"action_type\"],\"orderedAttributes\":[{\"name\":\"action_category\",\"display_name\":\"Action Category\",\"type\":\"text\"},{\"name\":\"action_type\",\"display_name\":\"Action Type\",\"type\":\"multiselect\"},{\"name\":\"action_name\",\"display_name\":\"Action Name\",\"type\":\"select\"}],\"url\":\"view/\",\"allowEditInView\":false}",
+                "element-type": "Item"
+              }
+            }
+          ]
+        }
+      ],
+      "description": {
+        "root": {
+          "type": "root",
+          "format": "",
+          "indent": 0,
+          "version": 1,
+          "children": [
+            {
+              "type": "paragraph",
+              "format": "",
+              "indent": 0,
+              "version": 1,
+              "children": [
+                {
+                  "mode": "normal",
+                  "text": "Description",
+                  "type": "text",
+                  "detail": 0,
+                  "format": 0,
+                  "version": 1
+                },
+                {
+                  "mode": "normal",
+                  "text": "\n\n",
+                  "type": "text",
+                  "detail": 0,
+                  "format": 0,
+                  "version": 1
+                }
+              ],
+              "direction": "ltr"
+            }
+          ],
+          "direction": "ltr"
+        }
+      },
+      "pattern_type": "form"
+    },
+    {
+      "id": "596171",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "config": "{\"attributes\":[{\"name\":\"dataset_name\",\"display_name\":\"Dataset Name\",\"type\":\"textarea\"},{\"name\":\"process_step\",\"display_name\":\"Process Step\",\"type\":\"select\",\"options\":[{\"label\":\"1 Discovery - Sourcing\",\"value\":\"1 Discovery - Sourcing\"},{\"label\":\"2 Discovery - Utilization\",\"value\":\"2 Discovery - Utilization\"},{\"label\":\"3 Discovery - Viability\",\"value\":\"3 Discovery - Viability\"},{\"label\":\"3b Discovery - Not Viable\",\"value\":\"3b Discovery - Not Viable\"},{\"label\":\"4 Process - Upload to CenRep\",\"value\":\"4 Process - Upload to CenRep\"},{\"label\":\"5 Process - Turn on Data\",\"value\":\"5 Process - Turn on Data\"},{\"label\":\"5b Process - Source Data ONLY - Move to Step 10\",\"value\":\"5b Process - Source Data ONLY - Move to Step 10\"},{\"label\":\"6 Process - CenRep Overview\",\"value\":\"6 Process - CenRep Overview\"},{\"label\":\"7 Process - CenRep Advanced - AVAIL\",\"value\":\"7 Process - CenRep Advanced - AVAIL\"},{\"label\":\"7b Process - CenRep Advanced - DHSES\",\"value\":\"7b Process - CenRep Advanced - DHSES\"},{\"label\":\"8 Process - QA/QC\",\"value\":\"8 Process - QA/QC\"},{\"label\":\"9 Deploy - Create Component\",\"value\":\"9 Deploy - Create Component\"},{\"label\":\"10 Deploy - Draft Tool Tutorial\",\"value\":\"10 Deploy - Draft Tool Tutorial\"},{\"label\":\"11 Deploy - Draft Context Language\",\"value\":\"11 Deploy - Draft Context Language\"},{\"label\":\"12 Deploy - Tag Data\",\"value\":\"12 Deploy - Tag Data\"}]},{\"name\":\"origin_authority\",\"display_name\":\"Origin - Authority\",\"type\":\"textarea\"},{\"name\":\"origin_url\",\"display_name\":\"Origin URL\",\"type\":\"textarea\"},{\"name\":\"origin_data_formats\",\"display_name\":\"Origin Data Formats\",\"type\":\"multiselect\",\"options\":[{\"label\":\"csv\",\"value\":\"csv\"},{\"label\":\"geojson\",\"value\":\"geojson\"},{\"label\":\"kml\",\"value\":\"kml\"},{\"label\":\"shapefile\",\"value\":\"shapefile\"},{\"label\":\"excel\",\"value\":\"excel\"},{\"label\":\"geodatabase\",\"value\":\"geodatabase\"},{\"label\":\"api\",\"value\":\"api\"},{\"label\":\"txt\",\"value\":\"txt\"},{\"label\":\"rdf\",\"value\":\"rdf\"},{\"label\":\"rss\",\"value\":\"rss\"},{\"label\":\"xml\",\"value\":\"xml\"},{\"label\":\"ksv\",\"value\":\"ksv\"}]},{\"name\":\"source_refresh_interval\",\"display_name\":\"Source Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"evaluation\",\"display_name\":\"Evaluation\",\"type\":\"textarea\"},{\"name\":\"cenrep_url\",\"display_name\":\"Cenrep URL\",\"type\":\"textarea\"},{\"name\":\"shmp_cenrep_refresh_interval\",\"display_name\":\"SHMP Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"notes\",\"display_name\":\"Notes\",\"type\":\"textarea\"},{\"name\":\"helpful_to_planning\",\"display_name\":\"Helpful to planning\",\"type\":\"textarea\"},{\"name\":\"overview\",\"display_name\":\"What it is\",\"type\":\"textarea\"},{\"name\":\"cenrep_id\",\"display_name\":\"Cenrep ID\",\"type\":\"textarea\"},{\"name\":\"category\",\"display_name\":\"Category\",\"type\":\"select\",\"options\":[{\"label\":\"Infrastructure\",\"value\":\"Infrastructure\"},{\"label\":\"BILD\",\"value\":\"BILD\"},{\"label\":\"Risk\",\"value\":\"Risk\"},{\"label\":\"Social\",\"value\":\"Social\"},{\"label\":\"Environment\",\"value\":\"Environment\"},{\"label\":\"Funding Sources\",\"value\":\"Funding Sources\"},{\"label\":\"Managed Data\",\"value\":\"Managed Data\"}]},{\"name\":\"flag\",\"display_name\":\"Flag\"},{\"name\":\"flag_comment\",\"display_name\":\"Flag Comment\"}]}",
+      "base_url": "/dmp",
+      "doc_type": "DMP",
+      "templates": [
+        {
+          "id": "533496",
+          "ref": "mitigat-ny-prod+template",
+          "title": "Table (Full)",
+          "history": [
+            {
+              "time": "Thu Aug 15 2024 09:53:06 GMT-0400 (Eastern Daylight Time)",
+              "type": "added section 1",
+              "user": "user"
+            },
+            {
+              "time": "Thu Aug 15 2024 11:20:29 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Thu Aug 15 2024 11:21:19 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Thu Aug 15 2024 11:41:55 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Thu Aug 15 2024 11:42:10 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Thu Aug 15 2024 11:42:37 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Thu Aug 15 2024 11:42:48 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 16 2024 14:02:41 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Mon Aug 26 2024 12:27:04 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            }
+          ],
+          "main_nav": "true",
+          "url_slug": "/",
+          "has_changes": true,
+          "draft_sections": [
+            {
+              "size": "2",
+              "element": {
+                "element-data": "{\"visibleAttributes\":[\"category\",\"dataset_name\",\"process_step\",\"origin_authority\",\"origin_url\",\"origin_data_formats\",\"source_refresh_interval\",\"overview\",\"helpful_to_planning\",\"evaluation\",\"cenrep_id\",\"cenrep_url\",\"shmp_cenrep_refresh_interval\",\"notes\"],\"pageSize\":50,\"attributes\":[{\"name\":\"dataset_name\",\"display_name\":\"Dataset Name\",\"type\":\"textarea\"},{\"name\":\"process_step\",\"display_name\":\"Process Step\",\"type\":\"select\",\"options\":[{\"label\":\"1 Discovery - Sourcing\",\"value\":\"1 Discovery - Sourcing\"},{\"label\":\"2 Discovery - Utilization\",\"value\":\"2 Discovery - Utilization\"},{\"label\":\"3 Discovery - Viability\",\"value\":\"3 Discovery - Viability\"},{\"label\":\"3b Discovery - Not Viable\",\"value\":\"3b Discovery - Not Viable\"},{\"label\":\"4 Process - Upload to CenRep\",\"value\":\"4 Process - Upload to CenRep\"},{\"label\":\"5 Process - Turn on Data\",\"value\":\"5 Process - Turn on Data\"},{\"label\":\"5b Process - Source Data ONLY - Move to Step 10\",\"value\":\"5b Process - Source Data ONLY - Move to Step 10\"},{\"label\":\"6 Process - CenRep Overview\",\"value\":\"6 Process - CenRep Overview\"},{\"label\":\"7 Process - CenRep Advanced - AVAIL\",\"value\":\"7 Process - CenRep Advanced - AVAIL\"},{\"label\":\"7b Process - CenRep Advanced - DHSES\",\"value\":\"7b Process - CenRep Advanced - DHSES\"},{\"label\":\"8 Process - QA/QC\",\"value\":\"8 Process - QA/QC\"},{\"label\":\"9 Deploy - Create Component\",\"value\":\"9 Deploy - Create Component\"},{\"label\":\"10 Deploy - Draft Tool Tutorial\",\"value\":\"10 Deploy - Draft Tool Tutorial\"},{\"label\":\"11 Deploy - Draft Context Language\",\"value\":\"11 Deploy - Draft Context Language\"},{\"label\":\"12 Deploy - Tag Data\",\"value\":\"12 Deploy - Tag Data\"}]},{\"name\":\"origin_authority\",\"display_name\":\"Origin - Authority\",\"type\":\"textarea\"},{\"name\":\"origin_url\",\"display_name\":\"Origin URL\",\"type\":\"textarea\"},{\"name\":\"origin_data_formats\",\"display_name\":\"Origin Data Formats\",\"type\":\"multiselect\",\"options\":[{\"label\":\"csv\",\"value\":\"csv\"},{\"label\":\"geojson\",\"value\":\"geojson\"},{\"label\":\"kml\",\"value\":\"kml\"},{\"label\":\"shapefile\",\"value\":\"shapefile\"},{\"label\":\"excel\",\"value\":\"excel\"},{\"label\":\"geodatabase\",\"value\":\"geodatabase\"},{\"label\":\"api\",\"value\":\"api\"},{\"label\":\"txt\",\"value\":\"txt\"},{\"label\":\"rdf\",\"value\":\"rdf\"},{\"label\":\"rss\",\"value\":\"rss\"},{\"label\":\"xml\",\"value\":\"xml\"},{\"label\":\"ksv\",\"value\":\"ksv\"}]},{\"name\":\"source_refresh_interval\",\"display_name\":\"Source Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"evaluation\",\"display_name\":\"Evaluation\",\"type\":\"textarea\"},{\"name\":\"cenrep_url\",\"display_name\":\"Cenrep URL\",\"type\":\"textarea\"},{\"name\":\"shmp_cenrep_refresh_interval\",\"display_name\":\"SHMP Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"notes\",\"display_name\":\"Notes\",\"type\":\"textarea\"},{\"name\":\"helpful_to_planning\",\"display_name\":\"Helpful to planning\",\"type\":\"textarea\"},{\"name\":\"overview\",\"display_name\":\"What it is\",\"type\":\"textarea\"},{\"name\":\"cenrep_id\",\"display_name\":\"Cenrep ID\",\"type\":\"textarea\"},{\"name\":\"category\",\"display_name\":\"Category\",\"type\":\"select\",\"options\":[{\"label\":\"Infrastructure\",\"value\":\"Infrastructure\"},{\"label\":\"BILD\",\"value\":\"BILD\"},{\"label\":\"Risk\",\"value\":\"Risk\"},{\"label\":\"Social\",\"value\":\"Social\"},{\"label\":\"Environment\",\"value\":\"Environment\"},{\"label\":\"Funding Sources\",\"value\":\"Funding Sources\"},{\"label\":\"Managed Data\",\"value\":\"Managed Data\"}]},{\"name\":\"flag\",\"display_name\":\"Flag\"},{\"name\":\"flag_comment\",\"display_name\":\"Flag Comment\"}],\"orderBy\":{},\"colSizes\":{\"category\":121.64285714285714,\"dataset_name\":121.64285714285714,\"process_step\":121.64285714285714,\"origin_authority\":121.64285714285714,\"origin_url\":121.64285714285714,\"origin_data_formats\":121.64285714285714,\"source_refresh_interval\":121.64285714285714,\"overview\":121.64285714285714,\"helpful_to_planning\":121.64285714285714,\"evaluation\":121.64285714285714,\"cenrep_id\":121.64285714285714,\"cenrep_url\":121.64285714285714,\"shmp_cenrep_refresh_interval\":121.64285714285714,\"notes\":121.64285714285714},\"filters\":[{\"column\":\"cenrep_id\",\"values\":[\"422\"]}],\"allowEditInView\":true}",
+                "element-type": "Spreadsheet"
+              }
+            }
+          ]
+        },
+        {
+          "id": "533497",
+          "ref": "mitigat-ny-prod+template",
+          "title": "View Row",
+          "main_nav": "false",
+          "url_slug": "/view/:id",
+          "data_controls": "dc"
+        },
+        {
+          "id": "533498",
+          "ref": "mitigat-ny-prod+template",
+          "title": "Discovery Table",
+          "history": [
+            {
+              "time": "Fri Aug 16 2024 09:39:15 GMT-0400 (Eastern Daylight Time)",
+              "type": "added section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 16 2024 09:39:41 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 16 2024 13:12:56 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Fri Aug 16 2024 13:14:12 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            },
+            {
+              "time": "Tue Aug 20 2024 08:11:42 GMT-0400 (Eastern Daylight Time)",
+              "type": "edited section 1",
+              "user": "user"
+            }
+          ],
+          "main_nav": "true",
+          "url_slug": "discovery",
+          "has_changes": true,
+          "draft_sections": [
+            {
+              "size": "2",
+              "element": {
+                "element-data": "{\"visibleAttributes\":[\"category\",\"dataset_name\",\"process_step\",\"origin_authority\",\"origin_url\",\"origin_data_formats\",\"helpful_to_planning\",\"overview\",\"evaluation\",\"notes\"],\"pageSize\":50,\"attributes\":[{\"name\":\"dataset_name\",\"display_name\":\"Dataset Name\",\"type\":\"textarea\"},{\"name\":\"process_step\",\"display_name\":\"Process Step\",\"type\":\"select\",\"options\":[{\"label\":\"1 Discovery - Sourcing\",\"value\":\"1 Discovery - Sourcing\"},{\"label\":\"2 Discovery - Utilization\",\"value\":\"2 Discovery - Utilization\"},{\"label\":\"3 Discovery - Viability\",\"value\":\"3 Discovery - Viability\"},{\"label\":\"3b Discovery - Not Viable\",\"value\":\"3b Discovery - Not Viable\"},{\"label\":\"4 Process - Upload to CenRep\",\"value\":\"4 Process - Upload to CenRep\"},{\"label\":\"5 Process - Turn on Data\",\"value\":\"5 Process - Turn on Data\"},{\"label\":\"5b Process - Source Data ONLY - Move to Step 10\",\"value\":\"5b Process - Source Data ONLY - Move to Step 10\"},{\"label\":\"6 Process - CenRep Overview\",\"value\":\"6 Process - CenRep Overview\"},{\"label\":\"7 Process - CenRep Advanced - AVAIL\",\"value\":\"7 Process - CenRep Advanced - AVAIL\"},{\"label\":\"7b Process - CenRep Advanced - DHSES\",\"value\":\"7b Process - CenRep Advanced - DHSES\"},{\"label\":\"8 Process - QA/QC\",\"value\":\"8 Process - QA/QC\"},{\"label\":\"9 Deploy - Create Component\",\"value\":\"9 Deploy - Create Component\"},{\"label\":\"10 Deploy - Draft Tool Tutorial\",\"value\":\"10 Deploy - Draft Tool Tutorial\"},{\"label\":\"11 Deploy - Draft Context Language\",\"value\":\"11 Deploy - Draft Context Language\"},{\"label\":\"12 Deploy - Tag Data\",\"value\":\"12 Deploy - Tag Data\"}]},{\"name\":\"origin_authority\",\"display_name\":\"Origin - Authority\",\"type\":\"textarea\"},{\"name\":\"origin_url\",\"display_name\":\"Origin URL\",\"type\":\"textarea\"},{\"name\":\"origin_data_formats\",\"display_name\":\"Origin Data Formats\",\"type\":\"multiselect\",\"options\":[{\"label\":\"csv\",\"value\":\"csv\"},{\"label\":\"geojson\",\"value\":\"geojson\"},{\"label\":\"kml\",\"value\":\"kml\"},{\"label\":\"shapefile\",\"value\":\"shapefile\"},{\"label\":\"excel\",\"value\":\"excel\"},{\"label\":\"geodatabase\",\"value\":\"geodatabase\"},{\"label\":\"api\",\"value\":\"api\"},{\"label\":\"txt\",\"value\":\"txt\"},{\"label\":\"rdf\",\"value\":\"rdf\"},{\"label\":\"rss\",\"value\":\"rss\"},{\"label\":\"xml\",\"value\":\"xml\"},{\"label\":\"ksv\",\"value\":\"ksv\"}]},{\"name\":\"source_refresh_interval\",\"display_name\":\"Source Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"evaluation\",\"display_name\":\"Evaluation\",\"type\":\"textarea\"},{\"name\":\"cenrep_url\",\"display_name\":\"Cenrep URL\",\"type\":\"textarea\"},{\"name\":\"shmp_cenrep_refresh_interval\",\"display_name\":\"SHMP Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"notes\",\"display_name\":\"Notes\",\"type\":\"textarea\"},{\"name\":\"helpful_to_planning\",\"display_name\":\"Helpful to planning\",\"type\":\"textarea\"},{\"name\":\"overview\",\"display_name\":\"What it is\",\"type\":\"textarea\"},{\"name\":\"cenrep_id\",\"display_name\":\"Cenrep ID\",\"type\":\"textarea\"},{\"name\":\"category\",\"display_name\":\"Category\",\"type\":\"select\",\"options\":[{\"label\":\"Infrastructure\",\"value\":\"Infrastructure\"},{\"label\":\"BILD\",\"value\":\"BILD\"},{\"label\":\"Risk\",\"value\":\"Risk\"},{\"label\":\"Social\",\"value\":\"Social\"},{\"label\":\"Environment\",\"value\":\"Environment\"},{\"label\":\"Funding Sources\",\"value\":\"Funding Sources\"},{\"label\":\"Managed Data\",\"value\":\"Managed Data\"}]}],\"orderBy\":{},\"colSizes\":{\"process_step\":171.9,\"origin_authority\":171.9,\"origin_url\":171.9,\"origin_data_formats\":171.9,\"helpful_to_planning\":171.9,\"overview\":171.9,\"evaluation\":171.9,\"notes\":171.9,\"dataset_name\":171.9,\"category\":171.9},\"filters\":[{\"column\":\"process_step\",\"values\":[\"1 Discovery - Sourcing\",\"2 Discovery - Utilization\",\"3 Discovery - Viability\",\"3b Discovery - Not Viable\"]}]}",
+                "element-type": "Spreadsheet"
+              }
+            }
+          ]
+        },
+        {
+          "id": "533499",
+          "ref": "mitigat-ny-prod+template",
+          "title": "Processing",
+          "history": [
+            {
+              "time": "Tue Aug 20 2024 08:31:18 GMT-0400 (Eastern Daylight Time)",
+              "type": "added section 1",
+              "user": "user"
+            }
+          ],
+          "main_nav": "true",
+          "url_slug": "processing",
+          "has_changes": true,
+          "draft_sections": [
+            {
+              "size": "2",
+              "element": {
+                "element-data": "{\"visibleAttributes\":[\"dataset_name\",\"process_step\",\"origin_authority\",\"origin_url\",\"origin_data_formats\",\"source_refresh_interval\",\"overview\",\"shmp_cenrep_refresh_interval\",\"cenrep_id\",\"category\"],\"pageSize\":50,\"attributes\":[{\"name\":\"dataset_name\",\"display_name\":\"Dataset Name\",\"type\":\"textarea\"},{\"name\":\"process_step\",\"display_name\":\"Process Step\",\"type\":\"select\",\"options\":[{\"label\":\"1 Discovery - Sourcing\",\"value\":\"1 Discovery - Sourcing\"},{\"label\":\"2 Discovery - Utilization\",\"value\":\"2 Discovery - Utilization\"},{\"label\":\"3 Discovery - Viability\",\"value\":\"3 Discovery - Viability\"},{\"label\":\"3b Discovery - Not Viable\",\"value\":\"3b Discovery - Not Viable\"},{\"label\":\"4 Process - Upload to CenRep\",\"value\":\"4 Process - Upload to CenRep\"},{\"label\":\"5 Process - Turn on Data\",\"value\":\"5 Process - Turn on Data\"},{\"label\":\"5b Process - Source Data ONLY - Move to Step 10\",\"value\":\"5b Process - Source Data ONLY - Move to Step 10\"},{\"label\":\"6 Process - CenRep Overview\",\"value\":\"6 Process - CenRep Overview\"},{\"label\":\"7 Process - CenRep Advanced - AVAIL\",\"value\":\"7 Process - CenRep Advanced - AVAIL\"},{\"label\":\"7b Process - CenRep Advanced - DHSES\",\"value\":\"7b Process - CenRep Advanced - DHSES\"},{\"label\":\"8 Process - QA/QC\",\"value\":\"8 Process - QA/QC\"},{\"label\":\"9 Deploy - Create Component\",\"value\":\"9 Deploy - Create Component\"},{\"label\":\"10 Deploy - Draft Tool Tutorial\",\"value\":\"10 Deploy - Draft Tool Tutorial\"},{\"label\":\"11 Deploy - Draft Context Language\",\"value\":\"11 Deploy - Draft Context Language\"},{\"label\":\"12 Deploy - Tag Data\",\"value\":\"12 Deploy - Tag Data\"}]},{\"name\":\"origin_authority\",\"display_name\":\"Origin - Authority\",\"type\":\"textarea\"},{\"name\":\"origin_url\",\"display_name\":\"Origin URL\",\"type\":\"textarea\"},{\"name\":\"origin_data_formats\",\"display_name\":\"Origin Data Formats\",\"type\":\"multiselect\",\"options\":[{\"label\":\"csv\",\"value\":\"csv\"},{\"label\":\"geojson\",\"value\":\"geojson\"},{\"label\":\"kml\",\"value\":\"kml\"},{\"label\":\"shapefile\",\"value\":\"shapefile\"},{\"label\":\"excel\",\"value\":\"excel\"},{\"label\":\"geodatabase\",\"value\":\"geodatabase\"},{\"label\":\"api\",\"value\":\"api\"},{\"label\":\"txt\",\"value\":\"txt\"},{\"label\":\"rdf\",\"value\":\"rdf\"},{\"label\":\"rss\",\"value\":\"rss\"},{\"label\":\"xml\",\"value\":\"xml\"},{\"label\":\"ksv\",\"value\":\"ksv\"}]},{\"name\":\"source_refresh_interval\",\"display_name\":\"Source Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"evaluation\",\"display_name\":\"Evaluation\",\"type\":\"textarea\"},{\"name\":\"cenrep_url\",\"display_name\":\"Cenrep URL\",\"type\":\"textarea\"},{\"name\":\"shmp_cenrep_refresh_interval\",\"display_name\":\"SHMP Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"notes\",\"display_name\":\"Notes\",\"type\":\"textarea\"},{\"name\":\"helpful_to_planning\",\"display_name\":\"Helpful to planning\",\"type\":\"textarea\"},{\"name\":\"overview\",\"display_name\":\"What it is\",\"type\":\"textarea\"},{\"name\":\"cenrep_id\",\"display_name\":\"Cenrep ID\",\"type\":\"textarea\"},{\"name\":\"category\",\"display_name\":\"Category\",\"type\":\"select\",\"options\":[{\"label\":\"Infrastructure\",\"value\":\"Infrastructure\"},{\"label\":\"BILD\",\"value\":\"BILD\"},{\"label\":\"Risk\",\"value\":\"Risk\"},{\"label\":\"Social\",\"value\":\"Social\"},{\"label\":\"Environment\",\"value\":\"Environment\"},{\"label\":\"Funding Sources\",\"value\":\"Funding Sources\"},{\"label\":\"Managed Data\",\"value\":\"Managed Data\"}]}],\"orderBy\":{},\"colSizes\":{\"dataset_name\":221.5,\"process_step\":221.5,\"origin_authority\":221.5,\"origin_url\":221.5,\"origin_data_formats\":221.5,\"source_refresh_interval\":221.5,\"overview\":221.5,\"shmp_cenrep_refresh_interval\":221.5,\"cenrep_id\":221.5,\"category\":221.5},\"filters\":[{\"column\":\"process_step\",\"values\":[\"4 Process - Upload to CenRep\",\"5 Process - Turn on Data\",\"5b Process - Source Data ONLY - Move to Step 10\",\"6 Process - CenRep Overview\",\"7 Process - CenRep Advanced - AVAIL\",\"7b Process - CenRep Advanced - DHSES\",\"8 Process - QA/QC\"]}]}",
+                "element-type": "Spreadsheet"
+              }
+            }
+          ]
+        },
+        {
+          "id": "533500",
+          "ref": "mitigat-ny-prod+template",
+          "title": "Deployment",
+          "main_nav": "true",
+          "url_slug": "deployment"
+        }
+      ],
+      "pattern_type": "form"
+    },
+    {
+      "id": "597989",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "base_url": "/",
+      "doc_type": "delaware-2021",
+      "subdomain": "delaware2021",
+      "pattern_type": "page"
+    },
+    {
+      "id": "625136",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "config": "{\"attributes\":[{\"name\":\"associated_hazards\",\"display_name\":\"Associated Hazards\",\"type\":\"multiselect\",\"display\":\"meta\",\"options\":[{\"label\":\"Flooding\",\"value\":\"Flooding\"},{\"label\":\"Avalanche\",\"value\":\"Avalanche\"},{\"label\":\"Coastal Hazards\",\"value\":\"Coastal Hazards\"},{\"label\":\"Drought\",\"value\":\"Drought\"},{\"label\":\"Earthquake\",\"value\":\"Earthquake\"},{\"label\":\"Lightning\",\"value\":\"Lightning\"},{\"label\":\"Extreme Cold\",\"value\":\"Extreme Cold\"},{\"label\":\"Extreme Heat\",\"value\":\"Extreme Heat\"},{\"label\":\"Hail\",\"value\":\"Hail\"},{\"label\":\"Hurricane\",\"value\":\"Hurricane\"},{\"label\":\"Ice storm\",\"value\":\"Ice storm\"},{\"label\":\"Landslide\",\"value\":\"Landslide\"},{\"label\":\"Snowstorm\",\"value\":\"Snowstorm\"},{\"label\":\"Tornado\",\"value\":\"Tornado\"},{\"label\":\"Tsunami/Seiche\",\"value\":\"Tsunami/Seiche\"},{\"label\":\"Wildfire\",\"value\":\"Wildfire\"},{\"label\":\"ALL (formal hazards only)\",\"value\":\"ALL (formal hazards only)\"},{\"label\":\"Other - Pandemic\",\"value\":\"Other - Pandemic\"},{\"label\":\"Other - Air Quality\",\"value\":\"Other - Air Quality\"},{\"label\":\"Other - Water Quality\",\"value\":\"Other - Water Quality\"},{\"label\":\"Other - [please describe]\",\"value\":\"Other - [please describe]\"}],\"description\":{\"root\":{\"children\":[{\"children\":[],\"direction\":null,\"format\":\"\",\"indent\":0,\"type\":\"paragraph\",\"version\":1}],\"direction\":null,\"format\":\"\",\"indent\":0,\"type\":\"root\",\"version\":1}},\"mappings\":[{\"selectedFormat\":{\"id\":\"130306\",\"app\":\"dms-site\",\"url\":\"capabilities\",\"name\":\"Capabilities\",\"type\":\"forms-config\",\"config\":{\"app\":\"dms-site\",\"type\":\"forms-capabilities\",\"attributes\":[{\"name\":\"cap_id\",\"display_name\":\"Capability ID\",\"type\":\"text\",\"display\":\"data-variable\"},{\"name\":\"admin_agency_type\",\"display_name\":\"Administering Agency Type (Fed, State, Local, Non-profit)\",\"type\":\"\",\"display\":\"data-variable\",\"openOut\":true},{\"name\":\"admin_agency\",\"display_name\":\"Administering Agency\",\"type\":\"\",\"display\":\"meta-variable\"},{\"name\":\"name\",\"display_name\":\"Capability Name\",\"type\":\"\",\"display\":\"data-variable\"},{\"name\":\"program\",\"display_name\":\"Program\",\"type\":\"\",\"display\":\"meta-variable\"},{\"name\":\"plan_guide\",\"display_name\":\"Plan Guidance\",\"type\":\"\",\"display\":\"data-variable\"},{\"name\":\"tool\",\"display_name\":\"Tool\",\"type\":\"\"},{\"name\":\"funding_source\",\"display_name\":\"Funding Source\",\"type\":\"\",\"display\":\"data-variable\",\"defaultFn\":\"Sum\"},{\"name\":\"description\",\"display_name\":\"Description\",\"type\":\"\",\"display\":\"data-variable\",\"openOut\":true},{\"name\":\"web_url\",\"display_name\":\"Web URL\",\"type\":\"\",\"display\":\"data-variable\"},{\"name\":\"shmp_inclusion_internal\",\"display_name\":\"SHMP Inclusion (Internal)\",\"type\":\"\"},{\"name\":\"is_shmp_inclusion_complete\",\"display_name\":\"SHMP Inclusion Complete?\",\"type\":\"\"},{\"name\":\"mitigation_connection\",\"display_name\":\"Mitigation Connection\",\"type\":\"\",\"openOut\":true,\"display\":\"data-variable\"},{\"name\":\"case_study\",\"display_name\":\"Case Study (Y/N)\",\"type\":\"\"},{\"name\":\"program_lead_name\",\"display_name\":\"Name\",\"type\":\"\"},{\"name\":\"program_lead_email\",\"display_name\":\"E-mail Address\",\"type\":\"\"},{\"name\":\"program_lead_title\",\"display_name\":\"Title/Role\",\"type\":\"\"},{\"name\":\"program_lead_department\",\"display_name\":\"Department, Division, Office\",\"type\":\"\"},{\"name\":\"partner_agencies\",\"display_name\":\"Partner Agency(ies)\",\"type\":\"\"},{\"name\":\"associated_hazards\",\"display_name\":\"Associated Hazards\",\"type\":\"\",\"options\":[\"ALL (formal hazards only)\",\"Avalanche\",\"Coastal Hazards\",\"Cold Wave\",\"Drought\",\"Earthquake\",\"Flooding\",\"Hail\",\"Extreme Heat\",\"Extreme Cold\",\"Hurricane\",\"Ice storm\",\"Landslide\",\"Lightning\",\"Severe Storms\",\"Snowstorm\",\"Tornado\",\"Tsunami/Seiche\",\"Wildfire\",\"Wind\",\"Other - Pandemic\",\"Other - Air Quality\",\"Other - Water Quality\",\"Other - [please describe]\"],\"display\":\"meta-variable\"},{\"name\":\"is_communicating_flood_risk_data\",\"display_name\":\"If yes to Flooding, does this program communicate flood risk data?\",\"type\":\"\"},{\"name\":\"buildings\",\"display_name\":\"Buildings\",\"type\":\"\",\"options\":[\"Buildings - Public\",\"Buildings - Private\",\"RL/SRL\"]},{\"name\":\"infrastructure\",\"display_name\":\"Infrastructure\",\"type\":\"\",\"options\":[\"INFRASTRUCTRE - Catch All\",\"Roads & Bridges\",\"Water - ALL/ANY\",\"Water - Wastewater/Stormwater\",\"Water - Culverts\",\"Energy\",\"Communications\"]},{\"name\":\"natural_environment\",\"display_name\":\"Natural Environment\",\"type\":\"\",\"options\":[\"Environmental Protection (Legacy Catch-all)\",\"Open Space\",\"Natural Resource Protection & Restoration\",\"Nature-based Solution Oriented\"]},{\"name\":\"is_emphasising_social_vul_comm\",\"display_name\":\"Does this program place emphasis on benefitting socially vulnerable communities?\",\"type\":\"\"},{\"name\":\"tool_or_method_equal_priority\",\"display_name\":\"If yes, please identify the tool or methodology used to identify \\\"equity priority.\\\"\",\"type\":\"\"},{\"name\":\"emergency_management_phase\",\"display_name\":\"Emergency Management Phase\",\"type\":\"\",\"options\":[\"Hazard Mitigation\",\"Preparedness\",\"Response\",\"Recovery\"],\"display\":\"data-variable\"},{\"name\":\"category\",\"display_name\":\"FEMA Capability Category\",\"type\":\"\",\"options\":[\"Planning & Regulatory\",\"Administrative & Technical\",\"Education/ Outreach\",\"Financial\"],\"display\":\"data-variable\",\"defaultFn\":\"List\"},{\"name\":\"integrated_capacity_building\",\"display_name\":\"Integrated Capacity Building\",\"type\":\"\",\"options\":[\"Supports Community Rating System (CRS) Points\",\"Supports Climate Smart Communities (CSC) Points\"]},{\"name\":\"climate_change\",\"display_name\":\"Climate Change\",\"type\":\"\",\"options\":[\"Climate Change considerations (projections, impacts, risks)\",\"Climate Mitigation specific (emissions reduction)\",\"Climate Adaptation specific\"],\"display\":\"meta-variable\"},{\"name\":\"status\",\"display_name\":\"Status\",\"type\":\"\",\"options\":[\"New Since Last Plan (2018)\",\"Ongoing Since Last Plan\",\"No Longer Relevant\"],\"display\":\"\"},{\"name\":\"desc_status\",\"display_name\":\"Description of Status\",\"type\":\"\"},{\"name\":\"shmp_dev_team_review_date\",\"display_name\":\"Status Date\",\"type\":\"\",\"display\":\"data-variable\"},{\"name\":\"agency_verified_date\",\"display_name\":\"Agency - Verified (Date)\",\"type\":\"\"},{\"name\":\"can_provide_fun_or_resources_for\",\"display_name\":\"Phase of Funding\",\"type\":\"\",\"options\":[\"Mitigation Planning/ Planning Activities/ Capacity Building\",\"Engineering/ Project Scoping\",\"Construction/ Project Implementation\",\"Other (please describe)\"],\"display\":\"data-variable\",\"defaultFn\":\"List\"},{\"name\":\"primary_funding_source\",\"display_name\":\"Primary Funding Source\",\"type\":\"\",\"display\":\"\"},{\"name\":\"is_federal_funding_primary\",\"display_name\":\"Federal Funding - Primary (Y/N)\",\"type\":\"\",\"display\":\"meta-variable\",\"openOut\":true},{\"name\":\"non_federal_match_source\",\"display_name\":\"Potential Non-federal Match Source (Yes/No)\",\"type\":\"\",\"display\":\"meta-variable\",\"openOut\":true},{\"name\":\"availability\",\"display_name\":\"Availability\",\"type\":\"\"},{\"name\":\"funding_source_type\",\"display_name\":\"Funding Source Type\",\"type\":\"\",\"options\":[\"Grant\",\"Loan\",\"Individual Benefit\",\"Other\",\"Match Requirement (Yes/No)\"],\"display\":\"\"},{\"name\":\"eligibility\",\"display_name\":\"Eligibility\",\"type\":\"\",\"options\":[\"State\",\"Tribal\",\"Local Government\",\"CBO/Non-profit\",\"For Profit\",\"Individuals\",\"Offers Management/ Admin Costs\"]},{\"name\":\"CONCAT_WS(', ',  \\tCASE WHEN length(data->>'buildings') > 0 THEN 'Buildings' END, \\tCASE WHEN length(data->>'infrastructure') > 0 THEN 'Infrastructure' END, \\tCASE WHEN length(data->>'natural_environment') > 0 THEN 'Natural Environment' END, \\tCASE WHEN length(data->>'is_emphasising_social_vul_comm') > 0 OR  \\t\\t      length(data->>'tool_or_method_equal_priority') > 0 THEN 'Disadvantaged Communities' END) as capability_category\",\"origin\":\"calculated-column\",\"display_name\":\"Capability Category\",\"type\":\"string\",\"display\":\"meta-variable\",\"defaultFn\":\"List\"}]},\"created_at\":\"2023-10-20 20:23:17.281333+00\",\"updated_at\":\"2024-04-11 18:58:24.934938+00\"},\"selectedAttribute\":\"program\",\"mappedValues\":[\"X\"]}],\"prompt\":\"Please enter hazards this action is associated with.\"},{\"name\":\"control_number\",\"type\":\"text\",\"display_name\":\"Control Number\"},{\"name\":\"lead_ny_state_agency\",\"display_name\":\"Lead NY State Agency (if applicable)\",\"type\":\"select\",\"options\":[{\"label\":\"511NY\",\"value\":\"511NY\"},{\"label\":\"Authorities Budget Office\",\"value\":\"Authorities Budget Office\"},{\"label\":\"Bridge Authority\",\"value\":\"Bridge Authority\"},{\"label\":\"Canal Corporation\",\"value\":\"Canal Corporation\"},{\"label\":\"Department of Agriculture and Markets\",\"value\":\"Department of Agriculture and Markets\"},{\"label\":\"Department of Civil Service\",\"value\":\"Department of Civil Service\"},{\"label\":\"Department of Corrections and Community Supervision\",\"value\":\"Department of Corrections and Community Supervision\"},{\"label\":\"Department of Education\",\"value\":\"Department of Education\"},{\"label\":\"Department of Environmental Conservation\",\"value\":\"Department of Environmental Conservation\"},{\"label\":\"Department of Financial Services\",\"value\":\"Department of Financial Services\"},{\"label\":\"Department of Health\",\"value\":\"Department of Health\"},{\"label\":\"Department of Labor\",\"value\":\"Department of Labor\"},{\"label\":\"Department of Motor Vehicles\",\"value\":\"Department of Motor Vehicles\"},{\"label\":\"Department of Public Service\",\"value\":\"Department of Public Service\"},{\"label\":\"Department of State\",\"value\":\"Department of State\"},{\"label\":\"Department of Taxation and Finance\",\"value\":\"Department of Taxation and Finance\"},{\"label\":\"Department of Transportation\",\"value\":\"Department of Transportation\"},{\"label\":\"Department of Veterans' Service\",\"value\":\"Department of Veterans' Service\"},{\"label\":\"Division of Criminal Justice Services \",\"value\":\"Division of Criminal Justice Services \"},{\"label\":\"Division of Homeland Security and Emergency Services\",\"value\":\"Division of Homeland Security and Emergency Services\"},{\"label\":\"Division of Human Rights\",\"value\":\"Division of Human Rights\"},{\"label\":\"Division of Military and Naval Affairs\",\"value\":\"Division of Military and Naval Affairs\"},{\"label\":\"Division of State Police\",\"value\":\"Division of State Police\"},{\"label\":\"Division of Budget\",\"value\":\"Division of Budget\"},{\"label\":\"Dormitory Authority\",\"value\":\"Dormitory Authority\"},{\"label\":\"Empire State Development\",\"value\":\"Empire State Development\"},{\"label\":\"Energy Research and Development Authority\",\"value\":\"Energy Research and Development Authority\"},{\"label\":\"Environmental Facilites Corporation\",\"value\":\"Environmental Facilites Corporation\"},{\"label\":\"Geographic Informations Systems\",\"value\":\"Geographic Informations Systems\"},{\"label\":\"Homes and Community Renewal\",\"value\":\"Homes and Community Renewal\"},{\"label\":\"Metropolitan Transportation Authority\",\"value\":\"Metropolitan Transportation Authority\"},{\"label\":\"Office for New Americans\",\"value\":\"Office for New Americans\"},{\"label\":\"Office for People with Developmental Disabilities\",\"value\":\"Office for People with Developmental Disabilities\"},{\"label\":\"Office for the Aging\",\"value\":\"Office for the Aging\"},{\"label\":\"Office for the Prevention of Domestic Violence\",\"value\":\"Office for the Prevention of Domestic Violence\"},{\"label\":\"Office of Addiction Services and Supports\",\"value\":\"Office of Addiction Services and Supports\"},{\"label\":\"Office of Attorney General\",\"value\":\"Office of Attorney General\"},{\"label\":\"Office of Cannabis Management\",\"value\":\"Office of Cannabis Management\"},{\"label\":\"Office of Children and Family Services\",\"value\":\"Office of Children and Family Services\"},{\"label\":\"Office of Counter Terrorism (DHSES)\",\"value\":\"Office of Counter Terrorism (DHSES)\"},{\"label\":\"Office of Emergency Management (DHSES)\",\"value\":\"Office of Emergency Management (DHSES)\"},{\"label\":\"Office of Employee Relations\",\"value\":\"Office of Employee Relations\"},{\"label\":\"Office of Fire Prevention and Control (DHSES)\",\"value\":\"Office of Fire Prevention and Control (DHSES)\"},{\"label\":\"Office of General Services\",\"value\":\"Office of General Services\"},{\"label\":\"Information Technology Services\",\"value\":\"Information Technology Services\"},{\"label\":\"Office of Interoperable and Emergency Communications (DHSES)\",\"value\":\"Office of Interoperable and Emergency Communications (DHSES)\"},{\"label\":\"Office of Medicaid Inspector General\",\"value\":\"Office of Medicaid Inspector General\"},{\"label\":\"Office of Mental Health\",\"value\":\"Office of Mental Health\"},{\"label\":\"Office of Parks, Recreation and Historic Preservation\",\"value\":\"Office of Parks, Recreation and Historic Preservation\"},{\"label\":\"Office of State Comptroller\",\"value\":\"Office of State Comptroller\"},{\"label\":\"Office of Temporary and Disability Assistance\",\"value\":\"Office of Temporary and Disability Assistance\"},{\"label\":\"Office of the Governor\",\"value\":\"Office of the Governor\"},{\"label\":\"Office of the Inspector General\",\"value\":\"Office of the Inspector General\"},{\"label\":\"Office of Victim Services\",\"value\":\"Office of Victim Services\"},{\"label\":\"Olympic Regional Development Authority\",\"value\":\"Olympic Regional Development Authority\"},{\"label\":\"Port Authority of New York and New Jersey\",\"value\":\"Port Authority of New York and New Jersey\"},{\"label\":\"NY Power Authority\",\"value\":\"NY Power Authority\"},{\"label\":\"State Employees Federated Appeal\",\"value\":\"State Employees Federated Appeal\"},{\"label\":\"State University Construction Fund\",\"value\":\"State University Construction Fund\"},{\"label\":\"State University of New York\",\"value\":\"State University of New York\"},{\"label\":\"Teachers' Retirement System\",\"value\":\"Teachers' Retirement System\"},{\"label\":\"Thruway Authority\",\"value\":\"Thruway Authority\"},{\"label\":\"Workers Compensation Board\",\"value\":\"Workers Compensation Board\"},{\"label\":\"Resilient Homes and Communities (HCR)\",\"value\":\"Resilient Homes and Communities (HCR)\"}]},{\"name\":\"lead_agency_name_text\",\"display_name\":\"Lead Agency / Department\",\"type\":\"text\"},{\"name\":\"partners\",\"display_name\":\"Partners\",\"type\":\"text\"},{\"name\":\"contact_name\",\"display_name\":\"Action Point of Contact Name\",\"type\":\"text\"},{\"name\":\"contact_title\",\"display_name\":\"Action Point of Contact Title\",\"type\":\"text\"},{\"name\":\"contact_email\",\"display_name\":\"Action POC Email\",\"type\":\"text\"},{\"name\":\"action_jurisdiction\",\"display_name\":\"Jurisdiction\",\"type\":\"multiselect\"},{\"name\":\"action_address\",\"display_name\":\"Address (if available)\",\"type\":\"text\"},{\"name\":\"action_number\",\"display_name\":\"Action Number\",\"type\":\"text\"},{\"name\":\"problem_description\",\"display_name\":\"Description of the Problem (Problem Statement)\",\"type\":\"textarea\"},{\"name\":\"solution_description\",\"display_name\":\"Description of the Solution (Action Description)\",\"type\":\"textarea\"},{\"name\":\"action_category\",\"display_name\":\"Action Category\",\"type\":\"select\",\"options\":[{\"label\":\"Planning & Regulatory\",\"value\":\"Planning & Regulatory\"},{\"label\":\"Structural\",\"value\":\"Structural\"},{\"label\":\"Property Protection & Infrastructure\",\"value\":\"Property Protection & Infrastructure\"},{\"label\":\"Natural Resource Protection & Restoration\",\"value\":\"Natural Resource Protection & Restoration\"},{\"label\":\"Education, Outreach & Awareness\",\"value\":\"Education, Outreach & Awareness\"},{\"label\":\"Preparedness & Response\",\"value\":\"Preparedness & Response\"}]},{\"name\":\"action_type_specific\",\"display_name\":\"Action Type - Specific (if applicable)\",\"type\":\"textarea\"},{\"name\":\"shmp_goal_objective\",\"display_name\":\"SHMP Goals/Objectives\",\"type\":\"select\"},{\"name\":\"lhmp_goal_objective\",\"display_name\":\"LHMP Goals/Objectives\",\"type\":\"text\"},{\"name\":\"is_related_to_critical_facility\",\"display_name\":\"Related to a Critical Facility?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"alternative_action_1\",\"display_name\":\"Alternative Action 1\",\"type\":\"textarea\"},{\"name\":\"alternative_action_1_evaluation\",\"display_name\":\"Alternatives Action 1 Evaluation\",\"type\":\"textarea\"},{\"name\":\"estimated_cost_amt\",\"display_name\":\"Estimated Cost ($)\",\"type\":\"text\"},{\"name\":\"estimated_cost_range\",\"display_name\":\"Estimated Cost (Range)\",\"type\":\"select\",\"options\":[{\"label\":\"No Associated Costs\",\"value\":\"No Associated Costs\"},{\"label\":\"<$10,000\",\"value\":\"<$10,000\"},{\"label\":\"$10,000 - $50,0000\",\"value\":\"$10,000 - $50,0000\"},{\"label\":\"$50,000 - $150,000\",\"value\":\"$50,000 - $150,000\"},{\"label\":\"$150,000 - $500,000\",\"value\":\"$150,000 - $500,000\"},{\"label\":\"$500,000 - $1,000,000\",\"value\":\"$500,000 - $1,000,000\"},{\"label\":\"$1,000,000 - $2,000,000\",\"value\":\"$1,000,000 - $2,000,000\"},{\"label\":\"$2,000,000 - $10,000,000\",\"value\":\"$2,000,000 - $10,000,000\"},{\"label\":\"$10,000,000 - $50,000,000\",\"value\":\"$10,000,000 - $50,000,000\"},{\"label\":\">$50,000,000\",\"value\":\">$50,000,000\"}]},{\"name\":\"estimated_cost_text\",\"display_name\":\"Estimated Cost (Text)\",\"type\":\"text\"},{\"name\":\"benefits_losses_avoided\",\"display_name\":\"Benefits and Losses Avoided\",\"type\":\"text\"},{\"name\":\"potential_primary_funding_sources\",\"display_name\":\"Potential Primary Funding Sources\",\"type\":\"multiselect\"},{\"name\":\"potential_primary_funding_sources_other\",\"display_name\":\"Potential Primary Funding Sources (Other)\",\"type\":\"text\"},{\"name\":\"existing_planning_mechanism\",\"display_name\":\"Existing Planning Mechanisms to be Used in Implementation, if any\",\"type\":\"textarea\"},{\"name\":\"eta_implementation\",\"display_name\":\"Estimated Time Required for Project Implementation\",\"type\":\"text\"},{\"name\":\"prioritization\",\"display_name\":\"Prioritization Select\",\"type\":\"select\"},{\"name\":\"probability_of_acceptance\",\"display_name\":\"Probability of Acceptance\",\"type\":\"select\",\"options\":[{\"label\":\"(4) Likely to be endorsed by the entire population\",\"value\":\"(4) Likely to be endorsed by the entire population\"},{\"label\":\"(3) Of benefit only to those directly affected and would not adversely affect others\",\"value\":\"(3) Of benefit only to those directly affected and would not adversely affect others\"},{\"label\":\"(2) Would be somewhat controversial with special interest groups or a small percentage of the population\",\"value\":\"(2) Would be somewhat controversial with special interest groups or a small percentage of the population\"},{\"label\":\"(1) Would be strongly opposed by special interest groups or a significant percentage of the population\",\"value\":\"(1) Would be strongly opposed by special interest groups or a significant percentage of the population\"},{\"label\":\"(0) Would be strongly opposed by nearly all of the population\",\"value\":\"(0) Would be strongly opposed by nearly all of the population\"}]},{\"name\":\"funding_availability\",\"display_name\":\"Funding Availability\",\"type\":\"select\",\"options\":[{\"label\":\"(4) Little to no direct expenses\",\"value\":\"(4) Little to no direct expenses\"},{\"label\":\"(3) Can be funded by operating budget\",\"value\":\"(3) Can be funded by operating budget\"},{\"label\":\"(2) Grant funding identified\",\"value\":\"(2) Grant funding identified\"},{\"label\":\"(1) Grant funding needed\",\"value\":\"(1) Grant funding needed\"},{\"label\":\"(0) Potential funding source unknown\",\"value\":\"(0) Potential funding source unknown\"}]},{\"name\":\"probability_of_matching_funds\",\"display_name\":\"Probability of Matching Funds\",\"type\":\"select\",\"options\":[{\"label\":\"(4) Funding match is available or funding match not required\",\"value\":\"(4) Funding match is available or funding match not required\"},{\"label\":\"(2) Partial funding match available\",\"value\":\"(2) Partial funding match available\"},{\"label\":\"(0) No funding match available or funding match unknown\",\"value\":\"(0) No funding match available or funding match unknown\"}]},{\"name\":\"environmental_benefit\",\"display_name\":\"Environmental Benefit\",\"type\":\"select\",\"options\":[{\"label\":\"(4) Environmentally sound and relatively easy to implement; or no adverse impact on environment\",\"value\":\"(4) Environmentally sound and relatively easy to implement; or no adverse impact on environment\"},{\"label\":\"(3) Environmentally acceptable and not anticipated to be difficult to implement\",\"value\":\"(3) Environmentally acceptable and not anticipated to be difficult to implement\"},{\"label\":\"(2) Environmental concerns and somewhat difficult to implement because of complex requirements\",\"value\":\"(2) Environmental concerns and somewhat difficult to implement because of complex requirements\"},{\"label\":\"(1) Difficult to implement because of significantly complex requirements and environmental permitting\",\"value\":\"(1) Difficult to implement because of significantly complex requirements and environmental permitting\"},{\"label\":\"(0) Very difficult to implement due to extremely complex requirements and environmental permitting problems\",\"value\":\"(0) Very difficult to implement due to extremely complex requirements and environmental permitting problems\"}]},{\"name\":\"total_score\",\"display_name\":\"Total Score\",\"type\":\"text\"},{\"name\":\"community_acceptance\",\"display_name\":\"Community Acceptance\",\"type\":\"select\"},{\"name\":\"effect_on_segment_of_population\",\"display_name\":\"Effect on Segment of Population\",\"type\":\"select\"},{\"name\":\"technical_feasibility\",\"display_name\":\"Technical Feasibility\",\"type\":\"select\"},{\"name\":\"long_term_solution\",\"display_name\":\"Long-term Solution\",\"type\":\"select\"},{\"name\":\"secondary_impacts\",\"display_name\":\"Secondary Impacts\",\"type\":\"select\"},{\"name\":\"staffing\",\"display_name\":\"Staffing\",\"type\":\"select\"},{\"name\":\"funding_allocated\",\"display_name\":\"Funding Allocated\",\"type\":\"select\"},{\"name\":\"maintenance_or_operations\",\"display_name\":\"Maintenance / Operations\",\"type\":\"select\"},{\"name\":\"political_support\",\"display_name\":\"Political Support\",\"type\":\"select\"},{\"name\":\"local_champion\",\"display_name\":\"Local Champion\",\"type\":\"select\"},{\"name\":\"public_support\",\"display_name\":\"Public Support\",\"type\":\"select\"},{\"name\":\"state_authority\",\"display_name\":\"State Authority\",\"type\":\"select\"},{\"name\":\"existing_local_authority\",\"display_name\":\"Existing Local Authority\",\"type\":\"select\"},{\"name\":\"potential_legal_challenge\",\"display_name\":\"Potential Legal Challenge\",\"type\":\"select\"},{\"name\":\"benefit\",\"display_name\":\"Benefit of Action\",\"type\":\"select\"},{\"name\":\"cost\",\"display_name\":\"Cost of Action\",\"type\":\"select\"},{\"name\":\"contributions_to_economic_goals\",\"display_name\":\"Contributes to Economic Goals\",\"type\":\"select\"},{\"name\":\"outside_funding_required\",\"display_name\":\"Outside Funding Required\",\"type\":\"select\"},{\"name\":\"effect_on_land_or_water\",\"display_name\":\"Effect on Land / Water\",\"type\":\"select\"},{\"name\":\"effect_on_endangered_species\",\"display_name\":\"Effect on Endangered Species\",\"type\":\"select\"},{\"name\":\"effect_on_hazmat_or_waste_sites\",\"display_name\":\"Effect on Endangered Species\",\"type\":\"select\"},{\"name\":\"consistent_with_community_env_goals\",\"display_name\":\"Consistent with Community Environmental Goals\",\"type\":\"select\"},{\"name\":\"consistent_with_federal_goals\",\"display_name\":\"Consistent With Federal Laws\",\"type\":\"select\"},{\"name\":\"priority_other\",\"display_name\":\"Priority (Other)\",\"type\":\"text\"},{\"name\":\"action_creation_date\",\"display_name\":\"Action Creation Date\",\"type\":\"text\"},{\"name\":\"included_in_last_hmp\",\"display_name\":\"Included in Last HMP\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"status_date\",\"display_name\":\"Action Status Date\",\"type\":\"text\"},{\"name\":\"status_details\",\"display_name\":\"Action Status Details\",\"type\":\"text\"},{\"name\":\"secured_funding_source\",\"display_name\":\"Secured funding sources name\",\"type\":\"text\"},{\"name\":\"action_name\",\"display_name\":\"Action Name\",\"type\":\"text\"},{\"name\":\"total_staplee_score\",\"display_name\":\"Total STAPLEE Score\",\"type\":\"text\"},{\"name\":\"calculated_cost\",\"display_name\":\"Calculated Cost\",\"type\":\"text\"},{\"name\":\"action_type\",\"display_name\":\"Action Type\",\"type\":\"select\",\"options\":[{\"label\":\"Plan & Reg - Plans\",\"value\":\"Plan & Reg - Plans\"},{\"label\":\"Plan & Reg - Building Codes/Zoning/Ordinance/Policy/Law/Governance\",\"value\":\"Plan & Reg - Building Codes/Zoning/Ordinance/Policy/Law/Governance\"},{\"label\":\"Plan & Reg - Establishing Long-Term Programs\",\"value\":\"Plan & Reg - Establishing Long-Term Programs\"},{\"label\":\"Plan & Reg - Studies and/or Risk Assessment\",\"value\":\"Plan & Reg - Studies and/or Risk Assessment\"},{\"label\":\"Plan & Reg - Project Scoping\",\"value\":\"Plan & Reg - Project Scoping\"},{\"label\":\"Plan & Reg - Other\",\"value\":\"Plan & Reg - Other\"},{\"label\":\"Structural - Dams\",\"value\":\"Structural - Dams\"},{\"label\":\"Structural - Levees\",\"value\":\"Structural - Levees\"},{\"label\":\"Structural - Floodwall\",\"value\":\"Structural - Floodwall\"},{\"label\":\"Structural - Other\",\"value\":\"Structural - Other\"},{\"label\":\"Prop Protect & Infra - Community Infrastructure (Drainage, Utilities)\",\"value\":\"Prop Protect & Infra - Community Infrastructure (Drainage, Utilities)\"},{\"label\":\"Prop Protect & Infra - Acquisition\",\"value\":\"Prop Protect & Infra - Acquisition\"},{\"label\":\"Prop Protect & Infra - Elevation\",\"value\":\"Prop Protect & Infra - Elevation\"},{\"label\":\"Prop Protect & Infra - Relocation\",\"value\":\"Prop Protect & Infra - Relocation\"},{\"label\":\"Prop Protect & Infra - Retrofit\",\"value\":\"Prop Protect & Infra - Retrofit\"},{\"label\":\"Prop Protect & Infra - Other\",\"value\":\"Prop Protect & Infra - Other\"},{\"label\":\"Prop Protect & Infra - Power\",\"value\":\"Prop Protect & Infra - Power\"},{\"label\":\"Nat Res Prot & Restore - Wetland Protection/Restoration\",\"value\":\"Nat Res Prot & Restore - Wetland Protection/Restoration\"},{\"label\":\"Nat Res Prot & Restore -  - Other\",\"value\":\"Nat Res Prot & Restore -  - Other\"},{\"label\":\"Education, Outreach & Awareness\",\"value\":\"Education, Outreach & Awareness\"},{\"label\":\"Preparedness & Response\",\"value\":\"Preparedness & Response\"}]},{\"name\":\"action_county\",\"display_name\":\"Action County\",\"type\":\"multiselect\"},{\"name\":\"status_history\",\"display_name\":\"Action Status History\",\"type\":\"text\"},{\"name\":\"status\",\"display_name\":\"Action Status\",\"type\":\"select\",\"options\":[{\"label\":\"Proposed\",\"value\":\"Proposed\"},{\"label\":\"In-Progress\",\"value\":\"In-Progress\"},{\"label\":\"Completed\",\"value\":\"Completed\"},{\"label\":\"Discontinued\",\"value\":\"Discontinued\"},{\"label\":\"Progress Not Reported\",\"value\":\"Progress Not Reported\"}]},{\"name\":\"is_ready_for_state_or_fema_plan_approval\",\"display_name\":\"Ready for State/FEMA Plan Approval\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"is_approvable\",\"display_name\":\"Approvable?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"dhses_comments\",\"display_name\":\"DHSES Comments\",\"type\":\"textarea\"},{\"name\":\"fema_comments\",\"display_name\":\"FEMA Comments\",\"type\":\"textarea\"},{\"name\":\"is_addressing_climate_change\",\"display_name\":\"Is this action addressing Climate Change?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"is_mitigating_climate_change\",\"display_name\":\"Is this action mitigating Climate Change (i.e. ghg reduction)?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"known_concerns\",\"display_name\":\"Are there known Environmental, Historic Preservation or Protected Species Concerns?\",\"type\":\"textarea\"},{\"name\":\"risk_to_vulnerable_population\",\"display_name\":\"Does this action protect or include assessment of risk to vulnerable populations?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"requires_engineering_professionals\",\"display_name\":\"Does this action require input or designs from engineering professionals?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"is_study_design_or_plan_completed\",\"display_name\":\"Have any studies, designs, or plans been completed? \",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"is_final_engineering_complete\",\"display_name\":\"Is Final Engineering Design Complete?\",\"type\":\"radio\",\"description\":{\"root\":{\"children\":[],\"direction\":null,\"format\":\"\",\"indent\":0,\"type\":\"root\",\"version\":1}},\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"is_bca_complete\",\"display_name\":\"Has a Benefit Cost Analysis (BCA) been completed?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"is_bca_greater_than_1\",\"display_name\":\"If yes (BCA), is the Benefit Cost Ratio >1?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"are_resources_available\",\"display_name\":\"If no (BCA), are resources available to complete a BCA?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"is_action_protecting_against_repetitive_loss_properties\",\"display_name\":\"Does this action protect Repetitive or Severe Repetitive Loss Properties?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"can_support_crs\",\"display_name\":\"Can this action support points for Community Rating System (CRS)?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"aligns_with_csc_action\",\"display_name\":\"Does this action align with a Climate Smart Communities action?\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}],\"description\":{\"root\":{\"children\":[],\"direction\":null,\"format\":\"\",\"indent\":0,\"type\":\"root\",\"version\":1}}},{\"name\":\"transportation_infrastructure\",\"display_name\":\"Transportation Infrastructure\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"energy_infrastructure\",\"display_name\":\"Energy Infrastructure\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"water_infrastructure\",\"display_name\":\"Water Infrastructure\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"communication_infrastructure\",\"display_name\":\"Communications Infrastructure\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"natural_environment\",\"display_name\":\"Natural Environment\",\"type\":\"radio\",\"options\":[{\"label\":\"Yes\",\"value\":\"Yes\"},{\"label\":\"No\",\"value\":\"No\"}]},{\"name\":\"buildings\",\"type\":\"radio\",\"options\":[{\"label\":\"yes\",\"value\":\"yes\"},{\"label\":\"no\",\"value\":\"no\"}]}]}",
+      "base_url": "/actions",
+      "doc_type": "actions",
+      "templates": [
+        {
+          "id": "626875",
+          "ref": "mitigat-ny-prod+actions|template",
+          "title": "list",
+          "url_slug": "/"
+        }
+      ],
+      "pattern_type": "form"
+    },
+    {
+      "id": "626870",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "config": "{\"attributes\":[{\"name\":\"dataset_name\",\"display_name\":\"Dataset Name\",\"type\":\"textarea\"},{\"name\":\"process_step\",\"display_name\":\"Process Step\",\"type\":\"select\",\"options\":[{\"label\":\"1 Discovery - Sourcing\",\"value\":\"1 Discovery - Sourcing\"},{\"label\":\"2 Discovery - Utilization\",\"value\":\"2 Discovery - Utilization\"},{\"label\":\"3 Discovery - Viability\",\"value\":\"3 Discovery - Viability\"},{\"label\":\"3b Discovery - Not Viable\",\"value\":\"3b Discovery - Not Viable\"},{\"label\":\"4 Process - Upload to CenRep\",\"value\":\"4 Process - Upload to CenRep\"},{\"label\":\"5 Process - Turn on Data\",\"value\":\"5 Process - Turn on Data\"},{\"label\":\"5b Process - Source Data ONLY - Move to Step 10\",\"value\":\"5b Process - Source Data ONLY - Move to Step 10\"},{\"label\":\"6 Process - CenRep Overview\",\"value\":\"6 Process - CenRep Overview\"},{\"label\":\"7 Process - CenRep Advanced - AVAIL\",\"value\":\"7 Process - CenRep Advanced - AVAIL\"},{\"label\":\"7b Process - CenRep Advanced - DHSES\",\"value\":\"7b Process - CenRep Advanced - DHSES\"},{\"label\":\"8 Process - QA/QC\",\"value\":\"8 Process - QA/QC\"},{\"label\":\"9 Deploy - Create Component\",\"value\":\"9 Deploy - Create Component\"},{\"label\":\"10 Deploy - Draft Tool Tutorial\",\"value\":\"10 Deploy - Draft Tool Tutorial\"},{\"label\":\"11 Deploy - Draft Context Language\",\"value\":\"11 Deploy - Draft Context Language\"},{\"label\":\"12 Deploy - Tag Data\",\"value\":\"12 Deploy - Tag Data\"}]},{\"name\":\"origin_authority\",\"display_name\":\"Origin - Authority\",\"type\":\"textarea\"},{\"name\":\"origin_url\",\"display_name\":\"Origin URL\",\"type\":\"textarea\"},{\"name\":\"origin_data_formats\",\"display_name\":\"Origin Data Formats\",\"type\":\"multiselect\",\"options\":[{\"label\":\"csv\",\"value\":\"csv\"},{\"label\":\"geojson\",\"value\":\"geojson\"},{\"label\":\"kml\",\"value\":\"kml\"},{\"label\":\"shapefile\",\"value\":\"shapefile\"},{\"label\":\"excel\",\"value\":\"excel\"},{\"label\":\"geodatabase\",\"value\":\"geodatabase\"},{\"label\":\"api\",\"value\":\"api\"},{\"label\":\"txt\",\"value\":\"txt\"},{\"label\":\"rdf\",\"value\":\"rdf\"},{\"label\":\"rss\",\"value\":\"rss\"},{\"label\":\"xml\",\"value\":\"xml\"},{\"label\":\"ksv\",\"value\":\"ksv\"}]},{\"name\":\"source_refresh_interval\",\"display_name\":\"Source Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"evaluation\",\"display_name\":\"Evaluation\",\"type\":\"textarea\"},{\"name\":\"cenrep_url\",\"display_name\":\"Cenrep URL\",\"type\":\"textarea\"},{\"name\":\"shmp_cenrep_refresh_interval\",\"display_name\":\"SHMP Refresh Interval\",\"type\":\"textarea\"},{\"name\":\"notes\",\"display_name\":\"Notes\",\"type\":\"textarea\"},{\"name\":\"helpful_to_planning\",\"display_name\":\"Helpful to planning\",\"type\":\"textarea\"},{\"name\":\"overview\",\"display_name\":\"What it is\",\"type\":\"textarea\"},{\"name\":\"cenrep_id\",\"display_name\":\"Cenrep ID\",\"type\":\"textarea\"},{\"name\":\"category\",\"display_name\":\"Category\",\"type\":\"select\",\"options\":[{\"label\":\"Infrastructure\",\"value\":\"Infrastructure\"},{\"label\":\"BILD\",\"value\":\"BILD\"},{\"label\":\"Risk\",\"value\":\"Risk\"},{\"label\":\"Social\",\"value\":\"Social\"},{\"label\":\"Environment\",\"value\":\"Environment\"},{\"label\":\"Funding Sources\",\"value\":\"Funding Sources\"},{\"label\":\"Managed Data\",\"value\":\"Managed Data\"}]},{\"name\":\"flag\",\"display_name\":\"Flag\"},{\"name\":\"flag_comment\",\"display_name\":\"Flag Comment\"}]}",
+      "base_url": "/dmp_copy",
+      "doc_type": "DMP_copy",
+      "templates": [
+        {
+          "id": "626873",
+          "ref": "mitigat-ny-prod+DMP_copy|template",
+          "title": "Upload",
+          "main_nav": "true",
+          "url_slug": "upload/"
+        },
+        {
+          "id": "626876",
+          "ref": "mitigat-ny-prod+DMP_copy|template",
+          "title": "Spreadsheet",
+          "main_nav": "true",
+          "url_slug": "/"
+        }
+      ],
+      "pattern_type": "form"
+    },
+    {
+      "id": "668719",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "base_url": "/",
+      "doc_type": "sullivan-2021",
+      "subdomain": "sullivan2021",
+      "pattern_type": "page"
+    },
+    {
+      "id": "671388",
+      "ref": "mitigat-ny-prod+pattern",
+      "app": "mitigat-ny-prod",
+      "base_url": "/",
+      "doc_type": "schohariecounty",
+      "subdomain": "schohariecounty",
+      "pattern_type": "page"
+    }
+  ],
+  "site_name": "MitigateNY",
+  "created_at": "2024-08-26 19:41:52.439635+00",
+  "created_by": null,
+  "updated_at": "2024-09-30 21:35:13.657544+00",
+  "updated_by": null
+}]

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { dmsSiteFactory, registerDataType, Selector, adminConfig, registerComponents } from "~/modules/dms/src/"
+import { DmsSite, dmsSiteFactory, registerDataType, Selector, adminConfig, registerComponents } from "~/modules/dms/src/"
 import ComponentRegistry from '~/component_registry'
 import themes from '~/dms_themes'
 
@@ -17,9 +17,16 @@ import LayoutWrapper from "~/layout/LayoutWrapper"
 
 
 import AdditionalComponents from "./additional_components";
-import {DamaMap} from "./pages/DataManager/"
+import { DamaMap } from "./pages/DataManager/"
 
-registerComponents({...ComponentRegistry, ...AdditionalComponents, "Map: Dama Map": DamaMap})
+import siteData from './siteData.json'
+
+registerComponents({
+  ...ComponentRegistry, 
+  ...AdditionalComponents, 
+  "Map: Dama Map": DamaMap
+})
+
 registerDataType("selector", Selector)
 
 
@@ -29,36 +36,22 @@ Auth.forEach(f => {
 })
 
 function App() {
-  // Load Site Routes
-  const [dynamicRoutes, setDynamicRoutes] = useState([]);
-  useEffect(() => {
-        (async function() {
-            const dynamicRoutes = await dmsSiteFactory({
-                dmsConfig: adminConfig({
-                    app: 'mitigat-ny-prod',
-                    type: 'prod',
-                    // app: 'admin-new',
-                    // type: 'pattern-admin',
-                }),
-                authWrapper: withAuth,
-                themes,
-                // API_HOST: 'http://localhost:4444'
-            });
-            setDynamicRoutes(dynamicRoutes);
-        })()
-    }, []);
-
-    const PageNotFoundRoute = {
-        path: "/*",
-        Component: () => (<div className={'w-screen h-screen flex items-center bg-blue-50'}> ... </div>)
-    }
-
     return (
-      <RouterProvider 
-        router={createBrowserRouter([
-            // Site manager
-            // Data Manager
-            ...LayoutWrapper(DamaRoutes({
+      <DmsSite
+        dmsConfig = {
+          adminConfig({
+            app: 'mitigat-ny-prod',
+            type: 'prod'
+          })
+        }
+        defaultData={siteData}
+        authWrapper={withAuth}
+        themes={themes}
+        // API_HOST='http://localhost:4444'
+        
+        routes={[
+          //cenrep
+          ...LayoutWrapper(DamaRoutes({
               baseUrl:'/cenrep',
               defaultPgEnv : "hazmit_dama",
               navSettings: authMenuConfig,
@@ -66,12 +59,9 @@ function App() {
               useFalcor,
               useAuth
             })),
-            // Auth
-            ...LayoutWrapper(Auth),
-            ...dynamicRoutes,
-            
-            PageNotFoundRoute 
-        ])} 
+          // Auth
+          ...LayoutWrapper(Auth)
+        ]} 
       />
     )
 }
