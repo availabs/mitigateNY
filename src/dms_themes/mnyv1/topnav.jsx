@@ -1,6 +1,6 @@
 
 const topnav = {
-      topnavWrapper: `w-full bg-white h-20 flex items-center `,
+      topnavWrapper: `w-full bg-white h-20 flex items-center mt-6 mb-1 rounded-lg shadow `,
       topnavContent: `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
       topnavMenu: `hidden  md:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
       menuIconTop: `text-blue-400 mr-3 text-lg group-hover:text-blue-500`,
@@ -26,10 +26,10 @@ const topnav = {
       mobileButton:`md:hidden bg-slate-100 inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
       indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
       indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
-      subMenuWrapper: `absolute bg-white `,
-      subMenuParentWrapper: `flex flex-row  max-w-[1400px] mx-auto`,
+      subMenuWrapper: `hidden`, //`absolute bg-white `,
+      subMenuParentWrapper: 'hidden', //,`flex flex-row  max-w-[1400px] mx-auto`,
       subMenuWrapperChild: `divide-x overflow-x-auto max-w-[1400px] mx-auto`,
-      subMenuWrapperTop: `absolute top-full left-0 border-y border-gray-200 w-full bg-white normal-case`,
+      subMenuWrapperTop: 'hidden',//`absolute top-full left-0 border-y border-gray-200 w-full bg-white normal-case`,
       subMenuWrapperInactiveFlyout: `absolute  mt-8 normal-case bg-white shadow-lg z-10 p-2`,
       subMenuWrapperInactiveFlyoutBelow: ` absolute ml-40 normal-case bg-white shadow-lg z-10 p-2`,
       subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
