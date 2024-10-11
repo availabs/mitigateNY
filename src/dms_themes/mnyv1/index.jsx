@@ -63,15 +63,14 @@ const theme = {
     '4': 'pl-6 pt-2 pb-1 text-sm text-slate-400 hover:underline cursor-pointer border-r-2 mr-4',
   },
   layout: {
-    wrapper: 'max-w-[1400px] mx-auto bg-slate-100',
-    topnavContainer1:`mt-[42px]`,
-    topnavContainer2:`fixed top-0 z-20 w-[1400px]`,
+    wrapper: 'max-w-[1400px] mx-auto bg-slate-100 ',
+    topnavContainer2:`fixed top-0 z-20 max-w-[1400px] w-full py-2`,
     sidenavContainer1: '',
-    sidenavContainer2: 'sticky top-[115px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow w-64 pt-2 overflow-y-auto overflow-x-hidden'
+    sidenavContainer2: 'sticky top-[119px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow w-64 pt-2 overflow-y-auto overflow-x-hidden'
   },
   page: {
-    wrapper1: 'w-full h-full flex-1 flex flex-col bg-slate-100', // first div inside Layout
-    wrapper2: 'w-full h-full flex-1 flex flex-row pl-2  py-6', // inside page header, wraps sidebar
+    wrapper1: 'w-full h-full flex-1 flex flex-col bg-slate-100 pt-[93px] py-2', // first div inside Layout
+    wrapper2: 'w-full h-full flex-1 flex flex-row pl-2 py-6', // inside page header, wraps sidebar
     wrapper3: 'flex flex-1 w-full  flex-col border shadow bg-white rounded-lg relative text-md font-light leading-7 p-4 min-h-[calc(100vh_-_102px)]' , // content wrapepr
     iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
     icon: 'text-slate-400 hover:text-blue-500'
@@ -82,9 +81,9 @@ const theme = {
     selectOption: 'p-4 text-md cursor-pointer hover:text-blue-500 text-slate-400 hover:bg-blue-600',
   },
   navPadding: {
-    1: 'pt-0 ',
-    2: 'md:pt-12 pt-0',
-    3: 'md:pt-24 pt-0'
+    1: '',
+    2: '',
+    3: ''
   },
   navLabel: 'px-6 pb-1 pt-6 uppercase text-xs text-blue-400',
   bg: 'bg-slate-100',
