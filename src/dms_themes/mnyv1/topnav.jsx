@@ -3,19 +3,20 @@ const topnav = {
       topnavWrapper: `w-full bg-white h-20 flex items-center mt-6 mb-1 rounded-lg shadow `,
       topnavContent: `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
       topnavMenu: `hidden  md:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
+      menuItemWrapper: 'flex',
       menuIconTop: `text-blue-400 mr-3 text-lg group-hover:text-blue-500`,
       menuIconTopActive : `text-blue-500 mr-3 text-lg group-hover:text-blue-500`,
       menuOpenIcon: `fa-light fa-bars fa-fw`,
       menuCloseIcon: `fa-light fa-xmark fa-fw"`,
       navitemTop: `
           w-fit group font-display whitespace-nowrap
-          flex tracking-widest items-center text-[11px] px-2 h-12
+          flex tracking-widest items-center font-[Oswald] font-medium text-slate-700 text-[11px] px-2 h-12
           focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
           transition cursor-pointer
       `,
       navitemTopActive:
         ` w-fit group font-display whitespace-nowrap
-          flex tracking-widest items-center text-[11px] px-2 h-12 text-blue
+          flex tracking-widest items-center font-[Oswald] font-medium text-slate-700 text-[11px] px-2 h-12 text-blue
           focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
           transition cursor-pointer 
         `,
