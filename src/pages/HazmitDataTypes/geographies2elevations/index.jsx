@@ -181,7 +181,7 @@ const Create = props => {
           navigate(`${ baseUrl }/source/${ source_id }/uploads/${ etl_context_id }`);
         }
       });
-  }, [sourceViewId, damaSourceName, canSubmit, navigate, baseUrl, pgEnv])
+  }, [sourceViewId, damaSourceName, canSubmit, navigate, baseUrl, pgEnv]);
 
   return (
     <div className="group">

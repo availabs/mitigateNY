@@ -31,9 +31,9 @@ const topnav = {
       subMenuParentWrapper: 'hidden', //,`flex flex-row  max-w-[1400px] mx-auto`,
       subMenuWrapperChild: `divide-x overflow-x-auto max-w-[1400px] mx-auto`,
       subMenuWrapperTop: 'hidden',//`absolute top-full left-0 border-y border-gray-200 w-full bg-white normal-case`,
-      subMenuWrapperInactiveFlyout: `absolute  mt-8 normal-case bg-white shadow-lg z-10 p-2`,
+      subMenuWrapperInactiveFlyout: `absolute left-0 right-0  mt-8 normal-case bg-white shadow-lg z-10 p-2`,
       subMenuWrapperInactiveFlyoutBelow: ` absolute ml-40 normal-case bg-white shadow-lg z-10 p-2`,
-      subMenuWrapperInactiveFlyoutDirection: 'flex flex-col divide-y-2'
+      subMenuWrapperInactiveFlyoutDirection: 'grid grid-cols-4'
       
   }
 

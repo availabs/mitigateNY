@@ -45,6 +45,7 @@ import parcels2footprints from './parcels2footprints'
 import npmrds from './npmrds'
 
 import geographies2elevations from "./geographies2elevations"
+import aggregate_buildings from "./aggregate_buildings"
 
 const DataTypes = {
   npmrds,
@@ -91,7 +92,8 @@ const DataTypes = {
   gis_least_common_geographic_units,
   parcels2footprints,
 
-  geographies2elevations
+  geographies2elevations,
+  aggregate_buildings
 };
 
 export default DataTypes;
