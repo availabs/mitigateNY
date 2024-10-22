@@ -1,5 +1,5 @@
 // const sidenav = (opts={}) =>  {
-  let {color = 'white', size = 'compact',  subMenuStyle = 'inline', responsive = 'top'} = {}
+  let {color = 'white', size = 'full',  subMenuStyle = 'inline', responsive = 'top'} = {}
       
   let mobile = {
     top : 'hidden md:block',
