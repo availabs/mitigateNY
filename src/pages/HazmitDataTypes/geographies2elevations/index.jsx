@@ -178,7 +178,9 @@ const Create = props => {
     ).then(res => res.json())
       .then(({ source_id, etl_context_id }) => {
         if (source_id && etl_context_id) {
-          navigate(`${ baseUrl }/source/${ source_id }/uploads/${ etl_context_id }`);
+          const url = `${ baseUrl }/source/${ source_id }/uploads/${ etl_context_id }`;
+          console.log("URL:", url);
+          navigate(url);
         }
       });
   }, [sourceViewId, damaSourceName, canSubmit, navigate, baseUrl, pgEnv]);
