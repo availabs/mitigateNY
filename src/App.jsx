@@ -46,7 +46,7 @@ function App() {
             type: 'prod'
           })
         }
-        // defaultData={siteData}
+        defaultData={siteData}
         authWrapper={withAuth}
         themes={themes}
         // API_HOST='http://localhost:4444'
