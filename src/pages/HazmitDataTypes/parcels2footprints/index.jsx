@@ -37,7 +37,10 @@ function Create ({
         ogsViewId: null,
 
         blockSourceId: null,
-        blockViewId: null
+        blockViewId: null,
+
+        orptsSourceId: null,
+        orptsViewId: null
     })
 
     const canSubmit = React.useMemo(() => {
@@ -46,14 +49,16 @@ function Create ({
         footprintViewId = null,
         elevationViewId = null,
         ogsViewId = null,
-        blockViewId = null
+        blockViewId = null,
+        orptsViewId = null
       } = createState;
       return Boolean(damaSourceName &&
                       parcelViewId &&
                       footprintViewId &&
                       elevationViewId &&
                       ogsViewId &&
-                      blockViewId
+                      blockViewId &&
+                      orptsViewId
                     );
     }, [damaSourceName, createState]);
 
@@ -70,7 +75,8 @@ function Create ({
         parcel_view_id: createState.parcelViewId,
         elevation_view_id: createState.elevationViewId,
         ogs_view_id: createState.ogsViewId,
-        block_view_id: createState.blockViewId
+        block_view_id: createState.blockViewId,
+        orpts_view_id: createState.orptsViewId
       };
       fetch(
         `${ DAMA_HOST }/dama-admin/${ pgEnv }/parcels2footprints`,
@@ -82,8 +88,8 @@ function Create ({
         }
       ).then(res => res.json())
         .then(jsonRes => {
-          console.log("RES:", jsonRes);
-          // navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
+          // console.log("RES:", jsonRes);
+          navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
         })
     }, [createState, user, pgEnv]);
 
@@ -211,6 +217,27 @@ function Create ({
 
 // console.log("blockSources", blockSources);
 
+    const orptsSources = React.useMemo(() => {
+      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
+        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
+        .filter(d => d?.categories?.map(d => d[0])?.includes('ORPTS'))
+        .filter(d => {
+          const columns = get(d, ["metadata", "columns"], get(d, "metadata", []));
+          if (Array.isArray(columns)) {
+            const [hasGeom, hasOgcFid] = columns.reduce((a, c) => {
+              return [
+                a[0] || c.name.includes("wkb_geometry"),
+                a[1] || c.name.includes("ogc_fid")
+              ]
+            }, [false, false]);
+            return hasGeom && hasOgcFid;
+          }
+          return false;
+        }).sort((a, b) => a.name.localeCompare(b.name));
+    }, [falcorCache, pgEnv]);
+
+// console.log("orptsSources", orptsSources);
+
     React.useEffect(() => {
       const prclSrcId = createState.parcelSourceId;
 
@@ -301,6 +328,24 @@ function Create ({
       }
     }, [createState.blockSourceId, falcor, falcorCache, pgEnv]);
 
+    React.useEffect(() => {
+      const orptsSrcId = createState.orptsSourceId;
+
+      if (!orptsSrcId) return;
+
+      falcor.get(["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"]);
+
+      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"], 0);
+
+      if (length) {
+        falcor.get([
+          "dama", pgEnv, "sources", "byId", orptsSrcId, "views", "byIndex",
+          { from: 0, to: length - 1 },
+          "attributes", Object.values(ViewAttributes)
+        ]);
+      }
+    }, [createState.orptsSourceId, falcor, falcorCache, pgEnv]);
+
     const parcelViews = React.useMemo(() => {
       return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.parcelSourceId, "views", "byIndex"], {}))
         .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
@@ -339,10 +384,18 @@ function Create ({
         .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
     }, [falcorCache, createState.blockSourceId, pgEnv]);
 
-console.log("blockViews", blockViews)
+// console.log("blockViews", blockViews)
+
+    const orptsViews = React.useMemo(() => {
+      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.orptsSourceId, "views", "byIndex"], {}))
+        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
+        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
+    }, [falcorCache, createState.orptsSourceId, pgEnv]);
+
+// console.log("orptsViews", orptsViews)
 
     return (
-        <div className="group">
+        <div className="group mb-40">
             <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
                 <dt className="text-sm font-medium text-gray-500 py-5">
                     Select Parcel Source
@@ -536,6 +589,45 @@ console.log("blockViews", blockViews)
                             >
                                 <option value={null}>Select Block Version</option>
                                 {(blockViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
+                            </select>
+                        </div>
+                    </dd>
+                </div>
+            )}
+
+            {createState.blockViewId && (
+                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
+                    <dt className="text-sm font-medium text-gray-500 py-5">
+                        Select ORPTS Source
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        <div className="pt-3 pr-8">
+                            <select
+                                value={createState.orptsSourceId}
+                                onChange={e => setCreateState({...createState, orptsSourceId: e.target.value, orptsViewId: null })}
+                                className='px-2 py-4 w-full bg-white shadow'
+                            >
+                                <option value={null}>Select ORPTS Source</option>
+                                {(orptsSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
+                            </select>
+                        </div>
+                    </dd>
+                </div>
+            )}
+            {createState.orptsSourceId && (
+                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
+                    <dt className="text-sm font-medium text-gray-500 py-5">
+                        Select ORPTS Version
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        <div className="pt-3 pr-8">
+                            <select
+                                value={createState.orptsViewId}
+                                onChange={e => setCreateState({...createState, orptsViewId: e.target.value })}
+                                className='px-2 py-4 w-full bg-white shadow'
+                            >
+                                <option value={null}>Select ORPTS Version</option>
+                                {(orptsViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
                             </select>
                         </div>
                     </dd>
