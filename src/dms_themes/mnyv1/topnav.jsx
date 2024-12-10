@@ -27,10 +27,10 @@ const topnav = {
       mobileButton:`md:hidden bg-slate-100 inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
       indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
       indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
-      subMenuWrapper: `hidden`, //`absolute bg-white `,
-      subMenuParentWrapper: 'hidden', //,`flex flex-row  max-w-[1400px] mx-auto`,
+      subMenuWrapper: `hidden`, 
+      subMenuParentWrapper: 'hidden',
       subMenuWrapperChild: `divide-x overflow-x-auto max-w-[1400px] mx-auto`,
-      subMenuWrapperTop: 'hidden',//`absolute top-full left-0 border-y border-gray-200 w-full bg-white normal-case`,
+      subMenuWrapperTop: 'hidden',
       subMenuWrapperInactiveFlyout: `absolute left-0 right-0  mt-8 normal-case bg-white shadow-lg z-10 p-2`,
       subMenuWrapperInactiveFlyoutBelow: ` absolute ml-40 normal-case bg-white shadow-lg z-10 p-2`,
       subMenuWrapperInactiveFlyoutDirection: 'grid grid-cols-4'
