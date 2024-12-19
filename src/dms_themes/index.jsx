@@ -32,7 +32,8 @@ const Logo = ({sideNav}) => {
 
 
 export default {
-	mnyv1,
+	mny: mnyv1,
+  mnyv1,
   default: {
     navOptions: {
       logo: <Logo />,
