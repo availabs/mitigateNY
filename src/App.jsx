@@ -32,10 +32,6 @@ registerComponents({
 registerDataType("selector", Selector)
 
 
-// Auth.forEach(f => {
-//   f.Component = f.element 
-//   delete f.element
-// })
 
 function App() {
     return (
@@ -43,7 +39,7 @@ function App() {
         dmsConfig = {
           adminConfig({
             app: 'mitigat-ny-prod',
-            type: 'prod'
+            type: 'prod' //'planetary'
           })
         }
         defaultData={siteData}
