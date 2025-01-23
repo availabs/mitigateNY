@@ -65,7 +65,7 @@ const theme = {
     childWrapper: 'h-full flex-1',
     topnavContainer2:`fixed top-0 z-20 max-w-[1440px] w-full pt-2 px-4 xl:px-[64px]`,
     sidenavContainer1: 'pr-2  hidden lg:block min-w-[302px] max-w-[302px]',
-    sidenavContainer2: 'hidden lg:block sticky top-[119px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow w-full overflow-y-auto overflow-x-hidden'
+    sidenavContainer2: 'hidden lg:block sticky top-[119px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden'
   },
   page: {
     container: `bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px]`,//`bg-gradient-to-b from-[#F4F4F4] to-[#F4F4F4] bg-[url('/themes/mny/topolines.png')] `,
@@ -120,7 +120,7 @@ const theme = {
   sidenav: {
     fixed: ``,
     logoWrapper: `bg-neutral-100 text-slate-800`,
-    sidenavWrapper: `hidden md:block bg-white shadow-md w-full h-full z-20 pr-4`,
+    sidenavWrapper: `hidden md:block bg-white w-full h-full z-20 pr-4`,
     menuItemWrapper: 'flex flex-col',
     menuIconSide: `group w-6 mr-2 text-blue-500`,
     menuIconSideActive: `group w-6 mr-2 text-blue-500`,

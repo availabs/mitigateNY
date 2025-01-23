@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "analyze": "npx vite-bundle-visualizer",
-    "deploy": "netlify deploy --prod",
-    "deploy-dev": "netlify deploy --site 4f81b618-a3cf-4f79-baa3-3d4e82edef3a --prod",
+    "deploy-prod": "netlify deploy --prod",
+    "deploy": "netlify deploy --site 4f81b618-a3cf-4f79-baa3-3d4e82edef3a --prod",
     "deploy-planetary": "netlify deploy --site ccf0fbba-fd28-4293-af14-05243c2ac614 --prod",
     "dev": "vite",
     "build": "vite build",
