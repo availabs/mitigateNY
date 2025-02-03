@@ -46,6 +46,7 @@ import npmrds from './npmrds'
 
 import geographies2elevations from "./geographies2elevations"
 import aggregate_buildings from "./aggregate_buildings"
+import aggregate_HIFLD from "./aggregate_HIFLD"
 
 const DataTypes = {
   npmrds,
@@ -90,10 +91,12 @@ const DataTypes = {
   sheldus,
 
   gis_least_common_geographic_units,
+
   parcels2footprints,
 
   geographies2elevations,
-  aggregate_buildings
+  aggregate_buildings,
+  aggregate_HIFLD
 };
 
 export default DataTypes;
