@@ -18,14 +18,12 @@ import LayoutWrapper from "~/layout/LayoutWrapper"
 
 import AdditionalComponents from "./additional_components";
 import { DamaMap } from "./pages/DataManager/"
-import FormComponents from "~/modules/dms/src/patterns/forms/components/"
 
 import siteData from './siteData.json'
 
 registerComponents({
   ...ComponentRegistry, 
   ...AdditionalComponents,
-  ...FormComponents,
   "Map: Dama Map": DamaMap
 })
 
