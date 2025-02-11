@@ -82,7 +82,7 @@ const Create = props => {
     ).then(res => res.json())
       .then(jsonRes => {
         console.log("RES:", jsonRes);
-        // navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
+        navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
       })
   }, [createState, readySources, user, pgEnv]);
 
