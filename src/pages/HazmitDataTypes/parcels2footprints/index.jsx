@@ -116,7 +116,7 @@ function Create ({
       ).then(res => res.json())
         .then(jsonRes => {
           console.log("RES:", jsonRes);
-          // navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
+          navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
         })
     }, [createState, user, pgEnv]);
 
@@ -280,7 +280,7 @@ function Create ({
         }).sort((a, b) => a.name.localeCompare(b.name));
     }, [falcorCache, pgEnv]);
 
-console.log("hifldSources", hifldSources);
+// console.log("hifldSources", hifldSources);
 
     React.useEffect(() => {
       const prclSrcId = createState.parcelSourceId;
