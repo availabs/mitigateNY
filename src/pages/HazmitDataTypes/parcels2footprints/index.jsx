@@ -53,7 +53,10 @@ function Create ({
         orptsResidentialViewId: null,
 
         orptsCommercialSourceId: null,
-        orptsCommercialViewId: null
+        orptsCommercialViewId: null,
+
+        hifldSourceId: null,
+        hifldViewId: null
     })
 
     const canSubmit = React.useMemo(() => {
@@ -66,7 +69,9 @@ function Create ({
 
         orptsIndustrialViewId = null,
         orptsResidentialViewId = null,
-        orptsCommercialViewId = null
+        orptsCommercialViewId = null,
+
+        hifldViewId = null
       } = createState;
       return Boolean(damaSourceName &&
                       parcelViewId &&
@@ -76,7 +81,8 @@ function Create ({
                       blockViewId &&
                       orptsIndustrialViewId &&
                       orptsResidentialViewId &&
-                      orptsCommercialViewId
+                      orptsCommercialViewId &&
+                      hifldViewId
                     );
     }, [damaSourceName, createState]);
 
@@ -96,7 +102,8 @@ function Create ({
         block_view_id: createState.blockViewId,
         orpts_industrial_view_id: createState.orptsIndustrialViewId,
         orpts_residential_view_id: createState.orptsResidentialViewId,
-        orpts_commercial_view_id: createState.orptsCommercialViewId
+        orpts_commercial_view_id: createState.orptsCommercialViewId,
+        hifld_view_id: createState.hifldViewId
       };
       fetch(
         `${ DAMA_HOST }/dama-admin/${ pgEnv }/parcels2footprints`,
@@ -109,7 +116,7 @@ function Create ({
       ).then(res => res.json())
         .then(jsonRes => {
           console.log("RES:", jsonRes);
-          // navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
+          navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
         })
     }, [createState, user, pgEnv]);
 
@@ -254,6 +261,27 @@ function Create ({
 
 // console.log("orptsSources", orptsSources);
 
+    const hifldSources = React.useMemo(() => {
+      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
+        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
+        .filter(d => d?.categories?.map(d => d[0])?.includes('HIFLD'))
+        .filter(d => {
+          const columns = get(d, ["metadata", "columns"], get(d, "metadata", []));
+          if (Array.isArray(columns)) {
+            const [hasGeom, hasOgcFid] = columns.reduce((a, c) => {
+              return [
+                a[0] || c.name.includes("wkb_geometry"),
+                a[1] || c.name.includes("ogc_fid")
+              ]
+            }, [false, false]);
+            return hasGeom && hasOgcFid;
+          }
+          return false;
+        }).sort((a, b) => a.name.localeCompare(b.name));
+    }, [falcorCache, pgEnv]);
+
+// console.log("hifldSources", hifldSources);
+
     React.useEffect(() => {
       const prclSrcId = createState.parcelSourceId;
 
@@ -344,24 +372,6 @@ function Create ({
       }
     }, [createState.blockSourceId, falcor, falcorCache, pgEnv]);
 
-    // React.useEffect(() => {
-    //   const orptsSrcId = createState.orptsSourceId;
-    //
-    //   if (!orptsSrcId) return;
-    //
-    //   falcor.get(["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"]);
-    //
-    //   const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"], 0);
-    //
-    //   if (length) {
-    //     falcor.get([
-    //       "dama", pgEnv, "sources", "byId", orptsSrcId, "views", "byIndex",
-    //       { from: 0, to: length - 1 },
-    //       "attributes", Object.values(ViewAttributes)
-    //     ]);
-    //   }
-    // }, [createState.orptsSourceId, falcor, falcorCache, pgEnv]);
-
     React.useEffect(() => {
       const orptsSrcId = createState.orptsIndustrialSourceId;
 
@@ -416,13 +426,29 @@ function Create ({
       }
     }, [createState.orptsCommercialSourceId, falcor, falcorCache, pgEnv]);
 
+    React.useEffect(() => {
+      const hifldSrcId = createState.hifldSourceId;
+
+      if (!hifldSrcId) return;
+
+      falcor.get(["dama", pgEnv, "sources", "byId", hifldSrcId, "views", "length"]);
+
+      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", hifldSrcId, "views", "length"], 0);
+
+      if (length) {
+        falcor.get([
+          "dama", pgEnv, "sources", "byId", hifldSrcId, "views", "byIndex",
+          { from: 0, to: length - 1 },
+          "attributes", Object.values(ViewAttributes)
+        ]);
+      }
+    }, [createState.hifldSourceId, falcor, falcorCache, pgEnv]);
+
     const parcelViews = React.useMemo(() => {
       return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.parcelSourceId, "views", "byIndex"], {}))
         .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
         .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
     }, [falcorCache, createState.parcelSourceId, pgEnv]);
-
-// console.log("parcelViews", parcelViews)
 
     const footprintViews = React.useMemo(() => {
       return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.footprintSourceId, "views", "byIndex"], {}))
@@ -430,15 +456,11 @@ function Create ({
         .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
     }, [falcorCache, createState.footprintSourceId, pgEnv]);
 
-// console.log("footprintViews", footprintViews)
-
     const elevationViews = React.useMemo(() => {
       return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.elevationSourceId, "views", "byIndex"], {}))
         .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
         .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
     }, [falcorCache, createState.elevationSourceId, pgEnv]);
-
-// console.log("elevationViews", elevationViews)
 
     const ogsViews = React.useMemo(() => {
       return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.ogsSourceId, "views", "byIndex"], {}))
@@ -446,15 +468,11 @@ function Create ({
         .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
     }, [falcorCache, createState.ogsSourceId, pgEnv]);
 
-// console.log("ogsViews", ogsViews)
-
     const blockViews = React.useMemo(() => {
       return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.blockSourceId, "views", "byIndex"], {}))
         .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
         .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
     }, [falcorCache, createState.blockSourceId, pgEnv]);
-
-// console.log("blockViews", blockViews)
 
     const orptsIndustrialViews = React.useMemo(() => {
       return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.orptsIndustrialSourceId, "views", "byIndex"], {}))
@@ -474,7 +492,11 @@ function Create ({
         .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
     }, [falcorCache, createState.orptsCommercialSourceId, pgEnv]);
 
-// console.log("orptsViews", orptsViews)
+    const hifldViews = React.useMemo(() => {
+      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.hifldSourceId, "views", "byIndex"], {}))
+        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
+        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
+    }, [falcorCache, createState.hifldSourceId, pgEnv]);
 
     return (
         <div className="group mb-40">
@@ -788,6 +810,45 @@ function Create ({
                             >
                                 <option value={null}>Select ORPTS Version</option>
                                 {(orptsCommercialViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
+                            </select>
+                        </div>
+                    </dd>
+                </div>
+            )}
+
+            {createState.orptsCommercialViewId && (
+                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
+                    <dt className="text-sm font-medium text-gray-500 py-5">
+                        Select HIFLD Source
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        <div className="pt-3 pr-8">
+                            <select
+                                value={createState.hifldSourceId}
+                                onChange={e => setCreateState({...createState, hifldSourceId: e.target.value, hifldViewId: null })}
+                                className='px-2 py-4 w-full bg-white shadow'
+                            >
+                                <option value={null}>Select HIFLD Source</option>
+                                {(hifldSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
+                            </select>
+                        </div>
+                    </dd>
+                </div>
+            )}
+            {createState.hifldSourceId && (
+                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
+                    <dt className="text-sm font-medium text-gray-500 py-5">
+                        Select HIFLD Version
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        <div className="pt-3 pr-8">
+                            <select
+                                value={createState.hifldViewId}
+                                onChange={e => setCreateState({...createState, hifldViewId: e.target.value })}
+                                className='px-2 py-4 w-full bg-white shadow'
+                            >
+                                <option value={null}>Select HIFLD Version</option>
+                                {(hifldViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
                             </select>
                         </div>
                     </dd>
