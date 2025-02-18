@@ -6,6 +6,7 @@ let CLIENT_HOST = "mitigateny.org";
 let DAMA_HOST = "https://graph1.availabs.org";
 
 if (process.env.NODE_ENV === "development") {
+
   //API_HOST = "http://localhost:4444";
   //DAMA_HOST = "http://localhost:4444"
   //DAMA_HOST = "https://graph1.availabs.org";
