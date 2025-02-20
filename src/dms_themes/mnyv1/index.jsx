@@ -79,7 +79,7 @@ const theme = {
   sectionArray: {
     container: 'w-full grid grid-cols-6 md:grid-cols-12 ',
     layouts: {
-        centered: 'max-w-[1020px] mx-auto md:gap-[12px] px-[56px]',
+        centered: 'max-w-[1020px] mx-auto md:gap-[12px] px-0 lg:px-[56px]',
         fullwidth: ''
     },
     sizes: {
