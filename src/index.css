@@ -27,7 +27,7 @@ input {
 .top-full {
     top: 100%;
 }
-
+/*
 @media (min-width: 768px) {
     .md\:pt-12 {
         padding-top: 3rem;
@@ -36,4 +36,4 @@ input {
         padding-top: 6rem;
     }
 }
-
+*/

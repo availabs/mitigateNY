@@ -214,7 +214,8 @@ const theme = {
       paginationPagesInfo: 'font-[500] font-[Oswald] text-[12px] uppercase text-[#2d3e4c] leading-[18px]',
       paginationRowsInfo: 'text-xs font-[Proxima Nova] leading-[14px]',
       paginationControlsContainer: 'flex flex-row items-center border rounded-[8px] overflow-hidden',
-      pageRangeItem: 'cursor-pointer px-[12px] bg-white text-[#2D3E4C] py-[7px] font-[Oswald] font-[500] text-[12px] border-r last:border-none uppercase leading-[18px]' ,
+      pageRangeItem: 'cursor-pointer px-[12px]  py-[7px] font-[Oswald] font-[500] text-[12px] border-r last:border-none uppercase leading-[18px]' ,
+      pageRangeItemInactive: 'bg-white text-[#2D3E4C]',
       pageRangeItemActive: 'bg-[#2D3E4C] text-white'
   }
 }
