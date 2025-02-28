@@ -155,10 +155,10 @@ const theme = {
   },
   topnav: {
       fixed: 'mt-8',
-      topnavWrapper: `w-full bg-white h-20 flex items-center rounded-lg shadow pointer-events-auto`,
+      topnavWrapper: `px-[24px] py-[16px] w-full bg-white h-20 flex items-center rounded-lg shadow pointer-events-auto`,
       topnavContent: `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
       topnavMenu: `hidden  md:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
-      menuItemWrapper: 'flex',
+      menuItemWrapper: 'flex text-[#37576B]',
       menuIconTop: `text-blue-400 mr-3 text-lg group-hover:text-blue-500`,
       menuIconTopActive : `text-blue-500 mr-3 text-lg group-hover:text-blue-500`,
       menuOpenIcon: `fa-light fa-bars fa-fw`,
