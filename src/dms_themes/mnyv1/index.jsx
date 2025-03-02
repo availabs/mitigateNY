@@ -116,6 +116,51 @@ const theme = {
     "m-0 mb-2 font-['Oswald'] text-[30px] leading-[36px] text-[#2D3E4C] border-l-4 border-[#37576B] pl-4 pb-[12px]", //'PlaygroundEditorTheme__quote',
 
   },
+  dataCard: {
+    columnControlWrapper: 'grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-0.5',
+    columnControlHeaderWrapper: `px-1 font-semibold border bg-gray-50 text-gray-500`,
+
+    mainWrapperCompactView: 'grid',
+    mainWrapperSimpleView: 'flex flex-col',
+
+    subWrapper: 'w-full text-[#2D3E4C] font-[Oswald]',
+    subWrapperCompactView: 'flex flex-col border shadow rounded-[12px]',
+    subWrapperSimpleView: 'grid',
+
+    headerValueWrapper: 'w-full rounded-[12px] flex items-center justify-center p-2',
+    headerValueWrapperCompactView: 'py-0',
+    headerValueWrapperSimpleView: 'border shadow',
+    justifyTextLeft: 'text-start',
+    justifyTextRight: 'text-end',
+    justifyTextCenter: 'text-center',
+
+    textXS: 'text-xs',
+    textSM: 'text-sm',
+    textMD: 'text-md',
+    textLG: 'text-lg',
+    textXL: 'text-xl',
+    text2XL: 'text-2xl',
+    text3XL: 'text-3xl',
+    text4XL: 'text-4xl',
+    text5XL: 'text-5xl',
+    text6XL: 'text-6xl',
+    text7XL: 'text-7xl',
+    text8XL: 'text-8xl',
+    text9XL: 'text-9xl',
+
+    fontThin: 'font-thin',
+    fontExtraLight: 'font-extralight',
+    fontLight: 'font-light',
+    fontNormal: 'font-normal',
+    fontMedium: 'font-medium',
+    fontSemiBold: 'font-semibold',
+    fontBold: 'font-bold',
+    fontExtraBold: 'font-extrabold',
+    fontBlack: 'font-black',
+
+    header: 'w-full uppercase', // #37576B
+    value: 'w-full' // #2D3E4C
+  },
   sidenav: {
     fixed: ``,
     logoWrapper: `bg-neutral-100 text-slate-800`,
