@@ -124,12 +124,12 @@ const theme = {
     mainWrapperSimpleView: 'flex flex-col',
 
     subWrapper: 'w-full text-[#2D3E4C] font-[Oswald]',
-    subWrapperCompactView: 'flex flex-col border shadow rounded-[12px]',
+    subWrapperCompactView: 'flex flex-col rounded-[12px]',
     subWrapperSimpleView: 'grid',
 
     headerValueWrapper: 'w-full rounded-[12px] flex items-center justify-center p-2',
     headerValueWrapperCompactView: 'py-0',
-    headerValueWrapperSimpleView: 'border shadow',
+    headerValueWrapperSimpleView: '',
     justifyTextLeft: 'text-start',
     justifyTextRight: 'text-end',
     justifyTextCenter: 'text-center',
