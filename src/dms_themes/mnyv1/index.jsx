@@ -156,10 +156,10 @@ const theme = {
     text7XL: 'font-medium font-[Oswald] text-[72px] leading-[100%] uppercase tracking-normal',
     text8XL: 'font-medium font-[Oswald] text-[96px] leading-[95%] uppercase tracking-normal ',
 
-    header: 'w-full uppercase text-[#37576B]',
+    header: 'flex-1 uppercase text-[#37576B]',
     headerCompactView: '',
     headerSimpleView: '',
-    value: 'w-full text-[#2D3E4C]',
+    value: 'text-[#2D3E4C]',
     valueCompactView: '',
     valueSimpleView: ''
   },
