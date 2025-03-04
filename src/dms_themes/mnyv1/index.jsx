@@ -264,6 +264,11 @@ const theme = {
       pageRangeItem: 'cursor-pointer px-[12px]  py-[7px] font-[Oswald] font-[500] text-[12px] border-r last:border-none uppercase leading-[18px]' ,
       pageRangeItemInactive: 'bg-white text-[#2D3E4C]',
       pageRangeItemActive: 'bg-[#2D3E4C] text-white'
+  },
+  attribution: {
+    wrapper: 'w-full pt-[16px] flex flex-col gap-[4px] text-[#2D3E4C] text-xs border-t',
+    label: 'font-semibold text-[12px] leading-[14.62px]',
+    link: 'font-normal leading-[14.62px] text-[12px] underline'
   }
 }
 
