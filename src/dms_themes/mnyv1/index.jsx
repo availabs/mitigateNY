@@ -273,6 +273,12 @@ const theme = {
     wrapper: 'w-full flex flex-col gap-[4px] text-[#2D3E4C] text-xs',
     label: 'font-semibold text-[12px] leading-[14.62px] border-t pt-[14px]',
     link: 'font-normal leading-[14.62px] text-[12px] underline'
+  },
+  label: {
+    labelWrapper: 'w-full px-[12px] pt-[9px] pb-[7px] bg-[#C5D7E0] hover:bg-[#E0EBF0] group rounded-[1000px]',
+    labelWrapperDisabled: 'px-[12px] pt-[9px] pb-[7px] bg-[#F3F8F9] group rounded-[1000px]',
+    label: 'text-[12px] text-[#37576B] font-bold leading-[14.62px]',
+    labelDisabled: 'text-[12px] text-[#C5D7E0] font-bold leading-[14.62px]',
   }
 }
 
