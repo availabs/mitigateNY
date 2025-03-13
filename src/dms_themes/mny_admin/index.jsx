@@ -59,19 +59,19 @@ const theme = {
     '4': 'pl-6 pt-2 pb-1 text-sm text-slate-400 hover:underline cursor-pointer border-r-2 mr-4',
   },
   layout: {
-    wrapper: 'max-w-[1440px] mx-auto',
+    wrapper: '',
     wrapper2: 'flex-1 flex items-start flex-col items-stretch max-w-full',
-    wrapper3: 'flex flex-1 px-4 xl:px-[64px]',
+    wrapper3: 'flex flex-1',
     childWrapper: 'h-full flex-1',
-    topnavContainer2:`fixed top-0 z-20 max-w-[1440px] w-full px-4 pt-[32px] xl:px-[64px] pointer-events-none`,
-    sidenavContainer1: 'pr-2  hidden lg:block min-w-[302px] max-w-[302px] pt-[88px]',
-    sidenavContainer2: 'hidden lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden'
+    topnavContainer2:`fixed top-0 z-20 max-w-[1440px] w-full px-4  xl:px-[64px] pointer-events-none`,
+    sidenavContainer1: 'pr-2  hidden lg:block min-w-[222px] max-w-[222px]',
+    sidenavContainer2: 'hidden lg:block fixed min-w-[222px] max-w-[222px] top-[0px] h-[calc(100vh_-_1px)] bg-white hadow-md w-full overflow-y-auto overflow-x-hidden'
   },
   page: {
     container: `bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`,//`bg-gradient-to-b from-[#F4F4F4] to-[#F4F4F4] bg-[url('/themes/mny/topolines.png')] `,
     wrapper1: 'w-full h-full flex-1 flex flex-col ', // first div inside Layout
-    wrapper2: 'w-full h-full flex-1 flex flex-row lg:pt-[118px] ', // inside page header, wraps sidebar
-    wrapper3: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]' , // content wrapepr
+    wrapper2: 'w-full h-full flex-1 flex flex-row p-4 min-h-screen', // inside page header, wraps sidebar
+    wrapper3: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4' , // content wrapepr
     iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
     icon: 'text-slate-400 hover:text-blue-500'
   },
@@ -79,8 +79,8 @@ const theme = {
   sectionArray: {
     container: 'w-full grid grid-cols-6 md:grid-cols-12 ',
     layouts: {
-        centered: 'max-w-[1020px] mx-auto md:gap-[12px] px-0 lg:px-[56px]',
-        fullwidth: ''
+        centered: 'max-w-[1440px] mx-auto md:gap-[12px] px-0 lg:px-[56px]',
+        fullwidth: 'md:gap-[12px] px-0 lg:px-[56px'
     },
     sizes: {
         "1/4": { className: 'col-span-6 md:col-span-3', iconSize: 25 },
@@ -130,9 +130,9 @@ const theme = {
     headerValueWrapper: 'w-full rounded-[12px] flex items-center gap-[8px] justify-center p-2',
     headerValueWrapperCompactView: 'rounded-none py-[12px]',
     headerValueWrapperSimpleView: '',
-    justifyTextLeft: 'text-start justify-items-start',
-    justifyTextRight: 'text-end justify-items-end',
-    justifyTextCenter: 'text-center justify-items-center',
+    justifyTextLeft: 'text-start',
+    justifyTextRight: 'text-end',
+    justifyTextCenter: 'text-center',
 
     textXS: 'font-medium font-[Oswald] text-[12px] leading-[140%]',
     textXSReg: 'font-normal font-[Proxima Nova] text-[12px] leading-[100%] uppercase',
@@ -156,18 +156,6 @@ const theme = {
     text7XL: 'font-medium font-[Oswald] text-[72px] leading-[100%] uppercase tracking-normal',
     text8XL: 'font-medium font-[Oswald] text-[96px] leading-[95%] uppercase tracking-normal ',
 
-    imgXS: "max-w-16 max-h-16",
-    imgSM: "max-w-24 max-h-24",
-    imgMD: "max-w-32 max-h-32",
-    imgXL: "max-w-40 max-h-40",
-    img2XL: "max-w-48 max-h-48",
-    img3XL: "max-w-56 max-h-56",
-    img4XL: "max-w-64 max-h-64",
-    img5XL: "max-w-72 max-h-72",
-    img6XL: "max-w-80 max-h-80",
-    img7XL: "max-w-96 max-h-96",
-    img8XL: "max-w-128 max-h-128",
-
     header: 'flex-1 uppercase text-[#37576B]',
     headerCompactView: '',
     headerSimpleView: '',
@@ -180,8 +168,8 @@ const theme = {
     logoWrapper: `bg-neutral-100 text-slate-800`,
     sidenavWrapper: `hidden md:block bg-white w-full h-full z-20 pr-4`,
     menuItemWrapper: 'flex flex-col',
-    menuIconSide: `group w-6 mr-2 text-blue-500`,
-    menuIconSideActive: `group w-6 mr-2 text-blue-500`,
+    menuIconSide: `group w-6 mr-2 text-[#6D96AE]`,
+    menuIconSideActive: `group w-6 mr-2 text-[#6D96AE]`,
     
     itemsWrapper: `border-slate-200`,
     navItemContent: `transition-transform duration-300 ease-in-out flex-1`,
@@ -217,58 +205,37 @@ const theme = {
       topnavWrapper: `px-[24px] py-[16px] w-full bg-white h-20 flex items-center rounded-lg shadow pointer-events-auto`,
       topnavContent: `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
       topnavMenu: `hidden  md:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
-      mobileButton:`md:hidden bg-slate-100 inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
-      indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
-      indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
-      menuItemWrapper1: [
-        ' ',
-        ''
-      ],
-      menuItemWrapper1Parent: [
-        ' ',
-        'bg-[#F3F8F9] p-4 rounded-lg'
-      ],
-      menuItemWrapper2: [
-        'flex text-[#37576B] ',
-        ' '
-      ],
+      menuItemWrapper: 'flex text-[#37576B]',
       menuIconTop: `text-blue-400 mr-3 text-lg group-hover:text-blue-500`,
       menuIconTopActive : `text-blue-500 mr-3 text-lg group-hover:text-blue-500`,
       menuOpenIcon: `fa-light fa-bars fa-fw`,
       menuCloseIcon: `fa-light fa-xmark fa-fw"`,
       navitemTop: `
-          w-fit group  whitespace-nowrap
-          flex items-center 
-          text-[16px] font-['Proxima_Nova'] font-[500] 
-          px-2
+          w-fit group font-display whitespace-nowrap
+          flex tracking-widest items-center font-[Oswald] font-medium text-slate-700 text-[11px] px-2 h-12
           focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
           transition cursor-pointer
       `,
       navitemTopActive:
-        ` w-fit group  whitespace-nowrap
-          flex  items-center 
-          text-[16px] font-['Proxima_Nova'] font-[500] 
-          px-2 text-blue
+        ` w-fit group font-display whitespace-nowrap
+          flex tracking-widest items-center font-[Oswald] font-medium text-slate-700 text-[11px] px-2 h-12 text-blue
           focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
           transition cursor-pointer 
         `,
-      navItemDescription: ['hidden',`text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B] text-wrap`],
       //`px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center  border-transparent  leading-5 text-white hover:bg-white hover:text-darkblue-500 border-gray-200 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full`,
       topmenuRightNavContainer: "hidden md:flex h-full items-center",
       topnavMobileContainer: "bg-slate-50",
      
-      
-      subMenuWrapper1: [
-        'absolute left-0 right-0 normal-case mt-4 z-10 px-4 pt-[42px] px-[62px] cursor-default'
-      ],
-      subMenuWrapper2: `bg-white flex items-stretch rounded-lg p-4 shadow`,
-      subMenuParentContent: 'basis-1/3  text-wrap pr-[64px]',
-      subMenuParentName: `text-[36px] font-['Oswald'] font-500 text-[#2D3E4C] uppercase pb-2`,
-      subMenuParentDesc: `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B]`,
-      subMenuParentLink: `w-fit h-fit cursor-pointer uppercase border boder-[#E0EBF0] bg-white hover:bg-[#E0EBF0] text-[#37576B] font-[700] leading-[14.62px] rounded-full text-[12px] text-center py-[16px] px-[24px]`,
-      subMenuItemsWrapperParent: 'grid grid-cols-2 gap-1 flex-1',
-      subMenuItemsWrapper: 'grid grid-cols-4 flex-1'
-
+      mobileButton:`md:hidden bg-slate-100 inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
+      indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
+      indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
+      subMenuWrapper: `hidden`, 
+      subMenuParentWrapper: 'hidden',
+      subMenuWrapperChild: `divide-x overflow-x-auto max-w-[1400px] mx-auto`,
+      subMenuWrapperTop: 'hidden',
+      subMenuWrapperInactiveFlyout: `absolute left-0 right-0  mt-8 normal-case bg-white shadow-lg z-10 p-2`,
+      subMenuWrapperInactiveFlyoutBelow: ` absolute ml-40 normal-case bg-white shadow-lg z-10 p-2`,
+      subMenuWrapperInactiveFlyoutDirection: 'grid grid-cols-4'
       
   },
   table: {
@@ -306,12 +273,6 @@ const theme = {
     wrapper: 'w-full flex flex-col gap-[4px] text-[#2D3E4C] text-xs',
     label: 'font-semibold text-[12px] leading-[14.62px] border-t pt-[14px]',
     link: 'font-normal leading-[14.62px] text-[12px] underline'
-  },
-  label: {
-    labelWrapper: 'w-full px-[12px] pt-[9px] pb-[7px] bg-[#C5D7E0] hover:bg-[#E0EBF0] group rounded-[1000px]',
-    labelWrapperDisabled: 'px-[12px] pt-[9px] pb-[7px] bg-[#F3F8F9] group rounded-[1000px]',
-    label: 'text-[12px] text-[#37576B] font-bold leading-[14.62px]',
-    labelDisabled: 'text-[12px] text-[#C5D7E0] font-bold leading-[14.62px]',
   }
 }
 
