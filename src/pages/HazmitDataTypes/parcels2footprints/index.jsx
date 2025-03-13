@@ -92,7 +92,7 @@ function Create ({
         source_values: {
           name: createState.damaSourceName,
           type: createState.sourceType || 'gis_dataset',
-          categories: [["Enhanced Footprints"]]
+          categories: [["Enhanced Footprints"], ["BILD"], ["Cenrep"]]
         },
         user_id: user.id,
         footprint_view_id: createState.footprintViewId,
@@ -116,7 +116,7 @@ function Create ({
       ).then(res => res.json())
         .then(jsonRes => {
           console.log("RES:", jsonRes);
-          navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
+          // navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
         })
     }, [createState, user, pgEnv]);
 
