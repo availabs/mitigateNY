@@ -123,7 +123,7 @@ const theme = {
     mainWrapperCompactView: 'grid',
     mainWrapperSimpleView: 'flex flex-col',
 
-    subWrapper: 'w-full text-[#2D3E4C] font-[Oswald]',
+    subWrapper: 'w-full text-[#2D3E4C]',
     subWrapperCompactView: 'flex flex-col flex-wrap rounded-[12px] divide-y',
     subWrapperSimpleView: 'grid',
 
