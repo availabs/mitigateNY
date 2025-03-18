@@ -1,5 +1,5 @@
 import Create from './create';
-import Table from "./../npmrds_meta/table";
+import Table from "../../DataManager/DataTypes/gis_dataset/pages/Table";
 
 const Config = {
     sourceCreate: {
