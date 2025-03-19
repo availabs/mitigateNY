@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Icons } from './icons'
 
 const MNYLogo = ({color='#5d87a1', width=175,height=50}) => (
   <svg width={`${width}px`} height={`${height}px`}>
@@ -27,6 +28,7 @@ const Logo = ({sideNav}) => {
 }
 
 const theme = {
+  Icons,
   navOptions: {
     logo: <Logo />,//'',//<Link to='/' className='h-12 flex px-4 items-center'><div className='rounded-full h-8 w-8 bg-blue-500 border-2 border-blue-300 hover:bg-blue-600' /></Link>, //<Link to='/' className='h-12 flex px-4 items-center'>LOGO</Link>,
     sideNav: {
