@@ -500,380 +500,298 @@ function Create ({
 
     return (
         <div className="group mb-40">
-            <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                <dt className="text-sm font-medium text-gray-500 py-5">
-                    Select Parcel Source
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  <div className="pt-3 pr-8">
-                    <select
-                        value={createState.parcelSourceId}
-                        onChange={e => setCreateState({...createState, parcelSourceId: e.target.value, parcelViewId: null})}
-                        className='px-2 py-4 w-full bg-white shadow'
-                    >
-                        <option value={null}>Select Parcel Source</option>
-                        {(parcelSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
-                    </select>
+
+          <SourceAndViewSelectors
+            label="Parcel"
+
+            sources={ parcelSources }
+            sourceKey="parcelSourceId"
+            sourceValue={ createState.parcelSourceId }
+
+            views={ parcelViews }
+            viewKey="parcelViewId"
+            viewValue={ createState.parcelViewId }
+
+            setCreateState={ setCreateState }/>
+
+          { createState.parcelViewId && (
+              <SourceAndViewSelectors
+                label="Foorprint"
+
+                sources={ footprintSources }
+                sourceKey="footprintSourceId"
+                sourceValue={ createState.footprintSourceId }
+
+                views={ footprintViews }
+                viewKey="footprintViewId"
+                viewValue={ createState.footprintViewId }
+
+                setCreateState={ setCreateState }/>
+            )
+          }
+
+            { createState.footprintViewId && (
+                <>
+                  <SourceAndViewSelectors
+                    label="Elevation"
+
+                    sources={ elevationSources }
+                    sourceKey="elevationSourceId"
+                    sourceValue={ createState.elevationSourceId }
+
+                    views={ elevationViews }
+                    viewKey="elevationViewId"
+                    viewValue={ createState.elevationViewId }
+
+                    setCreateState={ setCreateState }
+                  >
+                    <div className="text-center pt-2 font-bold text-lg">
+                      This Elevation Source must have been derived from the selected Footprint Source!
                     </div>
-                </dd>
-            </div>
-            {createState.parcelSourceId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select Parcel Version
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.parcelViewId}
-                                onChange={e => setCreateState({...createState, parcelViewId: e.target.value})}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select Parcel Version</option>
-                                {(parcelViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+                  </SourceAndViewSelectors>
+                </>
+              )
+            }
 
-            {createState.parcelViewId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select Foorprint Source
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.footprintSourceId}
-                                onChange={e => setCreateState({...createState, footprintSourceId: e.target.value, footprintViewId: null})}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select Foorprint Source</option>
-                                {(footprintSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
-            {createState.footprintSourceId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select Footprint Version
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.footprintViewId}
-                                onChange={e => setCreateState({...createState, footprintViewId: e.target.value})}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select Foorprint Version</option>
-                                {(footprintViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+            { createState.elevationViewId && (
+                <SourceAndViewSelectors
+                  label="OGS"
 
-            {createState.footprintViewId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select Elevation Source
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.elevationSourceId}
-                                onChange={e => setCreateState({...createState, elevationSourceId: e.target.value, elevationViewId: null })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select Elevation Source</option>
-                                {(elevationSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+                  sources={ ogsSources }
+                  sourceKey="ogsSourceId"
+                  sourceValue={ createState.ogsSourceId }
 
-            {createState.footprintViewId && (
-              <div className="px-8 py-2">
-                This Elevation Source must have been derived from the selected Footprint Source
-              </div>
-            )}
-            {createState.elevationSourceId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select Elevation Version
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.elevationViewId}
-                                onChange={e => setCreateState({...createState, elevationViewId: e.target.value })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select Elevation Version</option>
-                                {(elevationViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+                  views={ ogsViews }
+                  viewKey="ogsViewId"
+                  viewValue={ createState.ogsViewId }
 
-            {createState.elevationViewId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select OGS Source
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.ogsSourceId}
-                                onChange={e => setCreateState({...createState, ogsSourceId: e.target.value, ogsViewId: null })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select OGS Source</option>
-                                {(ogsSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
-            {createState.ogsSourceId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select OGS Version
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.ogsViewId}
-                                onChange={e => setCreateState({...createState, ogsViewId: e.target.value })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select OGS Version</option>
-                                {(ogsViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+                  setCreateState={ setCreateState }/>
+              )
+            }
 
-            {createState.ogsViewId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select Block Source
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.blockSourceId}
-                                onChange={e => setCreateState({...createState, blockSourceId: e.target.value, blockViewId: null })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select Block Source</option>
-                                {(blockSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
-            {createState.blockSourceId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select Block Version
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.blockViewId}
-                                onChange={e => setCreateState({...createState, blockViewId: e.target.value })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select Block Version</option>
-                                {(blockViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+            { createState.ogsViewId && (
+                <SourceAndViewSelectors
+                  label="Block Group"
 
-            {createState.blockViewId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select ORPTS Industrial Source
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.orptsIndustrialSourceId}
-                                onChange={e => setCreateState({...createState, orptsIndustrialSourceId: e.target.value, orptsIndustrialViewId: null })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select ORPTS Source</option>
-                                {(orptsSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
-            {createState.orptsIndustrialSourceId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select ORPTS Industrial Version
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.orptsIndustrialViewId}
-                                onChange={e => setCreateState({...createState, orptsIndustrialViewId: e.target.value })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select ORPTS Version</option>
-                                {(orptsIndustrialViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+                  sources={ blockSources }
+                  sourceKey="blockSourceId"
+                  sourceValue={ createState.blockSourceId }
 
-            {createState.orptsIndustrialViewId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select ORPTS Residential Source
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.orptsResidentialSourceId}
-                                onChange={e => setCreateState({...createState, orptsResidentialSourceId: e.target.value, orptsResidentialViewId: null })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select ORPTS Source</option>
-                                {(orptsSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
-            {createState.orptsResidentialSourceId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select ORPTS Residential Version
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.orptsResidentialViewId}
-                                onChange={e => setCreateState({...createState, orptsResidentialViewId: e.target.value })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select ORPTS Version</option>
-                                {(orptsResidentialViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+                  views={ blockViews }
+                  viewKey="blockViewId"
+                  viewValue={ createState.blockViewId }
 
-            {createState.orptsResidentialViewId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select ORPTS Commercial Source
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.orptsCommercialSourceId}
-                                onChange={e => setCreateState({...createState, orptsCommercialSourceId: e.target.value, orptsCommercialViewId: null })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select ORPTS Source</option>
-                                {(orptsSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
-            {createState.orptsCommercialSourceId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select ORPTS Commercial Version
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.orptsCommercialViewId}
-                                onChange={e => setCreateState({...createState, orptsCommercialViewId: e.target.value })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select ORPTS Version</option>
-                                {(orptsCommercialViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+                  setCreateState={ setCreateState }/>
+              )
+            }
 
-            {createState.orptsCommercialViewId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select HIFLD Source
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.hifldSourceId}
-                                onChange={e => setCreateState({...createState, hifldSourceId: e.target.value, hifldViewId: null })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select HIFLD Source</option>
-                                {(hifldSources || []).map(s => <option value={s.source_id} key={s.source_id}>{s.name}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
-            {createState.hifldSourceId && (
-                <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-                    <dt className="text-sm font-medium text-gray-500 py-5">
-                        Select HIFLD Version
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        <div className="pt-3 pr-8">
-                            <select
-                                value={createState.hifldViewId}
-                                onChange={e => setCreateState({...createState, hifldViewId: e.target.value })}
-                                className='px-2 py-4 w-full bg-white shadow'
-                            >
-                                <option value={null}>Select HIFLD Version</option>
-                                {(hifldViews || []).map(s => <option value={s.view_id} key={s.view_id}>{s.version || s.view_id}</option>)}
-                            </select>
-                        </div>
-                    </dd>
-                </div>
-            )}
+            { createState.blockViewId && (
+                <SourceAndViewSelectors
+                  label="ORPTS Industrial"
 
-            {canSubmit && (
+                  sources={ orptsSources }
+                  sourceKey="orptsIndustrialSourceId"
+                  sourceValue={ createState.orptsIndustrialSourceId }
+
+                  views={ orptsIndustrialViews }
+                  viewKey="orptsIndustrialViewId"
+                  viewValue={ createState.orptsIndustrialViewId }
+
+                  setCreateState={ setCreateState }/>
+              )
+            }
+
+            { createState.orptsIndustrialViewId && (
+                <SourceAndViewSelectors
+                  label="ORPTS Residential"
+
+                  sources={ orptsSources }
+                  sourceKey="orptsResidentialSourceId"
+                  sourceValue={ createState.orptsResidentialSourceId }
+
+                  views={ orptsResidentialViews }
+                  viewKey="orptsResidentialViewId"
+                  viewValue={ createState.orptsResidentialViewId }
+
+                  setCreateState={ setCreateState }/>
+              )
+            }
+
+            { createState.orptsResidentialViewId && (
+                <SourceAndViewSelectors
+                  label="ORPTS Commercial"
+
+                  sources={ orptsSources }
+                  sourceKey="orptsCommercialSourceId"
+                  sourceValue={ createState.orptsCommercialSourceId }
+
+                  views={ orptsCommercialViews }
+                  viewKey="orptsCommercialViewId"
+                  viewValue={ createState.orptsCommercialViewId }
+
+                  setCreateState={ setCreateState }/>
+              )
+            }
+
+            { createState.orptsCommercialViewId && (
+                <SourceAndViewSelectors
+                  label="HIFLD"
+
+                  sources={ hifldSources }
+                  sourceKey="hifldSourceId"
+                  sourceValue={ createState.hifldSourceId }
+
+                  views={ hifldViews }
+                  viewKey="hifldViewId"
+                  viewValue={ createState.hifldViewId }
+
+                  setCreateState={ setCreateState }/>
+              )
+            }
+
+            { canSubmit && (
                 <div className='w-full flex p-4'>
-                    <div className='flex-1' />
-                    <div>
-                        <button
-                          className="rounded-md p-2 border-2 border-blue-300 bg-blue-500 shadow hover:shadow-lg text-slate-100 hover:bg-blue-700"
-                          disabled={ !canSubmit }
-                          onClick={submit}
-                        >
-                            Process
-                        </button>
-                    </div>
+                  <div className='flex-1' />
+                  <div>
+                    <button onClick={ submit }
+                      className="rounded-md p-2 border-2 border-blue-300 bg-blue-500 shadow hover:shadow-lg text-slate-100 hover:bg-blue-700"
+                      disabled={ !canSubmit }
+                    >
+                      Process
+                    </button>
+                  </div>
                 </div>
-            )}
+              )
+            }
         </div>
     )
 }
 
+const SourceAndViewSelectors = props => {
+  const {
+    label,
+    sourceKey,
+    sourceValue,
+    viewKey,
+    viewValue,
+    setCreateState,
+    sources = [],
+    views = [],
+    children
+  } = props
+  return (
+    <>
+      <SourceSelector
+        label={ `Select ${ label } Source` }
+        sourceKey={ sourceKey }
+        viewKey={ viewKey }
+        value={ sourceValue }
+        setCreateState={ setCreateState }
+        sources={ sources }/>
 
+        { children }
+
+        { sourceValue && (
+            <ViewSelector
+              label={ `Select ${ label } Version` }
+              viewKey={ viewKey }
+              value={ viewValue }
+              setCreateState={ setCreateState }
+              views={ views }/>
+          )
+        }
+    </>
+  )
+}
+
+const SourceSelector = ({ label, sourceKey, viewKey, value, setCreateState, sources = [] }) => {
+
+  const onChange = React.useCallback(e => {
+    if (e.target.value === "no-value") {
+      setCreateState(prev => ({ ...prev, [sourceKey]: null, [viewKey]: null }));
+    }
+    else {
+      setCreateState(prev => ({ ...prev, [sourceKey]: e.target.value, [viewKey]: null }));
+    }
+  }, [setCreateState, sourceKey, viewKey]);
+
+  React.useEffect(() => {
+    if ((value === null) && (sources.length === 1)) {
+      setCreateState(prev => ({ ...prev, [sourceKey]: sources[0].source_id, [viewKey]: null }));
+    }
+  }, [value, setCreateState, sourceKey, viewKey, sources.length]);
+
+  return (
+    <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
+      <dt className="text-sm font-medium text-gray-500 py-5">
+        { label }
+      </dt>
+      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+        <div className="pt-3 pr-8">
+          <select
+              value={ value || "no-value" }
+              onChange={ onChange }
+              className='px-2 py-4 w-full bg-white shadow'
+          >
+            <option value="no-value">{ label }</option>
+            { sources.map(s =>
+                <option key={ s.source_id }
+                  value={ s.source_id }
+                >
+                  { s.name }
+                </option>
+              )
+            }
+          </select>
+        </div>
+      </dd>
+    </div>
+  )
+}
+const ViewSelector = ({ label, viewKey, value, setCreateState, views = [] }) => {
+
+  const onChange = React.useCallback(e => {
+    if (e.target.value === "no-value") {
+      setCreateState(prev => ({ ...prev, [viewKey]: null }));
+    }
+    else {
+      setCreateState(prev => ({ ...prev, [viewKey]: e.target.value }));
+    }
+  }, [setCreateState, viewKey]);
+
+  React.useEffect(() => {
+    if ((value === null) && (views.length === 1)) {
+      setCreateState(prev => ({ ...prev, [viewKey]: views[0].view_id }));
+    }
+  }, [value, setCreateState, viewKey, views.length]);
+
+  return (
+    <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
+      <dt className="text-sm font-medium text-gray-500 py-5">
+        { label }
+      </dt>
+      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+        <div className="pt-3 pr-8">
+          <select
+              value={ value || "no-value" }
+              onChange={ onChange }
+              className='px-2 py-4 w-full bg-white shadow'
+          >
+            <option value="no-value">{ label }</option>
+            { views.map(v =>
+                <option key={ v.view_id }
+                  value={ v.view_id }
+                >
+                  { v.version || `Version ${ v.view_id }` }
+                </option>
+              )
+            }
+          </select>
+        </div>
+      </dd>
+    </div>
+  )
+}
 
 
 const Parcels2Footprints = {

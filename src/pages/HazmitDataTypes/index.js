@@ -47,9 +47,13 @@ import npmrds from './npmrds'
 import geographies2elevations from "./geographies2elevations"
 import aggregate_buildings from "./aggregate_buildings"
 import aggregate_HIFLD from "./aggregate_HIFLD"
+import postgres_transfer from "./postgres_transfer"
+
 import acs from "./acs";
 
 const DataTypes = {
+  postgres_transfer,
+  //npmrds,
   acs,
   npmrds,
   tiger_full,
