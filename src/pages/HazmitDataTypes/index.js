@@ -47,12 +47,15 @@ import npmrds from './npmrds'
 import geographies2elevations from "./geographies2elevations"
 import aggregate_buildings from "./aggregate_buildings"
 import aggregate_HIFLD from "./aggregate_HIFLD"
+import acs from "./acs";
 
 const DataTypes = {
+  acs,
   npmrds,
   tiger_full,
   tiger_2017,
   tiger_2017_full,
+
 
   // // // hazmit types: swd
   ncei_storm_events,
