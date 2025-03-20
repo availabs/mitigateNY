@@ -47,17 +47,6 @@ export const CallServer = async ({rtPfx, baseUrl, source, activeViewId, newVersi
         years: [],
         geoids: [],
         variables: newVariables,
-        //     [
-        //     {
-        //         censusKeys: ["B01003_001E"], // Total Population
-        //         divisorKeys: null // No divisor needed
-        //     },
-        //     {
-        //         censusKeys: ["B19013_001E"], // Median Household Income
-        //         divisorKeys: ["B01003_001E"] // Divide by total population (if needed for per capita calculations)
-        //     },
-        // ],
-
     });
 
     const stgLyrDataRes = await fetch(url, {
@@ -78,7 +67,7 @@ export const CallServer = async ({rtPfx, baseUrl, source, activeViewId, newVersi
 
 export const RenderAddNewVariables = ({newVariable, setNewVariable, newVariables, setNewVariables, loading, serverCall}) => (
     <div className={'p-2 bg-blue-50 rounded-md'}>
-        <div className={'grid grid-cols-4'}>
+        <div className={'grid grid-cols-3'}>
             <input type={'text'}
                    key={'name'}
                    placeholder={'name'}
@@ -93,13 +82,6 @@ export const RenderAddNewVariables = ({newVariable, setNewVariable, newVariables
                    value={newVariable.censusKeys}
                    onChange={e => setNewVariable({...newVariable, censusKeys: e.target.value.split(',').map(k => k.trim())})}
             />
-            <input type={'text'}
-                   key={'divisorKeys'}
-                   placeholder={'divisorKeys'}
-                   className={'p-1 w-full'}
-                   value={newVariable.divisorKeys}
-                   onChange={e => setNewVariable({...newVariable, divisorKeys: e.target.value.split(',').map(k => k.trim())})}
-            />
             <button key={'btn'}
                     className={'px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-500 rounded-md'}
                     onClick={() => setNewVariables([...newVariables, newVariable])}
@@ -109,20 +91,17 @@ export const RenderAddNewVariables = ({newVariable, setNewVariable, newVariables
         { newVariables?.length ?
             <>
                 <div>New Variables</div>
-                <div className={'grid grid-cols-3'}>
+                <div className={'grid grid-cols-2'}>
                     <div>name</div>
                     <div>Census Keys</div>
-                    <div>Divisor Keys</div>
                     {
-                        newVariables.map(({name, censusKeys, divisorKeys}) => (
+                        newVariables.map(({name, censusKeys}) => (
                             <>
                                 <div>{name}</div>
                                 <div>{censusKeys?.join(', ')}</div>
-                                <div>{divisorKeys?.join(', ')}</div>
                             </>)
                         )
                     }
-                    <div></div>
                     <div></div>
                     <button key={'btn'}
                             disabled={loading || !newVariables.length}
@@ -165,16 +144,14 @@ const DataPage = (props) => {
             />
 
             <div>Existing Variables</div>
-            <div className={'grid grid-cols-3'}>
+            <div className={'grid grid-cols-2'}>
                 <div>name</div>
                 <div>Census Keys</div>
-                <div>Divisor Keys</div>
                 {
-                    variables.map(({name, censusKeys, divisorKeys}) => (
+                    variables.map(({name, censusKeys}) => (
                         <>
                             <div>{name}</div>
                             <div>{censusKeys?.join(', ')}</div>
-                            <div>{divisorKeys?.join(', ')}</div>
                         </>)
                     )
                 }
