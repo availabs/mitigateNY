@@ -8,6 +8,59 @@ import { SourceAttributes, ViewAttributes, getAttributes } from "~/pages/DataMan
 
 import { DAMA_HOST } from "~/config";
 
+const useGetSources = ({ falcorCache, pgEnv, categories = [], columns = [] }) => {
+  return React.useMemo(() => {
+    return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
+      .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
+      .filter(src => {
+        return categories.reduce((a, c) => {
+          return a && src?.categories?.reduce((aa, cc) => {
+            return cc.reduce((aaa, ccc) => aaa || (ccc === c), aa);
+          }, false);
+        }, true);
+      })
+      .filter(d => {
+        const mdColumns = get(d, ["metadata", "columns"], get(d, "metadata", []));
+        if (Array.isArray(mdColumns)) {
+          const mdColumnsMap = mdColumns.reduce((a, c) => {
+            a.add(c.name);
+            return a;
+          }, new Set());
+          return columns.reduce((a, c) => {
+            return a && mdColumnsMap.has(c);
+          }, true);
+        }
+        return false;
+      }).sort((a, b) => a.name.localeCompare(b.name));
+  }, [falcorCache, pgEnv, categories, columns]);
+}
+
+const useFetchSourceViews = ({ falcor, falcorCache, pgEnv, source_id }) => {
+  React.useEffect(() => {
+    if (!source_id) return;
+
+    falcor.get(["dama", pgEnv, "sources", "byId", source_id, "views", "length"]);
+
+    const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", source_id, "views", "length"], 0);
+
+    if (length) {
+      falcor.get([
+        "dama", pgEnv, "sources", "byId", source_id, "views", "byIndex",
+        { from: 0, to: length - 1 },
+        "attributes", Object.values(ViewAttributes)
+      ]);
+    }
+  }, [falcor, falcorCache, pgEnv, source_id]);
+}
+
+const useGetViews = ({ falcorCache, pgEnv, source_id }) => {
+  return React.useMemo(() => {
+    return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", source_id, "views", "byIndex"], {}))
+      .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
+      .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
+  }, [falcorCache, source_id, pgEnv]);
+}
+
 function Create ({
   source = {},
   user = {},
@@ -86,6 +139,33 @@ function Create ({
                     );
     }, [damaSourceName, createState]);
 
+    const missingName = React.useMemo(() => {
+      const {
+        parcelViewId = null,
+        footprintViewId = null,
+        elevationViewId = null,
+        ogsViewId = null,
+        blockViewId = null,
+
+        orptsIndustrialViewId = null,
+        orptsResidentialViewId = null,
+        orptsCommercialViewId = null,
+
+        hifldViewId = null
+      } = createState;
+      return Boolean(!damaSourceName &&
+                      parcelViewId &&
+                      footprintViewId &&
+                      elevationViewId &&
+                      ogsViewId &&
+                      blockViewId &&
+                      orptsIndustrialViewId &&
+                      orptsResidentialViewId &&
+                      orptsCommercialViewId &&
+                      hifldViewId
+                    );
+    }, [damaSourceName, createState]);
+
     const submit = React.useCallback(() => {
       const publishData = {
         source_id: createState.damaSourceId || null,
@@ -139,364 +219,74 @@ function Create ({
       }
     }, [falcor, falcorCache, pgEnv]);
 
-    const parcelSources = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .filter(d => d?.categories?.map(d => d[0])?.includes('Parcels'))
-        .filter(d => {
-          const columns = get(d, ["metadata", "columns"], get(d, "metadata", []));
-          if (Array.isArray(columns)) {
-            const [hasGeom, hasOgcFid] = columns.reduce((a, c) => {
-              return [
-                a[0] || c.name.includes("wkb_geometry"),
-                a[1] || c.name.includes("ogc_fid")
-              ]
-            }, [false, false]);
-            return hasGeom && hasOgcFid;
-          }
-          return false;
-        }).sort((a, b) => a.name.localeCompare(b.name));
-    }, [falcorCache, pgEnv]);
-
+    const parcelSources = useGetSources({ falcorCache,
+                                          pgEnv,
+                                          categories: ["Parcels"],
+                                          columns: ["wkb_geometry", "ogc_fid"]
+                                        });
 // console.log("parcelSources", parcelSources);
 
-    const footprintSources = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .filter(d => d?.categories?.map(d => d[0])?.includes('Buildings'))
-        .filter(d => {
-          const columns = get(d, ["metadata", "columns"], get(d, "metadata", []));
-          if (Array.isArray(columns)) {
-            const [hasGeom, hasOgcFid] = columns.reduce((a, c) => {
-              return [
-                a[0] || c.name.includes("wkb_geometry"),
-                a[1] || c.name.includes("ogc_fid")
-              ]
-            }, [false, false]);
-            return hasGeom && hasOgcFid;
-          }
-          return false;
-        }).sort((a, b) => a.name.localeCompare(b.name));
-    }, [falcorCache, pgEnv]);
-
+    const footprintSources = useGetSources({ falcorCache,
+                                          pgEnv,
+                                          categories: ["Buildings"],
+                                          columns: ["wkb_geometry", "ogc_fid"]
+                                        });
 // console.log("footprintSources", footprintSources);
 
-    const elevationSources = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .filter(d => d?.categories?.map(d => d[0])?.includes('Elevations'))
-        .filter(d => {
-          const columns = get(d, ["metadata", "columns"], get(d, "metadata", []));
-          if (Array.isArray(columns)) {
-            const [hasGeom, hasOgcFid] = columns.reduce((a, c) => {
-              return [
-                a[0] || c.name.includes("wkb_geometry"),
-                a[1] || c.name.includes("ogc_fid")
-              ]
-            }, [false, false]);
-            return hasGeom && hasOgcFid;
-          }
-          return false;
-        }).sort((a, b) => a.name.localeCompare(b.name));
-    }, [falcorCache, pgEnv]);
-
+    const elevationSources = useGetSources({ falcorCache,
+                                          pgEnv,
+                                          categories: ["Elevations"],
+                                          columns: ["wkb_geometry", "ogc_fid"]
+                                        });
 // console.log("elevationSources", elevationSources);
 
-    const ogsSources = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .filter(d => d?.categories?.map(d => d[0])?.includes('OGS'))
-        .filter(d => {
-          const columns = get(d, ["metadata", "columns"], get(d, "metadata", []));
-          if (Array.isArray(columns)) {
-            const [hasGeom, hasOgcFid] = columns.reduce((a, c) => {
-              return [
-                a[0] || c.name.includes("wkb_geometry"),
-                a[1] || c.name.includes("ogc_fid")
-              ]
-            }, [false, false]);
-            return hasGeom && hasOgcFid;
-          }
-          return false;
-        }).sort((a, b) => a.name.localeCompare(b.name));
-    }, [falcorCache, pgEnv]);
-
+    const ogsSources = useGetSources({ falcorCache,
+                                          pgEnv,
+                                          categories: ["OGS"],
+                                          columns: ["wkb_geometry", "ogc_fid"]
+                                        });
 // console.log("ogsSources", ogsSources);
 
-    const blockSources = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .filter(d => d?.categories?.map(d => d[0])?.includes('Geography'))
-        .filter(d => {
-          const columns = get(d, ["metadata", "columns"], get(d, "metadata", []));
-          if (Array.isArray(columns)) {
-            const [hasGeom, hasOgcFid] = columns.reduce((a, c) => {
-              return [
-                a[0] || c.name.includes("wkb_geometry"),
-                a[1] || c.name.includes("ogc_fid")
-              ]
-            }, [false, false]);
-            return hasGeom && hasOgcFid;
-          }
-          return false;
-        }).sort((a, b) => a.name.localeCompare(b.name));
-    }, [falcorCache, pgEnv]);
-
+    const blockSources = useGetSources({ falcorCache,
+                                          pgEnv,
+                                          categories: ["Geography"],
+                                          columns: ["wkb_geometry", "ogc_fid"]
+                                        });
 // console.log("blockSources", blockSources);
 
-    const orptsSources = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .filter(d => d?.categories?.map(d => d[0])?.includes('ORPTS'))
-        .filter(d => {
-          const columns = get(d, ["metadata", "columns"], get(d, "metadata", []));
-          if (Array.isArray(columns)) {
-            return columns.reduce((a, c) => {
-              return a || c.name.includes("ogc_fid");
-            }, false);
-          }
-          return false;
-        }).sort((a, b) => a.name.localeCompare(b.name));
-    }, [falcorCache, pgEnv]);
-
+    const orptsSources = useGetSources({ falcorCache,
+                                          pgEnv,
+                                          categories: ["ORPTS"],
+                                          columns: ["ogc_fid"]
+                                        });
 // console.log("orptsSources", orptsSources);
 
-    const hifldSources = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .filter(d => d?.categories?.map(d => d[0])?.includes('HIFLD'))
-        .filter(d => {
-          const columns = get(d, ["metadata", "columns"], get(d, "metadata", []));
-          if (Array.isArray(columns)) {
-            const [hasGeom, hasOgcFid] = columns.reduce((a, c) => {
-              return [
-                a[0] || c.name.includes("wkb_geometry"),
-                a[1] || c.name.includes("ogc_fid")
-              ]
-            }, [false, false]);
-            return hasGeom && hasOgcFid;
-          }
-          return false;
-        }).sort((a, b) => a.name.localeCompare(b.name));
-    }, [falcorCache, pgEnv]);
-
+    const hifldSources = useGetSources({ falcorCache,
+                                          pgEnv,
+                                          categories: ["HIFLD"],
+                                          columns: ["ogc_fid"]
+                                        });
 // console.log("hifldSources", hifldSources);
 
-    React.useEffect(() => {
-      const prclSrcId = createState.parcelSourceId;
+    useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.parcelSourceId });
+    useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.footprintSourceId });
+    useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.elevationSourceId });
+    useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.ogsSourceId });
+    useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.blockSourceId });
+    useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsIndustrialSourceId });
+    useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsResidentialSourceId });
+    useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsCommercialSourceId });
+    useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.hifldSourceId });
 
-      if (!prclSrcId) return;
-
-      falcor.get(["dama", pgEnv, "sources", "byId", prclSrcId, "views", "length"]);
-
-      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", prclSrcId, "views", "length"], 0);
-
-      if (length) {
-        falcor.get([
-          "dama", pgEnv, "sources", "byId", prclSrcId, "views", "byIndex",
-          { from: 0, to: length - 1 },
-          "attributes", Object.values(ViewAttributes)
-        ]);
-      }
-    }, [createState.parcelSourceId, falcor, falcorCache, pgEnv]);
-
-    React.useEffect(() => {
-      const fpSrcId = createState.footprintSourceId;
-
-      if (!fpSrcId) return;
-
-      falcor.get(["dama", pgEnv, "sources", "byId", fpSrcId, "views", "length"]);
-
-      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", fpSrcId, "views", "length"], 0);
-
-      if (length) {
-        falcor.get([
-          "dama", pgEnv, "sources", "byId", fpSrcId, "views", "byIndex",
-          { from: 0, to: length - 1 },
-          "attributes", Object.values(ViewAttributes)
-        ]);
-      }
-    }, [createState.footprintSourceId, falcor, falcorCache, pgEnv]);
-
-    React.useEffect(() => {
-      const eSrcId = createState.elevationSourceId;
-
-      if (!eSrcId) return;
-
-      falcor.get(["dama", pgEnv, "sources", "byId", eSrcId, "views", "length"]);
-
-      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", eSrcId, "views", "length"], 0);
-
-      if (length) {
-        falcor.get([
-          "dama", pgEnv, "sources", "byId", eSrcId, "views", "byIndex",
-          { from: 0, to: length - 1 },
-          "attributes", Object.values(ViewAttributes)
-        ]);
-      }
-    }, [createState.elevationSourceId, falcor, falcorCache, pgEnv]);
-
-    React.useEffect(() => {
-      const ogsSrcId = createState.ogsSourceId;
-
-      if (!ogsSrcId) return;
-
-      falcor.get(["dama", pgEnv, "sources", "byId", ogsSrcId, "views", "length"]);
-
-      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", ogsSrcId, "views", "length"], 0);
-
-      if (length) {
-        falcor.get([
-          "dama", pgEnv, "sources", "byId", ogsSrcId, "views", "byIndex",
-          { from: 0, to: length - 1 },
-          "attributes", Object.values(ViewAttributes)
-        ]);
-      }
-    }, [createState.ogsSourceId, falcor, falcorCache, pgEnv]);
-
-    React.useEffect(() => {
-      const bSrcId = createState.blockSourceId;
-
-      if (!bSrcId) return;
-
-      falcor.get(["dama", pgEnv, "sources", "byId", bSrcId, "views", "length"]);
-
-      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", bSrcId, "views", "length"], 0);
-
-      if (length) {
-        falcor.get([
-          "dama", pgEnv, "sources", "byId", bSrcId, "views", "byIndex",
-          { from: 0, to: length - 1 },
-          "attributes", Object.values(ViewAttributes)
-        ]);
-      }
-    }, [createState.blockSourceId, falcor, falcorCache, pgEnv]);
-
-    React.useEffect(() => {
-      const orptsSrcId = createState.orptsIndustrialSourceId;
-
-      if (!orptsSrcId) return;
-
-      falcor.get(["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"]);
-
-      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"], 0);
-
-      if (length) {
-        falcor.get([
-          "dama", pgEnv, "sources", "byId", orptsSrcId, "views", "byIndex",
-          { from: 0, to: length - 1 },
-          "attributes", Object.values(ViewAttributes)
-        ]);
-      }
-    }, [createState.orptsIndustrialSourceId, falcor, falcorCache, pgEnv]);
-
-    React.useEffect(() => {
-      const orptsSrcId = createState.orptsResidentialSourceId;
-
-      if (!orptsSrcId) return;
-
-      falcor.get(["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"]);
-
-      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"], 0);
-
-      if (length) {
-        falcor.get([
-          "dama", pgEnv, "sources", "byId", orptsSrcId, "views", "byIndex",
-          { from: 0, to: length - 1 },
-          "attributes", Object.values(ViewAttributes)
-        ]);
-      }
-    }, [createState.orptsResidentialSourceId, falcor, falcorCache, pgEnv]);
-
-    React.useEffect(() => {
-      const orptsSrcId = createState.orptsCommercialSourceId;
-
-      if (!orptsSrcId) return;
-
-      falcor.get(["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"]);
-
-      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", orptsSrcId, "views", "length"], 0);
-
-      if (length) {
-        falcor.get([
-          "dama", pgEnv, "sources", "byId", orptsSrcId, "views", "byIndex",
-          { from: 0, to: length - 1 },
-          "attributes", Object.values(ViewAttributes)
-        ]);
-      }
-    }, [createState.orptsCommercialSourceId, falcor, falcorCache, pgEnv]);
-
-    React.useEffect(() => {
-      const hifldSrcId = createState.hifldSourceId;
-
-      if (!hifldSrcId) return;
-
-      falcor.get(["dama", pgEnv, "sources", "byId", hifldSrcId, "views", "length"]);
-
-      const length = get(falcorCache, ["dama", pgEnv, "sources", "byId", hifldSrcId, "views", "length"], 0);
-
-      if (length) {
-        falcor.get([
-          "dama", pgEnv, "sources", "byId", hifldSrcId, "views", "byIndex",
-          { from: 0, to: length - 1 },
-          "attributes", Object.values(ViewAttributes)
-        ]);
-      }
-    }, [createState.hifldSourceId, falcor, falcorCache, pgEnv]);
-
-    const parcelViews = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.parcelSourceId, "views", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
-    }, [falcorCache, createState.parcelSourceId, pgEnv]);
-
-    const footprintViews = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.footprintSourceId, "views", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
-    }, [falcorCache, createState.footprintSourceId, pgEnv]);
-
-    const elevationViews = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.elevationSourceId, "views", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
-    }, [falcorCache, createState.elevationSourceId, pgEnv]);
-
-    const ogsViews = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.ogsSourceId, "views", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
-    }, [falcorCache, createState.ogsSourceId, pgEnv]);
-
-    const blockViews = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.blockSourceId, "views", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
-    }, [falcorCache, createState.blockSourceId, pgEnv]);
-
-    const orptsIndustrialViews = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.orptsIndustrialSourceId, "views", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
-    }, [falcorCache, createState.orptsIndustrialSourceId, pgEnv]);
-
-    const orptsResidentialViews = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.orptsResidentialSourceId, "views", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
-    }, [falcorCache, createState.orptsResidentialSourceId, pgEnv]);
-
-    const orptsCommercialViews = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.orptsCommercialSourceId, "views", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
-    }, [falcorCache, createState.orptsCommercialSourceId, pgEnv]);
-
-    const hifldViews = React.useMemo(() => {
-      return Object.values(get(falcorCache, ["dama", pgEnv, "sources", "byId", createState.hifldSourceId, "views", "byIndex"], {}))
-        .map(v => getAttributes(get(falcorCache, v.value, { "attributes": {} })["attributes"]))
-        .sort((a, b) => String(a.version || a.view_id).localeCompare(String(b.version || b.view_id)));
-    }, [falcorCache, createState.hifldSourceId, pgEnv]);
+    const parcelViews = useGetViews({ falcorCache, pgEnv, source_id: createState.parcelSourceId });
+    const footprintViews = useGetViews({ falcorCache, pgEnv, source_id: createState.footprintSourceId });
+    const elevationViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.elevationSourceId });
+    const ogsViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.ogsSourceId });
+    const blockViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.blockSourceId });
+    const orptsIndustrialViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsIndustrialSourceId });
+    const orptsResidentialViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsResidentialSourceId });
+    const orptsCommercialViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsCommercialSourceId });
+    const hifldViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.hifldSourceId });
 
     return (
         <div className="group mb-40">
@@ -649,6 +439,13 @@ function Create ({
               )
             }
 
+            { missingName && (
+                <div className="text-center pt-2 font-bold text-lg border-t mt-3">
+                  You must enter a name! (Scroll to the top of page)
+                </div>
+              )
+            }
+
             { canSubmit && (
                 <div className='w-full flex p-4'>
                   <div className='flex-1' />
@@ -722,8 +519,8 @@ const SourceSelector = ({ label, sourceKey, viewKey, value, setCreateState, sour
   }, [value, setCreateState, sourceKey, viewKey, sources.length]);
 
   return (
-    <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-      <dt className="text-sm font-medium text-gray-500 py-5">
+    <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-3">
+      <dt className="text-sm font-medium text-gray-500 pt-5 pb-3">
         { label }
       </dt>
       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
@@ -766,8 +563,8 @@ const ViewSelector = ({ label, viewKey, value, setCreateState, views = [] }) => 
   }, [value, setCreateState, viewKey, views.length]);
 
   return (
-    <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-2">
-      <dt className="text-sm font-medium text-gray-500 py-5">
+    <div className="flex-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t mt-3">
+      <dt className="text-sm font-medium text-gray-500 pt-5 pb-3">
         { label }
       </dt>
       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
