@@ -109,6 +109,9 @@ function Create ({
       ogsSourceId: null,
       ogsViewId: null,
 
+      elevationSourceId: null,
+      elevationViewId: null,
+
       blockSourceId: null,
       blockViewId: null,
 
@@ -142,6 +145,7 @@ function Create ({
       parcelViewId = null,
       footprintViewId = null,
       ogsViewId = null,
+      elevationViewId = null,
       blockViewId = null,
       hifldViewId = null,
       historicViewId = null,
@@ -157,6 +161,7 @@ function Create ({
                     footprintViewId &&
                     nriViewId &&
                     ogsViewId &&
+                    elevationViewId &&
                     blockViewId &&
                     orptsIndustrialViewId &&
                     orptsResidentialViewId &&
@@ -188,6 +193,7 @@ function Create ({
       parcel_view_id: createState.parcelViewId,
       nri_view_id: createState.nriViewId,
       ogs_view_id: createState.ogsViewId,
+      elevations_view_id: createState.elevationViewId,
       block_view_id: createState.blockViewId,
       orpts_industrial_view_id: createState.orptsIndustrialViewId,
       orpts_residential_view_id: createState.orptsResidentialViewId,
@@ -251,6 +257,13 @@ function Create ({
                                       });
 // console.log("ogsSources", ogsSources);
 
+  const elevationSources = useGetSources({ falcorCache,
+                                        pgEnv,
+                                        categories: ["Elevations"],
+                                        columns: ["ogc_fid", "wkb_geometry", "elevation"]
+                                      });
+// console.log("ogsSources", ogsSources);
+
   const blockSources = useGetSources({ falcorCache,
                                         pgEnv,
                                         categories: ["Geography"],
@@ -296,6 +309,7 @@ function Create ({
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.parcelSourceId });
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.footprintSourceId });
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.ogsSourceId });
+  useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.elevationSourceId });
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.blockSourceId });
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsIndustrialSourceId });
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsResidentialSourceId });
@@ -308,6 +322,7 @@ function Create ({
   const parcelViews = useGetViews({ falcorCache, pgEnv, source_id: createState.parcelSourceId });
   const footprintViews = useGetViews({ falcorCache, pgEnv, source_id: createState.footprintSourceId });
   const ogsViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.ogsSourceId });
+  const elevationViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.elevationSourceId });
   const blockViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.blockSourceId });
   const orptsIndustrialViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsIndustrialSourceId });
   const orptsResidentialViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.orptsResidentialSourceId });
@@ -350,6 +365,27 @@ function Create ({
       }
 
       { createState.footprintViewId && (
+          <SourceAndViewSelectors
+            label="Elevation"
+
+            sources={ elevationSources }
+            sourceKey="elevationSourceId"
+            sourceValue={ createState.elevationSourceId }
+
+            views={ elevationViews }
+            viewKey="elevationViewId"
+            viewValue={ createState.elevationViewId }
+
+            setCreateState={ setCreateState }
+          >
+            <div className="text-center pt-2 font-bold text-lg border-t mt-3">
+              This elevation source must have been derived from the selected Footprint source
+            </div>
+          </SourceAndViewSelectors>
+        )
+      }
+
+      { createState.elevationViewId && (
           <SourceAndViewSelectors
             label="OGS"
 
