@@ -94,6 +94,56 @@ const theme = {
         "2":   { className: 'col-span-6 md:col-span-12', iconSize: 100 },
     }
   },
+  sectionGroup: {
+    default: {
+      wrapper1: 'w-full h-full flex-1 flex flex-row pt-2', // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    content: {
+      wrapper1: 'w-full h-full flex-1 flex flex-row lg:pt-[118px] ', // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    darkSection: {
+      wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    lightCentered: {
+      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto border shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    clearCentered: {
+      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto flex-col relative h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    header: {
+      wrapper1: 'w-full h-full flex-1 flex flex-row', // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full  flex-col  relative min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'hidden',
+      sideNavContainer2: 'hidden',
+    }
+  },
   pageControls: {
     controlItem: 'pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400 flex items-center',
     select: 'bg-transparent border-none rounded-sm focus:ring-0 focus:border-0 pl-1',
