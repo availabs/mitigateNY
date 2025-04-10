@@ -300,12 +300,14 @@ const theme = {
     mainWrapperSimpleView: 'flex flex-col',
 
     subWrapper: 'w-full text-[#2D3E4C]',
-    subWrapperCompactView: 'flex flex-col flex-wrap rounded-[12px] divide-y',
+    subWrapperCompactView: 'flex flex-col flex-wrap rounded-[12px]',
     subWrapperSimpleView: 'grid',
 
     headerValueWrapper: 'w-full rounded-[12px] flex items-center gap-[8px] justify-center p-2',
     headerValueWrapperCompactView: 'rounded-none py-[12px]',
+    headerValueWrapperBorderBColor: 'border-[#C0D8E1]', // custom added border
     headerValueWrapperSimpleView: '',
+    linkColValue: 'flex-1 w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px] font-[Proxima Nova] font-bold text-[12px] leading-[100%] tracking-[0px] uppercase',
     justifyTextLeft: 'text-start justify-items-start',
     justifyTextRight: 'text-end justify-items-end',
     justifyTextCenter: 'text-center justify-items-center',

@@ -1,4 +1,4 @@
-import {getAccessor, getColAccessor, getMeta, setMeta} from "~/component_registry/FormsTable/utils.js";
+import {getAccessor, getColAccessor, getMeta, setMeta} from "~/component_registry/FormsTable/utils.jsx";
 import {dmsDataLoader} from "~/modules/dms/src"
 
 export async function getData({
