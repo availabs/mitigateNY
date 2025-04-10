@@ -346,10 +346,10 @@ const theme = {
     img7XL: "max-w-96 max-h-96",
     img8XL: "max-w-128 max-h-128",
 
-    header: 'flex-1 uppercase text-[#37576B]',
+    header: 'w-full flex-1 uppercase text-[#37576B]',
     headerCompactView: '',
     headerSimpleView: '',
-    value: 'text-[#2D3E4C]',
+    value: 'w-full text-[#2D3E4C]',
     valueCompactView: '',
     valueSimpleView: ''
   },
