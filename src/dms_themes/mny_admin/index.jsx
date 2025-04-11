@@ -165,40 +165,31 @@ const theme = {
   },
   sidenav: {
     fixed: ``,
-    logoWrapper: `bg-neutral-100 text-slate-800`,
-    sidenavWrapper: `hidden md:block bg-white w-full h-full z-20 pr-4`,
-    menuItemWrapper: 'flex flex-col',
-    menuIconSide: `group w-6 mr-2 text-[#6D96AE]`,
-    menuIconSideActive: `group w-6 mr-2 text-[#6D96AE]`,
-    
-    itemsWrapper: `border-slate-200`,
-    navItemContent: `transition-transform duration-300 ease-in-out flex-1`,
-    navItemContents: [
-      `text-[16px] font-['Oswald'] font-[500] leading-[16px]  text-[#2D3E4C] pl-4 py-3`, 
-      `text-[16px] font-['Proxima_Nova'] font-[600] leading-[19.2px] text-[#37576B] pl-4 py-3`,
-      `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
-      `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
-      `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`
-    ],
-    navitemSide: `
-        group  flex flex-col
-        border-white 
-        focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
-        transition-all cursor-pointer 
-     `,
-    navitemSideActive: `
-        group  flex flex-col
-        focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
-        transition-all cursor-pointer border-l-2 border-slate-600 
-
-      `,
-    indicatorIcon: "ArrowRight",
-    indicatorIconOpen: "ArrowDown",
-    subMenuWrapper: `pl-2 w-full`,
-    subMenuOuterWrappers: ['pl-4'],
-    subMenuWrappers: ['w-full bg-[#F3F8F9] rounded-[12px] py-[12px]','w-full bg-[#E0EBF0]'],
-    subMenuParentWrapper: `flex flex-col w-full`,
-    subMenuWrapperTop: '',
+   "logoWrapper": "full p-2 bg-neutral-100 text-slate-800",
+   "topNavWrapper": "flex flex-row md:flex-col p-2", //used in layout
+   "sidenavWrapper": "hidden md:block border-r w-full h-full z-20",
+   "menuItemWrapper": "flex flex-col hover:bg-blue-50",
+   "menuIconSide": "group px-2 mr-2 text-blue-500  group-hover:text-blue-800",
+   "menuIconSideActive": "group px-2 w-6 mr-2 text-blue-500  group-hover:text-blue-800",
+   "itemsWrapper": "border-slate-200 pt-5  ",
+   "navItemContent": "transition-transform duration-300 ease-in-out flex-1",
+   "navItemContents": ['text-[14px] font-light text-slate-700 px-4 py-2'],
+   "navitemSide": `
+    group  flex flex-col
+    group flex 
+    focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
+    transition-all cursor-pointer border-l-2 border-white`,
+   "navitemSideActive": `
+    group  flex flex-col   
+      focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
+    transition-all cursor-pointer border-l-2 border-blue-500`,
+   "indicatorIcon": "ArrowRight",
+   "indicatorIconOpen": "ArrowDown",
+   "subMenuWrappers": ['w-full bg-[#F3F8F9] rounded-[12px]','w-full bg-[#E0EBF0]'],
+   "subMenuOuterWrappers": ['pl-4'],
+   "subMenuWrapper": "pl-2 w-full",
+   "subMenuParentWrapper": "flex flex-col w-full",
+   "bottomMenuWrapper": ""
   },
   topnav: {
       fixed: 'mt-8',
@@ -273,7 +264,57 @@ const theme = {
     wrapper: 'w-full flex flex-col gap-[4px] text-[#2D3E4C] text-xs',
     label: 'font-semibold text-[12px] leading-[14.62px] border-t pt-[14px]',
     link: 'font-normal leading-[14.62px] text-[12px] underline'
-  }
+  },
+  sectionGroup: {
+    default: {
+      wrapper1: 'w-full h-full flex-1 flex flex-row p-2', // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    content: {
+      wrapper1: 'w-full h-full flex-1 flex flex-row p-2 ', // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    darkSection: {
+      wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    lightCentered: {
+      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto border shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    clearCentered: {
+      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto flex-col relative h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    header: {
+      wrapper1: 'w-full h-full flex-1 flex flex-row', // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full  flex-col  relative min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'hidden',
+      sideNavContainer2: 'hidden',
+    }
+  },
 }
 
 //theme.navOptions.logo = <Link to='/' className='h-12 flex px-4 items-center'><div className='rounded-full h-10 bg-blue-500 border border-slate-50' /></Link>
