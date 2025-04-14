@@ -11,7 +11,11 @@ import {
 	Row,
 	OpenPanelFilledTop,
 	BorderNone,
-	Development
+	Development,
+	ChevronRight,
+	ChevronDown,
+	ChevronLeft,
+	ChevronUp
 } from '@carbon/icons-react';
 
 
@@ -50,6 +54,15 @@ const RowWrap = (props) => (
 	<Row {...props} />
 )
 
+const ArrowRight = (props) => (
+	<ChevronRight {...props} />
+)
+
+const ArrowDown = (props) => (
+	<ChevronDown {...props} />
+)
+
+
 const Padding = (props) => <OpenPanelFilledTop {...props} />
 
 const Border = (props) => <BorderNone {...props} />
@@ -66,6 +79,8 @@ export const Icons = {
 	Row: RowWrap,
 	Padding,
 	Border,
-	Grid
+	Grid,
+	ArrowRight,
+	ArrowDown
 }
 

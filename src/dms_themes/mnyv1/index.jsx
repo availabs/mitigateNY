@@ -67,7 +67,7 @@ const theme = {
     childWrapper: 'h-full flex-1',
     topnavContainer2:`fixed top-0 z-20 max-w-[1440px] left-50% -translate-50% w-full md:px-4 md:pt-[32px] xl:px-[64px] pointer-events-none`,
     sidenavContainer1: 'pr-2  hidden lg:block min-w-[302px] max-w-[302px] pt-[88px]',
-    sidenavContainer2: 'hidden lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden'
+    sidenavContainer2: 'hidden scrollbar-sm lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden'
   },
   page: {
     container: `bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`,//`bg-gradient-to-b from-[#F4F4F4] to-[#F4F4F4] bg-[url('/themes/mny/topolines.png')] `,
@@ -113,15 +113,15 @@ const theme = {
     },
     darkSection: {
       wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      wrapper2: 'flex flex-1 w-full max-w-[1312px]  mx-auto flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
       iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
       icon: 'text-slate-400 hover:text-blue-500',
       sideNavContainer1: 'w-64 hidden xl:block',
       sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
     },
     lightCentered: {
-      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto border shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px] `, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1312px]  mx-auto borde shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
       iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
       icon: 'text-slate-400 hover:text-blue-500',
       sideNavContainer1: 'w-64 hidden xl:block',
@@ -129,7 +129,7 @@ const theme = {
     },
     clearCentered: {
       wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto flex-col relative h-full min-h-[200px]' , // content wrapepr
+      wrapper2: 'flex flex-1 w-full max-w-[1342px]  mx-auto flex-col relative h-full min-h-[200px]' , // content wrapepr
       iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
       icon: 'text-slate-400 hover:text-blue-500',
       sideNavContainer1: 'w-64 hidden xl:block',
@@ -162,7 +162,7 @@ const theme = {
     menuIconSide: `group w-6 mr-2 text-blue-500`,
     menuIconSideActive: `group w-6 mr-2 text-blue-500`,
     
-    itemsWrapper: `border-slate-200`,
+    itemsWrapper: `border-slate-200 pt-6 pl-4`,
     navItemContent: `transition-transform duration-300 ease-in-out flex-1`,
     navItemContents: [
       `text-[16px] font-['Oswald'] font-[500] leading-[16px]  text-[#2D3E4C] pl-4 py-3`, 
@@ -183,6 +183,7 @@ const theme = {
         transition-all cursor-pointer border-l-2 border-slate-600 
 
       `,
+    indicatorIconWrapper: 'text-[#37576B] size-4',
     indicatorIcon: "ArrowRight",
     indicatorIconOpen: "ArrowDown",
     subMenuWrapper: `pl-2 w-full`,
@@ -197,8 +198,9 @@ const theme = {
       topnavContent: `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
       topnavMenu: `hidden  md:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
       mobileButton:`md:hidden bg-slate-100 inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
-      indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
-      indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
+      indicatorIcon: 'ArrowDown',
+      indicatorIconOpen: 'ArrowDown',
+      indicatorIconWrapper: 'size-3',
       menuItemWrapper1: [
         ' ',
         ''
