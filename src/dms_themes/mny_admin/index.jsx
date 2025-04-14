@@ -185,6 +185,7 @@ const theme = {
     transition-all cursor-pointer border-l-2 border-blue-500`,
    "indicatorIcon": "ArrowRight",
    "indicatorIconOpen": "ArrowDown",
+   "indicatorIconWrapper" : "size-4 text-[#37576B]",
    "subMenuWrappers": ['w-full bg-[#F3F8F9] rounded-[12px]','w-full bg-[#E0EBF0]'],
    "subMenuOuterWrappers": ['pl-4'],
    "subMenuWrapper": "pl-2 w-full",
