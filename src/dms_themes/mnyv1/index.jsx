@@ -157,15 +157,18 @@ const theme = {
   sidenav: {
     fixed: ``,
     logoWrapper: `bg-neutral-100 text-slate-800`,
-    sidenavWrapper: `hidden md:block bg-white w-full h-full z-20 pr-4`,
-    menuItemWrapper: 'flex flex-col',
+    sidenavWrapper: `hidden md:block bg-white w-full h-full z-20 pr-5`,
+    menuItemWrapper: [
+      'flex flex-col pl-3',
+      'flex flex-col'
+    ],
     menuIconSide: `group w-6 mr-2 text-blue-500`,
     menuIconSideActive: `group w-6 mr-2 text-blue-500`,
     
-    itemsWrapper: `border-slate-200 pt-6 pl-4`,
+    itemsWrapper: `border-slate-200 py-6`,
     navItemContent: `transition-transform duration-300 ease-in-out flex-1`,
     navItemContents: [
-      `text-[16px] font-['Oswald'] font-[500] leading-[16px]  text-[#2D3E4C] pl-4 py-3`, 
+      `text-[16px] font-['Oswald'] font-[500] leading-[16px]  text-[#2D3E4C] pl-4 py-3 uppercase`, 
       `text-[16px] font-['Proxima_Nova'] font-[600] leading-[19.2px] text-[#37576B] pl-4 py-3`,
       `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
       `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
@@ -376,7 +379,7 @@ const theme = {
   },
   icon: {
     icon: 'text-slate-400 hover:text-blue-500 size-4'
-  },
+  }
 }
 
 //theme.navOptions.logo = <Link to='/' className='h-12 flex px-4 items-center'><div className='rounded-full h-10 bg-blue-500 border border-slate-50' /></Link>
