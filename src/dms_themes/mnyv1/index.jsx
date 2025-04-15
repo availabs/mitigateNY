@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Icons } from './icons'
 
 const MNYLogo = ({color='#5d87a1', width=175,height=50}) => (
   <svg width={`${width}px`} height={`${height}px`}>
@@ -27,6 +28,7 @@ const Logo = ({sideNav}) => {
 }
 
 const theme = {
+  Icons,
   navOptions: {
     logo: <Logo />,//'',//<Link to='/' className='h-12 flex px-4 items-center'><div className='rounded-full h-8 w-8 bg-blue-500 border-2 border-blue-300 hover:bg-blue-600' /></Link>, //<Link to='/' className='h-12 flex px-4 items-center'>LOGO</Link>,
     sideNav: {
@@ -63,23 +65,24 @@ const theme = {
     wrapper2: 'flex-1 flex items-start flex-col items-stretch max-w-full',
     wrapper3: 'flex flex-1 px-4 xl:px-[64px]',
     childWrapper: 'h-full flex-1',
-    topnavContainer2:`fixed top-0 z-20 max-w-[1440px] w-full px-4 pt-[32px] xl:px-[64px] pointer-events-none`,
+    topnavContainer2:`fixed top-0 z-20 max-w-[1440px] left-50% -translate-50% w-full md:px-4 md:pt-[32px] xl:px-[64px] pointer-events-none`,
     sidenavContainer1: 'pr-2  hidden lg:block min-w-[302px] max-w-[302px] pt-[88px]',
-    sidenavContainer2: 'hidden lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden'
+    sidenavContainer2: 'hidden scrollbar-sm lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden'
   },
   page: {
     container: `bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`,//`bg-gradient-to-b from-[#F4F4F4] to-[#F4F4F4] bg-[url('/themes/mny/topolines.png')] `,
     wrapper1: 'w-full h-full flex-1 flex flex-col ', // first div inside Layout
     wrapper2: 'w-full h-full flex-1 flex flex-row lg:pt-[118px] ', // inside page header, wraps sidebar
     wrapper3: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]' , // content wrapepr
-    iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+    iconWrapper : 'z-10 absolute right-[10px] top-[5px]',
     icon: 'text-slate-400 hover:text-blue-500'
   },
 
   sectionArray: {
     container: 'w-full grid grid-cols-6 md:grid-cols-12 ',
+    gridSize: 12,
     layouts: {
-        centered: 'max-w-[1020px] mx-auto md:gap-[12px] px-0 lg:px-[56px]',
+        centered: 'max-w-[1020px] mx-auto  px-0 lg:px-[56px]',
         fullwidth: ''
     },
     sizes: {
@@ -89,6 +92,56 @@ const theme = {
         "2/3": { className: 'col-span-6 md:col-span-8', iconSize: 66},
         "1": { className: 'col-span-6 md:col-span-9', iconSize: 75 },
         "2":   { className: 'col-span-6 md:col-span-12', iconSize: 100 },
+    }
+  },
+  sectionGroup: {
+    default: {
+      wrapper1: 'w-full h-full flex-1 flex flex-row pt-2', // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    content: {
+      wrapper1: 'w-full h-full flex-1 flex flex-row lg:pt-[118px] ', // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    darkSection: {
+      wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1312px]  mx-auto flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    lightCentered: {
+      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px] `, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1312px]  mx-auto borde shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    clearCentered: {
+      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full max-w-[1342px]  mx-auto flex-col relative h-full min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'w-64 hidden xl:block',
+      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    },
+    header: {
+      wrapper1: 'w-full h-full flex-1 flex flex-row', // inside page header, wraps sidebar
+      wrapper2: 'flex flex-1 w-full  flex-col  relative min-h-[200px]' , // content wrapepr
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      icon: 'text-slate-400 hover:text-blue-500',
+      sideNavContainer1: 'hidden',
+      sideNavContainer2: 'hidden',
     }
   },
   pageControls: {
@@ -101,66 +154,6 @@ const theme = {
     2: '',
     3: ''
   },
-  
-  dataCard: {
-    columnControlWrapper: 'grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-0.5',
-    columnControlHeaderWrapper: `px-1 font-semibold border bg-gray-50 text-gray-500`,
-
-    mainWrapperCompactView: 'grid',
-    mainWrapperSimpleView: 'flex flex-col',
-
-    subWrapper: 'w-full text-[#2D3E4C]',
-    subWrapperCompactView: 'flex flex-col flex-wrap rounded-[12px] divide-y',
-    subWrapperSimpleView: 'grid',
-
-    headerValueWrapper: 'w-full rounded-[12px] flex items-center gap-[8px] justify-center p-2',
-    headerValueWrapperCompactView: 'rounded-none py-[12px]',
-    headerValueWrapperSimpleView: '',
-    justifyTextLeft: 'text-start justify-items-start',
-    justifyTextRight: 'text-end justify-items-end',
-    justifyTextCenter: 'text-center justify-items-center',
-
-    textXS: 'font-medium font-[Oswald] text-[12px] leading-[140%]',
-    textXSReg: 'font-normal font-[Proxima Nova] text-[12px] leading-[100%] uppercase',
-    textSM: 'font-medium font-[Oswald] text-[14px] leading-[100%] uppercase',
-    textSMReg: 'font-normal font-[Proxima Nova] text-[14px] leading-[140%]',
-    textSMBold: 'font-normal font-[Proxima Nova] text-[14px] leading-[140%]',
-    textSMSemiBold: 'font-semibold font-[Proxima Nova] text-[14px] leading-[140%]',
-    textMD: 'font-medium font-[Oswald] text-[16px] leading-[100%] uppercase',
-    textMDReg: 'font-normal font-[Proxima Nova] text-[16px] leading-[140%]',
-    textMDBold: 'font-bold font-[Proxima Nova] text-[16px] leading-[140%]',
-    textMDSemiBold: 'font-semibold font-[Proxima Nova] text-[16px] leading-[140%]',
-    textXL: 'font-medium font-[Oswald] text-[20px] leading-[100%] uppercase',
-    textXLSemiBold: 'font-semibold font-[Proxima Nova] text-[20px] leading-[120%]',
-    text2XL: 'font-medium font-[Oswald] text-[24px] leading-[100%] uppercase',
-    text2XLReg: 'font-regular font-[Oswald] text-[24px] leading-[120%] uppercase',
-    text3XL: 'font-medium font-[Oswald] text-[30px] leading-[100%] uppercase tracking-[-0.05em]',
-    text3XLReg: 'font-normal font-[Oswald] text-[30px] leading-[120%] uppercase',
-    text4XL: 'font-medium font-[Oswald] text-[36px] leading-[100%] uppercase tracking-[-0.05em]',
-    text5XL: 'font-medium font-[Oswald] text-[48px] leading-[100%] uppercase tracking-[-0.05em]',
-    text6XL: 'font-medium font-[Oswald] text-[60px] leading-[100%] uppercase',
-    text7XL: 'font-medium font-[Oswald] text-[72px] leading-[100%] uppercase tracking-normal',
-    text8XL: 'font-medium font-[Oswald] text-[96px] leading-[95%] uppercase tracking-normal ',
-
-    imgXS: "max-w-16 max-h-16",
-    imgSM: "max-w-24 max-h-24",
-    imgMD: "max-w-32 max-h-32",
-    imgXL: "max-w-40 max-h-40",
-    img2XL: "max-w-48 max-h-48",
-    img3XL: "max-w-56 max-h-56",
-    img4XL: "max-w-64 max-h-64",
-    img5XL: "max-w-72 max-h-72",
-    img6XL: "max-w-80 max-h-80",
-    img7XL: "max-w-96 max-h-96",
-    img8XL: "max-w-128 max-h-128",
-
-    header: 'flex-1 uppercase text-[#37576B]',
-    headerCompactView: '',
-    headerSimpleView: '',
-    value: 'text-[#2D3E4C]',
-    valueCompactView: '',
-    valueSimpleView: ''
-  },
   sidenav: {
     fixed: ``,
     logoWrapper: `bg-neutral-100 text-slate-800`,
@@ -169,7 +162,7 @@ const theme = {
     menuIconSide: `group w-6 mr-2 text-blue-500`,
     menuIconSideActive: `group w-6 mr-2 text-blue-500`,
     
-    itemsWrapper: `border-slate-200`,
+    itemsWrapper: `border-slate-200 pt-6 pl-4`,
     navItemContent: `transition-transform duration-300 ease-in-out flex-1`,
     navItemContents: [
       `text-[16px] font-['Oswald'] font-[500] leading-[16px]  text-[#2D3E4C] pl-4 py-3`, 
@@ -190,6 +183,7 @@ const theme = {
         transition-all cursor-pointer border-l-2 border-slate-600 
 
       `,
+    indicatorIconWrapper: 'text-[#37576B] size-4',
     indicatorIcon: "ArrowRight",
     indicatorIconOpen: "ArrowDown",
     subMenuWrapper: `pl-2 w-full`,
@@ -200,12 +194,13 @@ const theme = {
   },
   topnav: {
       fixed: 'mt-8',
-      topnavWrapper: `px-[24px] py-[16px] w-full bg-white h-20 flex items-center rounded-lg shadow pointer-events-auto`,
+      topnavWrapper: `px-[24px] py-[16px] w-full bg-white h-20 flex items-center md:rounded-lg shadow pointer-events-auto`,
       topnavContent: `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
       topnavMenu: `hidden  md:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
       mobileButton:`md:hidden bg-slate-100 inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
-      indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
-      indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
+      indicatorIcon: 'ArrowDown',
+      indicatorIconOpen: 'ArrowDown',
+      indicatorIconWrapper: 'size-3',
       menuItemWrapper1: [
         ' ',
         ''
@@ -298,6 +293,80 @@ const theme = {
     labelWrapperDisabled: 'px-[12px] pt-[9px] pb-[7px] bg-[#F3F8F9] group rounded-[1000px]',
     label: 'text-[12px] text-[#37576B] font-bold leading-[14.62px]',
     labelDisabled: 'text-[12px] text-[#C5D7E0] font-bold leading-[14.62px]',
+  },
+  dataCard: {
+    columnControlWrapper: 'grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-0.5',
+    columnControlHeaderWrapper: `px-1 font-semibold border bg-gray-50 text-gray-500`,
+
+    mainWrapperCompactView: 'grid',
+    mainWrapperSimpleView: 'flex flex-col',
+
+    subWrapper: 'w-full text-[#2D3E4C]',
+    subWrapperCompactView: 'flex flex-col flex-wrap rounded-[12px]',
+    subWrapperSimpleView: 'grid',
+
+    headerValueWrapper: 'w-full rounded-[12px] flex items-center gap-[8px] justify-center p-2',
+    headerValueWrapperCompactView: 'rounded-none py-[12px]',
+    headerValueWrapperBorderBColor: 'border-[#C0D8E1]', // custom added border
+    headerValueWrapperSimpleView: '',
+    linkColValue: 'flex-1 w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px] font-[Proxima Nova] font-bold text-[12px] leading-[100%] tracking-[0px] uppercase',
+    justifyTextLeft: 'text-start justify-items-start',
+    justifyTextRight: 'text-end justify-items-end',
+    justifyTextCenter: 'text-center justify-items-center',
+
+    textXS: 'font-medium font-[Oswald] text-[12px] leading-[140%]',
+    textXSReg: 'font-normal font-[Proxima Nova] text-[12px] leading-[100%] uppercase',
+    textSM: 'font-medium font-[Oswald] text-[14px] leading-[100%] uppercase',
+    textSMReg: 'font-normal font-[Proxima Nova] text-[14px] leading-[140%]',
+    textSMBold: 'font-normal font-[Proxima Nova] text-[14px] leading-[140%]',
+    textSMSemiBold: 'font-semibold font-[Proxima Nova] text-[14px] leading-[140%]',
+    textMD: 'font-medium font-[Oswald] text-[16px] leading-[100%] uppercase',
+    textMDReg: 'font-normal font-[Proxima Nova] text-[16px] leading-[140%]',
+    textMDBold: 'font-bold font-[Proxima Nova] text-[16px] leading-[140%]',
+    textMDSemiBold: 'font-semibold font-[Proxima Nova] text-[16px] leading-[140%]',
+    textXL: 'font-medium font-[Oswald] text-[20px] leading-[100%] uppercase',
+    textXLSemiBold: 'font-semibold font-[Proxima Nova] text-[20px] leading-[120%]',
+    text2XL: 'font-medium font-[Oswald] text-[24px] leading-[100%] uppercase',
+    text2XLReg: 'font-regular font-[Oswald] text-[24px] leading-[120%] uppercase',
+    text3XL: 'font-medium font-[Oswald] text-[30px] leading-[100%] uppercase tracking-[-0.05em]',
+    text3XLReg: 'font-normal font-[Oswald] text-[30px] leading-[120%] uppercase',
+    text4XL: 'font-medium font-[Oswald] text-[36px] leading-[100%] uppercase tracking-[-0.05em]',
+    text5XL: 'font-medium font-[Oswald] text-[48px] leading-[100%] uppercase tracking-[-0.05em]',
+    text6XL: 'font-medium font-[Oswald] text-[60px] leading-[100%] uppercase',
+    text7XL: 'font-medium font-[Oswald] text-[72px] leading-[100%] uppercase tracking-normal',
+    text8XL: 'font-medium font-[Oswald] text-[96px] leading-[95%] uppercase tracking-normal ',
+
+    imgXS: "max-w-16 max-h-16",
+    imgSM: "max-w-24 max-h-24",
+    imgMD: "max-w-32 max-h-32",
+    imgXL: "max-w-40 max-h-40",
+    img2XL: "max-w-48 max-h-48",
+    img3XL: "max-w-56 max-h-56",
+    img4XL: "max-w-64 max-h-64",
+    img5XL: "max-w-72 max-h-72",
+    img6XL: "max-w-80 max-h-80",
+    img7XL: "max-w-96 max-h-96",
+    img8XL: "max-w-128 max-h-128",
+
+    header: 'w-full flex-1 uppercase text-[#37576B]',
+    headerCompactView: '',
+    headerSimpleView: '',
+    value: 'w-full text-[#2D3E4C]',
+    valueCompactView: '',
+    valueSimpleView: ''
+  },
+  filters: {
+    filtersWrapper: 'w-full py-6 flex flex-col rounded-md',
+    filterLabel: 'py-0.5 font-[Proxima Nova] font-regular text-[16px] text-[#2D3E4C] leading-[140%] tracking-[0px] capitalize',
+    loadingText: 'pl-0.5 font-thin text-[#2D3E4C]',
+    filterSettingsWrapper: 'flex flex-col w-full',
+    input: 'w-full max-h-[150px] flex rounded-[12px] px-[16px] py-[12px] gap-[8px] text-[16px] text-[#37576B] border leading-[140%] tracking-[0px] bg-white',
+    settingPillsWrapper: 'flex flex-row flex-wrap gap-1',
+    settingPill: 'px-1 py-0.5 bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 rounded-md',
+    settingLabel: 'text-gray-900 font-regular min-w-fit'
+  },
+  graph: {
+    text: 'text-[#2D3E4C] font-[Oswald] font-semibold text-[12px] leading-[100%] tracking-[0px] uppercase'
   }
 }
 

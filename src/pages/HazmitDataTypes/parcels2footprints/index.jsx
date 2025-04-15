@@ -106,6 +106,8 @@ function Create ({
       footprintSourceId: null,
       footprintViewId: null,
 
+      saveGeometriesAsPoints: false,
+
       ogsSourceId: null,
       ogsViewId: null,
 
@@ -184,12 +186,13 @@ function Create ({
     const publishData = {
       source_id: createState.damaSourceId || null,
       source_values: {
-        name: createState.damaSourceName,
+        name: damaSourceName,
         type: createState.sourceType || 'gis_dataset',
         categories: [["Enhanced Footprints"], ["BILD"], ["Cenrep"]]
       },
       user_id: user.id,
       footprint_view_id: createState.footprintViewId,
+      save_geometries_as_points: createState.saveGeometriesAsPoints,
       parcel_view_id: createState.parcelViewId,
       nri_view_id: createState.nriViewId,
       ogs_view_id: createState.ogsViewId,
@@ -215,12 +218,7 @@ function Create ({
         console.log("RES:", jsonRes);
         // navigate(`${baseUrl}/source/${jsonRes.source_id}/uploads/${jsonRes.etl_context_id}`);
       })
-  }, [createState, user, pgEnv]);
-
-// update source name
-  React.useEffect(() => {
-      setCreateState({ ...createState, damaSourceName });
-  }, [damaSourceName]);
+  }, [createState, damaSourceName, user, pgEnv]);
 
   React.useEffect(() => {
     falcor.get(["dama", pgEnv, "sources", "length"]);
@@ -235,6 +233,10 @@ function Create ({
       ])
     }
   }, [falcor, falcorCache, pgEnv]);
+
+  const setSaveGeometriesAsPoints = React.useCallback(bool => {
+    setCreateState(state => ({ ...state, saveGeometriesAsPoints: bool }));
+  }, []);
 
   const parcelSources = useGetSources({ falcorCache,
                                         pgEnv,
@@ -361,6 +363,14 @@ function Create ({
             viewValue={ createState.footprintViewId }
 
             setCreateState={ setCreateState }/>
+        )
+      }
+
+      { createState.footprintViewId && (
+          <BooleanInput
+            label="Save Geometries as Points"
+            value={ createState.saveGeometriesAsPoints }
+            onChange={ setSaveGeometriesAsPoints }/>
         )
       }
 
@@ -680,6 +690,45 @@ const ViewSelector = ({ label, viewKey, value, setCreateState, views = [] }) => 
   )
 }
 
+const BooleanInput = ({ value, onChange, label }) => {
+  const doHandleChange = React.useCallback(e => {
+    e.stopPropagation();
+    onChange(!value);
+  }, [onChange, value]);
+  return (
+    <div className="flex-1 sm:grid sm:grid-cols-12 sm:gap-4 sm:px-6 border-t mt-3">
+      <dt className="text-sm font-medium text-gray-500 pt-5 pb-3 col-span-4">
+        { label }
+      </dt>
+      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-7">
+        <div className="pt-3 pr-8">
+          <div className="pt-3">
+            <div className="w-full relative cursor-pointer"
+              onClick={ doHandleChange }
+            >
+              <div className="rounded-full h-4 opacity-25"
+                style={ {
+                  backgroundColor: Boolean(value) ? "green" : "red",
+                  transition: "background-color 500ms"
+                } }
+                />
+              <div className="absolute h-5 w-5 z-50 rounded-full"
+                style={ {
+                  top: 0, left: Boolean(value) ? "100%" : "0%",
+                  transition: "left 500ms, background-color 500ms",
+                  transform: "translate(-50%, -0.125rem)",
+                  backgroundColor: Boolean(value) ? "green" : "red"
+                } }/>
+            </div>
+          </div>
+        </div>
+      </dd>
+      <dd className="pt-3 text-2xl text-gray-900 ssm:col-span-1 font-bold flex items-center">
+        { value ? "Yes" : "No" }
+      </dd>
+    </div>
+  )
+}
 
 const Parcels2Footprints = {
 
