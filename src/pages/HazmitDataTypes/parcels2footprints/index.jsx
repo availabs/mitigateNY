@@ -193,7 +193,7 @@ function Create ({
       parcel_view_id: createState.parcelViewId,
       nri_view_id: createState.nriViewId,
       ogs_view_id: createState.ogsViewId,
-      elevations_view_id: createState.elevationViewId,
+      elevation_view_id: createState.elevationViewId,
       block_view_id: createState.blockViewId,
       orpts_industrial_view_id: createState.orptsIndustrialViewId,
       orpts_residential_view_id: createState.orptsResidentialViewId,
