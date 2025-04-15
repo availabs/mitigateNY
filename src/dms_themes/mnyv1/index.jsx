@@ -356,7 +356,7 @@ const theme = {
     valueSimpleView: ''
   },
   filters: {
-    filtersWrapper: 'w-full py-6 flex flex-col rounded-md',
+    filtersWrapper: 'w-full flex flex-col rounded-md',
     filterLabel: 'py-0.5 font-[Proxima Nova] font-regular text-[16px] text-[#2D3E4C] leading-[140%] tracking-[0px] capitalize',
     loadingText: 'pl-0.5 font-thin text-[#2D3E4C]',
     filterSettingsWrapper: 'flex flex-col w-full',
@@ -367,7 +367,10 @@ const theme = {
   },
   graph: {
     text: 'text-[#2D3E4C] font-[Oswald] font-semibold text-[12px] leading-[100%] tracking-[0px] uppercase'
-  }
+  },
+  icon: {
+    icon: 'text-slate-400 hover:text-blue-500 size-4'
+  },
 }
 
 //theme.navOptions.logo = <Link to='/' className='h-12 flex px-4 items-center'><div className='rounded-full h-10 bg-blue-500 border border-slate-50' /></Link>
