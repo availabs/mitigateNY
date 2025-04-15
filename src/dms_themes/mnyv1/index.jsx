@@ -157,15 +157,18 @@ const theme = {
   sidenav: {
     fixed: ``,
     logoWrapper: `bg-neutral-100 text-slate-800`,
-    sidenavWrapper: `hidden md:block bg-white w-full h-full z-20 pr-4`,
-    menuItemWrapper: 'flex flex-col',
+    sidenavWrapper: `hidden md:block bg-white w-full h-full z-20 pr-5`,
+    menuItemWrapper: [
+      'flex flex-col pl-3',
+      'flex flex-col'
+    ],
     menuIconSide: `group w-6 mr-2 text-blue-500`,
     menuIconSideActive: `group w-6 mr-2 text-blue-500`,
     
-    itemsWrapper: `border-slate-200 pt-6 pl-4`,
+    itemsWrapper: `border-slate-200 py-6`,
     navItemContent: `transition-transform duration-300 ease-in-out flex-1`,
     navItemContents: [
-      `text-[16px] font-['Oswald'] font-[500] leading-[16px]  text-[#2D3E4C] pl-4 py-3`, 
+      `text-[16px] font-['Oswald'] font-[500] leading-[16px]  text-[#2D3E4C] pl-4 py-3 uppercase`, 
       `text-[16px] font-['Proxima_Nova'] font-[600] leading-[19.2px] text-[#37576B] pl-4 py-3`,
       `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
       `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
@@ -356,7 +359,7 @@ const theme = {
     valueSimpleView: ''
   },
   filters: {
-    filtersWrapper: 'w-full py-6 flex flex-col rounded-md',
+    filtersWrapper: 'w-full flex flex-col rounded-md',
     filterLabel: 'py-0.5 font-[Proxima Nova] font-regular text-[16px] text-[#2D3E4C] leading-[140%] tracking-[0px] capitalize',
     loadingText: 'pl-0.5 font-thin text-[#2D3E4C]',
     filterSettingsWrapper: 'flex flex-col w-full',
@@ -366,7 +369,16 @@ const theme = {
     settingLabel: 'text-gray-900 font-regular min-w-fit'
   },
   graph: {
-    text: 'text-[#2D3E4C] font-[Oswald] font-semibold text-[12px] leading-[100%] tracking-[0px] uppercase'
+    text: 'text-[#2D3E4C] font-[Oswald] font-semibold text-[12px] leading-[100%] tracking-[0px] uppercase',
+    headerWrapper: 'grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-0.5',
+    columnControlWrapper: `px-1 font-semibold border bg-gray-50 text-gray-500`,
+    scaleWrapper: 'flex rounded-[8px] divide-x border w-fit border-[#E0EBF0] overflow-hidden',
+    scaleItem: 'px-[12px] py-[7px] font-[Oswald] font-medium text-[12px] text-[#2D3E4C] text-center leading-[100%] tracking-[0px] uppercase cursor-pointer',
+    scaleItemActive: 'bg-white',
+    scaleItemInActive: 'bg-[#F3F8F9]',
+  },
+  icon: {
+    icon: 'text-slate-400 hover:text-blue-500 size-4'
   }
 }
 
