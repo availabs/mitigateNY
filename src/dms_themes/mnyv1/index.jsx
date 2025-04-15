@@ -356,7 +356,7 @@ const theme = {
     valueSimpleView: ''
   },
   filters: {
-    filtersWrapper: 'w-full px-4 py-6 flex flex-col rounded-md',
+    filtersWrapper: 'w-full py-6 flex flex-col rounded-md',
     filterLabel: 'py-0.5 font-[Proxima Nova] font-regular text-[16px] text-[#2D3E4C] leading-[140%] tracking-[0px] capitalize',
     loadingText: 'pl-0.5 font-thin text-[#2D3E4C]',
     filterSettingsWrapper: 'flex flex-col w-full',
@@ -364,6 +364,9 @@ const theme = {
     settingPillsWrapper: 'flex flex-row flex-wrap gap-1',
     settingPill: 'px-1 py-0.5 bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 rounded-md',
     settingLabel: 'text-gray-900 font-regular min-w-fit'
+  },
+  graph: {
+    text: 'text-[#2D3E4C] font-[Oswald] font-semibold text-[12px] leading-[100%] tracking-[0px] uppercase'
   }
 }
 
