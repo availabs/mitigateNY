@@ -47,6 +47,26 @@ const theme = {
       nav: 'main' 
     }
   },
+  pageOptions: {
+    settingsPane: [
+      {
+            type:'Select',
+            label: 'Page Background',
+            location: 'theme.page.container',
+            default: '',
+            options: [
+              {label: 'Default', value: `bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`}, 
+              {label: 'Blue', value: `bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')] bg-[size:500px] pb-[4px]`},
+              {label: 'Yellow', value: `bg-[linear-gradient(0deg,rgba(252,246,236,.96),rgba(252,246,236,.96)),url('/themes/mny/topolines.png')] bg-[size:500px] pb-[4px]`},
+
+            ],
+
+            // onChange:(e) => {
+            //   togglePageSetting(item, 'hide_in_nav', e.target.value,  apiUpdate)
+            // }
+          },
+    ]
+  },
   heading: {
     "base": "p-2 w-full font-sans font-medium text-md bg-transparent",
     "1": `font-[500]  text-[#2D3E4C] text-[36px] leading-[36px] tracking-[-.02em] font-[500] underline-offset-8 underline decoration-4 decoration-[#EAAD43] uppercase font-['Oswald'] pb-[12px]`,
