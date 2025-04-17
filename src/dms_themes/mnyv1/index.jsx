@@ -148,7 +148,7 @@ const theme = {
       sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
     },
     clearCentered: {
-      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px] -mt-3`, // inside page header, wraps sidebar
+      wrapper1: `w-full h-full flex-1 flex flex-row -mt-3`, // inside page header, wraps sidebar
       wrapper2: 'flex flex-1 w-full max-w-[1342px]  mx-auto flex-col relative h-full min-h-[200px]' , // content wrapepr
       iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
       icon: 'text-slate-400 hover:text-blue-500',
