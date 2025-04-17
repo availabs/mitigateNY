@@ -148,7 +148,7 @@ const theme = {
       sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
     },
     clearCentered: {
-      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
+      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px] -mt-3`, // inside page header, wraps sidebar
       wrapper2: 'flex flex-1 w-full max-w-[1342px]  mx-auto flex-col relative h-full min-h-[200px]' , // content wrapepr
       iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
       icon: 'text-slate-400 hover:text-blue-500',
@@ -182,8 +182,8 @@ const theme = {
       'flex flex-col pl-3',
       'flex flex-col'
     ],
-    menuIconSide: `group w-6 mr-2 text-blue-500`,
-    menuIconSideActive: `group w-6 mr-2 text-blue-500`,
+    menuIconSide: `hidden`,
+    menuIconSideActive: `hidden`,
     
     itemsWrapper: `border-slate-200 py-6`,
     navItemContent: `transition-transform duration-300 ease-in-out flex-1`,
@@ -236,18 +236,19 @@ const theme = {
         'flex text-[#37576B] ',
         ' '
       ],
-      menuIconTop: `text-blue-400 mr-3 text-lg group-hover:text-blue-500`,
-      menuIconTopActive : `text-blue-500 mr-3 text-lg group-hover:text-blue-500`,
+      menuIconTop: `text-[#37576B]  size-6`,
+      menuIconTopActive : `text-[#37576B] items-center text-lg`,
       menuOpenIcon: `fa-light fa-bars fa-fw`,
       menuCloseIcon: `fa-light fa-xmark fa-fw"`,
       navitemTop: `
           w-fit group  whitespace-nowrap
-          flex items-center 
+           flex items-center
           text-[16px] font-['Proxima_Nova'] font-[500] 
           px-2
           focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
           transition cursor-pointer
       `,
+      navItemContent: ['','uppercase font-[Oswald] text-[14px] flex items-center p-1', ],
       navitemTopActive:
         ` w-fit group  whitespace-nowrap
           flex  items-center 
@@ -256,6 +257,7 @@ const theme = {
           focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
           transition cursor-pointer 
         `,
+
       navItemDescription: ['hidden',`text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B] text-wrap`],
       //`px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center  border-transparent  leading-5 text-white hover:bg-white hover:text-darkblue-500 border-gray-200 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full`,
       topmenuRightNavContainer: "hidden md:flex h-full items-center",
