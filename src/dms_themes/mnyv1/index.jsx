@@ -61,10 +61,20 @@ const theme = {
 
             ],
 
-            // onChange:(e) => {
-            //   togglePageSetting(item, 'hide_in_nav', e.target.value,  apiUpdate)
-            // }
-          },
+            
+      },
+      {
+            type:'Select',
+            label: 'Show in Footer',
+            location: 'navOptions.show_in_footer',
+            default: '',
+            options: [
+              {label: 'No', value: ''}, 
+              {label: 'Yes', value: `show`}
+            ],
+
+            
+      },
     ]
   },
   heading: {
