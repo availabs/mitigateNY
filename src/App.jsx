@@ -17,14 +17,15 @@ import LayoutWrapper from "~/layout/LayoutWrapper"
 
 
 import AdditionalComponents from "./additional_components";
-import { DamaMap } from "./pages/DataManager/"
+import { DamaMap, Map } from "./pages/DataManager/"
 
 import siteData from './siteData.json'
 
 registerComponents({
   ...ComponentRegistry, 
   ...AdditionalComponents,
-  "Map: Dama Map": DamaMap
+  "Map: Dama Map": DamaMap,
+  "Map": Map
 })
 
 registerDataType("selector", Selector)
