@@ -5,7 +5,7 @@ import DamaRoutes from "~/pages/DataManager"
 import hazmitDataTypes from "~/pages/HazmitDataTypes"
 
 import { dmsPageFactory, registerDataType, registerComponents, Selector } from "~/modules/dms/src"
-import {siteConfig} from '~/modules/dms/src/patterns/page/siteConfig'
+import { siteConfig } from '~/modules/dms/src/patterns/page/siteConfig'
 import { withAuth } from "~/modules/ams/src"
 
 import checkAuth  from "~/layout/checkAuth"
@@ -17,7 +17,7 @@ import ComponentRegistry from '~/component_registry'
 
 import BuildingFootprintsDownload from "./buildings_download"
 import { DamaMap } from '~/pages/DataManager'
-import {API_HOST} from "../../config.js";
+import { API_HOST } from "../../config.js";
 
 registerComponents({
   ...ComponentRegistry,

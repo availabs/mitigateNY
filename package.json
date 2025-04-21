@@ -33,6 +33,7 @@
     "@hello-pangea/dnd": "^16.6.0",
     "@heroicons/react": "^2.0.17",
     "@reduxjs/toolkit": "^1.9.5",
+    "@turf/bbox": "^7.2.0",
     "@turf/centroid": "^7.0.0",
     "@turf/union": "^7.0.0",
     "colorbrewer": "^1.5.6",

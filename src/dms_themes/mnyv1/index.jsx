@@ -61,10 +61,20 @@ const theme = {
 
             ],
 
-            // onChange:(e) => {
-            //   togglePageSetting(item, 'hide_in_nav', e.target.value,  apiUpdate)
-            // }
-          },
+            
+      },
+      {
+            type:'Select',
+            label: 'Show in Footer',
+            location: 'navOptions.show_in_footer',
+            default: '',
+            options: [
+              {label: 'No', value: ''}, 
+              {label: 'Yes', value: `show`}
+            ],
+
+            
+      },
     ]
   },
   heading: {
@@ -83,7 +93,7 @@ const theme = {
   layout: {
     wrapper: 'max-w-[1440px] mx-auto',
     wrapper2: 'flex-1 flex items-start flex-col items-stretch max-w-full',
-    wrapper3: 'flex flex-1 px-4 xl:px-[64px]',
+    wrapper3: 'flex flex-1 md:px-4 xl:px-[64px]',
     childWrapper: 'h-full flex-1',
     topnavContainer2:`fixed top-0 z-20 max-w-[1440px] left-50% -translate-50% w-full md:px-4 md:pt-[32px] xl:px-[64px] pointer-events-none`,
     sidenavContainer1: 'pr-2  hidden lg:block min-w-[302px] max-w-[302px] pt-[88px]',
@@ -133,7 +143,8 @@ const theme = {
     },
     darkSection: {
       wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full max-w-[1312px]  mx-auto flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      wrapper2: 'max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto',
+      wrapper3: 'flex flex-1 w-full  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
       iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
       icon: 'text-slate-400 hover:text-blue-500',
       sideNavContainer1: 'w-64 hidden xl:block',
@@ -141,7 +152,8 @@ const theme = {
     },
     lightCentered: {
       wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px] `, // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full max-w-[1312px]  mx-auto borde shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
+      wrapper2: 'max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto',
+      wrapper3: 'flex flex-1 w-full border shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
       iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
       icon: 'text-slate-400 hover:text-blue-500',
       sideNavContainer1: 'w-64 hidden xl:block',
@@ -149,7 +161,8 @@ const theme = {
     },
     clearCentered: {
       wrapper1: `w-full h-full flex-1 flex flex-row -mt-3`, // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full max-w-[1342px]  mx-auto flex-col relative h-full min-h-[200px]' , // content wrapepr
+      wrapper2: 'max-w-[1440px] w-full xl:px-[48px] mx-auto',
+      wrapper3: 'flex flex-1 w-full flex-col relative h-full min-h-[200px]' , // content wrapepr
       iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
       icon: 'text-slate-400 hover:text-blue-500',
       sideNavContainer1: 'w-64 hidden xl:block',
