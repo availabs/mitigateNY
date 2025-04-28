@@ -2,7 +2,6 @@ import React from 'react'
 import {useNavigate} from "react-router-dom";
 import { checkApiResponse, getDamaApiRoutePrefix, getSrcViews } from "../utils/DamaControllerApi";
 import { RenderVersions, range } from "../utils/macros"
-import { useSelector } from "react-redux";
 import { DamaContext } from "~/pages/DataManager/store";
 
 const CallServer = async ({rtPfx, baseUrl, source, user, newVersion, navigate, startYear, endYear,
