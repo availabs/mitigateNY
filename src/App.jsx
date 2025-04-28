@@ -48,6 +48,7 @@ function App() {
         defaultData={siteData}
         authWrapper={withAuth}
         themes={themes}
+        damaBaseUrl={'/cenrep'}
         // API_HOST='http://localhost:4444'
         
         routes={[
