@@ -27,7 +27,7 @@ const RenderVersions = ({domain, value, onchange}) => {
 };
 
 export const CallServer = async ({rtPfx, baseUrl, source, activeViewId, newVersion, navigate, user,
-                            newVariables, setLoading
+                            newVariables, geoLevel, setLoading
                           }) => {
     setLoading(true)
     const viewMetadata = [750];
@@ -47,6 +47,7 @@ export const CallServer = async ({rtPfx, baseUrl, source, activeViewId, newVersi
         years: [],
         geoids: [],
         variables: newVariables,
+        geoLevel
     });
 
     const stgLyrDataRes = await fetch(url, {
@@ -65,8 +66,17 @@ export const CallServer = async ({rtPfx, baseUrl, source, activeViewId, newVersi
 
 }
 
-export const RenderAddNewVariables = ({newVariable, setNewVariable, newVariables, setNewVariables, loading, serverCall}) => (
-    <div className={'p-2 bg-blue-50 rounded-md'}>
+export const RenderAddNewVariables = ({newVariable, setNewVariable, newVariables, setNewVariables, loading, serverCall, geoLevel, setGeoLevel}) => (
+    <div className={'flex flex-col gap-1 p-2 bg-blue-50 rounded-md'}>
+        {/* ideally, state, county geoid selection + census var selection using search on names should be provided. */}
+        <select
+            className={'py-1 rounded-md bg-transparent'}
+            value={geoLevel}
+            onChange={e => setGeoLevel(e.target.value)}
+        >
+            <option key={'state'} value={'state'}>State Level</option>
+            <option key={'county'} value={'county'}>County Level</option>
+        </select>
         <div className={'grid grid-cols-3'}>
             <input type={'text'}
                    key={'name'}
@@ -89,14 +99,16 @@ export const RenderAddNewVariables = ({newVariable, setNewVariable, newVariables
         </div>
 
         { newVariables?.length ?
-            <>
+            <div>
                 <div>New Variables</div>
-                <div className={'grid grid-cols-2'}>
-                    <div>name</div>
-                    <div>Census Keys</div>
+                <div className={'grid grid-cols-3'}>
+                    <div className={'font-semibold'}>Level</div>
+                    <div className={'font-semibold'}>Name</div>
+                    <div className={'font-semibold'}>Census Keys</div>
                     {
                         newVariables.map(({name, censusKeys}) => (
                             <>
+                                <div>{geoLevel}</div>
                                 <div>{name}</div>
                                 <div>{censusKeys?.join(', ')}</div>
                             </>)
@@ -109,7 +121,7 @@ export const RenderAddNewVariables = ({newVariable, setNewVariable, newVariables
                             onClick={() => serverCall()}
                     >{loading ? 'loading...' : 'load'}</button>
                 </div>
-            </> : null
+            </div> : null
         }
     </div>
 )
@@ -121,6 +133,7 @@ const DataPage = (props) => {
     const [variables, setVariables] = useState([]); // views has metadata
     const [newVariables, setNewVariables] = useState([]);
     const [newVariable, setNewVariable] = useState({});
+    const [geoLevel, setGeoLevel] = useState('state');
     const [loading, setLoading] = useState(false);
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
@@ -139,8 +152,11 @@ const DataPage = (props) => {
 
             <RenderAddNewVariables newVariables={newVariables} setNewVariables={setNewVariables}
                                    newVariable={newVariable} setNewVariable={setNewVariable}
+                                   geoLevel={geoLevel} setGeoLevel={setGeoLevel}
                                    loading={loading}
-                                   serverCall={() => CallServer({rtPfx, baseUrl, source, activeViewId, user, navigate, newVariables, setLoading})}
+                                   serverCall={() => CallServer({
+                                       rtPfx, baseUrl, source, activeViewId, user, navigate, newVariables, geoLevel, setLoading
+                                   })}
             />
 
             <div>Existing Variables</div>
