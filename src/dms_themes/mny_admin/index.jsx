@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 const MNYLogo = ({color='#5d87a1', width=175,height=50}) => (
   <svg width={`${width}px`} height={`${height}px`}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { Icons } from './icons'
 
 const MNYLogo = ({color='#5d87a1', width=175,height=50}) => (
