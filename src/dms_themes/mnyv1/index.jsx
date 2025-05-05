@@ -197,13 +197,13 @@ const theme = {
       `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`
     ],
     navitemSide: `
-        group flex flex-col
+        md:flex-1 group flex flex-col
         border-white 
         focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
         transition-all cursor-pointer 
      `,
     navitemSideActive: `
-        group  flex flex-col
+        md:flex-1 group  flex flex-col
         focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
         transition-all cursor-pointer border-l-2 border-slate-600 
 
