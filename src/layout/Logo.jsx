@@ -1,5 +1,5 @@
 
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 const MitigateNYLogo = ({color='#5d87a1', width=175,height=50}) => (
 	
