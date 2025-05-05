@@ -60,8 +60,6 @@ const theme = {
               {label: 'Yellow', value: `bg-[linear-gradient(0deg,rgba(252,246,236,.96),rgba(252,246,236,.96)),url('/themes/mny/topolines.png')] bg-[size:500px] pb-[4px]`},
 
             ],
-
-            
       },
       {
             type:'Select',
@@ -183,6 +181,7 @@ const theme = {
     sidenavWrapper: `hidden md:block bg-white w-full h-full z-20 pr-5`,
     menuItemWrapper: [
       'flex flex-col pl-3',
+      'flex flex-col',
       'flex flex-col'
     ],
     menuIconSide: `hidden`,
@@ -198,7 +197,7 @@ const theme = {
       `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`
     ],
     navitemSide: `
-        group  flex flex-col
+        group flex flex-col
         border-white 
         focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
         transition-all cursor-pointer 
@@ -215,7 +214,8 @@ const theme = {
     subMenuWrapper: `pl-2 w-full`,
     subMenuOuterWrappers: ['pl-4'],
     subMenuWrappers: ['w-full bg-[#F3F8F9] rounded-[12px] py-[12px]','w-full bg-[#E0EBF0]'],
-    subMenuParentWrapper: `flex flex-col w-full`,
+    subMenuWrapperChild: 'flex flex-col',
+    subMenuParentWrapper: `flex w-full`,
     subMenuWrapperTop: '',
   },
   topnav: {
@@ -223,7 +223,7 @@ const theme = {
       topnavWrapper: `px-[24px] py-[16px] w-full bg-white h-20 flex items-center md:rounded-lg shadow pointer-events-auto`,
       topnavContent: `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
       topnavMenu: `hidden  md:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
-      mobileButton:`md:hidden bg-slate-100 inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
+      mobileButton:`md:hidden  inline-flex items-center justify-center px-2  `,
       indicatorIcon: 'ArrowDown',
       indicatorIconOpen: 'ArrowDown',
       indicatorIconWrapper: 'size-3',
@@ -241,10 +241,10 @@ const theme = {
       ],
       menuIconTop: `text-[#37576B]  size-6`,
       menuIconTopActive : `text-[#37576B] items-center text-lg`,
-      menuOpenIcon: `fa-light fa-bars fa-fw`,
-      menuCloseIcon: `fa-light fa-xmark fa-fw"`,
+      menuOpenIcon: `Menu`,
+      menuCloseIcon: `XMark`,
       navitemTop: `
-          w-fit group  whitespace-nowrap
+          md:w-fit group  whitespace-nowrap
            flex items-center
           text-[16px] font-['Proxima_Nova'] font-[500] 
           px-2
@@ -264,7 +264,7 @@ const theme = {
       navItemDescription: ['hidden',`text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B] text-wrap`],
       //`px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center  border-transparent  leading-5 text-white hover:bg-white hover:text-darkblue-500 border-gray-200 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full`,
       topmenuRightNavContainer: "hidden md:flex h-full items-center",
-      topnavMobileContainer: "bg-slate-50",
+      topnavMobileContainer: "bg-white pointer-events-auto h-[calc(100vh_-_80px)] overflow-y-auto",
      
       
       subMenuWrapper1: [
