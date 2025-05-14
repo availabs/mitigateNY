@@ -222,8 +222,9 @@ const theme = {
       fixed: 'mt-8',
       topnavWrapper: `px-[24px] py-[16px] w-full bg-white h-20 flex items-center md:rounded-lg shadow pointer-events-auto`,
       topnavContent: `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
-      topnavMenu: `hidden  md:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
-      mobileButton:`md:hidden  inline-flex items-center justify-center px-2  `,
+      topnavMenu: `hidden md:flex items-center flex-1 h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
+      mobileButton:`md:hidden inline-flex items-center justify-center border rounded-full border-[#E0EBF0] size-8`,
+      mobileMenuButtonWrapper: '',
       indicatorIcon: 'ArrowDown',
       indicatorIconOpen: 'ArrowDown',
       indicatorIconWrapper: 'size-3',
@@ -241,7 +242,7 @@ const theme = {
       ],
       menuIconTop: `text-[#37576B]  size-6`,
       menuIconTopActive : `text-[#37576B] items-center text-lg`,
-      menuOpenIcon: `Menu`,
+      menuOpenIcon: `BarsMenu`,
       menuCloseIcon: `XMark`,
       navitemTop: `
           md:w-fit group  whitespace-nowrap
