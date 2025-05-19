@@ -1,6 +1,12 @@
 import React, {useState, useEffect} from 'react'
 
-import { DmsSite, dmsSiteFactory, registerDataType, Selector, adminConfig, registerComponents } from "~/modules/dms/src/"
+import {
+  DmsSite,
+  registerDataType,
+  Selector,
+  adminConfig,
+  registerComponents
+} from "~/modules/dms/src/"
 import ComponentRegistry from '~/component_registry'
 import themes from '~/dms_themes'
 

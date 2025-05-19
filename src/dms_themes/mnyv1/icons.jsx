@@ -29,6 +29,7 @@ import {
 	WindySnow, // snowstorm
 	IceAccretion, Thunderstorm, // lightning
 	Tornado, Fire, WindyStrong,
+	Menu as BarsMenu
 } from '@carbon/icons-react';
 
 
@@ -205,6 +206,7 @@ export const Icons = {
 	Grid,
 	ArrowRight,
 	ArrowDown,
+	BarsMenu,
 	Buildings: BuildingInsights_2,
 	Mitigation,
 	Local,
