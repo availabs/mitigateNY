@@ -4,7 +4,7 @@ import {
   checkApiResponse,
   getDamaApiRoutePrefix,
 } from "../utils/DamaControllerApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { DamaContext } from "~/pages/DataManager/store";
 const CallServer = async ({

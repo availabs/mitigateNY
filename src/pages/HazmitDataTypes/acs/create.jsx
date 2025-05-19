@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { getDamaApiRoutePrefix } from "../utils/DamaControllerApi";
 import { DamaContext } from "~/pages/DataManager/store";
 import {RenderAddNewVariables, CallServer} from "./index.jsx";

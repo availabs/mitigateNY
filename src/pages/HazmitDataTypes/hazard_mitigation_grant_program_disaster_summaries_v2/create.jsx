@@ -1,7 +1,7 @@
 import React from 'react'
 import { getDamaApiRoutePrefix } from "../utils/DamaControllerApi";
 import { CallServer } from "../disaster_declarations_summaries_v2/create.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { DamaContext } from "~/pages/DataManager/store";
 

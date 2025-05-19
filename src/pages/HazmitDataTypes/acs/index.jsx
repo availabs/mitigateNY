@@ -5,7 +5,7 @@ import {DamaContext} from "~/pages/DataManager/store";
 import {Table} from "~/modules/avl-components/src";
 import get from "lodash/get";
 import {fnum, fnumIndex} from "../utils/macros"
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router";
 import {checkApiResponse, getDamaApiRoutePrefix} from "../utils/DamaControllerApi.js";
 
 const RenderVersions = ({domain, value, onchange}) => {
