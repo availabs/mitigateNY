@@ -2,7 +2,7 @@ import React, {useState} from "react"
 import {dmsDataLoader, dmsPageFactory, registerDataType} from "~/modules/dms/src"
 import {falcor} from "~/modules/avl-falcor"
 import {Table} from "~/modules/avl-components/src"
-import {Link, useNavigate, useParams} from 'react-router-dom'
+import {Link, useNavigate, useParams} from 'react-router'
 import {withAuth} from "~/modules/ams/src"
 import checkAuth from "~/layout/checkAuth"
 import {menuItems} from "../../index"

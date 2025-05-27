@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useParams} from "react-router-dom";
+import {Link, useParams} from "react-router";
 import {menuItems} from "../admin/index.jsx";
 import dmsFormsTheme from "../admin/forms/dmsFormsTheme.js";
 import {dmsPageFactory} from "../../../../modules/dms/src/index.js";

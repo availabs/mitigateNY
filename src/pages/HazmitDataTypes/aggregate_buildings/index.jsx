@@ -2,7 +2,7 @@ import React from 'react';
 
 import get from "lodash/get"
 import { range as d3range } from "d3-array"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 import { DamaContext } from "~/pages/DataManager/store";
 import {

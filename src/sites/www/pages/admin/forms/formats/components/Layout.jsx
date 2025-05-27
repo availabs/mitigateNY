@@ -1,4 +1,4 @@
-import {Link, useParams} from "react-router-dom";
+import {Link, useParams} from "react-router";
 import React from "react";
 
 export const Layout = ({children, title, baseUrl}) => {

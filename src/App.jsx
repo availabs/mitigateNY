@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
 
-import { 
+import {
   DmsSite,
   registerDataType,
   Selector,
   adminConfig,
-  registerComponents 
+  registerComponents
 } from "~/modules/dms/src/"
 import ComponentRegistry from '~/component_registry'
 import themes from '~/dms_themes'
@@ -34,11 +34,7 @@ registerComponents({
 
 registerDataType("selector", Selector)
 
-
-// Auth.forEach(f => {
-//   f.Component = f.element 
-//   delete f.element
-// })
+const defaultPgEnv = 'hazmit_dama';
 
 function App() {
     return (
@@ -47,8 +43,10 @@ function App() {
           adminConfig({
             app: 'mitigat-ny-prod',
             type: 'prod'
+            //   API_HOST: 'http://localhost:4444'
           })
         }
+        pgEnvs={[defaultPgEnv]}
         defaultData={siteData}
         authWrapper={withAuth}
         themes={themes}
@@ -59,7 +57,7 @@ function App() {
           //cenrep
           ...LayoutWrapper(DamaRoutes({
               baseUrl:'/cenrep',
-              defaultPgEnv : "hazmit_dama",
+              defaultPgEnv,
               navSettings: authMenuConfig,
               dataTypes: hazmitDataTypes,
               useFalcor,

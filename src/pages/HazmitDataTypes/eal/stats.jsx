@@ -1,7 +1,7 @@
 import { Table, getColorRange } from "~/modules/avl-components/src";
 import get from "lodash/get";
 import React, { useEffect, useState } from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router";
 import { DamaContext } from "~/pages/DataManager/store";
 import { BarGraph } from "~/modules/avl-graph/src";
 import { fnum, fnumIndex, range } from "../utils/macros"

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { AvlMap } from "~/modules/avl-maplibre/src";
 import { EALFactory } from "./layers/EALChoropleth";
 import { CustomSidebar } from "./mapControls";
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router'
 import { DamaContext } from '~/pages/DataManager/store'
 
 const hazards = [

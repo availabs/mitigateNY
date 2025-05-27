@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
+import {useParams} from "react-router";
 import {falcor} from "~/modules/avl-falcor";
 import MetadataTable from "./Metadata/advanced.jsx";
 export const Manage = (props) => {

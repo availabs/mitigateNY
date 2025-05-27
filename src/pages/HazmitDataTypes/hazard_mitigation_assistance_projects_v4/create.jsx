@@ -1,7 +1,7 @@
 import React from 'react'
 import {CallServer} from "../disaster_declarations_summaries_v2/create.jsx";
 import { checkApiResponse, getDamaApiRoutePrefix } from "../utils/DamaControllerApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { DamaContext } from "~/pages/DataManager/store";
 
 const Create = ({ source, newVersion, baseUrl }) => {

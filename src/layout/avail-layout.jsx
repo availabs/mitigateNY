@@ -1,6 +1,6 @@
 import React from "react";
 import { useTheme, TopNav, SideNav } from "~/modules/avl-components/src";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router";
 import AuthMenu from "~/pages/Auth/AuthMenu"
 import Logo from './Logo'
 

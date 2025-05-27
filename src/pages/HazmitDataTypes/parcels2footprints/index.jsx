@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import get from 'lodash/get'
 
 import { DamaContext } from "~/pages/DataManager/store";

@@ -1,6 +1,6 @@
 import React from 'react'
 import { getDamaApiRoutePrefix } from "../utils/DamaControllerApi";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 import {CallServer} from "../nri/create.jsx";
 import { DamaContext } from "~/pages/DataManager/store";
 

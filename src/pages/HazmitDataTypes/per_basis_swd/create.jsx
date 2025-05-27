@@ -1,7 +1,7 @@
 import React from 'react'
 import { checkApiResponse, getDamaApiRoutePrefix, getSrcViews } from "../utils/DamaControllerApi";
 import { RenderVersions, range } from "../utils/macros"
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 
 import { DamaContext } from "~/pages/DataManager/store";
 
