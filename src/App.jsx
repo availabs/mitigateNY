@@ -34,6 +34,8 @@ registerComponents({
 
 registerDataType("selector", Selector)
 
+const WrappedAuth = LayoutWrapper(Auth)
+console.log('mny auth', Auth, WrappedAuth)
 const defaultPgEnv = 'hazmit_dama';
 
 function App() {
@@ -64,7 +66,7 @@ function App() {
               useAuth
             })),
           // Auth
-          ...LayoutWrapper(Auth)
+          ...WrappedAuth
         ]} 
       />
     )
