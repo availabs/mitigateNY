@@ -35,28 +35,40 @@ registerComponents({
 registerDataType("selector", Selector)
 
 const defaultPgEnv = 'hazmit_dama';
+const adminBaseUrl = '/list'
+const damaBaseUrl = '/cenrep'
+const API_HOST = 'http://localhost:4444'
+
+const testEnv = false;
+let app = 'mitigat-ny-prod';
+let type = 'prod'
+
+if(testEnv){
+    app = 'test-shaun'
+    type = 'test1'
+}
 
 function App() {
     return (
       <DmsSite
         dmsConfig = {
           adminConfig({
-            app: 'mitigat-ny-prod',
-            type: 'prod'
-            //   API_HOST: 'http://localhost:4444'
+              app, type, baseUrl: adminBaseUrl
+              // API_HOST
           })
         }
+        adminPath={adminBaseUrl}
         pgEnvs={[defaultPgEnv]}
         defaultData={siteData}
         authWrapper={withAuth}
         themes={themes}
-        damaBaseUrl={'/cenrep'}
-        // API_HOST='http://localhost:4444'
-        
+        damaBaseUrl={damaBaseUrl}
+        // API_HOST={API_HOST}
+
         routes={[
           //cenrep
           ...LayoutWrapper(DamaRoutes({
-              baseUrl:'/cenrep',
+              baseUrl:damaBaseUrl,
               defaultPgEnv,
               navSettings: authMenuConfig,
               dataTypes: hazmitDataTypes,
