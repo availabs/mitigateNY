@@ -380,7 +380,7 @@ const theme = {
     header: 'w-full flex-1 uppercase text-[#37576B]',
     headerCompactView: '',
     headerSimpleView: '',
-    value: 'w-full text-[#2D3E4C]',
+    value: 'text-[#2D3E4C]',
     valueCompactView: '',
     valueSimpleView: ''
   },
