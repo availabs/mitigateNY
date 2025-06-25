@@ -35,7 +35,7 @@ registerComponents({
 registerDataType("selector", Selector)
 
 const WrappedAuth = LayoutWrapper(Auth)
-console.log('mny auth', Auth, WrappedAuth)
+//console.log('mny auth', Auth, WrappedAuth)
 const defaultPgEnv = 'hazmit_dama';
 const adminBaseUrl = '/list'
 const damaBaseUrl = '/cenrep'
