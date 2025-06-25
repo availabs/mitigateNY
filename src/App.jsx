@@ -55,7 +55,7 @@ function App() {
       <DmsSite
         dmsConfig = {
           adminConfig({
-              app, type, baseUrl: adminBaseUrl
+              app, type, baseUrl: adminBaseUrl,
               // API_HOST
           })
         }
