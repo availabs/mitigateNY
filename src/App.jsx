@@ -54,12 +54,12 @@ function App() {
     return (
       <DmsSite
         dmsConfig = {
-          adminConfig({
+          adminConfig[0]({
               app, type, baseUrl: adminBaseUrl
               // API_HOST
           })
         }
-        adminPath={adminBaseUrl}
+        adminPath={path}
         pgEnvs={[defaultPgEnv]}
         defaultData={siteData}
         authWrapper={withAuth}
