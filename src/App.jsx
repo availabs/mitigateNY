@@ -59,7 +59,7 @@ function App() {
               // API_HOST
           })
         }
-        adminPath={path}
+        adminPath={adminBaseUrl}
         pgEnvs={[defaultPgEnv]}
         defaultData={siteData}
         authWrapper={withAuth}
