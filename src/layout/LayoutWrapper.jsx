@@ -35,7 +35,7 @@ const LayoutWrapper = withAuth(({
   // console.log('LayoutWrapper props', props)
   // console.log('LayoutWrapper comp',  typeof Comp, Comp )
   // console.log('LayoutWrapper Element',  typeof Element, Element )
-  //console.log('LayoutWrapper child', props, typeof Child, Child )
+  // console.log('LayoutWrapper child', props, typeof Child, Child )
   // console.log('LayoutWrapper layout', typeof Layout, Layout)
   // -------------------------------------
   // we may want to restore this ??

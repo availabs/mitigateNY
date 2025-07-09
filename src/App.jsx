@@ -39,7 +39,7 @@ const WrappedAuth = LayoutWrapper(Auth)
 const defaultPgEnv = 'hazmit_dama';
 const adminBaseUrl = '/list'
 const damaBaseUrl = '/cenrep'
-const API_HOST = 'http://localhost:4444'
+//const API_HOST = 'http://localhost:4444'
 
 const testEnv = false;
 let app = 'mitigat-ny-prod';
@@ -55,8 +55,8 @@ function App() {
       <DmsSite
         dmsConfig = {
           adminConfig[0]({
-              app, type, baseUrl: adminBaseUrl,
-              // API_HOST
+              app, type, baseUrl: adminBaseUrl
+             // API_HOST
           })
         }
         adminPath={adminBaseUrl}

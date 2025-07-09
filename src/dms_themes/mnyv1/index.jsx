@@ -75,6 +75,15 @@ const theme = {
       },
     ]
   },
+  logo: {
+    logoWrapper: '',
+    logoAltImg: '',
+    imgWrapper: 'h-12 pl-3 pr-2 flex items-center',
+    img: '/themes/mny/mnyLogo.svg',
+    titleWrapper: '',
+    title: '',
+    linkPath: '/'
+  },
   heading: {
     "base": "p-2 w-full font-sans font-medium text-md bg-transparent",
     "1": `font-[500]  text-[#2D3E4C] text-[36px] leading-[140%] tracking-[-.02em] font-[500] underline-offset-8 underline decoration-4 decoration-[#EAAD43] uppercase font-['Oswald'] pb-[12px]`,
@@ -335,11 +344,11 @@ const theme = {
     subWrapperCompactView: 'flex flex-col flex-wrap rounded-[12px]',
     subWrapperSimpleView: 'grid',
 
-    headerValueWrapper: 'w-full rounded-[12px] flex items-center gap-[8px] justify-center p-2',
-    headerValueWrapperCompactView: 'rounded-none py-[12px]',
+    headerValueWrapper: 'w-full rounded-[12px] flex items-center gap-[4px] justify-center p-2',
+    headerValueWrapperCompactView: 'rounded-none ',
     headerValueWrapperBorderBColor: 'border-[#C0D8E1]', // custom added border
     headerValueWrapperSimpleView: '',
-    linkColValue: 'flex-1 w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px] font-[Proxima Nova] font-bold text-[12px] leading-[100%] tracking-[0px] uppercase',
+    linkColValue: 'flex-1 flex justify-center w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px] font-[Proxima Nova] font-bold text-[12px] leading-[100%] tracking-[0px] uppercase',
     justifyTextLeft: 'text-start justify-items-start',
     justifyTextRight: 'text-end justify-items-end',
     justifyTextCenter: 'text-center justify-items-center',
@@ -373,7 +382,7 @@ const theme = {
     img2XL: "max-w-48 max-h-48",
     img3XL: "max-w-56 max-h-56",
     img4XL: "max-w-64 max-h-64",
-    img5XL: "max-w-72 max-h-72",
+    img5XL: "w-full",
     img6XL: "max-w-80 max-h-80",
     img7XL: "max-w-96 max-h-96",
     img8XL: "max-w-128 max-h-128",
@@ -381,7 +390,7 @@ const theme = {
     header: 'w-full flex-1 uppercase text-[#37576B]',
     headerCompactView: '',
     headerSimpleView: '',
-    value: 'text-[#2D3E4C]',
+    value: 'w-full text-[#2D3E4C]',
     valueCompactView: '',
     valueSimpleView: ''
   },
