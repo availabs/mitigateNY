@@ -75,6 +75,15 @@ const theme = {
       },
     ]
   },
+  logo: {
+    logoWrapper: '',
+    logoAltImg: '',
+    imgWrapper: 'h-12 pl-3 pr-2 flex items-center',
+    img: '/themes/mny/mnyLogo.svg',
+    titleWrapper: '',
+    title: '',
+    linkPath: '/'
+  },
   heading: {
     "base": "p-2 w-full font-sans font-medium text-md bg-transparent",
     "1": `font-[500]  text-[#2D3E4C] text-[36px] leading-[140%] tracking-[-.02em] font-[500] underline-offset-8 underline decoration-4 decoration-[#EAAD43] uppercase font-['Oswald'] pb-[12px]`,
