@@ -382,7 +382,7 @@ const theme = {
     img2XL: "max-w-48 max-h-48",
     img3XL: "max-w-56 max-h-56",
     img4XL: "max-w-64 max-h-64",
-    img5XL: "max-w-72 max-h-72",
+    img5XL: "w-full",
     img6XL: "max-w-80 max-h-80",
     img7XL: "max-w-96 max-h-96",
     img8XL: "max-w-128 max-h-128",
@@ -390,7 +390,7 @@ const theme = {
     header: 'w-full flex-1 uppercase text-[#37576B]',
     headerCompactView: '',
     headerSimpleView: '',
-    value: 'text-[#2D3E4C]',
+    value: 'w-full text-[#2D3E4C]',
     valueCompactView: '',
     valueSimpleView: ''
   },
