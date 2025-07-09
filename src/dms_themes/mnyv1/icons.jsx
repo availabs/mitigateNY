@@ -29,7 +29,8 @@ import {
 	WindySnow, // snowstorm
 	IceAccretion, Thunderstorm, // lightning
 	Tornado, Fire, WindyStrong,
-	Menu as BarsMenu
+	Menu as BarsMenu,
+	OutlookSevere, ThunderstormSevere
 } from '@carbon/icons-react';
 
 
@@ -240,6 +241,7 @@ export const Icons = {
 	earthquake: Earthquake, fire: Fire,
 	hail: MixedRainHail, heatwave: TemperatureHot, hurricane: Hurricane,
 	ice: IceAccretion, landslide: Landslide, lightning: Thunderstorm, riverine: Flood,
-	tornado: Tornado, tsunami: Tsunami, volcano: Volcano, wind: WindyStrong
+	tornado: Tornado, tsunami: Tsunami, volcano: Volcano, wind: WindyStrong,
+	OutlookSevere, ThunderstormSevere
 }
 

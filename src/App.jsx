@@ -56,7 +56,7 @@ function App() {
         dmsConfig = {
           adminConfig[0]({
               app, type, baseUrl: adminBaseUrl
-              // API_HOST
+             // API_HOST
           })
         }
         adminPath={adminBaseUrl}
