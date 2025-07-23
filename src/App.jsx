@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 
 import {
   DmsSite,
@@ -22,7 +22,7 @@ import LayoutWrapper from "~/layout/LayoutWrapper"
 
 import AdditionalComponents from "./additional_components";
 import { DamaMap, Map } from "./pages/DataManager/"
-
+import {PROJECT_NAME, API_HOST} from "./config.js";
 import siteData from './siteData.json'
 
 registerComponents({
@@ -39,7 +39,6 @@ const WrappedAuth = LayoutWrapper(Auth)
 const defaultPgEnv = 'hazmit_dama';
 const adminBaseUrl = '/list'
 const damaBaseUrl = '/cenrep'
-//const API_HOST = 'http://localhost:4444'
 
 const testEnv = false;
 let app = 'mitigat-ny-prod';
@@ -55,17 +54,18 @@ function App() {
       <DmsSite
         dmsConfig = {
           adminConfig[0]({
-              app, type, baseUrl: adminBaseUrl
-             // API_HOST
+              app, type, baseUrl: adminBaseUrl,
+             API_HOST
           })
         }
+        PROJECT_NAME={PROJECT_NAME}
         adminPath={adminBaseUrl}
         pgEnvs={[defaultPgEnv]}
         defaultData={siteData}
         authWrapper={withAuth}
         themes={themes}
         damaBaseUrl={damaBaseUrl}
-        // API_HOST={API_HOST}
+        API_HOST={API_HOST}
 
         routes={[
           //cenrep
