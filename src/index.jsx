@@ -17,7 +17,7 @@ import './index.css'
 
 
 export const falcor = falcorGraph(API_HOST)
-const AuthEnabledApp = authProvider(App, { AUTH_HOST, PROJECT_NAME, CLIENT_HOST });
+const AuthEnabledApp = App //authProvider(App, { AUTH_HOST, PROJECT_NAME, CLIENT_HOST });
 
 ReactDOM.createRoot(document.getElementById('root'))
   .render(

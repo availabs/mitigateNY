@@ -22,7 +22,7 @@ import LayoutWrapper from "~/layout/LayoutWrapper"
 
 import AdditionalComponents from "./additional_components";
 import { DamaMap, Map } from "./pages/DataManager/"
-import {PROJECT_NAME, API_HOST} from "./config.js";
+import {PROJECT_NAME, API_HOST, AUTH_HOST} from "./config.js";
 import siteData from './siteData.json'
 
 registerComponents({
@@ -38,6 +38,7 @@ const WrappedAuth = LayoutWrapper(Auth)
 //console.log('mny auth', Auth, WrappedAuth)
 const defaultPgEnv = 'hazmit_dama';
 const adminBaseUrl = '/list'
+const authBaseUrl = '/dms_auth'
 const damaBaseUrl = '/cenrep'
 
 const testEnv = false;
@@ -45,7 +46,7 @@ let app = 'mitigat-ny-prod';
 let type = 'prod'
 
 if(testEnv){
-    app = 'test-shaun'
+    app = 'test-auth-shaun-existing-user-1'
     type = 'test1'
 }
 
@@ -54,18 +55,19 @@ function App() {
       <DmsSite
         dmsConfig = {
           adminConfig[0]({
-              app, type, baseUrl: adminBaseUrl,
-             API_HOST
+              app, type, baseUrl: adminBaseUrl, authPath: authBaseUrl,
+             API_HOST, AUTH_HOST
           })
         }
         PROJECT_NAME={PROJECT_NAME}
         adminPath={adminBaseUrl}
         pgEnvs={[defaultPgEnv]}
-        defaultData={siteData}
-        authWrapper={withAuth}
+        // defaultData={siteData}
+        // authWrapper={withAuth}
         themes={themes}
         damaBaseUrl={damaBaseUrl}
         API_HOST={API_HOST}
+        AUTH_HOST={AUTH_HOST}
 
         routes={[
           //cenrep
