@@ -25,7 +25,7 @@ import AdditionalComponents from "./additional_components";
 import { DamaMap, Map } from "./pages/DataManager/"
 
 
-import {PROJECT_NAME, API_HOST} from "./config.js";
+import {PROJECT_NAME, API_HOST, AUTH_HOST} from "./config.js";
 //import siteData from './siteData.json'
 
 registerComponents({
@@ -83,7 +83,7 @@ function App() {
               useAuth
             })),
           // Auth
-          ...WrappedAuth
+          // ...WrappedAuth
         ]} 
       />
     )
