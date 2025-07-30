@@ -130,7 +130,7 @@ const theme = {
     headerValueWrapper: 'w-full rounded-[12px] flex items-center gap-[8px] justify-center p-2',
     headerValueWrapperCompactView: 'rounded-none py-[12px]',
     headerValueWrapperSimpleView: '',
-    justifyTextLeft: 'text-start',
+    justifyTextLeft: 'w-full text-start',
     justifyTextRight: 'text-end',
     justifyTextCenter: 'text-center',
 
@@ -156,10 +156,10 @@ const theme = {
     text7XL: 'font-medium font-[Oswald] text-[72px] leading-[100%] uppercase tracking-normal',
     text8XL: 'font-medium font-[Oswald] text-[96px] leading-[95%] uppercase tracking-normal ',
 
-    header: 'flex-1 uppercase text-[#37576B]',
+    header: 'w-full flex-1 uppercase text-[#37576B]',
     headerCompactView: '',
     headerSimpleView: '',
-    value: 'text-[#2D3E4C]',
+    value: 'w-full text-[#2D3E4C]',
     valueCompactView: '',
     valueSimpleView: ''
   },
