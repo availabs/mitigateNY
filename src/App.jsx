@@ -19,11 +19,11 @@ import { authMenuConfig } from "~/layout/authMenuConfig"
 import { useFalcor } from "~/modules/avl-falcor"
 import LayoutWrapper from "~/layout/LayoutWrapper"
 
+import siteData from './siteData.json'
 
 import AdditionalComponents from "./additional_components";
 import { DamaMap, Map } from "./pages/DataManager/"
 
-import siteData from './siteData.json'
 
 registerComponents({
   ...ComponentRegistry, 
