@@ -11,7 +11,7 @@ import ComponentRegistry from '~/component_registry'
 import themes from '~/dms_themes'
 
 import { withAuth, useAuth } from "~/modules/ams/src"
-import Auth from '~/pages/Auth'
+// import Auth from '~/pages/Auth'
 
 import DamaRoutes from "~/pages/DataManager"
 import hazmitDataTypes from "~/pages/HazmitDataTypes"
@@ -34,7 +34,7 @@ registerComponents({
 
 registerDataType("selector", Selector)
 
-const WrappedAuth = LayoutWrapper(Auth)
+// const WrappedAuth = LayoutWrapper(Auth)
 //console.log('mny auth', Auth, WrappedAuth)
 const defaultPgEnv = 'hazmit_dama';
 const adminBaseUrl = '/list'
@@ -80,7 +80,7 @@ function App() {
               useAuth
             })),
           // Auth
-          ...WrappedAuth
+          // ...WrappedAuth
         ]} 
       />
     )
