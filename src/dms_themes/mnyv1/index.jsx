@@ -398,10 +398,13 @@ const theme = {
   },
   filters: {
     filtersWrapper: 'w-full flex flex-col rounded-md',
-    filterLabel: 'py-0.5 font-[Proxima Nova] font-regular text-[16px] text-[#2D3E4C] leading-[140%] tracking-[0px] capitalize',
+    filterLabel: 'py-0.5 font-[Proxima Nova] font-regular text-[14px] text-[#2D3E4C] leading-[140%] tracking-[0px] capitalize text-balance',
     loadingText: 'pl-0.5 font-thin text-[#2D3E4C]',
-    filterSettingsWrapper: 'flex flex-col w-full',
-    input: 'w-full max-h-[150px] flex rounded-[12px] px-[16px] py-[12px] gap-[8px] text-[16px] text-[#37576B] border leading-[140%] tracking-[0px] bg-white',
+    filterSettingsWrapperInline: 'w-2/3',
+    filterSettingsWrapperStacked: 'w-full',
+    labelWrapperInline: 'w-1/3 text-xs',
+    labelWrapperStacked: 'w-full text-xs',
+    input: 'w-full max-h-[150px] flex rounded-[12px] px-[10px] py-[4px] gap-[6px] text-[14px] text-[#37576B] border leading-[140%] tracking-[0px] bg-white overflow-auto scrollbar-sm text-nowrap',
     settingPillsWrapper: 'flex flex-row flex-wrap gap-1',
     settingPill: 'px-1 py-0.5 bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 rounded-md',
     settingLabel: 'text-gray-900 font-regular min-w-fit'
