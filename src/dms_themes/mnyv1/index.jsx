@@ -104,9 +104,9 @@ const theme = {
     wrapper2: 'flex-1 flex items-start flex-col items-stretch max-w-full',
     wrapper3: 'flex flex-1 md:px-4 xl:px-[64px]',
     childWrapper: 'h-full flex-1',
-    topnavContainer1:``,
+    topnavContainer1:`print:hidden`,
     topnavContainer2:`fixed top-0 z-20 max-w-[1440px] left-50% -translate-50% w-full md:px-4 md:pt-[32px] xl:px-[64px] pointer-events-none`,
-    sidenavContainer1: 'pr-2  hidden lg:block min-w-[302px] max-w-[302px] pt-[88px]',
+    sidenavContainer1: 'pr-2  hidden lg:block min-w-[302px] max-w-[302px] pt-[88px] print:hidden',
     sidenavContainer2: 'hidden scrollbar-sm lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden'
   },
   page: {
