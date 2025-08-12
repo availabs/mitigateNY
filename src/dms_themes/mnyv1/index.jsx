@@ -138,7 +138,7 @@ const theme = {
     default: {
       wrapper1: 'w-full h-full flex-1 flex flex-row pt-2', // inside page header, wraps sidebar
       wrapper2: 'flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px] print:hidden',
       icon: 'text-slate-400 hover:text-blue-500',
       sideNavContainer1: 'hidden xl:block',
       sideNavContainer2: 'min-w-[302px] max-w-[302px] sticky top-20 hidden xl:block h-[100vh_-_102px] pr-2'
@@ -146,34 +146,34 @@ const theme = {
     content: {
       wrapper1: 'w-full h-full flex-1 flex flex-row lg:pt-[118px] ', // inside page header, wraps sidebar
       wrapper2: 'flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px] print:hidden',
       icon: 'text-slate-400 hover:text-blue-500'
     },
     darkSection: {
       wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
       wrapper2: 'max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto',
       wrapper3: 'flex flex-1 w-full  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px] print:hidden',
       icon: 'text-slate-400 hover:text-blue-500'
     },
     lightCentered: {
       wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px] `, // inside page header, wraps sidebar
       wrapper2: 'max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto',
       wrapper3: 'flex flex-1 w-full  shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px] print:hidden',
       icon: 'text-slate-400 hover:text-blue-500'
     },
     clearCentered: {
       wrapper1: `w-full h-full flex-1 flex flex-row -mt-3`, // inside page header, wraps sidebar
       wrapper2: 'max-w-[1440px] w-full xl:px-[48px] mx-auto',
       wrapper3: 'flex flex-1 w-full flex-col relative h-full min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px] print:hidden',
       icon: 'text-slate-400 hover:text-blue-500'
     },
     header: {
       wrapper1: 'w-full h-full flex-1 flex flex-row', // inside page header, wraps sidebar
       wrapper2: 'flex flex-1 w-full  flex-col  relative min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
+      iconWrapper : 'z-5 absolute right-[10px] top-[5px] print:hidden',
       icon: 'text-slate-400 hover:text-blue-500'
     }
   },
