@@ -319,6 +319,7 @@ const theme = {
       pageRangeItem: 'cursor-pointer px-[12px]  py-[7px] font-[Oswald] font-[500] text-[12px] border-r last:border-none uppercase leading-[18px]' ,
       pageRangeItemInactive: 'bg-white text-[#2D3E4C]',
       pageRangeItemActive: 'bg-[#2D3E4C] text-white',
+      openOutContainer: 'w-[630px] overflow-auto scrollbar-sm flex flex-col gap-[12px] p-[16px] bg-white h-full float-right',
       openOutContainerWrapper: 'absolute inset-0 right-0 h-full w-full z-[100]',
       openOutHeader: 'font-semibold font-[Proxima Nova] text-[#37576B] text-[14px] leading-[17.05px]',
       openOutValue: 'font-normal font-[Proxima Nova] text-[#37576B] text-[14px] leading-[19.6px]',
