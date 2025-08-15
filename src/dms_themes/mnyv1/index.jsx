@@ -343,7 +343,7 @@ const theme = {
     mainWrapperCompactView: 'grid',
     mainWrapperSimpleView: 'flex flex-col',
 
-    subWrapper: 'w-full text-[#2D3E4C]',
+    subWrapper: 'w-full text-[#37576B]',
     subWrapperCompactView: 'flex flex-col flex-wrap rounded-[12px]',
     subWrapperSimpleView: 'grid',
 
@@ -393,7 +393,8 @@ const theme = {
     header: 'w-full flex-1 uppercase text-[#37576B]',
     headerCompactView: '',
     headerSimpleView: '',
-    value: 'w-full text-[#2D3E4C]',
+    value: 'w-full text-[#37576B]',
+    // value: 'w-full text-[#2D3E4C]',
     valueCompactView: '',
     valueSimpleView: ''
   },
