@@ -352,9 +352,9 @@ const theme = {
     headerValueWrapperBorderBColor: 'border-[#C0D8E1]', // custom added border
     headerValueWrapperSimpleView: '',
     linkColValue: 'flex-1 flex justify-center w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px] font-[Proxima Nova] font-bold text-[12px] leading-[100%] tracking-[0px] uppercase',
-    justifyTextLeft: 'text-start justify-items-start',
-    justifyTextRight: 'text-end justify-items-end',
-    justifyTextCenter: 'text-center justify-items-center',
+    justifyTextLeft: 'text-start justify-items-start rounded-md',
+    justifyTextRight: 'text-end justify-items-end rounded-md',
+    justifyTextCenter: 'text-center justify-items-center rounded-md',
 
     textXS: 'font-medium font-[Oswald] text-[12px] leading-[140%]',
     textXSReg: 'font-normal font-[Proxima Nova] text-[12px] leading-[100%] uppercase',
