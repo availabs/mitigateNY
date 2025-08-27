@@ -2,7 +2,6 @@ import React from 'react'
 
 import {
   DmsSite,
-  registerDataType,
   Selector,
   adminConfig,
   registerComponents
@@ -34,8 +33,6 @@ registerComponents({
   "Map: Dama Map": DamaMap,
   "Map": Map
 })
-
-registerDataType("selector", Selector)
 
 const WrappedAuth = LayoutWrapper(Auth)
 //console.log('mny auth', Auth, WrappedAuth)
