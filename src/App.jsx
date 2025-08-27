@@ -2,11 +2,12 @@ import React from 'react'
 
 import {
   DmsSite,
-  Selector,
   adminConfig,
   registerComponents
 } from "~/modules/dms/src/"
 //import ComponentRegistry from '~/component_registry'
+// import AdditionalComponents from "./additional_components";
+
 import themes from '~/dms_themes'
 
 import { withAuth, useAuth } from "~/modules/ams/src"
@@ -20,7 +21,6 @@ import LayoutWrapper from "~/layout/LayoutWrapper"
 
 import siteData from './siteData.json'
 
-import AdditionalComponents from "./additional_components";
 import { DamaMap, Map } from "./pages/DataManager/"
 
 import {PROJECT_NAME, API_HOST} from "./config.js";
@@ -29,7 +29,7 @@ import {PROJECT_NAME, API_HOST} from "./config.js";
 
 registerComponents({
   // ...ComponentRegistry, 
-  ...AdditionalComponents,
+  // ...AdditionalComponents,
   "Map: Dama Map": DamaMap,
   "Map": Map
 })
