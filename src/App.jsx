@@ -6,7 +6,7 @@ import {
   adminConfig,
   registerComponents
 } from "~/modules/dms/src/"
-import ComponentRegistry from '~/component_registry'
+//import ComponentRegistry from '~/component_registry'
 import themes from '~/dms_themes'
 
 import { withAuth, useAuth } from "~/modules/ams/src"
@@ -28,7 +28,7 @@ import {PROJECT_NAME, API_HOST} from "./config.js";
 
 
 registerComponents({
-  ...ComponentRegistry, 
+  // ...ComponentRegistry, 
   ...AdditionalComponents,
   "Map: Dama Map": DamaMap,
   "Map": Map
