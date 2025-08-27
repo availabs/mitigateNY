@@ -400,23 +400,12 @@ const theme = {
     img7XL: "max-w-96 max-h-96",
     img8XL: "max-w-128 max-h-128",
 
-<<<<<<< HEAD
     header: "w-full flex-1 uppercase text-[#37576B]",
     headerCompactView: "",
     headerSimpleView: "",
     value: "w-full text-[#2D3E4C]",
     valueCompactView: "",
-    valueSimpleView: "",
-=======
-    header: 'w-full flex-1 uppercase text-[#37576B]',
-    headerCompactView: '',
-    headerSimpleView: '',
-    value: 'w-full text-[#37576B]',
-    // value: 'w-full text-[#2D3E4C]',
-    valueCompactView: '',
-    valueSimpleView: ''
->>>>>>> c4ad59b5a87f68f0129e7921255c4ca12c6afc63
-  },
+    valueSimpleView: "",  },
   filters: {
     filtersWrapper: "w-full flex flex-col rounded-md",
     filterLabel:
