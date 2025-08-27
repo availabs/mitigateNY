@@ -342,6 +342,7 @@ const theme = {
     mainWrapperCompactView: "grid",
     mainWrapperSimpleView: "flex flex-col",
 
+<<<<<<< HEAD
     subWrapper: "w-full text-[#2D3E4C]",
     subWrapperCompactView: "flex flex-col flex-wrap rounded-[12px]",
     subWrapperSimpleView: "grid",
@@ -356,6 +357,20 @@ const theme = {
     justifyTextLeft: "text-start justify-items-start",
     justifyTextRight: "text-end justify-items-end",
     justifyTextCenter: "text-center justify-items-center",
+=======
+    subWrapper: 'w-full text-[#37576B]',
+    subWrapperCompactView: 'flex flex-col flex-wrap rounded-[12px]',
+    subWrapperSimpleView: 'grid',
+
+    headerValueWrapper: 'w-full rounded-[12px] flex items-center gap-[4px] justify-center p-2',
+    headerValueWrapperCompactView: 'rounded-none ',
+    headerValueWrapperBorderBColor: 'border-[#C0D8E1]', // custom added border
+    headerValueWrapperSimpleView: '',
+    linkColValue: 'flex-1 flex justify-center w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px] font-[Proxima Nova] font-bold text-[12px] leading-[100%] tracking-[0px] uppercase',
+    justifyTextLeft: 'text-start justify-items-start rounded-md',
+    justifyTextRight: 'text-end justify-items-end rounded-md',
+    justifyTextCenter: 'text-center justify-items-center rounded-md',
+>>>>>>> c4ad59b5a87f68f0129e7921255c4ca12c6afc63
 
     textXS: "font-medium font-[Oswald] text-[12px] leading-[140%]",
     textXSReg:
@@ -402,12 +417,22 @@ const theme = {
     img7XL: "max-w-96 max-h-96",
     img8XL: "max-w-128 max-h-128",
 
+<<<<<<< HEAD
     header: "w-full flex-1 uppercase text-[#37576B]",
     headerCompactView: "",
     headerSimpleView: "",
     value: "w-full text-[#2D3E4C]",
     valueCompactView: "",
     valueSimpleView: "",
+=======
+    header: 'w-full flex-1 uppercase text-[#37576B]',
+    headerCompactView: '',
+    headerSimpleView: '',
+    value: 'w-full text-[#37576B]',
+    // value: 'w-full text-[#2D3E4C]',
+    valueCompactView: '',
+    valueSimpleView: ''
+>>>>>>> c4ad59b5a87f68f0129e7921255c4ca12c6afc63
   },
   filters: {
     filtersWrapper: "w-full flex flex-col rounded-md",

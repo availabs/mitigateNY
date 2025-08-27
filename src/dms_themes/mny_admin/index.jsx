@@ -130,9 +130,9 @@ const theme = {
     headerValueWrapper: 'w-full rounded-[12px] flex items-center gap-[8px] justify-center p-2',
     headerValueWrapperCompactView: 'rounded-none py-[12px]',
     headerValueWrapperSimpleView: '',
-    justifyTextLeft: 'w-full text-start',
-    justifyTextRight: 'text-end',
-    justifyTextCenter: 'text-center',
+    justifyTextLeft: 'w-full text-start rounded-md px-1 py-0.5',
+    justifyTextRight: 'text-end rounded-md px-1 py-0.5',
+    justifyTextCenter: 'text-center rounded-md px-1 py-0.5',
 
     textXS: 'font-medium font-[Oswald] text-[12px] leading-[140%]',
     textXSReg: 'font-normal font-[Proxima Nova] text-[12px] leading-[100%] uppercase',
