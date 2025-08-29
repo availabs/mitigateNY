@@ -9,8 +9,28 @@ import {getDefaultJustify, RenderColumnControls} from "../../component_registry/
 import {ButtonSelector} from "../../component_registry/shared/buttonSelector.jsx";
 import {dmsDataLoader} from "~/modules/dms/src";
 import {getMeta, setMeta, getAccessor, getColAccessor, defaultOpenOutAttributes} from "./utils.js";
-import {formsConfigFormat} from "~/sites/www/pages/forms/index.jsx";
-
+const formsConfigFormat = {
+    app: "dms-site",
+    type: "forms-config",
+    attributes: [
+        {
+            key: 'name',
+            label: 'Name',
+            type: 'text'
+        },
+        {
+            key: 'url',
+            label: 'Url',
+            type: 'text'
+        },
+        {
+            key: 'config',
+            label: 'Config',
+            prompt: 'Paste full config here.',
+            type: 'textarea'
+        },
+    ]
+}
 import {Switch} from "@headlessui/react";
 
 const isValid = ({groupBy, fn, columnsToFetch}) => {

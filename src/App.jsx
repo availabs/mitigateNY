@@ -2,12 +2,12 @@ import React from 'react'
 
 import {
   DmsSite,
-  registerDataType,
-  Selector,
   adminConfig,
   registerComponents
 } from "~/modules/dms/src/"
-import ComponentRegistry from '~/component_registry'
+//import ComponentRegistry from '~/component_registry'
+// import AdditionalComponents from "./additional_components";
+
 import themes from '~/dms_themes'
 
 import { withAuth, useAuth } from "~/modules/ams/src"
@@ -21,7 +21,6 @@ import LayoutWrapper from "~/layout/LayoutWrapper"
 
 import siteData from './siteData.json'
 
-import AdditionalComponents from "./additional_components";
 import { DamaMap, Map } from "./pages/DataManager/"
 
 
@@ -29,15 +28,13 @@ import {PROJECT_NAME, API_HOST, AUTH_HOST} from "./config.js";
 //import siteData from './siteData.json'
 
 registerComponents({
-  ...ComponentRegistry, 
-  ...AdditionalComponents,
+  // ...ComponentRegistry,
+  // ...AdditionalComponents,
   "Map: Dama Map": DamaMap,
   "Map": Map
 })
 
-registerDataType("selector", Selector)
-
-// const WrappedAuth = LayoutWrapper(Auth)
+const WrappedAuth = LayoutWrapper(Auth)
 //console.log('mny auth', Auth, WrappedAuth)
 const defaultPgEnv = 'hazmit_dama';
 const adminBaseUrl = '/list'

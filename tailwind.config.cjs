@@ -12,15 +12,11 @@ module.exports = {
     extend: {
       fontFamily: {
         'sans': [
-          'Figtree',
-          'Poppins',
-          'Rubik',
-          'Proxima Nova',   
-          ...defaultTheme.fontFamily.sans
+          'Proxima Nova'
         ],
         'display': [
-          'Proxima Nova',
-          ...defaultTheme.fontFamily.sans],
+          'Oswald'
+        ]
       },
     },
   },
