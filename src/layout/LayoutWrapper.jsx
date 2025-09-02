@@ -30,17 +30,17 @@ const LayoutWrapper = ({
 
         load()
     }, []);
-    const store = configureStore({
-        reducer: {}
-    });
+    // const store = configureStore({
+    //     reducer: {}
+    // });
   return (
-    <Provider store={store}>
+    // <Provider store={store}>
         <Wrapper>
             <Layout {...props} user={user}>
                 <Child />
             </Layout>
         </Wrapper>
-    </Provider>
+    // </Provider>
   )
 }
 
