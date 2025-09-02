@@ -1,10 +1,9 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import { useNavigate, useLocation } from "react-router";
-import { withAuth } from '~/modules/ams/src'
-import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
-import checkAuth from './checkAuth'
+import { Provider } from "react-redux";
 import Layout from './avail-layout'
+import { configureStore } from "@reduxjs/toolkit";
 
 const Wrapper = ({children}) => {
   const location = useLocation();
@@ -13,52 +12,43 @@ const Wrapper = ({children}) => {
   }, [location.pathname]);
   return children
 }
-
-const LayoutWrapper = withAuth(({ 
+const LayoutWrapper = ({
   element: Element, 
   component: Comp, 
   Layout=({children}) => <>{children}</>, 
   ...props
 }) => {
-
+    const [user, setUser] = useState({})
   const Child = Element || Comp // support old react router routes
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  const { auth, authLevel, user } = props;
+  const { getUser } = props;
+    useEffect(() => {
+        async function load() {
+            const user = await getUser();
+            setUser(user);
+        }
 
-  React.useEffect(() => {
-    checkAuth({ auth, authLevel, user }, navigate, location);
-  }, [auth, authLevel, navigate, location]);
-  
-
-  // console.log('LayoutWrapper props', props)
-  // console.log('LayoutWrapper comp',  typeof Comp, Comp )
-  // console.log('LayoutWrapper Element',  typeof Element, Element )
-  // console.log('LayoutWrapper child', props, typeof Child, Child )
-  // console.log('LayoutWrapper layout', typeof Layout, Layout)
-  // -------------------------------------
-  // we may want to restore this ??
-  // -------------------------------------
-  // if(authLevel > -1 && props?.user?.isAuthenticating) {
-  //   return <Layout {...props}>Loading</Layout>
-  // }
- 
+        load()
+    }, []);
+    const store = configureStore({
+        reducer: {}
+    });
   return (
-    <Wrapper>
-      <Layout {...props}>
-        <Child />
-      </Layout>
-    </Wrapper>
+    <Provider store={store}>
+        <Wrapper>
+            <Layout {...props} user={user}>
+                <Child />
+            </Layout>
+        </Wrapper>
+    </Provider>
   )
-})
+}
 
-export default function  DefaultLayoutWrapper ( routes, layout=Layout ) {
-  //console.log('routes', routes)
+export default function  DefaultLayoutWrapper ( routes, layout=Layout, getUser ) {
   const menus = routes.filter(r => r.mainNav)
   return routes.map(route => {
     let out = cloneDeep(route)
-    out.element = <LayoutWrapper {...out} Layout={layout} menus={menus} />
+    out.element = <LayoutWrapper {...out} Layout={layout} menus={menus} getUser={getUser} />
     return out
   })
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { authProvider } from "~/modules/ams/src" //"./modules/ams/src"
+// import { authProvider } from "~/modules/ams/src" //"./modules/ams/src"
 import { API_HOST, AUTH_HOST, PROJECT_NAME, CLIENT_HOST }  from './config'
 import {
   FalcorProvider,

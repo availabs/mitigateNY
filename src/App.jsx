@@ -3,14 +3,17 @@ import React from 'react'
 import {
   DmsSite,
   adminConfig,
-  registerComponents
+  registerComponents,
+    getUser,
+    getGroups,
+    getUsers
 } from "~/modules/dms/src/"
 //import ComponentRegistry from '~/component_registry'
 // import AdditionalComponents from "./additional_components";
 
 import themes from '~/dms_themes'
 
-import { withAuth, useAuth } from "~/modules/ams/src"
+// import { withAuth, useAuth } from "~/modules/ams/src"
 // import Auth from '~/pages/Auth'
 
 import DamaRoutes from "~/pages/DataManager"
@@ -25,6 +28,7 @@ import { DamaMap, Map } from "./pages/DataManager/"
 
 
 import {PROJECT_NAME, API_HOST, AUTH_HOST} from "./config.js";
+import {useAuth} from "@availabs/ams";
 //import siteData from './siteData.json'
 
 registerComponents({
@@ -74,14 +78,19 @@ function App() {
 
         routes={[
           //cenrep
-          ...LayoutWrapper(DamaRoutes({
-              baseUrl:damaBaseUrl,
-              defaultPgEnv,
-              navSettings: authMenuConfig,
-              dataTypes: hazmitDataTypes,
-              useFalcor,
-              useAuth
-            })),
+          ...LayoutWrapper(
+              DamaRoutes({
+                  baseUrl:damaBaseUrl,
+                  defaultPgEnv,
+                  navSettings: authMenuConfig,
+                  dataTypes: hazmitDataTypes,
+                  useFalcor,
+                  getUser: () => getUser(AUTH_HOST, PROJECT_NAME),
+                  getGroups: ({user}) => getGroups({user, AUTH_HOST, PROJECT_NAME}),
+                  getUsers: ({user}) => getUsers({user, AUTH_HOST, PROJECT_NAME}),
+            }),
+              undefined,
+              () => getUser(AUTH_HOST, PROJECT_NAME)),
           // Auth
           // ...WrappedAuth
         ]} 
