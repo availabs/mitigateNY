@@ -42,7 +42,7 @@ registerComponents({
 //console.log('mny auth', Auth, WrappedAuth)
 const defaultPgEnv = 'hazmit_dama';
 const adminBaseUrl = '/list'
-const authBaseUrl = '/dms_auth'
+const authBaseUrl = '/auth'
 const damaBaseUrl = '/cenrep'
 
 const testEnv = false;
