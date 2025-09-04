@@ -28,12 +28,12 @@ const Logo = ({sideNav}) => {
 
 const theme = {
   navOptions: {
-    logo: '',//'',//<Link to='/' className='h-12 flex px-4 items-center'><div className='rounded-full h-8 w-8 bg-blue-500 border-2 border-blue-300 hover:bg-blue-600' /></Link>, //<Link to='/' className='h-12 flex px-4 items-center'>LOGO</Link>,
+    logo: '',
     sideNav: {
       size: 'none',
       search: 'none',
       logo: 'top',
-      dropdown: 'none',
+      dropdown: 'top',
       nav: 'none'
     },
     topNav: {
@@ -54,6 +54,10 @@ const theme = {
         title: "",
         linkPath: "/",
     },
+    loginButton: "flex-1 flex justify-center w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px]",
+    signupButton: "flex-1 flex justify-center w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px]",
+    forgotPasswordButton: "flex-1 flex justify-center w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px]",
+    resetPasswordButton: "flex-1 flex justify-center w-full bg-[#C5D7E0] rounded-full px-[12px] py-[8px]",
   heading: {
     "base": "p-2 w-full font-sans font-medium text-md bg-transparent",
     "1": `font-[500]  text-[#2D3E4C] text-[36px] leading-[36px] tracking-[-.02em] font-[500] underline-offset-8 underline decoration-4 decoration-[#EAAD43] uppercase font-['Oswald'] pb-[12px]`,
@@ -68,11 +72,12 @@ const theme = {
     '4': 'pl-6 pt-2 pb-1 text-sm text-slate-400 hover:underline cursor-pointer border-r-2 mr-4',
   },
   layout: {
-    wrapper: '',
-    wrapper2: 'flex-1 flex items-start flex-col items-stretch max-w-full',
-    wrapper3: 'flex flex-1',
+      wrapper: "max-w-[1440px] mx-auto",
+      wrapper2: "flex-1 flex items-start flex-col items-stretch max-w-full",
+      wrapper3: "flex flex-1 md:px-4 xl:px-[64px]",
     childWrapper: 'h-full flex-1',
-    topnavContainer2:`fixed top-0 z-20 max-w-[1440px] w-full px-4  xl:px-[64px] pointer-events-none`,
+      topnavContainer1: 'print:hidden',
+      topnavContainer2: `fixed top-0 z-20 max-w-[1440px] left-50% -translate-50% w-full md:px-4 md:pt-[32px] xl:px-[64px] pointer-events-none`,
     sidenavContainer1: 'pr-2  hidden lg:block min-w-[222px] max-w-[222px]',
     sidenavContainer2: 'hidden lg:block fixed min-w-[222px] max-w-[222px] top-[0px] h-[calc(100vh_-_1px)] bg-white hadow-md w-full overflow-y-auto overflow-x-hidden'
   },
@@ -125,6 +130,13 @@ const theme = {
     "m-0 mb-2 font-['Oswald'] text-[30px] leading-[36px] text-[#2D3E4C] border-l-4 border-[#37576B] pl-4 pb-[12px]", //'PlaygroundEditorTheme__quote',
 
   },
+    field: {
+      label: 'font-normal font-[Proxima Nova] text-[14px] leading-[140%]'
+    },
+    loginPage: {
+      titleText: 'MitigateNY',
+        titleWrapper: 'text-[#37576B] font-semibold text-xl',
+    },
   dataCard: {
     columnControlWrapper: 'grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-0.5',
     columnControlHeaderWrapper: `px-1 font-semibold border bg-gray-50 text-gray-500`,
@@ -226,18 +238,18 @@ const theme = {
       //`px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center  border-transparent  leading-5 text-white hover:bg-white hover:text-darkblue-500 border-gray-200 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full`,
       topmenuRightNavContainer: "hidden md:flex h-full items-center",
       topnavMobileContainer: "bg-slate-50",
-     
+
       mobileButton:`md:hidden bg-slate-100 inline-flex items-center justify-center pt-[12px] px-2 hover:text-blue-400  text-gray-400 hover:bg-gray-100 `,
       indicatorIcon: 'fal fa-angle-down pl-2 pt-1',
       indicatorIconOpen: 'fal fa-angle-down pl-2 pt-1',
-      subMenuWrapper: `hidden`, 
+      subMenuWrapper: `hidden`,
       subMenuParentWrapper: 'hidden',
       subMenuWrapperChild: `divide-x overflow-x-auto max-w-[1400px] mx-auto`,
       subMenuWrapperTop: 'hidden',
       subMenuWrapperInactiveFlyout: `absolute left-0 right-0  mt-8 normal-case bg-white shadow-lg z-10 p-2`,
       subMenuWrapperInactiveFlyoutBelow: ` absolute ml-40 normal-case bg-white shadow-lg z-10 p-2`,
       subMenuWrapperInactiveFlyoutDirection: 'grid grid-cols-4'
-      
+
   },
   table: {
       tableContainer: 'relative flex flex-col w-full h-full overflow-x-auto scrollbar-sm border rounded-t-[12px]',
@@ -275,56 +287,54 @@ const theme = {
     label: 'font-semibold text-[12px] leading-[14.62px] border-t pt-[14px]',
     link: 'font-normal leading-[14.62px] text-[12px] underline'
   },
-  sectionGroup: {
-    default: {
-      wrapper1: 'w-full h-full flex-1 flex flex-row p-2', // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
-      icon: 'text-slate-400 hover:text-blue-500',
-      sideNavContainer1: 'w-64 hidden xl:block',
-      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
+    sectionGroup: {
+        default: {
+            wrapper1: "w-full h-full flex-1 flex flex-row pt-2", // inside page header, wraps sidebar
+            wrapper2:
+                "flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
+            iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
+            icon: "text-slate-400 hover:text-blue-500",
+            sideNavContainer1: "hidden xl:block",
+            sideNavContainer2:
+                "min-w-[302px] max-w-[302px] sticky top-20 hidden xl:block h-[100vh_-_102px] pr-2",
+        },
+        content: {
+            wrapper1: "w-full h-full flex-1 flex flex-row lg:pt-[118px] ", // inside page header, wraps sidebar
+            wrapper2:
+                "flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_200px)]", // content wrapepr
+            iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
+            icon: "text-slate-400 hover:text-blue-500",
+        },
+        darkSection: {
+            wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
+            wrapper2: "max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto",
+            wrapper3:
+                "flex flex-1 w-full  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
+            iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
+            icon: "text-slate-400 hover:text-blue-500",
+        },
+        lightCentered: {
+            wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px] `, // inside page header, wraps sidebar
+            wrapper2: "max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto",
+            wrapper3:
+                "flex flex-1 w-full  shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
+            iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
+            icon: "text-slate-400 hover:text-blue-500",
+        },
+        clearCentered: {
+            wrapper1: `w-full h-full flex-1 flex flex-row -mt-3`, // inside page header, wraps sidebar
+            wrapper2: "max-w-[1440px] w-full xl:px-[48px] mx-auto",
+            wrapper3: "flex flex-1 w-full flex-col relative h-full min-h-[200px]", // content wrapepr
+            iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
+            icon: "text-slate-400 hover:text-blue-500",
+        },
+        header: {
+            wrapper1: "w-full h-full flex-1 flex flex-row", // inside page header, wraps sidebar
+            wrapper2: "flex flex-1 w-full  flex-col  relative min-h-[200px]", // content wrapepr
+            iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
+            icon: "text-slate-400 hover:text-blue-500",
+        },
     },
-    content: {
-      wrapper1: 'w-full h-full flex-1 flex flex-row p-2 ', // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full border-2 flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
-      icon: 'text-slate-400 hover:text-blue-500',
-      sideNavContainer1: 'w-64 hidden xl:block',
-      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
-    },
-    darkSection: {
-      wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
-      icon: 'text-slate-400 hover:text-blue-500',
-      sideNavContainer1: 'w-64 hidden xl:block',
-      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
-    },
-    lightCentered: {
-      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto border shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
-      icon: 'text-slate-400 hover:text-blue-500',
-      sideNavContainer1: 'w-64 hidden xl:block',
-      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
-    },
-    clearCentered: {
-      wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px]`, // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full max-w-[1332px]  mx-auto flex-col relative h-full min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
-      icon: 'text-slate-400 hover:text-blue-500',
-      sideNavContainer1: 'w-64 hidden xl:block',
-      sideNavContainer2: 'w-64 sticky top-20 hidden xl:block'
-    },
-    header: {
-      wrapper1: 'w-full h-full flex-1 flex flex-row', // inside page header, wraps sidebar
-      wrapper2: 'flex flex-1 w-full  flex-col  relative min-h-[200px]' , // content wrapepr
-      iconWrapper : 'z-5 absolute right-[10px] top-[5px]',
-      icon: 'text-slate-400 hover:text-blue-500',
-      sideNavContainer1: 'hidden',
-      sideNavContainer2: 'hidden',
-    }
-  },
 }
 
 //theme.navOptions.logo = <Link to='/' className='h-12 flex px-4 items-center'><div className='rounded-full h-10 bg-blue-500 border border-slate-50' /></Link>

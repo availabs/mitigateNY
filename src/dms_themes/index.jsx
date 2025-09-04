@@ -1,5 +1,6 @@
 import mnyv1 from './mnyv1'
 import mny_admin from './mny_admin'
+import mny_auth from "./mny_auth";
 import React from 'react'
 import { Link } from 'react-router'
 
@@ -31,6 +32,7 @@ export default {
 	mny: mnyv1,
   mnyv1,
   mny_admin,
+    mny_auth,
   default: {
     navOptions: {
       logo: <Logo />,
