@@ -85,12 +85,12 @@ function App() {
                   navSettings: authMenuConfig,
                   dataTypes: hazmitDataTypes,
                   useFalcor,
-                  getUser: () => getUser(AUTH_HOST, PROJECT_NAME),
+                  getUser: () => getUser({AUTH_HOST, PROJECT_NAME}),
                   getGroups: ({user}) => getGroups({user, AUTH_HOST, PROJECT_NAME}),
                   getUsers: ({user}) => getUsers({user, AUTH_HOST, PROJECT_NAME}),
             }),
               undefined,
-              () => getUser(AUTH_HOST, PROJECT_NAME)),
+              () => getUser({AUTH_HOST, PROJECT_NAME})),
           // Auth
           // ...WrappedAuth
         ]} 
