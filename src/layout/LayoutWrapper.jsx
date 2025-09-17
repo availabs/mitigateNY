@@ -1,7 +1,6 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import { useNavigate, useLocation } from "react-router";
 import cloneDeep from 'lodash/cloneDeep'
-import { Provider } from "react-redux";
 import Layout from './avail-layout'
 import { configureStore } from "@reduxjs/toolkit";
 
@@ -13,9 +12,9 @@ const Wrapper = ({children}) => {
   return children
 }
 const LayoutWrapper = ({
-  element: Element, 
-  component: Comp, 
-  Layout=({children}) => <>{children}</>, 
+  element: Element,
+  component: Comp,
+  Layout=({children}) => <>{children}</>,
   ...props
 }) => {
     const [user, setUser] = useState({})
@@ -34,7 +33,6 @@ const LayoutWrapper = ({
     //     reducer: {}
     // });
   return (
-    // <Provider store={store}>
         <Wrapper>
             <Layout {...props} user={user}>
                 <Child />
@@ -52,7 +50,3 @@ export default function  DefaultLayoutWrapper ( routes, layout=Layout, getUser )
     return out
   })
 }
-
-
-
-
