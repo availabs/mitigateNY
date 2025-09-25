@@ -80,6 +80,7 @@ const theme = {
   },
 
   layout: {
+    outerWrapper: "bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px]",
     wrapper: "max-w-[1440px] mx-auto",
     wrapper2: "flex-1 flex items-start flex-col items-stretch max-w-full",
     wrapper3: "flex flex-1 md:px-4 xl:px-[64px]",
@@ -91,15 +92,15 @@ const theme = {
     sidenavContainer2:
       "hidden scrollbar-sm lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden",
   },
-  page: {
-    container: `bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, //`bg-gradient-to-b from-[#F4F4F4] to-[#F4F4F4] bg-[url('/themes/mny/topolines.png')] `,
-    wrapper1: "w-full h-full flex-1 flex flex-col ", // first div inside Layout
-    wrapper2: "w-full h-full flex-1 flex flex-row lg:pt-[120px] ", // inside page header, wraps sidebar
-    wrapper3:
-      "flex flex-1 w-full  flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]", // content wrapepr
-    iconWrapper: "z-10 absolute right-[10px] top-[5px]",
-    icon: "text-slate-400 hover:text-blue-500",
-  },
+  // page: {
+  //   container: `bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, //`bg-gradient-to-b from-[#F4F4F4] to-[#F4F4F4] bg-[url('/themes/mny/topolines.png')] `,
+  //   wrapper1: "w-full h-full flex-1 flex flex-col ", // first div inside Layout
+  //   wrapper2: "w-full h-full flex-1 flex flex-row lg:pt-[120px] ", // inside page header, wraps sidebar
+  //   wrapper3:
+  //     "flex flex-1 w-full  flex-col border shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]", // content wrapepr
+  //   iconWrapper: "z-10 absolute right-[10px] top-[5px]",
+  //   icon: "text-slate-400 hover:text-blue-500",
+  // },
   pages: {
     sectionGroup: {
       edit: 'default',
