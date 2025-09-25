@@ -11,7 +11,7 @@ import {
 //import ComponentRegistry from '~/component_registry'
 // import AdditionalComponents from "./additional_components";
 
-import themes from '~/dms_themes'
+import themes from './dms_themes'
 
 // import { withAuth, useAuth } from "~/modules/ams/src"
 // import Auth from '~/pages/Auth'
@@ -68,11 +68,12 @@ function App() {
         }
         PROJECT_NAME={PROJECT_NAME}
         adminPath={adminBaseUrl}
+        damaBaseUrl={damaBaseUrl}
         pgEnvs={[defaultPgEnv]}
         // defaultData={siteData}
         // authWrapper={withAuth}
         themes={themes}
-        damaBaseUrl={damaBaseUrl}
+
         API_HOST={API_HOST}
         AUTH_HOST={AUTH_HOST}
 
@@ -93,11 +94,9 @@ function App() {
               () => getUser({AUTH_HOST, PROJECT_NAME})),
           // Auth
           // ...WrappedAuth
-        ]} 
+        ]}
       />
     )
 }
 
 export default App
-
-
