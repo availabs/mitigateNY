@@ -101,7 +101,7 @@ export const menuItems = [
 
 export const authMenuConfig = {
   sideNav: {
-    size: 'compact',
+    size: 'none',
     color: 'white',
     menuItems
   },
