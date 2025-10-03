@@ -1,8 +1,8 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import cloneDeep from 'lodash/cloneDeep'
 import Layout from './avail-layout'
-import { configureStore } from "@reduxjs/toolkit";
+import { useAuth } from '../modules/dms/src';
 
 const Wrapper = ({children}) => {
   const location = useLocation();
@@ -17,21 +17,10 @@ const LayoutWrapper = ({
   Layout=({children}) => <>{children}</>,
   ...props
 }) => {
-    const [user, setUser] = useState({})
-  const Child = Element || Comp // support old react router routes
 
-  const { getUser } = props;
-    useEffect(() => {
-        async function load() {
-            const user = await getUser();
-            setUser(user);
-        }
+  const { user } = useAuth();
+  const Child = Element || Comp
 
-        load()
-    }, []);
-    // const store = configureStore({
-    //     reducer: {}
-    // });
   return (
         <Wrapper>
             <Layout {...props} user={user}>
@@ -42,11 +31,11 @@ const LayoutWrapper = ({
   )
 }
 
-export default function  DefaultLayoutWrapper ( routes, layout=Layout, getUser ) {
+export default function  DefaultLayoutWrapper ( routes, layout=Layout ) {
   const menus = routes.filter(r => r.mainNav)
   return routes.map(route => {
     let out = cloneDeep(route)
-    out.element = <LayoutWrapper {...out} Layout={layout} menus={menus} getUser={getUser} />
+    out.element = <LayoutWrapper {...out} Layout={layout} menus={menus} />
     return out
   })
 }

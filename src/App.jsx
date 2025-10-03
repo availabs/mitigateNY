@@ -4,12 +4,9 @@ import {
   DmsSite,
   adminConfig,
   registerComponents,
+  useAuth
 } from "./modules/dms/src"
-import {
-  getUser,
-  getGroups,
-  getUsers
-} from './modules/dms/src/patterns/auth/api'
+
 //import ComponentRegistry from '~/component_registry'
 // import AdditionalComponents from "./additional_components";
 
@@ -30,7 +27,7 @@ import { DamaMap, Map } from "./pages/DataManager/"
 
 
 import {PROJECT_NAME, API_HOST, AUTH_HOST} from "./config.js";
-import {useAuth} from "@availabs/ams";
+
 //import siteData from './siteData.json'
 
 registerComponents({
@@ -87,12 +84,8 @@ function App() {
               navSettings: authMenuConfig,
               dataTypes: hazmitDataTypes,
               useFalcor,
-              getUser: () => getUser({AUTH_HOST, PROJECT_NAME}),
-              getGroups: ({user}) => getGroups({user, AUTH_HOST, PROJECT_NAME}),
-              getUsers: ({user}) => getUsers({user, AUTH_HOST, PROJECT_NAME}),
-            }),
-            undefined,
-            () => getUser({AUTH_HOST, PROJECT_NAME})
+              useAuth
+            })
           ),
           // Auth
           // ...WrappedAuth
