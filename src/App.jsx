@@ -4,10 +4,12 @@ import {
   DmsSite,
   adminConfig,
   registerComponents,
-    getUser,
-    getGroups,
-    getUsers
-} from "~/modules/dms/src/"
+} from "./modules/dms/src"
+import {
+  getUser,
+  getGroups,
+  getUsers
+} from './modules/dms/src/patterns/auth/api'
 //import ComponentRegistry from '~/component_registry'
 // import AdditionalComponents from "./additional_components";
 
@@ -70,8 +72,7 @@ function App() {
         adminPath={adminBaseUrl}
         damaBaseUrl={damaBaseUrl}
         pgEnvs={[defaultPgEnv]}
-        // defaultData={siteData}
-        // authWrapper={withAuth}
+        defaultData={siteData}
         themes={themes}
 
         API_HOST={API_HOST}
@@ -80,18 +81,19 @@ function App() {
         routes={[
           //cenrep
           ...LayoutWrapper(
-              DamaRoutes({
-                  baseUrl:damaBaseUrl,
-                  defaultPgEnv,
-                  navSettings: authMenuConfig,
-                  dataTypes: hazmitDataTypes,
-                  useFalcor,
-                  getUser: () => getUser({AUTH_HOST, PROJECT_NAME}),
-                  getGroups: ({user}) => getGroups({user, AUTH_HOST, PROJECT_NAME}),
-                  getUsers: ({user}) => getUsers({user, AUTH_HOST, PROJECT_NAME}),
+            DamaRoutes({
+              baseUrl:damaBaseUrl,
+              defaultPgEnv,
+              navSettings: authMenuConfig,
+              dataTypes: hazmitDataTypes,
+              useFalcor,
+              getUser: () => getUser({AUTH_HOST, PROJECT_NAME}),
+              getGroups: ({user}) => getGroups({user, AUTH_HOST, PROJECT_NAME}),
+              getUsers: ({user}) => getUsers({user, AUTH_HOST, PROJECT_NAME}),
             }),
-              undefined,
-              () => getUser({AUTH_HOST, PROJECT_NAME})),
+            undefined,
+            () => getUser({AUTH_HOST, PROJECT_NAME})
+          ),
           // Auth
           // ...WrappedAuth
         ]}

@@ -1,853 +1,2036 @@
 [
-   {
-      "id": "566430",
-      "app": "mitigat-ny-prod",
-      "type": "prod",
-      "patterns": [
-         {
-            "id": "566431",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+  {
+    "id": "566430",
+    "app": "mitigat-ny-prod",
+    "type": "prod",
+    "patterns": [
+      {
+        "id": "566431",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "shmp",
+        "theme": {
+          "settings": {
             "theme": {
-               "settings": {
-                  "theme": {
-                     "theme": "default"
-                  }
-               },
-               "navOptions": {
-                  "authMenu": {
-                     "navItems": [
-                        {
-                           "icon": "fad fa-screwdriver-wrench fa-fw flex-shrink-0  pr-1",
-                           "name": "Admin",
-                           "path": "/admin",
-                           "authLevel": "5",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-database fa-fw flex-shrink-0  pr-1",
-                           "name": "Cenrep",
-                           "path": "/cenrep",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-money-check-pen fa-fw flex-shrink-0  pr-1'",
-                           "name": "Manage SHMP",
-                           "path": "/manage",
-                           "authLevel": "5",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
-                           "name": "Manage Site",
-                           "path": "/list",
-                           "authLevel": "10",
-                           "className": ""
-                        }
-                     ]
-                  }
-               }
+              "theme": "default"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "main"
             },
-            "base_url": "/",
-            "doc_type": "shmp",
-            "subdomain": "fema24",
-            "authLevel": "",
-            "pattern_type": "page",
-            "created_at": "2024-08-26 19:42:05.863295+00",
-            "updated_at": "2024-09-09 18:39:57.172692+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "566466",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+            "sideNav": {
+              "size": "none"
+            },
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "fad fa-screwdriver-wrench fa-fw flex-shrink-0  pr-1",
+                  "name": "Admin",
+                  "path": "/admin",
+                  "authLevel": "5",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-database fa-fw flex-shrink-0  pr-1",
+                  "name": "Cenrep",
+                  "path": "/cenrep",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-money-check-pen fa-fw flex-shrink-0  pr-1'",
+                  "name": "Manage SHMP",
+                  "path": "/manage",
+                  "authLevel": "5",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
+                  "name": "Manage Site",
+                  "path": "/list",
+                  "authLevel": "10",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "shmp",
+        "authLevel": "",
+        "subdomain": "fema24",
+        "manage_url": "/manage/design",
+        "pattern_type": "page",
+        "created_at": "2024-08-26 19:42:05.863295+00",
+        "updated_at": "2025-08-08 12:55:28.056185+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "566466",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "admin",
+        "theme": {
+          "settings": {
             "theme": {
-               "settings": {
-                  "theme": {
-                     "theme": "default"
-                  }
-               },
-               "navOptions": {
-                  "topNav": {
-                     "nav": "none",
-                     "logo": "left",
-                     "search": "none"
-                  },
-                  "sideNav": {
-                     "nav": "secondary",
-                     "logo": "none",
-                     "size": "compact",
-                     "color": "white"
-                  },
-                  "secondaryNav": {
-                     "navItems": [
-                        {
-                           "icon": "far fa-home fa-fw",
-                           "name": "Dashboard",
-                           "path": "/admin",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "far fa-gauge-simple fa-fw",
-                           "name": "Plan Status",
-                           "path": "/admin/plan_status",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "",
-                           "name": "Pages",
-                           "path": "",
-                           "authLevel": "-1",
-                           "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
-                        },
-                        {
-                           "icon": "far fa-edit fa-fw",
-                           "name": "CMS",
-                           "path": "/edit",
-                           "authLevel": "-1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "far fa-flask fa-fw",
-                           "name": "Playground",
-                           "path": "/playground/edit",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "far fa-paste fa-fw",
-                           "name": "Templates",
-                           "path": "/manage/templates",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "",
-                           "name": "Cen Rep",
-                           "path": "",
-                           "authLevel": "1",
-                           "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
-                        },
-                        {
-                           "icon": "far fa-database fa-fw",
-                           "name": "External Data",
-                           "path": "/cenrep",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-database fa-fw",
-                           "name": "Managed Data",
-                           "path": "/forms",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "",
-                           "name": "Docs",
-                           "path": "",
-                           "authLevel": "1",
-                           "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
-                        },
-                        {
-                           "icon": "far fa-book fa-fw",
-                           "name": "Classroom",
-                           "path": "/docs",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "",
-                           "name": "Datasets",
-                           "path": "",
-                           "authLevel": "1",
-                           "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
-                        },
-                        {
-                           "icon": "fad fa-location",
-                           "name": "Actions",
-                           "path": "/admin/actions",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-intersection",
-                           "name": "DMP",
-                           "path": "/admin/dmp",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-location",
-                           "name": "County Status",
-                           "path": "/admin/county_status",
-                           "authLevel": "1",
-                           "className": ""
-                        }
-                     ]
-                  }
-               }
+              "theme": "mny-db"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "none",
+              "logo": "left",
+              "size": "none",
+              "search": "none"
             },
-            "base_url": "/admin",
-            "doc_type": "admin",
-            "authLevel": "1",
-            "pattern_type": "page",
-            "created_at": "2024-08-26 19:45:32.803022+00",
-            "updated_at": "2024-12-05 20:51:26.292338+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "566568",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+            "sideNav": {
+              "nav": "main",
+              "logo": "top",
+              "size": "compact",
+              "color": "white",
+              "dropdown": "top"
+            },
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Site Manager",
+                  "path": "/list",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (External)",
+                  "path": "/cenrep",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (Internal)",
+                  "path": "/forms",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Documentation",
+                  "path": "/docs",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Admin",
+                  "path": "/admin",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "SHMP",
+                  "path": "/",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Cenrep",
+                  "path": "/cenrep",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Internally Sourced",
+                  "path": "/forms",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Docs",
+                  "path": "/docs",
+                  "authLevel": "1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/admin",
+        "doc_type": "admin",
+        "authLevel": "1",
+        "subdomain": "",
+        "manage_url": "/admin/manage/design",
+        "pattern_type": "page",
+        "created_at": "2024-08-26 19:45:32.803022+00",
+        "updated_at": "2025-09-25 16:25:14.774455+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "566568",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "playground",
+        "theme": {
+          "navOptions": {
+            "topNav": {
+              "nav": "none",
+              "logo": "left"
+            },
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact"
+            },
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Site Manager",
+                  "path": "/list",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (External)",
+                  "path": "/cenrep",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (Internal)",
+                  "path": "/forms",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Documentation",
+                  "path": "/docs",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Admin",
+                  "path": "/admin",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "SHMP",
+                  "path": "/",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "far fa-home fa-fw",
+                  "name": "Dashboard",
+                  "path": "/admin",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "far fa-gauge-simple fa-fw",
+                  "name": "Plan Status",
+                  "path": "/admin/plan_status",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Pages",
+                  "path": "",
+                  "authLevel": "-1",
+                  "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
+                },
+                {
+                  "icon": "far fa-edit fa-fw",
+                  "name": "CMS",
+                  "path": "/edit",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "far fa-flask fa-fw",
+                  "name": "Playground",
+                  "path": "/playground/edit",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "far fa-paste fa-fw",
+                  "name": "Templates",
+                  "path": "/manage/templates",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cen Rep",
+                  "path": "",
+                  "authLevel": "1",
+                  "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
+                },
+                {
+                  "icon": "far fa-database fa-fw",
+                  "name": "External Data",
+                  "path": "/cenrep",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-database fa-fw",
+                  "name": "Managed Data",
+                  "path": "/forms",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Docs",
+                  "path": "",
+                  "authLevel": "1",
+                  "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
+                },
+                {
+                  "icon": "far fa-book fa-fw",
+                  "name": "Classroom",
+                  "path": "/docs",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Datasets",
+                  "path": "",
+                  "authLevel": "1",
+                  "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
+                },
+                {
+                  "icon": "fad fa-location",
+                  "name": "Actions",
+                  "path": "/admin/actions",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-intersection",
+                  "name": "DMP",
+                  "path": "/admin/dmp",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-location",
+                  "name": "County Status",
+                  "path": "/admin/county_status",
+                  "authLevel": "1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/playgroundarchive",
+        "doc_type": "playground",
+        "authLevel": "1",
+        "subdomain": "",
+        "manage_url": "/playground/manage/design",
+        "pattern_type": "page",
+        "authPermissions": "{\"AVAIL\": [\"*\"]}",
+        "additionalSectionAttributes": [
+          {
+            "key": "status",
+            "name": "status",
+            "type": "select",
+            "options": [
+              {
+                "label": "Status 1",
+                "value": "s1"
+              },
+              {
+                "label": "Status 2",
+                "value": "s2 updated"
+              }
+            ]
+          }
+        ],
+        "created_at": "2024-08-27 14:52:40.303453+00",
+        "updated_at": "2025-09-29 16:22:18.919058+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "570441",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "navOptions": {
+            "topNav": {
+              "logo": "none"
+            },
+            "sideNav": {
+              "size": "compact"
+            }
+          }
+        },
+        "base_url": "/drafts",
+        "doc_type": "drafts",
+        "authLevel": "1",
+        "pattern_type": "page",
+        "created_at": "2024-08-27 15:03:12.418522+00",
+        "updated_at": "2025-06-09 18:26:00.332056+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "570475",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "navOptions": {
+            "topNav": {
+              "logo": "none"
+            },
+            "sideNav": {
+              "size": "compact"
+            },
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Site Manager",
+                  "path": "/list",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (External)",
+                  "path": "/cenrep",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (Internal)",
+                  "path": "/forms",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Documentation",
+                  "path": "/docs",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Admin",
+                  "path": "/admin",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "SHMP",
+                  "path": "/",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/docs",
+        "doc_type": "classroom",
+        "authLevel": "1",
+        "subdomain": "redesign",
+        "pattern_type": "page",
+        "created_at": "2024-08-27 15:05:57.766788+00",
+        "updated_at": "2025-06-09 18:26:00.351586+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "572433",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
             "theme": {
-               "navOptions": {
-                  "topNav": {
-                     "logo": "left"
-                  },
-                  "sideNav": {
-                     "logo": "none",
-                     "size": "compact"
-                  }
-               }
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "main"
             },
-            "base_url": "/playground",
-            "doc_type": "playground",
-            "authLevel": "1",
-            "pattern_type": "page",
-            "created_at": "2024-08-27 14:52:40.303453+00",
-            "updated_at": "2024-10-11 17:36:31.466434+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "570441",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact",
+              "depth": "2"
+            },
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Manager",
+                  "path": "/manage",
+                  "authLevel": "5",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep",
+                  "path": "/cenrep",
+                  "authLevel": "1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "bild",
+        "authLevel": "1",
+        "subdomain": "buildings",
+        "pattern_type": "page",
+        "created_at": "2024-08-27 15:10:31.371165+00",
+        "updated_at": "2025-06-09 18:26:00.36572+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "572462",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "county_template2",
+        "theme": {
+          "settings": {
             "theme": {
-               "navOptions": {
-                  "topNav": {
-                     "logo": "none"
-                  },
-                  "sideNav": {
-                     "size": "compact"
-                  }
-               }
-            },
-            "base_url": "/drafts",
-            "doc_type": "drafts",
-            "authLevel": "1",
-            "pattern_type": "page",
-            "created_at": "2024-08-27 15:03:12.418522+00",
-            "updated_at": "2024-08-27 15:06:01.724159+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "570475",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+              "theme": "mnyv1"
+            }
+          }
+        },
+        "filters": "[{\"searchKey\": \"geoid\", \"values\": [\"36105\"]}]",
+        "base_url": "/",
+        "doc_type": "county_template2",
+        "authLevel": "",
+        "subdomain": "countytemplate",
+        "manage_url": "/manage/design",
+        "pattern_type": "page",
+        "created_at": "2024-08-27 15:27:20.606076+00",
+        "updated_at": "2025-07-10 14:17:01.46457+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "584350",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
             "theme": {
-               "navOptions": {
-                  "topNav": {
-                     "logo": "none"
-                  },
-                  "sideNav": {
-                     "size": "compact"
-                  }
-               }
+              "theme": "mnyv1"
+            }
+          },
+          "navOptions": {
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact"
             },
-            "base_url": "/docs",
-            "doc_type": "classroom",
-            "authLevel": "1",
-            "pattern_type": "page",
-            "created_at": "2024-08-27 15:05:57.766788+00",
-            "updated_at": "2024-08-27 15:20:03.902995+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "572433",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "fad fa-database fa-fw flex-shrink-0  pr-1",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-money-check-pen fa-fw flex-shrink-0  pr-1'",
+                  "name": "Manage SHMP",
+                  "path": "/manage",
+                  "authLevel": "5",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
+                  "name": "Manage Site",
+                  "path": "/list",
+                  "authLevel": "10",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
+                  "name": "Manage Site",
+                  "path": "/list",
+                  "authLevel": "10",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "design",
+        "authLevel": "",
+        "subdomain": "design",
+        "pattern_type": "page",
+        "created_at": "2024-08-27 15:54:28.443767+00",
+        "updated_at": "2025-06-09 18:26:00.393722+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "597989",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
             "theme": {
-               "navOptions": {
-                  "authMenu": {
-                     "navItems": [
-                        {
-                           "icon": "",
-                           "name": "Manager",
-                           "path": "/manage",
-                           "authLevel": "5",
-                           "className": ""
-                        },
-                        {
-                           "icon": "",
-                           "name": "Cenrep",
-                           "path": "/cenrep",
-                           "authLevel": "1",
-                           "className": ""
-                        }
-                     ]
-                  }
-               }
-            },
-            "base_url": "/",
-            "doc_type": "bild",
-            "authLevel": "1",
-            "subdomain": "buildings",
-            "pattern_type": "page",
-            "created_at": "2024-08-27 15:10:31.371165+00",
-            "updated_at": "2024-09-12 18:47:15.406398+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "572462",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+              "theme": "mny"
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "delaware-2021",
+        "subdomain": "delaware2021",
+        "pattern_type": "page",
+        "created_at": "2024-08-30 13:50:04.113027+00",
+        "updated_at": "2025-06-09 18:26:00.412805+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "668719",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/",
+        "doc_type": "sullivan-2021",
+        "subdomain": "sullivan2021",
+        "pattern_type": "page",
+        "created_at": "2024-09-19 13:47:56.751126+00",
+        "updated_at": "2025-06-09 18:26:00.428334+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "671388",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
             "theme": {
-               "settings": {
-                  "theme": {
-                     "theme": "mnyv1"
-                  }
-               }
-            },
-            "base_url": "/",
-            "doc_type": "county_template2",
-            "authLevel": "",
-            "subdomain": "countytemplate",
-            "pattern_type": "page",
-            "created_at": "2024-08-27 15:27:20.606076+00",
-            "updated_at": "2024-12-17 19:19:38.898341+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "584350",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+              "theme": "mny"
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "schohariecounty",
+        "subdomain": "schoharie",
+        "pattern_type": "page",
+        "created_at": "2024-09-24 14:57:20.94665+00",
+        "updated_at": "2025-06-09 18:26:00.440783+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "726222",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
             "theme": {
-               "settings": {
-                  "theme": {
-                     "theme": "mnyv1"
-                  }
-               },
-               "navOptions": {
-                  "sideNav": {
-                     "nav": "main",
-                     "logo": "none",
-                     "size": "compact"
-                  },
-                  "authMenu": {
-                     "navItems": [
-                        {
-                           "icon": "fad fa-database fa-fw flex-shrink-0  pr-1",
-                           "name": "Playground",
-                           "path": "/playground",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-money-check-pen fa-fw flex-shrink-0  pr-1'",
-                           "name": "Manage SHMP",
-                           "path": "/manage",
-                           "authLevel": "5",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
-                           "name": "Manage Site",
-                           "path": "/list",
-                           "authLevel": "10",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
-                           "name": "Manage Site",
-                           "path": "/list",
-                           "authLevel": "10",
-                           "className": ""
-                        }
-                     ]
-                  }
-               }
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "main"
             },
-            "base_url": "/",
-            "doc_type": "design",
-            "authLevel": "",
-            "subdomain": "design",
-            "pattern_type": "page",
-            "created_at": "2024-08-27 15:54:28.443767+00",
-            "updated_at": "2024-12-20 18:32:51.005399+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "597989",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
-            "base_url": "/",
-            "doc_type": "delaware-2021",
-            "subdomain": "delaware2021",
-            "pattern_type": "page",
-            "created_at": "2024-08-30 13:50:04.113027+00",
-            "updated_at": "2024-08-30 14:08:01.702199+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "668719",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
-            "base_url": "/",
-            "doc_type": "sullivan-2021",
-            "subdomain": "sullivan2021",
-            "pattern_type": "page",
-            "created_at": "2024-09-19 13:47:56.751126+00",
-            "updated_at": "2024-09-19 13:47:56.751126+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "671388",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
-            "theme": {
-               "settings": {
-                  "theme": {
-                     "theme": "mny"
-                  }
-               }
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact",
+              "depth": "1"
+            }
+          }
+        },
+        "base_url": "/draft",
+        "doc_type": "schoharie2024",
+        "subdomain": "schoharie",
+        "pattern_type": "page",
+        "created_at": "2024-10-09 14:12:17.49787+00",
+        "updated_at": "2025-09-09 19:36:28.177167+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "736402",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "test-meta-forms",
+        "theme": {
+          "navOptions": {
+            "topNav": {
+              "nav": "none"
             },
-            "base_url": "/",
-            "doc_type": "schohariecounty",
-            "subdomain": "schoharie",
-            "pattern_type": "page",
-            "created_at": "2024-09-24 14:57:20.94665+00",
-            "updated_at": "2024-12-17 19:23:26.406934+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "726222",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
-            "base_url": "/draft",
-            "doc_type": "schoharie2024",
-            "subdomain": "schoharie",
-            "pattern_type": "page",
-            "created_at": "2024-10-09 14:12:17.49787+00",
-            "updated_at": "2024-10-09 14:12:41.754672+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "736402",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
-            "theme": {
-               "navOptions": {
-                  "sideNav": {
-                     "nav": "secondary",
-                     "logo": "none",
-                     "size": "compact"
-                  },
-                  "authMenu": {
-                     "navItems": [
-                        {
-                           "icon": "",
-                           "name": "Manage",
-                           "path": "/forms/manage",
-                           "authLevel": "-1",
-                           "className": ""
-                        }
-                     ]
-                  },
-                  "secondaryNav": {
-                     "navItems": [
-                        {
-                           "icon": "far fa-home fa-fw",
-                           "name": "Dashboard",
-                           "path": "/admin",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "far fa-gauge-simple fa-fw",
-                           "name": "Plan Status",
-                           "path": "/admin/plan_status",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "",
-                           "name": "Pages",
-                           "path": "",
-                           "authLevel": "-1",
-                           "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
-                        },
-                        {
-                           "icon": "far fa-edit fa-fw",
-                           "name": "CMS",
-                           "path": "/edit",
-                           "authLevel": "-1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "far fa-flask fa-fw",
-                           "name": "Playground",
-                           "path": "/playground/edit",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "far fa-paste fa-fw",
-                           "name": "Templates",
-                           "path": "/manage/templates",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "",
-                           "name": "Cen Rep",
-                           "path": "",
-                           "authLevel": "1",
-                           "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
-                        },
-                        {
-                           "icon": "far fa-database fa-fw",
-                           "name": "External Data",
-                           "path": "/cenrep",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-database fa-fw",
-                           "name": "Managed Data",
-                           "path": "/forms",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "",
-                           "name": "Docs",
-                           "path": "",
-                           "authLevel": "1",
-                           "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
-                        },
-                        {
-                           "icon": "far fa-book fa-fw",
-                           "name": "Classroom",
-                           "path": "/docs",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "",
-                           "name": "Datasets",
-                           "path": "",
-                           "authLevel": "1",
-                           "className": "px-6 pt-8 pb-1 uppercase text-xs text-blue-400"
-                        },
-                        {
-                           "icon": "fad fa-location",
-                           "name": "Actions",
-                           "path": "/admin/actions",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-intersection",
-                           "name": "DMP",
-                           "path": "/admin/dmp",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-intersection",
-                           "name": "County Status",
-                           "path": "/admin/county_status",
-                           "authLevel": "1",
-                           "className": ""
-                        }
-                     ]
-                  }
-               }
+            "sideNav": {
+              "nav": "none",
+              "logo": "none",
+              "size": "mini"
             },
-            "sources": [
-               {
-                  "id": "736822",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "750524",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "753897",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "753898",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "753899",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "868277",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "881988",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "946257",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "953754",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "954239",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "954663",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "954804",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               },
-               {
-                  "id": "1003407",
-                  "ref": "mitigat-ny-prod+test-meta-forms|source"
-               }
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Site Manager",
+                  "path": "/list",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (External)",
+                  "path": "/cenrep",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (Internal)",
+                  "path": "/forms",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Documentation",
+                  "path": "/docs",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Admin",
+                  "path": "/admin",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "SHMP",
+                  "path": "/",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "far fa-database fa-fw",
+                  "name": "External Data",
+                  "path": "/cenrep",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-database fa-fw",
+                  "name": "Internal Data",
+                  "path": "/forms",
+                  "authLevel": "1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "sources": [
+          {
+            "id": "736822",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "750524",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "753898",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "753899",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "868277",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "881988",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "946257",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "953754",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "954239",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1003407",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1021781",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1021798",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1021813",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1029065",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1033367",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1057025",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1068273",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1068274",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1068982",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1068983",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1346449",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1427079",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1441680",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1459525",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1473295",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1473468",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1473470",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          },
+          {
+            "id": "1480595",
+            "ref": "mitigat-ny-prod+test-meta-forms|source"
+          }
+        ],
+        "base_url": "/forms",
+        "doc_type": "test-meta-forms",
+        "categories": [],
+        "created_at": "2024-10-15 20:02:15.639156+00",
+        "created_by": null,
+        "manage_url": "/forms/manage/design",
+        "updated_at": "2025-09-24 15:28:22.659968+00",
+        "updated_by": null,
+        "description": {
+          "root": {
+            "type": "root",
+            "format": "",
+            "indent": 0,
+            "version": 1,
+            "children": [
+              {
+                "type": "paragraph",
+                "format": "",
+                "indent": 0,
+                "version": 1,
+                "children": [],
+                "direction": null
+              }
             ],
-            "base_url": "/forms",
-            "doc_type": "test-meta-forms",
-            "categories": [],
-            "created_at": "2024-10-15 20:02:15.639156+00",
-            "created_by": null,
-            "updated_at": "2025-01-14 20:26:37.554049+00",
-            "updated_by": null,
-            "description": {
-               "root": {
-                  "type": "root",
-                  "format": "",
-                  "indent": 0,
-                  "version": 1,
-                  "children": [
-                     {
-                        "type": "paragraph",
-                        "format": "",
-                        "indent": 0,
-                        "version": 1,
-                        "children": [],
-                        "direction": null
-                     }
-                  ],
-                  "direction": null
-               }
-            },
-            "pattern_type": "forms"
-         },
-         {
-            "id": "892955",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
-            "base_url": "/",
-            "doc_type": "fulton-2021",
-            "subdomain": "fulton2021",
-            "pattern_type": "page",
-            "created_at": "2024-11-01 17:32:09.472635+00",
-            "updated_at": "2024-11-01 17:32:09.472635+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "892976",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
-            "base_url": "/",
-            "doc_type": "hamilton-2021",
-            "subdomain": "hamilton2021",
-            "pattern_type": "page",
-            "created_at": "2024-11-01 17:32:31.350365+00",
-            "updated_at": "2024-11-01 17:32:31.350365+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "985070",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+            "direction": null
+          }
+        },
+        "pattern_type": "forms",
+        "authPermissions": "{\"AVAIL\": [\"*\"]}"
+      },
+      {
+        "id": "892955",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/",
+        "doc_type": "fulton-2021",
+        "subdomain": "fulton2021",
+        "pattern_type": "page",
+        "created_at": "2024-11-01 17:32:09.472635+00",
+        "updated_at": "2025-06-09 18:26:00.477154+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "892976",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/",
+        "doc_type": "hamilton-2021",
+        "subdomain": "hamilton2021",
+        "pattern_type": "page",
+        "created_at": "2024-11-01 17:32:31.350365+00",
+        "updated_at": "2025-06-09 18:26:00.490826+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "985070",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "redesign",
+        "theme": {
+          "settings": {
             "theme": {
-               "settings": {
-                  "theme": {
-                     "theme": "mny"
-                  }
-               },
-               "navOptions": {
-                  "sideNav": {
-                     "nav": "main",
-                     "logo": "none",
-                     "size": "compact"
-                  },
-                  "authMenu": {
-                     "navItems": [
-                        {
-                           "icon": "fad fa-database fa-fw flex-shrink-0  pr-1",
-                           "name": "Playground",
-                           "path": "/playground",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-money-check-pen fa-fw flex-shrink-0  pr-1'",
-                           "name": "Manage SHMP",
-                           "path": "/manage",
-                           "authLevel": "5",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
-                           "name": "Manage Site",
-                           "path": "/list",
-                           "authLevel": "10",
-                           "className": ""
-                        }
-                     ]
-                  }
-               }
+              "theme": "mnyv1"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "main"
             },
-            "base_url": "/",
-            "doc_type": "redesign",
-            "subdomain": "",
-            "pattern_type": "page",
-            "created_at": "2024-12-18 16:24:22.552529+00",
-            "updated_at": "2024-12-23 15:34:59.647958+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "985071",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact",
+              "depth": "2"
+            },
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Site Manager",
+                  "path": "/list",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (External)",
+                  "path": "/cenrep",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (Internal)",
+                  "path": "/forms",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Documentation",
+                  "path": "/docs",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Admin",
+                  "path": "/admin",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "SHMP",
+                  "path": "/",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "What's At Risk",
+                  "path": "/what_s_at_risk",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Climate Change",
+                  "path": "/climate_change",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "redesign",
+        "subdomain": "",
+        "manage_url": "/manage/design",
+        "pattern_type": "page",
+        "authPermissions": "",
+        "created_at": "2024-12-18 16:24:22.552529+00",
+        "updated_at": "2025-09-25 16:31:37.631646+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "985071",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
             "theme": {
-               "settings": {
-                  "theme": {
-                     "theme": "default"
-                  }
-               },
-               "navOptions": {
-                  "authMenu": {
-                     "navItems": [
-                        {
-                           "icon": "fad fa-database fa-fw flex-shrink-0  pr-1",
-                           "name": "Playground",
-                           "path": "/playground",
-                           "authLevel": "1",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-money-check-pen fa-fw flex-shrink-0  pr-1'",
-                           "name": "Manage SHMP",
-                           "path": "/manage",
-                           "authLevel": "5",
-                           "className": ""
-                        },
-                        {
-                           "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
-                           "name": "Manage Site",
-                           "path": "/list",
-                           "authLevel": "10",
-                           "className": ""
-                        }
-                     ]
-                  }
-               }
-            },
-            "base_url": "/",
-            "doc_type": "shmpcopy",
-            "subdomain": "shmpcopy",
-            "pattern_type": "page",
-            "created_at": "2024-12-18 16:24:37.922778+00",
-            "updated_at": "2024-12-20 19:07:24.169569+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "1005705",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+              "theme": "default"
+            }
+          },
+          "navOptions": {
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "fad fa-database fa-fw flex-shrink-0  pr-1",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-money-check-pen fa-fw flex-shrink-0  pr-1'",
+                  "name": "Manage SHMP",
+                  "path": "/manage",
+                  "authLevel": "5",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
+                  "name": "Manage Site",
+                  "path": "/list",
+                  "authLevel": "10",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "shmpcopy",
+        "subdomain": "shmpcopy",
+        "pattern_type": "page",
+        "created_at": "2024-12-18 16:24:37.922778+00",
+        "updated_at": "2025-06-09 18:26:00.515408+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1005705",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
             "theme": {
-               "settings": {
-                  "theme": {
-                     "theme": "mny"
-                  }
-               }
-            },
-            "base_url": "/playground",
-            "doc_type": "design_playground",
-            "authLevel": "1",
-            "subdomain": "design",
-            "pattern_type": "page",
-            "created_at": "2024-12-20 18:28:55.605204+00",
-            "updated_at": "2024-12-20 18:34:10.301879+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "1005930",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
-            "base_url": "/playground",
-            "doc_type": "shmpcopy_playground",
-            "authLevel": "1",
-            "subdomain": "shmpcopy",
-            "pattern_type": "page",
-            "created_at": "2024-12-20 19:06:01.310018+00",
-            "updated_at": "2024-12-20 19:06:01.310018+00",
-            "created_by": null,
-            "updated_by": null
-         },
-         {
-            "id": "1006405",
-            "ref": "mitigat-ny-prod+pattern",
-            "app": "mitigat-ny-prod",
+              "theme": "mny"
+            }
+          }
+        },
+        "base_url": "/playground",
+        "doc_type": "design_playground",
+        "authLevel": "1",
+        "subdomain": "design",
+        "pattern_type": "page",
+        "created_at": "2024-12-20 18:28:55.605204+00",
+        "updated_at": "2025-06-09 18:26:00.529293+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1005930",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/playground",
+        "doc_type": "shmpcopy_playground",
+        "authLevel": "1",
+        "subdomain": "shmpcopy",
+        "pattern_type": "page",
+        "created_at": "2024-12-20 19:06:01.310018+00",
+        "updated_at": "2025-06-09 18:26:00.539135+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1006405",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "redesign_playground",
+        "theme": {
+          "settings": {
             "theme": {
-               "settings": {
-                  "theme": {
-                     "theme": "mny"
-                  }
-               }
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "logo": "left"
             },
-            "base_url": "/playground",
-            "doc_type": "redesign_playground",
-            "authLevel": "1",
-            "subdomain": "redesign",
-            "pattern_type": "page",
-            "created_at": "2024-12-23 15:33:19.089091+00",
-            "updated_at": "2025-01-07 15:42:43.877902+00",
-            "created_by": null,
-            "updated_by": null
-         }
-      ],
-      "site_name": "MitigateNY",
-      "created_at": "2024-08-26 19:41:52.439635+00",
-      "created_by": null,
-      "updated_at": "2024-12-23 15:33:19.16643+00",
-      "updated_by": null
-   }
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "micro"
+            }
+          }
+        },
+        "base_url": "/playground",
+        "doc_type": "redesign_playground",
+        "authLevel": "1",
+        "subdomain": "",
+        "manage_url": "/playground/manage/design",
+        "pattern_type": "page",
+        "created_at": "2024-12-23 15:33:19.089091+00",
+        "updated_at": "2025-08-15 14:21:17.004137+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "1065541",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/",
+        "doc_type": "niagara-2022",
+        "subdomain": "niagara2022",
+        "pattern_type": "page",
+        "created_at": "2025-02-14 19:09:08.809466+00",
+        "updated_at": "2025-06-09 18:26:00.560942+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1065542",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/",
+        "doc_type": "schenectady-2021",
+        "subdomain": "schenectady2021",
+        "pattern_type": "page",
+        "created_at": "2025-02-14 19:09:41.700115+00",
+        "updated_at": "2025-06-09 18:26:00.570773+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1065543",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/",
+        "doc_type": "allegany-2024",
+        "subdomain": "allegany2024",
+        "pattern_type": "page",
+        "created_at": "2025-02-14 19:10:11.433296+00",
+        "updated_at": "2025-06-09 18:26:00.580598+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1107116",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact",
+              "depth": "2"
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "lhmpdesign",
+        "subdomain": "lhmpdesign",
+        "pattern_type": "page",
+        "created_at": "2025-03-04 19:16:28.345815+00",
+        "updated_at": "2025-06-09 18:26:00.590485+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1165539",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "plants",
+        "subdomain": "plants",
+        "pattern_type": "page",
+        "created_at": "2025-04-10 15:22:51.052293+00",
+        "updated_at": "2025-06-09 18:26:00.607108+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1165580",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          }
+        },
+        "base_url": "/admin",
+        "doc_type": "plants-admin",
+        "authLevel": "1",
+        "subdomain": "plants",
+        "pattern_type": "page",
+        "created_at": "2025-04-10 16:29:50.658232+00",
+        "updated_at": "2025-06-09 18:26:00.621199+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1165589",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "sources": [
+          {
+            "id": "1166223",
+            "ref": "mitigat-ny-prod+plant-data|source"
+          },
+          {
+            "id": "1197977",
+            "ref": "mitigat-ny-prod+plant-data|source"
+          }
+        ],
+        "base_url": "/data",
+        "doc_type": "plant-data",
+        "authLevel": "1",
+        "subdomain": "plants",
+        "created_at": "2025-04-10 16:40:33.323557+00",
+        "created_by": null,
+        "updated_at": "2025-06-09 18:26:00.631092+00",
+        "updated_by": 175,
+        "pattern_type": "forms"
+      },
+      {
+        "id": "1197867",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/my-plant-page",
+        "doc_type": "my_plant_page",
+        "subdomain": "plants",
+        "pattern_type": "page",
+        "created_at": "2025-04-21 19:19:20.358861+00",
+        "updated_at": "2025-06-09 18:26:00.641528+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1197975",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/data",
+        "doc_type": "my_plant_database",
+        "authLevel": "1",
+        "subdomain": "plants",
+        "pattern_type": "forms",
+        "created_at": "2025-04-21 20:49:50.028705+00",
+        "updated_at": "2025-06-09 18:26:00.652095+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1201837",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "base_url": "/my_admin_page",
+        "doc_type": "my_admin_page",
+        "authLevel": "1",
+        "subdomain": "plants",
+        "pattern_type": "page",
+        "created_at": "2025-04-22 20:26:12.909817+00",
+        "updated_at": "2025-06-09 18:26:00.662103+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1262135",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "size": "compact"
+            },
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact",
+              "depth": "2",
+              "search": "none"
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "redesign2",
+        "subdomain": "redesign2",
+        "pattern_type": "page",
+        "created_at": "2025-05-20 20:26:35.137202+00",
+        "updated_at": "2025-06-09 18:26:00.673054+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1264605",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "highland",
+        "subdomain": "highland",
+        "pattern_type": "page",
+        "created_at": "2025-05-22 16:28:29.899491+00",
+        "updated_at": "2025-06-09 18:26:00.689108+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1266142",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "undefined_copy",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "secondary"
+            },
+            "sideNav": {
+              "nav": "secondary"
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Coastal",
+                  "path": "suffolk_county/hazard_page?hazard=coastal",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Hail",
+                  "path": "suffolk_county/hazard_page?hazard=hail",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "filters": "[{\"searchKey\": \"geoid\", \"values\": [\"36003\"]}]",
+        "base_url": "/_copy1",
+        "doc_type": "e34eb6ae-f184-4ab7-95b3-a665a2b36a64",
+        "subdomain": "countytemplate",
+        "pattern_type": "page",
+        "created_at": "2025-05-27 13:34:18.236703+00",
+        "updated_at": "2025-06-16 13:46:24.036389+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "1297621",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "undefined_copy_copy",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "secondary"
+            },
+            "sideNav": {
+              "nav": "secondary"
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Coastal",
+                  "path": "suffolk_county/hazard_page?hazard=coastal",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Hail",
+                  "path": "suffolk_county/hazard_page?hazard=hail",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "filters": "[{\"searchKey\": \"geoid\", \"values\": [\"36001\"]}]",
+        "base_url": "/_copy_copy",
+        "doc_type": "07a227f6-e4a9-4c13-a89f-065d919bc5cd",
+        "subdomain": "countytemplate",
+        "pattern_type": "page",
+        "created_at": "2025-05-27 20:23:06.280795+00",
+        "updated_at": "2025-06-09 18:26:00.711479+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1300890",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "undefined_copy",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact",
+              "depth": "2"
+            }
+          }
+        },
+        "filters": "[{\"searchKey\": \"geoid\", \"values\": [\"36105\"]}]",
+        "base_url": "/",
+        "doc_type": "0aced1a7-3d54-48c7-a1d7-b68401811ded",
+        "subdomain": "lhmpdesign2",
+        "manage_url": "/manage/design",
+        "pattern_type": "page",
+        "additionalSectionAttributes": [
+          {
+            "key": "status",
+            "name": "status",
+            "type": "select",
+            "options": [
+              {
+                "label": "New Component",
+                "value": "new_component"
+              },
+              {
+                "label": "SHMP Sourced Content",
+                "value": "shmp_sourced_content"
+              },
+              {
+                "label": "Local Input Needed",
+                "value": "local_input_needed"
+              },
+              {
+                "label": "Refinement Needed",
+                "value": "refinement_needed"
+              },
+              {
+                "label": "Local Review Needed",
+                "value": "local_review_needed"
+              },
+              {
+                "label": "Content Confirmed Final",
+                "value": "content_confirmed_final"
+              }
+            ]
+          }
+        ],
+        "created_at": "2025-05-29 20:33:48.651853+00",
+        "updated_at": "2025-09-30 16:21:37.053255+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "1335353",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "redesign-backup",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "main"
+            },
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact",
+              "depth": "2"
+            },
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "fad fa-database fa-fw flex-shrink-0  pr-1",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-money-check-pen fa-fw flex-shrink-0  pr-1'",
+                  "name": "Manage SHMP",
+                  "path": "/manage",
+                  "authLevel": "5",
+                  "className": ""
+                },
+                {
+                  "icon": "fad fa-tasks-alt fa-fw flex-shrink-0  pr-1",
+                  "name": "Manage Site",
+                  "path": "/list",
+                  "authLevel": "10",
+                  "className": ""
+                }
+              ]
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "What's At Risk",
+                  "path": "/what_s_at_risk",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Climate Change",
+                  "path": "/climate_change",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "73a3bae9-cf35-4980-9bf8-8199e1a9e848",
+        "subdomain": "redesign3",
+        "pattern_type": "page",
+        "created_at": "2025-06-03 18:25:03.722595+00",
+        "updated_at": "2025-06-09 18:26:00.73524+00",
+        "created_by": null,
+        "updated_by": 175
+      },
+      {
+        "id": "1376019",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "undefined_copy_copy_copy",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "secondary"
+            },
+            "sideNav": {
+              "nav": "secondary"
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Coastal",
+                  "path": "suffolk_county/hazard_page?hazard=coastal",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Hail",
+                  "path": "suffolk_county/hazard_page?hazard=hail",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "filters": "[{\"searchKey\": \"geoid\", \"values\": [\"36001\"]}]",
+        "base_url": "/_copy_copy_copy",
+        "doc_type": "1ba7782b-b9b8-4369-8caf-6e13561413bd",
+        "subdomain": "countytemplate",
+        "manage_url": "/_copy_copy_copy/manage/design",
+        "pattern_type": "page",
+        "created_at": "2025-06-16 17:21:05.301197+00",
+        "updated_at": "2025-07-02 19:49:28.450836+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "1393430",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "county_template2_copy",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mnyv1"
+            }
+          }
+        },
+        "filters": "[{\"searchKey\": \"geoid\", \"values\": [\"36067\"]}]",
+        "base_url": "/_copy",
+        "doc_type": "a2333ef8-b5dd-4715-a215-1ee562acbe4b",
+        "subdomain": "countytemplate",
+        "pattern_type": "page",
+        "created_at": "2025-07-02 19:59:13.123734+00",
+        "updated_at": "2025-07-02 19:59:13.123734+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "1411304",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "sullivan_template",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mnyv1"
+            }
+          }
+        },
+        "filters": "[{\"searchKey\": \"geoid\", \"values\": [\"36105\"]}]",
+        "base_url": "/",
+        "doc_type": "0fd38049-fd07-4b56-aeae-1fbc3d745e41",
+        "subdomain": "sullivan",
+        "manage_url": "/_copy/manage/design",
+        "pattern_type": "page",
+        "created_at": "2025-07-10 16:43:30.556926+00",
+        "updated_at": "2025-07-10 16:58:21.261898+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "1427078",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "Auth",
+        "base_url": "auth/",
+        "doc_type": "bee73cbb-b0ee-49bd-b00b-a41f2aeccb14",
+        "subdomain": "*",
+        "manage_url": "auth//manage/design",
+        "pattern_type": "auth",
+        "authPermissions": "{\"AVAIL\": [\"*\"]}",
+        "created_at": "2025-08-01 16:27:24.621857+00",
+        "updated_at": "2025-09-04 16:46:17.835466+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "1476731",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "admin_lhmp",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny_admin"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "none",
+              "logo": "left",
+              "size": "none",
+              "search": "none"
+            },
+            "sideNav": {
+              "nav": "main",
+              "logo": "top",
+              "size": "compact",
+              "color": "white",
+              "dropdown": "top"
+            },
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Site Manager",
+                  "path": "/list",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (External)",
+                  "path": "/cenrep",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (Internal)",
+                  "path": "/forms",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Documentation",
+                  "path": "/docs",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Admin",
+                  "path": "/admin",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "SHMP",
+                  "path": "/",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Cenrep",
+                  "path": "/cenrep",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Internally Sourced",
+                  "path": "/forms",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Docs",
+                  "path": "/docs",
+                  "authLevel": "1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "filters": [
+          {
+            "id": "9996b13a-4442-4433-a3f4-6740eb97cc1f",
+            "values": "36105",
+            "searchKey": "geoid"
+          }
+        ],
+        "base_url": "/admin",
+        "doc_type": "5a0e04b8-b169-453e-9bb8-bdc76137b3b7",
+        "subdomain": "lhmpdesign2",
+        "manage_url": "/admin/manage/design",
+        "pattern_type": "page",
+        "created_at": "2025-09-18 17:01:25.167435+00",
+        "updated_at": "2025-09-19 16:59:58.700069+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "1484737",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "admin_copy",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny-db"
+            }
+          },
+          "navOptions": {
+            "topNav": {
+              "nav": "none",
+              "logo": "left",
+              "size": "none",
+              "search": "none"
+            },
+            "sideNav": {
+              "nav": "main",
+              "logo": "top",
+              "size": "compact",
+              "color": "white",
+              "dropdown": "top"
+            },
+            "authMenu": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Site Manager",
+                  "path": "/list",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Playground",
+                  "path": "/playground",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (External)",
+                  "path": "/cenrep",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Cenrep (Internal)",
+                  "path": "/forms",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Documentation",
+                  "path": "/docs",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Admin",
+                  "path": "/admin",
+                  "authLevel": "-1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "SHMP",
+                  "path": "/",
+                  "authLevel": "-1",
+                  "className": ""
+                }
+              ]
+            },
+            "secondaryNav": {
+              "navItems": [
+                {
+                  "icon": "",
+                  "name": "Cenrep",
+                  "path": "/cenrep",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Internally Sourced",
+                  "path": "/forms",
+                  "authLevel": "1",
+                  "className": ""
+                },
+                {
+                  "icon": "",
+                  "name": "Docs",
+                  "path": "/docs",
+                  "authLevel": "1",
+                  "className": ""
+                }
+              ]
+            }
+          }
+        },
+        "base_url": "/",
+        "doc_type": "b5c9fd87-9420-4622-9f91-44b8ab092c87",
+        "subdomain": "admin",
+        "manage_url": "/admin_copy/manage/design",
+        "pattern_type": "page",
+        "created_at": "2025-09-25 14:33:13.378515+00",
+        "updated_at": "2025-09-25 14:49:44.760405+00",
+        "created_by": null,
+        "updated_by": null
+      },
+      {
+        "id": "1493459",
+        "ref": "mitigat-ny-prod+pattern",
+        "app": "mitigat-ny-prod",
+        "name": "Sullivan-Entry-Test-Domain",
+        "theme": {
+          "settings": {
+            "theme": {
+              "theme": "mny"
+            }
+          },
+          "navOptions": {
+            "sideNav": {
+              "nav": "main",
+              "logo": "none",
+              "size": "compact",
+              "depth": "2"
+            }
+          }
+        },
+        "filters": "[{\"searchKey\": \"geoid\", \"values\": [\"36105\"]}]",
+        "base_url": "/",
+        "doc_type": "c0c47cff-1fbf-4cab-bb81-999a02b19a71",
+        "subdomain": "sullivantest",
+        "manage_url": "/manage/design",
+        "pattern_type": "page",
+        "created_at": "2025-09-29 14:23:25.508949+00",
+        "updated_at": "2025-09-29 14:29:49.114977+00",
+        "created_by": null,
+        "updated_by": null
+      }
+    ],
+    "site_name": "MitigateNY",
+    "created_at": "2024-08-26 19:41:52.439635+00",
+    "created_by": null,
+    "updated_at": "2025-06-16 17:30:28.294726+00",
+    "updated_by": null
+  }
 ]
