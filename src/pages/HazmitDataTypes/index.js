@@ -51,6 +51,8 @@ import postgres_transfer from "./postgres_transfer"
 
 import acs from "./acs";
 
+import { ScenarioToolsPlugin } from "./plugins/scenario_tools/scenarioTools.plugin";
+
 const DataTypes = {
   postgres_transfer,
   //npmrds,
@@ -104,6 +106,10 @@ const DataTypes = {
   geographies2elevations,
   aggregate_buildings,
   aggregate_HIFLD
+};
+
+export const mapPlugins = {
+  scenarioTools: ScenarioToolsPlugin
 };
 
 export default DataTypes;
