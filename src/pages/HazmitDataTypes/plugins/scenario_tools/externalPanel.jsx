@@ -76,21 +76,21 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [pointLayerId]);
 
-  // const {
-  //   symbology_id,
-  //   existingDynamicFilter,
-  //   filter: dataFilter,
-  //   filterMode,
-  // } = useMemo(() => {
-  //   if (dctx) {
-  //     return extractState(state);
-  //   } else {
-  //     const symbName = Object.keys(state.symbologies)[0];
-  //     const symbPathBase = `symbologies['${symbName}']`;
-  //     const symbData = get(state, symbPathBase, {});
-  //     return extractState(symbData);
-  //   }
-  // }, [state]);
+  const {
+    lowerBound,
+    upperBound,
+    radiusCurve,
+    curveFactor,
+  } = useMemo(() => {
+    if (dctx) {
+      return extractState(state);
+    } else {
+      const symbName = Object.keys(state.symbologies)[0];
+      const symbPathBase = `symbologies['${symbName}']`;
+      const symbData = get(state, symbPathBase, {});
+      return extractState(symbData);
+    }
+  }, [state]);
 
 
   const geomOptions = JSON.stringify({
@@ -171,12 +171,15 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     };
 
     if (geography?.length > 0) {
+      console.log("geo lenngth is not 0")
       //get zoom bounds
       getFilterBounds();
       //filter and display borders for selected geographie
       const selectedCounty = geography.filter((geo) => geo.type === "county_name");
+      console.log({selectedCounty})
       if (selectedCounty.length > 0 && countyLayerId) {
         //cenrep source 1514 view 1989 test NYS_County_Boundaries
+        console.log("setting county border", countyLayerId)
         setGeometryBorderFilter({
           setState,
           layerId: countyLayerId,
@@ -211,6 +214,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
           set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, null);
         }
         if (countyLayerId) {
+          console.log("resetting county filter")
           resetGeometryBorderFilter({
             layerId: countyLayerId,
             setState,
@@ -238,8 +242,21 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         "horizontal"
       );
 
+      console.log("---RECALCULATING CIRCLE RADIUS---")
+      const circleLowerBound = 1;
+      const circleUpperBound = COLOR_SCALE_MAX;
+      const circleRadius = [
+        "interpolate",
+        [radiusCurve, curveFactor],
+        ["to-number",["get", BLD_AV_COLUMN]],
+        circleLowerBound, //min of dataset
+        2,//min radius (px) of circle
+        circleUpperBound, //max of dataset
+        8, //max radius (px) of circle
+      ];
+
       setState((draft) => {
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['layers'][0]['paint']`, { "circle-color": paint }); //Mapbox paint
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['layers'][0]['paint']`, { "circle-color": paint, 'circle-radius': circleRadius }); //Mapbox
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-data']`, legend); //AVAIL-written legend component
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-orientation']`, "horizontal");
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['category-show-other']`, "#fff");
@@ -253,7 +270,6 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
 
 
   useEffect(() => {
-    console.log({ floodZone });
     let floodValue = floodZone;
     //all points affected by 500 year flood are also affected by 100 year flood
     if(floodZone === '500') {

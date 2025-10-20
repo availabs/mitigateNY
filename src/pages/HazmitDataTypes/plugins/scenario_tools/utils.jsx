@@ -13,9 +13,6 @@ const setInitialGeomStyle = ({ setState, layerId, layerBasePath }) => {
     if (fillLayer) {
       fillLayer.paint = { "fill-opacity": 0, "fill-color": "#fff" };
     }
-    draftLayers.forEach((d, i) => {
-      d.layout = { visibility: "none" };
-    });
   });
 };
 
