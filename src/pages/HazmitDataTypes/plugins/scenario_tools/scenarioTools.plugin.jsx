@@ -6,10 +6,23 @@ import set from "lodash/set";
 import { Button } from "~/modules/avl-components/src";
 import {
   POINT_LAYER_KEY,
-  BLANK_OPTION, 
-  getColorRange, 
-  defaultFilter
+  COUNTY_LAYER_KEY,
+  FLOOD_ZONE_KEY,
+  BLANK_OPTION,
+  BLD_AV_COLUMN,
+  getColorRange,
+  defaultFilter,
+  COLOR_SCALE_MAX,
+  COLOR_SCALE_BREAKS
 } from "./constants";
+import {
+  setInitialGeomStyle,
+  resetGeometryBorderFilter,
+  setGeometryBorderFilter,
+  onlyUnique
+} from "./utils"
+
+import { externalPanel } from "./externalPanel";
 import { choroplethPaint } from "~/pages/DataManager/MapEditor/components/LayerEditor/datamaps";
 import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/MapEditor/stateUtils";
 
@@ -84,16 +97,39 @@ export const ScenarioToolsPlugin = {
 
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
 
-    if(pointLayerId) {
-      //TODO eventually need to filter via page param, not just default
-      setState((draft) => {
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, defaultFilter);
-      });
-    }
+    setState((draft) => {
+      if (pointLayerId) {
+        //TODO eventually need to filter via page param, not just default
+
+        // set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, defaultFilter);
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['data-column']`, BLD_AV_COLUMN);
+        set(draft, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`, "100");
+
+        //if we have the point layer, set paint prop
+        //TODO -- could maybe actual move this to `internalPanel`, since it only changes when pointLayerId changes, which is only internally
+        const numbins = 6,
+          method = "ckmeans";
+        const showOther = "#ccc";
+        let { paint, legend } = choroplethPaint(
+          BLD_AV_COLUMN,
+          COLOR_SCALE_MAX,
+          getColorRange(8, "YlGn"),
+          numbins,
+          method,
+          COLOR_SCALE_BREAKS,
+          showOther,
+          "horizontal"
+        );
+
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['layers'][0]['paint']`, { "circle-color": paint }); //Mapbox paint
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-data']`, legend); //AVAIL-written legend component
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-orientation']`, "horizontal");
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['category-show-other']`, "#fff");
+      }
+    });
 
     const MAP_CLICK = (e) => {
       console.log("map was clicked, e::", e);
-
     };
 
     map.on("click", MAP_CLICK);
@@ -116,6 +152,7 @@ export const ScenarioToolsPlugin = {
     const {
       pluginDataPath,
       pointLayerId,
+      countyLayerId
     } = useMemo(() => {
       const pluginDataPath = `symbology.pluginData.${PLUGIN_ID}`;
       return {
@@ -123,298 +160,89 @@ export const ScenarioToolsPlugin = {
         pointLayerId: get(
           state,
           `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`
+        ),
+        countyLayerId: get(
+          state,
+          `${pluginDataPath}['active-layers'][${COUNTY_LAYER_KEY}]`
         )
       };
     }, [state]);
-    console.log("state.symbology",state.symbology.layers)
-    console.log({pointLayerId})
+
+    useEffect(() => {
+      if (countyLayerId) {
+        setInitialGeomStyle({
+          setState,
+          layerId: countyLayerId,
+          layerBasePath: symbologyLayerPath,
+        });
+
+        setState(draft => {
+          set(draft, `${symbologyLayerPath}['${countyLayerId}'].hover`, "");
+        })
+      }
+    }, [countyLayerId]);
+
+    const borderLayerIds = [pointLayerId, countyLayerId];
     const controls = [
       {
-      label: "Point Layer",
-      controls: [
-        {
-          type: "select",
-          params: {
-            options: [
-              BLANK_OPTION,
-              ...Object.keys(state.symbology.layers)
-                // .filter(
-                //   (layerKey) =>
-                //     layerKey === pointLayerId
-                // )
-                .map((layerKey, i) => ({
-                  value: layerKey,
-                  name: state.symbology.layers[layerKey].name,
-                })),
-            ],
-            default: "",
+        label: "Point Layer",
+        controls: [
+          {
+            type: "select",
+            params: {
+              options: [
+                BLANK_OPTION,
+                ...Object.keys(state.symbology.layers)
+                  .filter(
+                    (layerKey) =>
+                      !borderLayerIds.includes(layerKey) ||
+                      layerKey === pointLayerId
+                  )
+                  .map((layerKey, i) => ({
+                    value: layerKey,
+                    name: state.symbology.layers[layerKey].name,
+                  })),
+              ],
+              default: "",
+            },
+            //the layer the plugin controls MUST use the `'active-layers'` path/field
+            path: `['active-layers'][${POINT_LAYER_KEY}]`,
           },
-          //the layer the plugin controls MUST use the `'active-layers'` path/field
-          path: `['active-layers'][${POINT_LAYER_KEY}]`,
-        },
-      ],
-    },
+        ],
+      },
+      {
+        label: "County Layer",
+        controls: [
+          {
+            type: "select",
+            params: {
+              options: [
+                BLANK_OPTION,
+                ...Object.keys(state.symbology.layers)
+                  .filter(
+                    (layerKey) =>
+                      !borderLayerIds.includes(layerKey) ||
+                      layerKey === countyLayerId
+                  )
+                  .map((layerKey, i) => ({
+                    value: layerKey,
+                    name: state.symbology.layers[layerKey].name,
+                  })),
+              ],
+              default: "",
+            },
+            //the layer the plugin controls MUST use the `'active-layers'` path/field
+            path: `['active-layers'][${COUNTY_LAYER_KEY}]`,
+          },
+        ],
+      },
     ];
 
     return controls;
   },
-  externalPanel: ({ state, setState, pathBase = "" }) => {
-    const dctx = useContext(DamaContext);
-    const cctx = useContext(CMSContext);
-    const ctx = dctx?.falcor ? dctx : cctx;
-    let { falcor, falcorCache, pgEnv, baseUrl } = ctx;
-
-    if (!falcorCache) {
-      falcorCache = falcor.getCache();
-    }
-    //const {falcor, falcorCache, pgEnv, baseUrl} = React.useContext(DamaContext);
-    //performence measure (speed, lottr, tttr, etc.) (External Panel) (Dev hard-code)
-    //"second" selection (percentile, amp/pmp) (External Panel) (dependent on first selection, plus dev hard code)
-    const pluginDataPath =`${pathBase}`;
-
-    const pluginData = useMemo(() => {
-      return get(state, pluginDataPath, {});
-    }, [state]);
-
-    let symbologyLayerPath = "";
-    let symbPath = "";
-    if (state.symbologies) {
-      const symbName = Object.keys(state.symbologies)[0];
-      const pathBase = `symbologies['${symbName}']`;
-      symbologyLayerPath = `${pathBase}.symbology.layers`;
-
-      symbPath = `${pathBase}.symbology`;
-    } else {
-      symbologyLayerPath = `symbology.layers`;
-      symbPath = `symbology`;
-    }
-
-    const {
-      viewId,
-      pointLayerId,
-    } = useMemo(() => {
-      return {
-        viewId: get(state, `${pluginDataPath}['viewId']`, null),
-        pointLayerId: get(
-          state,
-          `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`
-        ),
-      };
-    }, [pluginData, pluginDataPath]);
-
-    //TODO eventually need to filter via page param, not just default
-    useEffect(() => {
-      if(pointLayerId) {
-        setState((draft) => {
-          set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, defaultFilter);
-        });
-      }
-    }, [pointLayerId])
-    
-    const {
-      symbology_id,
-      existingDynamicFilter,
-      filter: dataFilter,
-      filterMode,
-    } = useMemo(() => {
-      if (dctx) {
-        return extractState(state);
-      } else {
-        const symbName = Object.keys(state.symbologies)[0];
-        const symbPathBase = `symbologies['${symbName}']`;
-        const symbData = get(state, symbPathBase, {});
-        return extractState(symbData);
-      }
-    }, [state]);
-    
-    console.log({dataFilter})
-    const falcorDataFilter = useMemo(() => {
-      return createFalcorFilterOptions({
-        dynamicFilter: existingDynamicFilter,
-        filterMode,
-        dataFilter,
-      });
-    }, [existingDynamicFilter, filterMode, dataFilter]);
-    console.log({falcorDataFilter})
-    useEffect(() => {
-      const getColors = async () => {
-        const numbins = 7,
-          method = "ckmeans";
-        const domainOptions = {
-          column: 'building_av',
-          viewId: parseInt(viewId),
-          numbins,
-          method,
-          dataFilter: falcorDataFilter,
-        };
-
-        const showOther = "#ccc";
-        const res = await falcor.get([
-          "dama",
-          pgEnv,
-          "symbologies",
-          "byId",
-          [symbology_id],
-          "colorDomain",
-          "options",
-          JSON.stringify(domainOptions),
-        ]);
-        const colorBreaks = get(res, [
-          "json",
-          "dama",
-          pgEnv,
-          "symbologies",
-          "byId",
-          [symbology_id],
-          "colorDomain",
-          "options",
-          JSON.stringify(domainOptions),
-        ]);
-        //console.log({newDataColumn, max:colorBreaks['max'], colorange: getColorRange(7, "RdYlBu").reverse(), numbins, method, breaks:colorBreaks['breaks'], showOther, orientation:'vertical'})
-
-        //format is used to format legend labels
-        const { range: paintRange, format } = updateLegend(measureFilters);
-        let { paint, legend } = choroplethPaint(
-          newDataColumn,
-          colorBreaks["max"],
-          getColorRange(8, "YlGn"),
-          numbins,
-          method,
-          colorBreaks["breaks"],
-          showOther,
-          "vertical"
-        );
-
-        // const legendFormat = d3format(format);
-        // legend = legend.map((legendBreak) => {
-        //   const shouldFormat =
-        //     !newDataColumn.toLowerCase().includes("phed") &&
-        //     !newDataColumn.toLowerCase().includes("ted");
-        //   return {
-        //     ...legendBreak,
-        //     label: shouldFormat
-        //       ? legendFormat(legendBreak.label.split("- ")[1])
-        //       : legendBreak.label.split("- ")[1],
-        //   };
-        // });
-
-        setState((draft) => {
-          set(
-            draft,
-            `${symbologyLayerPath}['${pointLayerId}']['layers'][0]['paint']`,
-            { ...npmrdsPaint, "circle-color": paint }
-          ); //Mapbox paint
-          set(
-            draft,
-            `${symbologyLayerPath}['${pointLayerId}']['legend-data']`,
-            legend
-          ); //AVAIL-written legend component
-          set(
-            draft,
-            `${symbologyLayerPath}['${pointLayerId}']['legend-orientation']`,
-            "horizontal"
-          );
-          set(
-            draft,
-            `${symbologyLayerPath}['${pointLayerId}']['category-show-other']`,
-            "#fff"
-          );
-          // if (mpoLayerId) {
-          //   set(
-          //     draft,
-          //     `${symbologyLayerPath}['${mpoLayerId}']['legend-orientation']`,
-          //     "none"
-          //   );
-          // }
-          // if (countyLayerId) {
-          //   set(
-          //     draft,
-          //     `${symbologyLayerPath}['${countyLayerId}']['legend-orientation']`,
-          //     "none"
-          //   );
-          // }
-          // if (regionLayerId) {
-          //   set(
-          //     draft,
-          //     `${symbologyLayerPath}['${regionLayerId}']['legend-orientation']`,
-          //     "none"
-          //   );
-          // }
-          // if (uaLayerId) {
-          //   set(
-          //     draft,
-          //     `${symbologyLayerPath}['${uaLayerId}']['legend-orientation']`,
-          //     "none"
-          //   );
-          // }
-          //TODO add `no legend` for region, UA layers
-        });
-      };
-
-      if (pointLayerId && viewId) {
-        console.log("get those colors!")
-        getColors();
-      }
-    }, [pointLayerId, falcorDataFilter, viewId]);
-
-    return [];
-  },
+  externalPanel: externalPanel,
   comp: ({ state, setState }) => {
-    let symbologyLayerPath = "";
-    let symbPath = "";
-    if (state.symbologies) {
-      const symbName = Object.keys(state.symbologies)[0];
-      const pathBase = `symbologies['${symbName}']`;
-      symbologyLayerPath = `${pathBase}.symbology.layers`;
-
-      symbPath = `${pathBase}.symbology`;
-    } else {
-      symbologyLayerPath = `symbology.layers`;
-      symbPath = `symbology`;
-    }
-
-    const pluginDataPath = `${symbPath}['pluginData']['${PLUGIN_ID}']`;
-    const { points } = useMemo(() => {
-      return {
-        points: get(state, `${pluginDataPath}['points']`, []),
-      };
-    }, [state]);
-
-    return (
-      <div
-        className="flex flex-col pointer-events-auto drop-shadow-lg p-4 bg-white/75 items-center"
-        style={{
-          position: "absolute",
-          bottom: "94px",
-          left: "90px",
-          color: "black",
-          width: "318px",
-          maxHeight: "325px",
-        }}
-      >
-        <div className="text-lg">Selected Points:</div>
-        <div>
-          {points.map((point) => (
-            <div className="text-sm">
-              {precisionRound(point.lng, 4)}, {precisionRound(point.lat, 4)}
-            </div>
-          ))}
-        </div>
-        <Button
-          disabled={points.length < 2}
-          themeOptions={{ color: "transparent" }}
-          //className='bg-white hover:bg-cool-gray-700 font-sans text-sm text-npmrds-100 font-medium'
-          onClick={(e) => {
-            console.log("sending points to API!");
-            console.log({ points });
-            resetPointsAndMarkers({ setState, pluginDataPath });
-          }}
-          style={{ width: "75%", marginTop: "10px" }}
-        >
-          Send to Routing API
-        </Button>
-      </div>
-    );
+    return <> </>
   },
   cleanup: (map, state, setState) => {
     //map.off("click", "point-selector");

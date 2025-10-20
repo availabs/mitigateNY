@@ -1,4 +1,7 @@
+import get from "lodash/get";
 const POINT_LAYER_KEY = "point-layer";
+const COUNTY_LAYER_KEY = "county";
+const FLOOD_ZONE_KEY = "flood-zone"
 
 const BLANK_OPTION = { value: "", name: "" };
 
@@ -21,17 +24,27 @@ for (const type in colorbrewer.schemeGroups) {
   });
 }
 
+const BLD_AV_COLUMN = 'building_av';
+
 const getColorRange = (size, name) =>
   get(ColorRanges, [size], [])
     .reduce((a, c) => (c.name === name ? c.colors : a), [])
     .slice();
 
 const defaultFilter = {
-  county_name: {
+  // county_name: {
+  //   operator: "==",
+  //   value: ["Albany"],
+  //   columnName: "county_name",
+  // },
+  flood_zone: {
     operator: "==",
-    value: ["Albany"],
-    columnName: "county_name",
-  },
+    value: ["100", "500"],
+    columnName: "flood_zone",
+  }
 };
 
-export { POINT_LAYER_KEY, BLANK_OPTION, getColorRange, defaultFilter };
+const COLOR_SCALE_MAX = 1000000;
+const COLOR_SCALE_BREAKS = [0, 200000, 400000, 600000, 800000, COLOR_SCALE_MAX]
+
+export { POINT_LAYER_KEY,COUNTY_LAYER_KEY, BLANK_OPTION, BLD_AV_COLUMN, FLOOD_ZONE_KEY, getColorRange, defaultFilter, COLOR_SCALE_MAX, COLOR_SCALE_BREAKS };
