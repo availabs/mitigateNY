@@ -5,6 +5,7 @@ import get from "lodash/get";
 import set from "lodash/set";
 import { Button } from "~/modules/avl-components/src";
 import {
+  PLUGIN_ID,
   POINT_LAYER_KEY,
   COUNTY_LAYER_KEY,
   FLOOD_ZONE_KEY,
@@ -13,7 +14,8 @@ import {
   getColorRange,
   defaultFilter,
   COLOR_SCALE_MAX,
-  COLOR_SCALE_BREAKS
+  COLOR_SCALE_BREAKS,
+  POLYGON_LAYER_KEY
 } from "./constants";
 import {
   setInitialGeomStyle,
@@ -56,13 +58,14 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     symbPath = `symbology`;
   }
 
-  const { viewId, pointLayerId, countyLayerId, geography, floodZone } = useMemo(() => {
+  const { viewId, pointLayerId, countyLayerId, geography, floodZone, polygonLayerId } = useMemo(() => {
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
     return {
       viewId: get(state, `${symbologyLayerPath}['${pointLayerId}']['view_id']`, null),
       pointLayerId,
       geography: get(state, `${pluginDataPath}['geography']`, null),
       countyLayerId: get(state, `${pluginDataPath}['active-layers'][${COUNTY_LAYER_KEY}]`),
+      polygonLayerId: get(state, `${pluginDataPath}['active-layers'][${POLYGON_LAYER_KEY}]`),
       floodZone: get(state, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`),
     };
   }, [pluginData, pluginDataPath]);
@@ -166,6 +169,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
 
       setState((draft) => {
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, geographyFilter);
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, geographyFilter);
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, "all");
       });
     };
@@ -206,12 +210,19 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         const zoomToFilterBounds = get(draft, `${symbPath}.zoomToFilterBounds`);
         if (zoomToFilterBounds?.length > 0) {
           set(draft, `${symbPath}.zoomToFilterBounds`, []);
-
-          set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, []);
+          if(pointLayerId) {
+            set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, []);
+          }
+          if(polygonLayerId) {
+            set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, []);
+          }
         }
 
         if (pointLayerId) {
           set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, null);
+        }
+        if(polygonLayerId) {
+          set(draft, `${symbologyLayerPath}['${polygonLayerId}']['filterMode']`, null);
         }
         if (countyLayerId) {
           console.log("resetting county filter")
@@ -225,23 +236,28 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [geography]);
 
+
+    const numbins = 7,
+      method = "ckmeans";
+    const showOther = "#ccc";
+    let { paint, legend } = choroplethPaint(
+      BLD_AV_COLUMN,
+      COLOR_SCALE_MAX,
+      getColorRange(8, "YlGn"),
+      numbins,
+      method,
+      COLOR_SCALE_BREAKS,
+      showOther,
+      "horizontal"
+    );
+
+    /**
+     * TODO
+     * MAYBE move the style useEffects to `internalPanel`
+     * We apply them when the layer changes, and that can only happen via internal controls
+     */
   useEffect(() => {
-    const getColors = async () => {
-      const numbins = 7,
-        method = "ckmeans";
-      const showOther = "#ccc";
-
-      let { paint, legend } = choroplethPaint(
-        BLD_AV_COLUMN,
-        COLOR_SCALE_MAX,
-        getColorRange(8, "YlGn"),
-        numbins,
-        method,
-        COLOR_SCALE_BREAKS,
-        showOther,
-        "horizontal"
-      );
-
+    const getPointLayerStyle = async () => {
       console.log("---RECALCULATING CIRCLE RADIUS---")
       const circleLowerBound = 1;
       const circleUpperBound = COLOR_SCALE_MAX;
@@ -261,13 +277,24 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-orientation']`, "horizontal");
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['category-show-other']`, "#fff");
       });
-    };
 
+    };
     if (pointLayerId) {
-      getColors();
+      getPointLayerStyle();
     }
   }, [pointLayerId]);
-
+  useEffect(() => {
+    const getPolygonLayerStyle = async () => {
+      setState((draft) => {
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['layers'][1]['paint']`, { "fill-color": paint }); //Mapbox
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['category-show-other']`, "#fff");
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['legend-orientation']`, "none");
+      });
+    };
+    if (polygonLayerId) {
+      getPolygonLayerStyle();
+    }
+  }, [polygonLayerId]);
 
   useEffect(() => {
     let floodValue = floodZone;
@@ -283,10 +310,17 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       },
     };
     setState((draft) => {
-      set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, newFilter);
+      if(pointLayerId) {
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, newFilter);
+      }
+      if(polygonLayerId) {
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['filter']`, newFilter);
+      }
     });
     //just need to change `filter` to reflect new value
-  }, [floodZone]);
+    //todo -- might not need to listen for layerId changes here. since they can only change internally
+    //but, otherwise, I need to set defaults in `internalPanel` too, and double code = bad
+  }, [floodZone, pointLayerId, polygonLayerId]);
 
   return [
     {

@@ -5,6 +5,7 @@ import get from "lodash/get";
 import set from "lodash/set";
 import { Button } from "~/modules/avl-components/src";
 import {
+  PLUGIN_ID,
   POINT_LAYER_KEY,
   COUNTY_LAYER_KEY,
   FLOOD_ZONE_KEY,
@@ -13,7 +14,8 @@ import {
   getColorRange,
   defaultFilter,
   COLOR_SCALE_MAX,
-  COLOR_SCALE_BREAKS
+  COLOR_SCALE_BREAKS,
+  POLYGON_LAYER_KEY
 } from "./constants";
 import {
   setInitialGeomStyle,
@@ -23,6 +25,7 @@ import {
 } from "./utils"
 
 import { externalPanel } from "./externalPanel";
+import { internalPanel } from "./internalPanel";
 import { choroplethPaint } from "~/pages/DataManager/MapEditor/components/LayerEditor/datamaps";
 import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/MapEditor/stateUtils";
 
@@ -71,7 +74,6 @@ import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/Map
  * Perhaps it will snap to closest or something?
  */
 
-const PLUGIN_ID = "scenarioTools";
 let MARKERS = [];
 export const ScenarioToolsPlugin = {
   id: PLUGIN_ID,
@@ -96,35 +98,37 @@ export const ScenarioToolsPlugin = {
     }
 
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
-
+    const polygonLayerId = get(state, `${pluginDataPath}['active-layers'][${POLYGON_LAYER_KEY}]`);
     setState((draft) => {
+      //TODO -- could maybe actual move this to `internalPanel`, since it only changes when pointLayerId changes, which is only internally
+      const numbins = 6,
+        method = "ckmeans";
+      const showOther = "#ccc";
+      let { paint, legend } = choroplethPaint(
+        BLD_AV_COLUMN,
+        COLOR_SCALE_MAX,
+        getColorRange(8, "YlGn"),
+        numbins,
+        method,
+        COLOR_SCALE_BREAKS,
+        showOther,
+        "horizontal"
+      );
+      set(draft, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`, "100");
       if (pointLayerId) {
-        //TODO eventually need to filter via page param, not just default
-
-        // set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, defaultFilter);
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['data-column']`, BLD_AV_COLUMN);
-        set(draft, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`, "100");
-
-        //if we have the point layer, set paint prop
-        //TODO -- could maybe actual move this to `internalPanel`, since it only changes when pointLayerId changes, which is only internally
-        const numbins = 6,
-          method = "ckmeans";
-        const showOther = "#ccc";
-        let { paint, legend } = choroplethPaint(
-          BLD_AV_COLUMN,
-          COLOR_SCALE_MAX,
-          getColorRange(8, "YlGn"),
-          numbins,
-          method,
-          COLOR_SCALE_BREAKS,
-          showOther,
-          "horizontal"
-        );
 
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['layers'][0]['paint']`, { "circle-color": paint }); //Mapbox paint
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-data']`, legend); //AVAIL-written legend component
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-orientation']`, "horizontal");
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['category-show-other']`, "#fff");
+      }
+      if (polygonLayerId) {
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['data-column']`, BLD_AV_COLUMN);
+
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['layers'][1]['paint']`, { "fill-color": paint }); //Mapbox
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['category-show-other']`, "#fff");
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['legend-orientation']`, "none");
       }
     });
 
@@ -137,109 +141,7 @@ export const ScenarioToolsPlugin = {
   dataUpdate: (map, state, setState) => {
 
   },
-  internalPanel: ({ state, setState }) => {
-    const { falcor, falcorCache, pgEnv, baseUrl } = useContext(DamaContext);
-    // console.log("internal panel state::", state)
-    //if a layer is selected, use the source_id to get all the associated views
-    let symbologyLayerPath = "";
-    if (state.symbologies) {
-      const symbName = Object.keys(state.symbologies)[0];
-      const pathBase = `symbologies['${symbName}']`;
-      symbologyLayerPath = `${pathBase}.symbology.layers`;
-    } else {
-      symbologyLayerPath = `symbology.layers`;
-    }
-    const {
-      pluginDataPath,
-      pointLayerId,
-      countyLayerId
-    } = useMemo(() => {
-      const pluginDataPath = `symbology.pluginData.${PLUGIN_ID}`;
-      return {
-        pluginDataPath,
-        pointLayerId: get(
-          state,
-          `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`
-        ),
-        countyLayerId: get(
-          state,
-          `${pluginDataPath}['active-layers'][${COUNTY_LAYER_KEY}]`
-        )
-      };
-    }, [state]);
-
-    useEffect(() => {
-      if (countyLayerId) {
-        setInitialGeomStyle({
-          setState,
-          layerId: countyLayerId,
-          layerBasePath: symbologyLayerPath,
-        });
-
-        setState(draft => {
-          set(draft, `${symbologyLayerPath}['${countyLayerId}'].hover`, "");
-        })
-      }
-    }, [countyLayerId]);
-
-    const borderLayerIds = [pointLayerId, countyLayerId];
-    const controls = [
-      {
-        label: "Point Layer",
-        controls: [
-          {
-            type: "select",
-            params: {
-              options: [
-                BLANK_OPTION,
-                ...Object.keys(state.symbology.layers)
-                  .filter(
-                    (layerKey) =>
-                      !borderLayerIds.includes(layerKey) ||
-                      layerKey === pointLayerId
-                  )
-                  .map((layerKey, i) => ({
-                    value: layerKey,
-                    name: state.symbology.layers[layerKey].name,
-                  })),
-              ],
-              default: "",
-            },
-            //the layer the plugin controls MUST use the `'active-layers'` path/field
-            path: `['active-layers'][${POINT_LAYER_KEY}]`,
-          },
-        ],
-      },
-      {
-        label: "County Layer",
-        controls: [
-          {
-            type: "select",
-            params: {
-              options: [
-                BLANK_OPTION,
-                ...Object.keys(state.symbology.layers)
-                  .filter(
-                    (layerKey) =>
-                      !borderLayerIds.includes(layerKey) ||
-                      layerKey === countyLayerId
-                  )
-                  .map((layerKey, i) => ({
-                    value: layerKey,
-                    name: state.symbology.layers[layerKey].name,
-                  })),
-              ],
-              default: "",
-            },
-            //the layer the plugin controls MUST use the `'active-layers'` path/field
-            path: `['active-layers'][${COUNTY_LAYER_KEY}]`,
-          },
-        ],
-      },
-    ];
-
-    return controls;
-  },
+  internalPanel: internalPanel,
   externalPanel: externalPanel,
   comp: ({ state, setState }) => {
     return <> </>

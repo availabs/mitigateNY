@@ -1,7 +1,9 @@
 import get from "lodash/get";
+const PLUGIN_ID = "scenarioTools";
 const POINT_LAYER_KEY = "point-layer";
 const COUNTY_LAYER_KEY = "county";
-const FLOOD_ZONE_KEY = "flood-zone"
+const POLYGON_LAYER_KEY = "polygon-layer";
+const FLOOD_ZONE_KEY = "flood-zone";
 
 const BLANK_OPTION = { value: "", name: "" };
 
@@ -24,7 +26,7 @@ for (const type in colorbrewer.schemeGroups) {
   });
 }
 
-const BLD_AV_COLUMN = 'building_av';
+const BLD_AV_COLUMN = "building_av";
 
 const getColorRange = (size, name) =>
   get(ColorRanges, [size], [])
@@ -41,10 +43,22 @@ const defaultFilter = {
     operator: "==",
     value: ["100", "500"],
     columnName: "flood_zone",
-  }
+  },
 };
 
 const COLOR_SCALE_MAX = 1000000;
-const COLOR_SCALE_BREAKS = [0, 200000, 400000, 600000, 800000, COLOR_SCALE_MAX]
+const COLOR_SCALE_BREAKS = [0, 200000, 400000, 600000, 800000, COLOR_SCALE_MAX];
 
-export { POINT_LAYER_KEY,COUNTY_LAYER_KEY, BLANK_OPTION, BLD_AV_COLUMN, FLOOD_ZONE_KEY, getColorRange, defaultFilter, COLOR_SCALE_MAX, COLOR_SCALE_BREAKS };
+export {
+  PLUGIN_ID,
+  POINT_LAYER_KEY,
+  COUNTY_LAYER_KEY,
+  POLYGON_LAYER_KEY,
+  BLANK_OPTION,
+  BLD_AV_COLUMN,
+  FLOOD_ZONE_KEY,
+  getColorRange,
+  defaultFilter,
+  COLOR_SCALE_MAX,
+  COLOR_SCALE_BREAKS,
+};
