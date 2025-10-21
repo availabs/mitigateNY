@@ -1,5 +1,11 @@
 import get from "lodash/get";
 const PLUGIN_ID = "scenarioTools";
+
+
+
+const BLD_AV_COLUMN = "building_av";
+const FLOOD_ZONE_COLUMN = "flood_zone"
+
 const POINT_LAYER_KEY = "point-layer";
 const COUNTY_LAYER_KEY = "county";
 const POLYGON_LAYER_KEY = "polygon-layer";
@@ -25,8 +31,6 @@ for (const type in colorbrewer.schemeGroups) {
     }
   });
 }
-
-const BLD_AV_COLUMN = "building_av";
 
 const getColorRange = (size, name) =>
   get(ColorRanges, [size], [])
@@ -54,6 +58,7 @@ export {
   POINT_LAYER_KEY,
   COUNTY_LAYER_KEY,
   POLYGON_LAYER_KEY,
+  FLOOD_ZONE_COLUMN,
   BLANK_OPTION,
   BLD_AV_COLUMN,
   FLOOD_ZONE_KEY,

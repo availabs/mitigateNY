@@ -7,6 +7,7 @@ import { Button } from "~/modules/avl-components/src";
 import {
   PLUGIN_ID,
   POINT_LAYER_KEY,
+  FLOOD_ZONE_COLUMN,
   COUNTY_LAYER_KEY,
   FLOOD_ZONE_KEY,
   BLANK_OPTION,
@@ -18,6 +19,8 @@ import {
   POLYGON_LAYER_KEY
 } from "./constants";
 import {
+  setPolygonLayerStyle,
+  setPointLayerStyle,
   setInitialGeomStyle,
   resetGeometryBorderFilter,
   setGeometryBorderFilter,
@@ -99,36 +102,23 @@ export const ScenarioToolsPlugin = {
 
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
     const polygonLayerId = get(state, `${pluginDataPath}['active-layers'][${POLYGON_LAYER_KEY}]`);
+
+    if(pointLayerId) {
+      setPointLayerStyle({setState, layerId: pointLayerId, layerBasePath: symbologyLayerPath})
+    }
+    if(polygonLayerId) {
+      setPolygonLayerStyle({setState, layerId: polygonLayerId, layerBasePath: symbologyLayerPath, floodZone:"100"})
+    }
     setState((draft) => {
-      //TODO -- could maybe actual move this to `internalPanel`, since it only changes when pointLayerId changes, which is only internally
-      const numbins = 6,
-        method = "ckmeans";
-      const showOther = "#ccc";
-      let { paint, legend } = choroplethPaint(
-        BLD_AV_COLUMN,
-        COLOR_SCALE_MAX,
-        getColorRange(8, "YlGn"),
-        numbins,
-        method,
-        COLOR_SCALE_BREAKS,
-        showOther,
-        "horizontal"
-      );
       set(draft, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`, "100");
+      //TODO -- could maybe actual move this to `internalPanel`, since it only changes when pointLayerId changes, which is only internally
       if (pointLayerId) {
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['data-column']`, BLD_AV_COLUMN);
-
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['layers'][0]['paint']`, { "circle-color": paint }); //Mapbox paint
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-data']`, legend); //AVAIL-written legend component
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-orientation']`, "horizontal");
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['category-show-other']`, "#fff");
       }
-      if (polygonLayerId) {
-        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['data-column']`, BLD_AV_COLUMN);
-
-        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['layers'][1]['paint']`, { "fill-color": paint }); //Mapbox
-        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['category-show-other']`, "#fff");
-        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['legend-orientation']`, "none");
+      if(polygonLayerId) {
+        //this is a sketchy way of pulling more data
+        //since we don't actually want to filter it or anything
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['data-column']`, `${BLD_AV_COLUMN},${FLOOD_ZONE_COLUMN}`);
       }
     });
 

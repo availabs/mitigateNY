@@ -19,6 +19,8 @@ import {
 } from "./constants";
 import {
   setInitialGeomStyle,
+  setPointLayerStyle,
+  setPolygonLayerStyle,
   resetGeometryBorderFilter,
   setGeometryBorderFilter,
   onlyUnique
@@ -79,21 +81,21 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [pointLayerId]);
 
-  const {
-    lowerBound,
-    upperBound,
-    radiusCurve,
-    curveFactor,
-  } = useMemo(() => {
-    if (dctx) {
-      return extractState(state);
-    } else {
-      const symbName = Object.keys(state.symbologies)[0];
-      const symbPathBase = `symbologies['${symbName}']`;
-      const symbData = get(state, symbPathBase, {});
-      return extractState(symbData);
-    }
-  }, [state]);
+  // const {
+  //   lowerBound,
+  //   upperBound,
+  //   radiusCurve,
+  //   curveFactor,
+  // } = useMemo(() => {
+  //   if (dctx) {
+  //     return extractState(state);
+  //   } else {
+  //     const symbName = Object.keys(state.symbologies)[0];
+  //     const symbPathBase = `symbologies['${symbName}']`;
+  //     const symbData = get(state, symbPathBase, {});
+  //     return extractState(symbData);
+  //   }
+  // }, [state]);
 
 
   const geomOptions = JSON.stringify({
@@ -257,42 +259,13 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
      * We apply them when the layer changes, and that can only happen via internal controls
      */
   useEffect(() => {
-    const getPointLayerStyle = async () => {
-      console.log("---RECALCULATING CIRCLE RADIUS---")
-      const circleLowerBound = 1;
-      const circleUpperBound = COLOR_SCALE_MAX;
-      const circleRadius = [
-        "interpolate",
-        [radiusCurve, curveFactor],
-        ["to-number",["get", BLD_AV_COLUMN]],
-        circleLowerBound, //min of dataset
-        2,//min radius (px) of circle
-        circleUpperBound, //max of dataset
-        8, //max radius (px) of circle
-      ];
-
-      setState((draft) => {
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['layers'][0]['paint']`, { "circle-color": paint, 'circle-radius': circleRadius }); //Mapbox
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-data']`, legend); //AVAIL-written legend component
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['legend-orientation']`, "horizontal");
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['category-show-other']`, "#fff");
-      });
-
-    };
     if (pointLayerId) {
-      getPointLayerStyle();
+      setPointLayerStyle({setState, layerId:pointLayerId, layerBasePath: symbologyLayerPath})
     }
   }, [pointLayerId]);
   useEffect(() => {
-    const getPolygonLayerStyle = async () => {
-      setState((draft) => {
-        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['layers'][1]['paint']`, { "fill-color": paint }); //Mapbox
-        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['category-show-other']`, "#fff");
-        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['legend-orientation']`, "none");
-      });
-    };
     if (polygonLayerId) {
-      getPolygonLayerStyle();
+      setPolygonLayerStyle({setState, layerId:polygonLayerId, layerBasePath: symbologyLayerPath, floodZone})
     }
   }, [polygonLayerId]);
 
@@ -313,14 +286,11 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       if(pointLayerId) {
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, newFilter);
       }
-      if(polygonLayerId) {
-        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['filter']`, newFilter);
-      }
     });
     //just need to change `filter` to reflect new value
     //todo -- might not need to listen for layerId changes here. since they can only change internally
     //but, otherwise, I need to set defaults in `internalPanel` too, and double code = bad
-  }, [floodZone, pointLayerId, polygonLayerId]);
+  }, [floodZone, pointLayerId]);
 
   return [
     {
