@@ -44,9 +44,16 @@ const setPolygonLayerStyle = ({ setState, layerId, layerBasePath, floodZone }) =
   );
   let casePaint;
   if (floodZone === "500") {
-    casePaint = ["case", ["==", ["get", "flood_zone"], "100"], paint[("==", ["get", "flood_zone"], "500")], paint, noColorPaint];
+    casePaint = ["case", 
+      ["==", ["get", "flood_zone"], "100"], paint, 
+      ["==", ["get", "flood_zone"], "500"], paint, 
+      noColorPaint
+    ];
   } else if (floodZone === "100") {
-    casePaint = ["case", ["==", ["get", "flood_zone"], "100"], paint, noColorPaint];
+    casePaint = ["case", 
+      ["==", ["get", "flood_zone"], "100"], paint, 
+      noColorPaint
+    ];
   }
 
   setState((draft) => {
@@ -59,6 +66,11 @@ const setPolygonLayerStyle = ({ setState, layerId, layerBasePath, floodZone }) =
     if (fillLayer) {
       fillLayer.paint = { "fill-opacity": 0.5, "fill-color": casePaint };
     }
+
+    draftLayers.forEach((d, i) => {
+      d.layout = { visibility: "visible" };
+      d.minzoom = 12;
+    });
 
     set(draft, `${layerBasePath}['${layerId}']['category-show-other']`, "#fff");
     set(draft, `${layerBasePath}['${layerId}']['legend-orientation']`, "none");

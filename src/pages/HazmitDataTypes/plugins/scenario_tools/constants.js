@@ -4,8 +4,11 @@ const PLUGIN_ID = "scenarioTools";
 
 
 const BLD_AV_COLUMN = "building_av";
-const FLOOD_ZONE_COLUMN = "flood_zone"
+const FLOOD_ZONE_COLUMN = "flood_zone";
+const COUNTY_COLUMN = "county_name";
 
+
+const GEOGRAPHY_KEY = 'geography'
 const POINT_LAYER_KEY = "point-layer";
 const COUNTY_LAYER_KEY = "county";
 const POLYGON_LAYER_KEY = "polygon-layer";
@@ -58,7 +61,9 @@ export {
   POINT_LAYER_KEY,
   COUNTY_LAYER_KEY,
   POLYGON_LAYER_KEY,
+  GEOGRAPHY_KEY,
   FLOOD_ZONE_COLUMN,
+  COUNTY_COLUMN,
   BLANK_OPTION,
   BLD_AV_COLUMN,
   FLOOD_ZONE_KEY,

@@ -8,9 +8,11 @@ import {
   PLUGIN_ID,
   POINT_LAYER_KEY,
   COUNTY_LAYER_KEY,
+  GEOGRAPHY_KEY,
   FLOOD_ZONE_KEY,
   BLANK_OPTION,
   BLD_AV_COLUMN,
+  COUNTY_COLUMN,
   getColorRange,
   defaultFilter,
   COLOR_SCALE_MAX,
@@ -99,11 +101,11 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
 
 
   const geomOptions = JSON.stringify({
-    groupBy: ["county_name"],
+    groupBy: [COUNTY_COLUMN],
   });
   useEffect(() => {
     const getGeoms = async () => {
-      await falcor.get(["dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex", { from: 0, to: 200 }, ["county_name"]]);
+      await falcor.get(["dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex", { from: 0, to: 200 }, [COUNTY_COLUMN]]);
     };
 
     if (viewId) {
@@ -115,11 +117,11 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     const geomData = get(falcorCache, ["dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex"]);
     if (geomData) {
       const geoms = {
-        county_name: [],
+        [COUNTY_COLUMN]: [],
       };
 
       Object.values(geomData).forEach((da) => {
-        geoms.county_name.push(da.county_name);
+        geoms[COUNTY_COLUMN].push(da[COUNTY_COLUMN]);
       });
 
       const nameSort = (a, b) => {
@@ -131,23 +133,25 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       };
       const objectFilter = (da) => typeof da !== "object";
       const truthyFilter = (val) => !!val;
-      geoms.county_name = geoms.county_name
+      geoms[COUNTY_COLUMN] = geoms[COUNTY_COLUMN]
         .filter(onlyUnique)
         .filter(objectFilter)
         .filter(truthyFilter)
         .map((da) => ({
           name: da.toLowerCase() + " County",
           value: da,
-          type: "county_name",
+          type: COUNTY_COLUMN,
         }))
         .sort(nameSort);
 
-      return [...geoms.county_name];
+      return [...geoms[COUNTY_COLUMN]];
     } else {
       return [];
     }
   }, [falcorCache]);
 
+  //TODO WHEN TOWNSHIPS ARE ADDED
+  //will need to add separate or some logic here to handle those borders/changes
   useEffect(() => {
     const getFilterBounds = async () => {
       //need array of [{column_name:foo, values:['bar', 'baz']}]
@@ -170,9 +174,13 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       });
 
       setState((draft) => {
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, geographyFilter);
-        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, geographyFilter);
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, "all");
+        if(pointLayerId) {
+          set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, geographyFilter);
+          set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, "all");
+        }
+        if(polygonLayerId) {
+          set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, geographyFilter);
+        }
       });
     };
 
@@ -181,7 +189,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       //get zoom bounds
       getFilterBounds();
       //filter and display borders for selected geographie
-      const selectedCounty = geography.filter((geo) => geo.type === "county_name");
+      const selectedCounty = geography.filter((geo) => geo.type === COUNTY_COLUMN);
       console.log({selectedCounty})
       if (selectedCounty.length > 0 && countyLayerId) {
         //cenrep source 1514 view 1989 test NYS_County_Boundaries
@@ -267,13 +275,15 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     if (polygonLayerId) {
       setPolygonLayerStyle({setState, layerId:polygonLayerId, layerBasePath: symbologyLayerPath, floodZone})
     }
-  }, [polygonLayerId]);
+  }, [polygonLayerId, floodZone]);
 
   useEffect(() => {
     let floodValue = floodZone;
     //all points affected by 500 year flood are also affected by 100 year flood
     if(floodZone === '500') {
       floodValue = ['100', '500']
+    } else {
+      floodValue = ['100']
     }
     const newFilter = {
       flood_zone: {
@@ -283,7 +293,11 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       },
     };
     setState((draft) => {
+      if(polygonLayerId) {
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
+      }
       if(pointLayerId) {
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, newFilter);
       }
     });
@@ -303,7 +317,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
             default: "",
             searchable: true,
           },
-          path: `['geography']`,
+          path: `['${GEOGRAPHY_KEY}']`,
         },
       ],
     },
