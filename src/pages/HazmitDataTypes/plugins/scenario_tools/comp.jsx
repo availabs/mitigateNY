@@ -36,7 +36,6 @@ import { fnumIndex } from "~/pages/DataManager/MapEditor/components/LayerEditor/
 import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/MapEditor/stateUtils";
 
 const comp = ({ state, setState }) => {
-  console.log("state in comp::", state);
   const dctx = useContext(DamaContext);
   const cctx = useContext(CMSContext);
   const ctx = dctx?.falcor ? dctx : cctx;
@@ -87,11 +86,11 @@ const comp = ({ state, setState }) => {
       return extractState(symbData);
     }
   }, [state]);
-  console.log({ existingDynamicFilter, dataFilter });
+
   const falcorDataFilterFor500 = useMemo(() => {
-    const newDataFilter = cloneDeep(dataFilter);
-    newDataFilter.flood_zone.value = ["100", "500"];
-    if (geography && geography.length > 0) {
+    if (geography && geography.length > 0 && dataFilter && Object.keys(dataFilter)) {
+      const newDataFilter = cloneDeep(dataFilter);
+      newDataFilter.flood_zone.value = ["100", "500"];
       //const geoFilter = { [COUNTY_COLUMN]: { operator: "==", values: [geography[0].value], column_name: COUNTY_COLUMN } };
       //console.log({ geoFilter });
       return createFalcorFilterOptions({
@@ -105,9 +104,9 @@ const comp = ({ state, setState }) => {
   }, [existingDynamicFilter, filterMode, dataFilter]);
 
   const falcorDataFilterFor100 = useMemo(() => {
-    const newDataFilter = cloneDeep(dataFilter);
-    newDataFilter.flood_zone.value = ["100"];
-    if (geography && geography.length > 0) {
+    if (geography && geography.length > 0 && dataFilter && Object.keys(dataFilter)) {
+      const newDataFilter = cloneDeep(dataFilter);
+      newDataFilter.flood_zone.value = ["100"];
       //const geoFilter = { [COUNTY_COLUMN]: { operator: "==", values: [geography[0].value], column_name: COUNTY_COLUMN } };
       //console.log({ geoFilter });
       return createFalcorFilterOptions({
@@ -120,35 +119,25 @@ const comp = ({ state, setState }) => {
     }
   }, [existingDynamicFilter, filterMode, dataFilter, floodZone]);
 
-  console.log({ falcorDataFilterFor100, falcorDataFilterFor500 });
-  const options100 = JSON.stringify({
-    filter: JSON.parse(falcorDataFilterFor100).filter,
-  });
-  const options500 = JSON.stringify({
-    filter: JSON.parse(falcorDataFilterFor500).filter,
-  });
-  const bldValFalcorPath500 = [
-    "uda",
-    pgEnv,
-    "viewsById",
-    viewId,
-    "options",
-    options500,
-    "dataByIndex",
-    0,
-    [`sum(${BLD_AV_COLUMN}) as sum`],
-  ];
-  const bldValFalcorPath100 = [
-    "uda",
-    pgEnv,
-    "viewsById",
-    viewId,
-    "options",
-    options100,
-    "dataByIndex",
-    0,
-    [`sum(${BLD_AV_COLUMN}) as sum`],
-  ];
+  const options100 = useMemo(() => {
+    return JSON.stringify({
+      filter: JSON.parse(falcorDataFilterFor100).filter,
+    });
+  }, [falcorDataFilterFor100]);
+
+  const options500 = useMemo(() => {
+    return JSON.stringify({
+      filter: JSON.parse(falcorDataFilterFor500).filter,
+    });
+  }, [falcorDataFilterFor500]);
+
+  const bldValFalcorPath500 = useMemo(() => {
+    return ["uda", pgEnv, "viewsById", viewId, "options", options500, "dataByIndex", 0, [`sum(${BLD_AV_COLUMN}) as sum`]];
+  }, [pgEnv, viewId, options500]);
+  const bldValFalcorPath100 = useMemo(() => {
+    return ["uda", pgEnv, "viewsById", viewId, "options", options100, "dataByIndex", 0, [`sum(${BLD_AV_COLUMN}) as sum`]];
+  }, [pgEnv, viewId, options100]);
+
   useEffect(() => {
     const getData = async () => {
       console.log("Getting data");
@@ -161,14 +150,10 @@ const comp = ({ state, setState }) => {
   const bldValData500 = useMemo(() => {
     return parseFloat(get(falcorCache, bldValFalcorPath500, 0));
   }, [falcorCache, bldValFalcorPath500]);
-  console.log({ bldValData500 });
   const bldValData100 = useMemo(() => {
     return parseFloat(get(falcorCache, bldValFalcorPath100, 0));
   }, [falcorCache, bldValFalcorPath100]);
-  console.log({ bldValData100 });
-  //console.log({falcorDataFilter, existingDynamicFilter, dataFilter})
 
-  //console.log({viewId, pointLayerId, countyLayerId, geography, floodZone, polygonLayerId })
   return (
     <div
       className='flex flex-col pointer-events-auto drop-shadow-lg p-4 bg-white/95'

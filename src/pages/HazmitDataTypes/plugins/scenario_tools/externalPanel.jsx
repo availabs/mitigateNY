@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, createContext, useRef, useContext } from "react";
-import { DamaContext } from "~/pages/DataManager/store"
+import { DamaContext } from "~/pages/DataManager/store";
 import { CMSContext } from "~/modules/dms/src";
 import get from "lodash/get";
 import set from "lodash/set";
@@ -17,7 +17,7 @@ import {
   defaultFilter,
   COLOR_SCALE_MAX,
   COLOR_SCALE_BREAKS,
-  POLYGON_LAYER_KEY
+  POLYGON_LAYER_KEY,
 } from "./constants";
 import {
   setInitialGeomStyle,
@@ -25,8 +25,8 @@ import {
   setPolygonLayerStyle,
   resetGeometryBorderFilter,
   setGeometryBorderFilter,
-  onlyUnique
-} from "./utils"
+  onlyUnique,
+} from "./utils";
 
 import { choroplethPaint } from "~/pages/DataManager/MapEditor/components/LayerEditor/datamaps";
 import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/MapEditor/stateUtils";
@@ -99,7 +99,6 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   //   }
   // }, [state]);
 
-
   const geomOptions = JSON.stringify({
     groupBy: [COUNTY_COLUMN],
   });
@@ -133,8 +132,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       };
       const objectFilter = (da) => typeof da !== "object";
       const truthyFilter = (val) => !!val;
-      geoms[COUNTY_COLUMN] = geoms[COUNTY_COLUMN]
-        .filter(onlyUnique)
+      geoms[COUNTY_COLUMN] = geoms[COUNTY_COLUMN].filter(onlyUnique)
         .filter(objectFilter)
         .filter(truthyFilter)
         .map((da) => ({
@@ -164,36 +162,42 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         acc[curr.type].push(curr.value);
         return acc;
       }, {});
-      const geographyFilter = Object.keys(selectedGeographyByType).map((column_name) => {
-        return {
-          display_name: column_name,
-          column_name,
-          values: selectedGeographyByType[column_name],
-          zoomToFilterBounds: true,
-        };
-      });
 
       setState((draft) => {
-        if(pointLayerId) {
+        if (pointLayerId) {
+          const geographyFilter = Object.keys(selectedGeographyByType).map((column_name) => {
+            return {
+              display_name: column_name,
+              column_name,
+              values: selectedGeographyByType[column_name],
+              zoomToFilterBounds: false,
+            };
+          });
           set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, geographyFilter);
           set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, "all");
         }
-        if(polygonLayerId) {
+        if (polygonLayerId) {
+          const geographyFilter = Object.keys(selectedGeographyByType).map((column_name) => {
+            return {
+              display_name: column_name,
+              column_name,
+              values: selectedGeographyByType[column_name],
+              zoomToFilterBounds: true,
+            };
+          });
           set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, geographyFilter);
         }
       });
     };
 
     if (geography?.length > 0) {
-      console.log("geo lenngth is not 0")
       //get zoom bounds
       getFilterBounds();
       //filter and display borders for selected geographie
       const selectedCounty = geography.filter((geo) => geo.type === COUNTY_COLUMN);
-      console.log({selectedCounty})
+      console.log({ selectedCounty });
       if (selectedCounty.length > 0 && countyLayerId) {
         //cenrep source 1514 view 1989 test NYS_County_Boundaries
-        console.log("setting county border", countyLayerId)
         setGeometryBorderFilter({
           setState,
           layerId: countyLayerId,
@@ -220,10 +224,10 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         const zoomToFilterBounds = get(draft, `${symbPath}.zoomToFilterBounds`);
         if (zoomToFilterBounds?.length > 0) {
           set(draft, `${symbPath}.zoomToFilterBounds`, []);
-          if(pointLayerId) {
+          if (pointLayerId) {
             set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, []);
           }
-          if(polygonLayerId) {
+          if (polygonLayerId) {
             set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, []);
           }
         }
@@ -231,11 +235,11 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         if (pointLayerId) {
           set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, null);
         }
-        if(polygonLayerId) {
+        if (polygonLayerId) {
           set(draft, `${symbologyLayerPath}['${polygonLayerId}']['filterMode']`, null);
         }
         if (countyLayerId) {
-          console.log("resetting county filter")
+          console.log("resetting county filter");
           resetGeometryBorderFilter({
             layerId: countyLayerId,
             setState,
@@ -247,43 +251,29 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   }, [geography]);
 
 
-    const numbins = 7,
-      method = "ckmeans";
-    const showOther = "#ccc";
-    let { paint, legend } = choroplethPaint(
-      BLD_AV_COLUMN,
-      COLOR_SCALE_MAX,
-      getColorRange(8, "YlGn"),
-      numbins,
-      method,
-      COLOR_SCALE_BREAKS,
-      showOther,
-      "horizontal"
-    );
-
-    /**
-     * TODO
-     * MAYBE move the style useEffects to `internalPanel`
-     * We apply them when the layer changes, and that can only happen via internal controls
-     */
+  /**
+   * TODO
+   * MAYBE move the style useEffects to `internalPanel`
+   * We apply them when the layer changes, and that can only happen via internal controls
+   */
   useEffect(() => {
     if (pointLayerId) {
-      setPointLayerStyle({setState, layerId:pointLayerId, layerBasePath: symbologyLayerPath})
+      setPointLayerStyle({ setState, layerId: pointLayerId, layerBasePath: symbologyLayerPath });
     }
   }, [pointLayerId]);
   useEffect(() => {
     if (polygonLayerId) {
-      setPolygonLayerStyle({setState, layerId:polygonLayerId, layerBasePath: symbologyLayerPath, floodZone})
+      setPolygonLayerStyle({ setState, layerId: polygonLayerId, layerBasePath: symbologyLayerPath, floodZone });
     }
   }, [polygonLayerId, floodZone]);
 
   useEffect(() => {
     let floodValue = floodZone;
     //all points affected by 500 year flood are also affected by 100 year flood
-    if(floodZone === '500') {
-      floodValue = ['100', '500']
+    if (floodZone === "500") {
+      floodValue = ["100", "500"];
     } else {
-      floodValue = ['100']
+      floodValue = ["100"];
     }
     const newFilter = {
       flood_zone: {
@@ -293,10 +283,10 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       },
     };
     setState((draft) => {
-      if(polygonLayerId) {
+      if (polygonLayerId) {
         set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
       }
-      if(pointLayerId) {
+      if (pointLayerId) {
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, newFilter);
       }
@@ -327,12 +317,15 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         {
           type: "select",
           params: {
-            options: [{ value: "100", name: "100" },{ value: "500", name: "500" }],
+            options: [
+              { value: "100", name: "100" },
+              { value: "500", name: "500" },
+            ],
           },
           path: `['${FLOOD_ZONE_KEY}']`,
         },
       ],
-    }
+    },
   ];
 };
 
