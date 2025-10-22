@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, createContext, useRef, useContext } from "react";
-import { DamaContext } from "~/pages/DataManager/store"
+import { DamaContext } from "~/pages/DataManager/store";
 import { CMSContext } from "~/modules/dms/src";
 import get from "lodash/get";
 import set from "lodash/set";
@@ -21,7 +21,7 @@ import {
   COLOR_SCALE_MAX,
   COLOR_SCALE_BREAKS,
   POLYGON_LAYER_KEY,
-  COUNTY_COLUMN
+  COUNTY_COLUMN,
 } from "./constants";
 import {
   setPolygonLayerStyle,
@@ -29,9 +29,8 @@ import {
   setInitialGeomStyle,
   resetGeometryBorderFilter,
   setGeometryBorderFilter,
-  onlyUnique
-} from "./utils"
-
+  onlyUnique,
+} from "./utils";
 
 import { fnumIndex } from "~/pages/DataManager/MapEditor/components/LayerEditor/datamaps";
 import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/MapEditor/stateUtils";
@@ -172,7 +171,7 @@ const comp = ({ state, setState }) => {
   //console.log({viewId, pointLayerId, countyLayerId, geography, floodZone, polygonLayerId })
   return (
     <div
-      className='flex flex-col pointer-events-auto drop-shadow-lg p-4 bg-white/75'
+      className='flex flex-col pointer-events-auto drop-shadow-lg p-4 bg-white/95'
       style={{
         position: "absolute",
         bottom: "94px",
@@ -182,21 +181,48 @@ const comp = ({ state, setState }) => {
         maxHeight: "325px",
       }}
     >
-      <div className='grid grid-rows-3 grid-cols-4 text-sm'>
-        <div className='font-bold underline'>Scenario</div>
-        <div className='font-bold underline'>Visibility</div>
-        <div className='font-bold underline'>Total Loss</div>
-        <div className='font-bold underline'>Annual Loss</div>
+      <div className='grid grid-rows-3 text-sm divide-y divide-gray-400'>
+        <div className='grid grid-cols-4 border-gray-400 border-b p-1 '>
+          <div className='font-bold'>Scenario</div>
+          <div className='font-bold'>Visibility</div>
+          <div className='font-bold'>Total Loss</div>
+          <div className='font-bold'>Annual Loss</div>
+        </div>
 
-        <div>Annual 0.2%</div>
-        <div>{floodZone.includes("500") && "X"}</div>
-        <div>{fnumIndex(bldValData500, 1, true)}</div>
-        <div>{fnumIndex(bldValData500 / 500, 2, true)}</div>
+        <div className='grid grid-cols-4 p-1 '>
+          <div>Annual 0.2%</div>
+          <div>
+            <input
+              type='radio'
+              checked={floodZone.includes("500")}
+              onChange={() =>
+                setState((draft) => {
+                  set(draft, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`, "500");
+                })
+              }
+            />
+          </div>
+          <div>{fnumIndex(bldValData500, 1, true)}</div>
+          <div>{fnumIndex(bldValData500 / 500, 2, true)}</div>
+        </div>
 
-        <div>Annual 1%</div>
-        <div>{!floodZone.includes("500") && "X"}</div>
-        <div>{fnumIndex(bldValData100, 1, true)}</div>
-        <div>{fnumIndex(bldValData100 / 100, 2, true)}</div>
+        <div className='grid grid-cols-4 p-1 '>
+          <div>Annual 1%</div>
+          <div>
+            {" "}
+            <input
+              type='radio'
+              checked={!floodZone.includes("500")}
+              onChange={() =>
+                setState((draft) => {
+                  set(draft, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`, "100");
+                })
+              }
+            />
+          </div>
+          <div>{fnumIndex(bldValData100, 1, true)}</div>
+          <div>{fnumIndex(bldValData100 / 100, 2, true)}</div>
+        </div>
       </div>
 
       <div className='flex space-between justify-between text-base font-bold mt-2 pl-2 pr-8'>
