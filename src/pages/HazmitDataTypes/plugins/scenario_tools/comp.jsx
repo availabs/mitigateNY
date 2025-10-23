@@ -13,6 +13,8 @@ import {
   FLOOD_ZONE_COLUMN,
   COUNTY_LAYER_KEY,
   FLOOD_ZONE_KEY,
+  TOWNS_KEY,
+  BILD_MUNI_COLUMN,
   GEOGRAPHY_KEY,
   BLANK_OPTION,
   BLD_AV_COLUMN,
@@ -34,6 +36,7 @@ import {
 
 import { fnumIndex } from "~/pages/DataManager/MapEditor/components/LayerEditor/datamaps";
 import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/MapEditor/stateUtils";
+import { count } from "d3-array";
 
 const comp = ({ state, setState }) => {
   const dctx = useContext(DamaContext);
@@ -59,7 +62,7 @@ const comp = ({ state, setState }) => {
 
   const pluginDataPath = `${symbPath}['pluginData']['${PLUGIN_ID}']`;
 
-  const { viewId, pointLayerId, countyLayerId, geography, floodZone, polygonLayerId } = useMemo(() => {
+  const { viewId, pointLayerId, countyLayerId, geography, floodZone, polygonLayerId, towns } = useMemo(() => {
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
 
     return {
@@ -69,6 +72,7 @@ const comp = ({ state, setState }) => {
       countyLayerId: get(state, `${pluginDataPath}['active-layers'][${COUNTY_LAYER_KEY}]`),
       polygonLayerId: get(state, `${pluginDataPath}['active-layers'][${POLYGON_LAYER_KEY}]`),
       floodZone: get(state, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`),
+      towns: get(state, `${pluginDataPath}['${TOWNS_KEY}']`),
     };
   }, [state]);
   const {
@@ -87,12 +91,11 @@ const comp = ({ state, setState }) => {
     }
   }, [state]);
 
-  const falcorDataFilterFor500 = useMemo(() => {
-    if (geography && geography.length > 0 && dataFilter && Object.keys(dataFilter)) {
+  const falcorDataFilterForCountyLoss = useMemo(() => {
+    if (geography && geography.length > 0 && dataFilter.flood_zone) {
       const newDataFilter = cloneDeep(dataFilter);
       newDataFilter.flood_zone.value = ["100", "500"];
       //const geoFilter = { [COUNTY_COLUMN]: { operator: "==", values: [geography[0].value], column_name: COUNTY_COLUMN } };
-      //console.log({ geoFilter });
       return createFalcorFilterOptions({
         dynamicFilter: existingDynamicFilter,
         filterMode,
@@ -103,67 +106,123 @@ const comp = ({ state, setState }) => {
     }
   }, [existingDynamicFilter, filterMode, dataFilter]);
 
-  const falcorDataFilterFor100 = useMemo(() => {
-    if (geography && geography.length > 0 && dataFilter && Object.keys(dataFilter)) {
+  const falcorDataFilterForTowns = useMemo(() => {
+    if (towns && towns.length > 0 && dataFilter.flood_zone) {
       const newDataFilter = cloneDeep(dataFilter);
-      newDataFilter.flood_zone.value = ["100"];
-      //const geoFilter = { [COUNTY_COLUMN]: { operator: "==", values: [geography[0].value], column_name: COUNTY_COLUMN } };
-      //console.log({ geoFilter });
+      newDataFilter.flood_zone.value = ["100", "500"];
+      const geoFilter = [{ column_name: BILD_MUNI_COLUMN, values: towns.map((town) => town.value) }];
       return createFalcorFilterOptions({
-        dynamicFilter: existingDynamicFilter,
+        dynamicFilter: geoFilter,
         filterMode,
-        dataFilter: newDataFilter,
+        dataFilter: [],
       });
     } else {
       return JSON.stringify({});
     }
-  }, [existingDynamicFilter, filterMode, dataFilter, floodZone]);
+  }, [existingDynamicFilter, filterMode, dataFilter]);
 
-  const options100 = useMemo(() => {
+  const countyLossOptions = useMemo(() => {
     return JSON.stringify({
-      filter: JSON.parse(falcorDataFilterFor100).filter,
+      groupBy: [FLOOD_ZONE_COLUMN],
+      filter: JSON.parse(falcorDataFilterForCountyLoss).filter,
     });
-  }, [falcorDataFilterFor100]);
+  }, [falcorDataFilterForCountyLoss]);
 
-  const options500 = useMemo(() => {
+  const optionsTowns = useMemo(() => {
     return JSON.stringify({
-      filter: JSON.parse(falcorDataFilterFor500).filter,
+      groupBy: [FLOOD_ZONE_COLUMN],
+      filter: JSON.parse(falcorDataFilterForTowns).filter,
     });
-  }, [falcorDataFilterFor500]);
+  }, [falcorDataFilterForTowns]);
 
-  const bldValFalcorPath500 = useMemo(() => {
-    return ["uda", pgEnv, "viewsById", viewId, "options", options500, "dataByIndex", 0, [`sum(${BLD_AV_COLUMN}) as sum`]];
-  }, [pgEnv, viewId, options500]);
-  const bldValFalcorPath100 = useMemo(() => {
-    return ["uda", pgEnv, "viewsById", viewId, "options", options100, "dataByIndex", 0, [`sum(${BLD_AV_COLUMN}) as sum`]];
-  }, [pgEnv, viewId, options100]);
+  const countyLossFalcorPath = useMemo(() => {
+    return ["uda", pgEnv, "viewsById", viewId, "options", countyLossOptions, "dataByIndex"];
+  }, [pgEnv, viewId, countyLossOptions]);
+  const bldValFalcorPathTowns = useMemo(() => {
+    return ["uda", pgEnv, "viewsById", viewId, "options", optionsTowns, "dataByIndex"];
+  }, [pgEnv, viewId, optionsTowns]);
 
+  const countyLossApiPath = [{ from: 0, to: 1 }, [FLOOD_ZONE_COLUMN, `sum(${BLD_AV_COLUMN}) as sum`]];
+  const townsLossApiPath = [{ from: 0, to: 2 }, [FLOOD_ZONE_COLUMN, "count(1)::int as count", `sum(${BLD_AV_COLUMN}) as sum`]];
   useEffect(() => {
     const getData = async () => {
-      console.log("Getting data");
-      falcor.get(bldValFalcorPath500);
-      falcor.get(bldValFalcorPath100);
+      falcor.get([...countyLossFalcorPath, ...countyLossApiPath]);
+
+      if (towns && towns.length > 0) {
+        falcor.get([...bldValFalcorPathTowns, ...townsLossApiPath]);
+      }
     };
     getData();
-  }, [bldValFalcorPath100, bldValFalcorPath500]);
+  }, [bldValFalcorPathTowns, countyLossFalcorPath]);
 
-  const bldValData500 = useMemo(() => {
-    return parseFloat(get(falcorCache, bldValFalcorPath500, 0));
-  }, [falcorCache, bldValFalcorPath500]);
-  const bldValData100 = useMemo(() => {
-    return parseFloat(get(falcorCache, bldValFalcorPath100, 0));
-  }, [falcorCache, bldValFalcorPath100]);
+  const countyLossData = useMemo(() => {
+    return get(falcorCache, countyLossFalcorPath);
+  }, [falcorCache, countyLossFalcorPath]);
+  const bldValDataTowns = useMemo(() => {
+    return get(falcorCache, bldValFalcorPathTowns);
+  }, [falcorCache, bldValFalcorPathTowns]);
 
+  const townData = useMemo(() => {
+    return get(falcorCache, bldValFalcorPathTowns);
+  }, [falcorCache, bldValFalcorPathTowns]);
+
+  const county100Year = parseFloat(
+    Object.values(countyLossData || {}).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]
+  );
+  const county500Year = parseFloat(
+    Object.values(countyLossData || {}).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]
+  );
+
+  const townFloodNumBld = useMemo(() => {
+    if (townData) {
+      const count100 = parseInt(Object.values(townData).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.["count(1)::int as count"]);
+      if (!floodZone?.includes("500")) {
+        // 100 only
+        return count100;
+      } else {
+        const count500 = parseInt(Object.values(townData).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.["count(1)::int as count"]);
+        return count100 + count500;
+      }
+    }
+  }, [townData, floodZone]);
+  const townFloodLoss = useMemo(() => {
+    if (townData) {
+      const loss100 = parseInt(Object.values(townData).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
+      if (!floodZone?.includes("500")) {
+        // 100 only
+        return loss100;
+      } else {
+        const loss500 = parseInt(Object.values(townData).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
+        return loss100 + loss500;
+      }
+    }
+  }, [townData, floodZone]);
+  const townTotalBld = useMemo(() => {
+    if (townData) {
+      const bldSum = Object.values(townData).reduce((acc, curr) => {
+        return acc + parseInt(curr["count(1)::int as count"]);
+      }, 0);
+      return bldSum;
+    }
+  }, [townData]);
+  const townTotalVal = useMemo(() => {
+    if (townData) {
+      const bldSum = Object.values(townData).reduce((acc, curr) => {
+        return acc + parseFloat(curr[`sum(${BLD_AV_COLUMN}) as sum`]);
+      }, 0);
+      return bldSum;
+    }
+  }, [townData]);
   return (
     <div
       className='flex flex-col pointer-events-auto drop-shadow-lg p-4 bg-white/95'
       style={{
         position: "absolute",
-        bottom: "94px",
+        bottom: "150px",
         left: "90px",
         color: "black",
         width: "450px",
-        maxHeight: "325px",
+        maxHeight: "500px",
       }}
     >
       <div className='grid grid-rows-3 text-sm divide-y divide-gray-400'>
@@ -179,7 +238,7 @@ const comp = ({ state, setState }) => {
           <div>
             <input
               type='radio'
-              checked={floodZone.includes("500")}
+              checked={floodZone?.includes("500")}
               onChange={() =>
                 setState((draft) => {
                   set(draft, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`, "500");
@@ -187,8 +246,8 @@ const comp = ({ state, setState }) => {
               }
             />
           </div>
-          <div>{fnumIndex(bldValData500, 1, true)}</div>
-          <div>{fnumIndex(bldValData500 / 500, 2, true)}</div>
+          <div>{fnumIndex(county100Year + county500Year, 1, true)}</div>
+          <div>{fnumIndex((county100Year + county500Year) / 500, 2, true)}</div>
         </div>
 
         <div className='grid grid-cols-4 p-1 '>
@@ -197,7 +256,7 @@ const comp = ({ state, setState }) => {
             {" "}
             <input
               type='radio'
-              checked={!floodZone.includes("500")}
+              checked={!floodZone?.includes("500")}
               onChange={() =>
                 setState((draft) => {
                   set(draft, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`, "100");
@@ -205,15 +264,41 @@ const comp = ({ state, setState }) => {
               }
             />
           </div>
-          <div>{fnumIndex(bldValData100, 1, true)}</div>
-          <div>{fnumIndex(bldValData100 / 100, 2, true)}</div>
+          <div>{fnumIndex(county100Year, 1, true)}</div>
+          <div>{fnumIndex(county100Year / 100, 2, true)}</div>
         </div>
       </div>
 
-      <div className='flex space-between justify-between text-base font-bold mt-2 pl-2 pr-8'>
+      <div className='flex space-between justify-between text-base font-bold pl-2 pr-8'>
         <div>Expected Annualized Avg. Loss</div>
-        <div>{fnumIndex(bldValData100 / 100 + bldValData500 / 500, 2, true)}</div>
+        <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>
       </div>
+      {towns?.length ? (
+        <div className='mt-8'>
+          <div className='font-xl font-bold'>Jurisdictions</div>
+          <div className='grid grid-rows-3 text-sm divide-y divide-gray-400'>
+            <div className='grid grid-cols-5 border-gray-400 border-b p-1 '>
+              <div className='font-bold'>Zone</div>
+              <div className='font-bold'># of buldings</div>
+              <div className='font-bold'>$$$ of buldings</div>
+              <div className='font-bold'># in flood zone</div>
+              <div className='font-bold'>$ in losses</div>
+            </div>
+
+            {towns.map((town) => (
+              <div className='grid grid-cols-5 p-1 ' key={`town_${town.value}`}>
+                <div>{town.value}</div>
+                <div>{fnumIndex(townTotalBld, 2)}</div>
+                <div>{fnumIndex(townTotalVal, 2, true)}</div>
+                <div>{fnumIndex(townFloodNumBld, 2)}</div>
+                <div>{fnumIndex(townFloodLoss, 2, true)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

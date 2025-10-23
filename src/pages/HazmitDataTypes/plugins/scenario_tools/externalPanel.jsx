@@ -8,11 +8,15 @@ import {
   PLUGIN_ID,
   POINT_LAYER_KEY,
   COUNTY_LAYER_KEY,
+  TOWN_LAYER_KEY,
   GEOGRAPHY_KEY,
   FLOOD_ZONE_KEY,
+  TOWNS_KEY,
   BLANK_OPTION,
+  COUNTY_LAYER_NAME_COLUMN,
   BLD_AV_COLUMN,
   COUNTY_COLUMN,
+  TOWN_NAME_COLUMN,
   getColorRange,
   defaultFilter,
   COLOR_SCALE_MAX,
@@ -62,15 +66,19 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     symbPath = `symbology`;
   }
 
-  const { viewId, pointLayerId, countyLayerId, geography, floodZone, polygonLayerId } = useMemo(() => {
+  const { viewId, pointLayerId, countyLayerId, geography, floodZone, polygonLayerId, towns, townLayerViewId, townLayerId } = useMemo(() => {
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
+    const townLayerId = get(state, `${pluginDataPath}['active-layers'][${TOWN_LAYER_KEY}]`);
     return {
       viewId: get(state, `${symbologyLayerPath}['${pointLayerId}']['view_id']`, null),
       pointLayerId,
-      geography: get(state, `${pluginDataPath}['geography']`, null),
+      geography: get(state, `${pluginDataPath}['${GEOGRAPHY_KEY}']`, null),
       countyLayerId: get(state, `${pluginDataPath}['active-layers'][${COUNTY_LAYER_KEY}]`),
       polygonLayerId: get(state, `${pluginDataPath}['active-layers'][${POLYGON_LAYER_KEY}]`),
+      townLayerId,
+      townLayerViewId: get(state, `${symbologyLayerPath}['${townLayerId}']['view_id']`, null),
       floodZone: get(state, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`),
+      towns: get(state, `${pluginDataPath}['${TOWNS_KEY}']`),
     };
   }, [pluginData, pluginDataPath]);
 
@@ -148,6 +156,59 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [falcorCache]);
 
+  const townGeomOptions = JSON.stringify({
+    groupBy: [TOWN_NAME_COLUMN],
+  });
+  useEffect(() => {
+    const getGeoms = async () => {
+      await falcor.get(["dama", pgEnv, "viewsbyId", townLayerViewId, "options", townGeomOptions, "databyIndex", { from: 0, to: 200 }, [TOWN_NAME_COLUMN]]);
+    };
+
+    if (townLayerViewId) {
+      getGeoms();
+    }
+  }, [townLayerViewId]);
+
+
+
+  const townControlOptions = useMemo(() => {
+    const geomData = get(falcorCache, ["dama", pgEnv, "viewsbyId", townLayerViewId, "options", townGeomOptions, "databyIndex"]);
+    if (geomData) {
+      const geoms = {
+        [TOWN_NAME_COLUMN]: [],
+      };
+
+      Object.values(geomData).forEach((da) => {
+        geoms[TOWN_NAME_COLUMN].push(da[TOWN_NAME_COLUMN]);
+      });
+
+      const nameSort = (a, b) => {
+        if (a.name < b.name) {
+          return -1;
+        } else {
+          return 1;
+        }
+      };
+      const objectFilter = (da) => typeof da !== "object";
+      const truthyFilter = (val) => !!val;
+      geoms[TOWN_NAME_COLUMN] = geoms[TOWN_NAME_COLUMN].filter(onlyUnique)
+        .filter(objectFilter)
+        .filter(truthyFilter)
+        .map((da) => ({
+          name: da.toLowerCase() + " Town",
+          value: da,
+          type: "town",
+        }))
+        .sort(nameSort);
+
+      return [...geoms[TOWN_NAME_COLUMN]];
+    } else {
+      return [];
+    }
+  }, [falcorCache]);
+
+
+
   //TODO WHEN TOWNSHIPS ARE ADDED
   //will need to add separate or some logic here to handle those borders/changes
   useEffect(() => {
@@ -162,30 +223,32 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         acc[curr.type].push(curr.value);
         return acc;
       }, {});
-
+      const geographyFilter = Object.keys(selectedGeographyByType).map((column_name) => {
+        return {
+          display_name: column_name,
+          column_name,
+          values: selectedGeographyByType[column_name],
+          zoomToFilterBounds: false,
+        };
+      });
       setState((draft) => {
         if (pointLayerId) {
-          const geographyFilter = Object.keys(selectedGeographyByType).map((column_name) => {
-            return {
-              display_name: column_name,
-              column_name,
-              values: selectedGeographyByType[column_name],
-              zoomToFilterBounds: false,
-            };
-          });
           set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, geographyFilter);
           set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, "all");
         }
         if (polygonLayerId) {
+          set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, geographyFilter);
+        }
+        if(countyLayerId) {
           const geographyFilter = Object.keys(selectedGeographyByType).map((column_name) => {
             return {
               display_name: column_name,
-              column_name,
+              column_name: COUNTY_LAYER_NAME_COLUMN,
               values: selectedGeographyByType[column_name],
               zoomToFilterBounds: true,
             };
           });
-          set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, geographyFilter);
+          set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters']`, geographyFilter);
         }
       });
     };
@@ -201,7 +264,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         setGeometryBorderFilter({
           setState,
           layerId: countyLayerId,
-          geomDataKey: "ny_counti_4",
+          geomDataKey: COUNTY_LAYER_NAME_COLUMN,
           values: selectedCounty.map((county) => {
             const lowCountyString = county.value.toLowerCase();
             return lowCountyString[0].toUpperCase() + lowCountyString.slice(1);
@@ -210,7 +273,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         });
       } else {
         if (countyLayerId) {
-          console.log("reserting filter for county::", countyLayerId);
+          console.log("resetting filter for county::", countyLayerId);
           resetGeometryBorderFilter({
             layerId: countyLayerId,
             setState,
@@ -229,6 +292,9 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
           }
           if (polygonLayerId) {
             set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, []);
+          }
+          if(countyLayerId) {
+            set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters']`, []);
           }
         }
 
@@ -250,6 +316,39 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [geography]);
 
+  useEffect(() => {
+      console.log({ towns });
+    if (towns?.length > 0) {
+      if (townLayerId) {
+        //cenrep source 516 view cities and towns
+        setGeometryBorderFilter({
+          setState,
+          layerId: townLayerId,
+          geomDataKey: TOWN_NAME_COLUMN,
+          values: towns.map((town) => town.value),
+          layerBasePath: symbologyLayerPath,
+        });
+      } else {
+        if (townLayerId) {
+          console.log("resetting filter for county::", townLayerId);
+          resetGeometryBorderFilter({
+            layerId: townLayerId,
+            setState,
+            layerBasePath: symbologyLayerPath,
+          });
+        }
+      }
+    } else {
+      if (townLayerId) {
+        console.log("resetting town filter");
+        resetGeometryBorderFilter({
+          layerId: townLayerId,
+          setState,
+          layerBasePath: symbologyLayerPath,
+        });
+      }
+    }
+  }, [towns])
 
   /**
    * TODO
@@ -290,6 +389,9 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, newFilter);
       }
+      if(countyLayerId) {
+        set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
+      }
     });
     //just need to change `filter` to reflect new value
     //todo -- might not need to listen for layerId changes here. since they can only change internally
@@ -323,6 +425,20 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
             ],
           },
           path: `['${FLOOD_ZONE_KEY}']`,
+        },
+      ],
+    },
+    {
+      label: "Towns",
+      controls: [
+        {
+          type: "multiselect",
+          params: {
+            options: [BLANK_OPTION, ...townControlOptions],
+            default: "",
+            searchable: true,
+          },
+          path: `['${TOWNS_KEY}']`,
         },
       ],
     },
