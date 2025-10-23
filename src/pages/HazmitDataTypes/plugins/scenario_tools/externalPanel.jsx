@@ -223,7 +223,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         acc[curr.type].push(curr.value);
         return acc;
       }, {});
-      const geographyFilter = Object.keys(selectedGeographyByType).map((column_name) => {
+      const pointAndPolyGeoFilter = Object.keys(selectedGeographyByType).map((column_name) => {
         return {
           display_name: column_name,
           column_name,
@@ -233,11 +233,11 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       });
       setState((draft) => {
         if (pointLayerId) {
-          set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, geographyFilter);
+          set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, pointAndPolyGeoFilter);
           set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, "all");
         }
         if (polygonLayerId) {
-          set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, geographyFilter);
+          set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, pointAndPolyGeoFilter);
         }
         if(countyLayerId) {
           const geographyFilter = Object.keys(selectedGeographyByType).map((column_name) => {
@@ -382,6 +382,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       },
     };
     setState((draft) => {
+      //don't want the map zooming around whenever the user changes the displayed flood zone
       if (polygonLayerId) {
         set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
       }

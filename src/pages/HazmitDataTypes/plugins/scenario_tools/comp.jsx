@@ -62,7 +62,18 @@ const comp = ({ state, setState }) => {
 
   const pluginDataPath = `${symbPath}['pluginData']['${PLUGIN_ID}']`;
 
-  const { viewId, pointLayerId, countyLayerId, geography, floodZone, polygonLayerId, towns } = useMemo(() => {
+  const {
+    viewId,
+    pointLayerId,
+    countyLayerId,
+    geography,
+    floodZone,
+    polygonLayerId,
+    towns,
+    filter: dataFilter,
+    existingDynamicFilter,
+    filterMode,
+  } = useMemo(() => {
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
 
     return {
@@ -73,23 +84,24 @@ const comp = ({ state, setState }) => {
       polygonLayerId: get(state, `${pluginDataPath}['active-layers'][${POLYGON_LAYER_KEY}]`),
       floodZone: get(state, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`),
       towns: get(state, `${pluginDataPath}['${TOWNS_KEY}']`),
+      filter: get(state, `${symbologyLayerPath}['${pointLayerId}']['filter']`, {}),
+      existingDynamicFilter: get(state, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`),
+      filterMode: get(state, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, "and"),
     };
   }, [state]);
-  const {
-    symbology_id,
-    existingDynamicFilter,
-    filter: dataFilter,
-    filterMode,
-  } = useMemo(() => {
-    if (dctx) {
-      return extractState(state);
-    } else {
-      const symbName = Object.keys(state.symbologies)[0];
-      const symbPathBase = `symbologies['${symbName}']`;
-      const symbData = get(state, symbPathBase, {});
-      return extractState(symbData);
-    }
-  }, [state]);
+  // const {
+  //   symbology_id,
+  //   filterMode,
+  // } = useMemo(() => {
+  //   if (dctx) {
+  //     return extractState(state);
+  //   } else {
+  //     const symbName = Object.keys(state.symbologies)[0];
+  //     const symbPathBase = `symbologies['${symbName}']`;
+  //     const symbData = get(state, symbPathBase, {});
+  //     return extractState(symbData);
+  //   }
+  // }, [state]);
 
   const falcorDataFilterForCountyLoss = useMemo(() => {
     if (geography && geography.length > 0 && dataFilter.flood_zone) {
@@ -119,7 +131,7 @@ const comp = ({ state, setState }) => {
     } else {
       return JSON.stringify({});
     }
-  }, [existingDynamicFilter, filterMode, dataFilter]);
+  }, [existingDynamicFilter, filterMode, dataFilter, towns]);
 
   const countyLossOptions = useMemo(() => {
     return JSON.stringify({
@@ -130,7 +142,7 @@ const comp = ({ state, setState }) => {
 
   const optionsTowns = useMemo(() => {
     return JSON.stringify({
-      groupBy: [FLOOD_ZONE_COLUMN],
+      groupBy: [BILD_MUNI_COLUMN, FLOOD_ZONE_COLUMN],
       filter: JSON.parse(falcorDataFilterForTowns).filter,
     });
   }, [falcorDataFilterForTowns]);
@@ -143,7 +155,10 @@ const comp = ({ state, setState }) => {
   }, [pgEnv, viewId, optionsTowns]);
 
   const countyLossApiPath = [{ from: 0, to: 1 }, [FLOOD_ZONE_COLUMN, `sum(${BLD_AV_COLUMN}) as sum`]];
-  const townsLossApiPath = [{ from: 0, to: 2 }, [FLOOD_ZONE_COLUMN, "count(1)::int as count", `sum(${BLD_AV_COLUMN}) as sum`]];
+  const townsLossApiPath = [
+    { from: 0, to: 20 },
+    [BILD_MUNI_COLUMN, FLOOD_ZONE_COLUMN, "count(1)::int as count", `sum(${BLD_AV_COLUMN}) as sum`],
+  ];
   useEffect(() => {
     const getData = async () => {
       falcor.get([...countyLossFalcorPath, ...countyLossApiPath]);
@@ -158,12 +173,14 @@ const comp = ({ state, setState }) => {
   const countyLossData = useMemo(() => {
     return get(falcorCache, countyLossFalcorPath);
   }, [falcorCache, countyLossFalcorPath]);
-  const bldValDataTowns = useMemo(() => {
-    return get(falcorCache, bldValFalcorPathTowns);
-  }, [falcorCache, bldValFalcorPathTowns]);
-
   const townData = useMemo(() => {
-    return get(falcorCache, bldValFalcorPathTowns);
+    const rawTowns = get(falcorCache, bldValFalcorPathTowns);
+    //find 3 objects with this town name (flood 100, flood 500, flood none)
+    //return 1 object for town
+    return towns.reduce((acc, curr) => {
+      acc[curr.value] = Object.values(rawTowns || {}).filter((rt) => rt[BILD_MUNI_COLUMN] === curr.value);
+      return acc;
+    }, {});
   }, [falcorCache, bldValFalcorPathTowns]);
 
   const county100Year = parseFloat(
@@ -173,46 +190,6 @@ const comp = ({ state, setState }) => {
     Object.values(countyLossData || {}).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]
   );
 
-  const townFloodNumBld = useMemo(() => {
-    if (townData) {
-      const count100 = parseInt(Object.values(townData).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.["count(1)::int as count"]);
-      if (!floodZone?.includes("500")) {
-        // 100 only
-        return count100;
-      } else {
-        const count500 = parseInt(Object.values(townData).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.["count(1)::int as count"]);
-        return count100 + count500;
-      }
-    }
-  }, [townData, floodZone]);
-  const townFloodLoss = useMemo(() => {
-    if (townData) {
-      const loss100 = parseInt(Object.values(townData).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
-      if (!floodZone?.includes("500")) {
-        // 100 only
-        return loss100;
-      } else {
-        const loss500 = parseInt(Object.values(townData).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
-        return loss100 + loss500;
-      }
-    }
-  }, [townData, floodZone]);
-  const townTotalBld = useMemo(() => {
-    if (townData) {
-      const bldSum = Object.values(townData).reduce((acc, curr) => {
-        return acc + parseInt(curr["count(1)::int as count"]);
-      }, 0);
-      return bldSum;
-    }
-  }, [townData]);
-  const townTotalVal = useMemo(() => {
-    if (townData) {
-      const bldSum = Object.values(townData).reduce((acc, curr) => {
-        return acc + parseFloat(curr[`sum(${BLD_AV_COLUMN}) as sum`]);
-      }, 0);
-      return bldSum;
-    }
-  }, [townData]);
   return (
     <div
       className='flex flex-col pointer-events-auto drop-shadow-lg p-4 bg-white/95'
@@ -279,21 +256,52 @@ const comp = ({ state, setState }) => {
           <div className='grid grid-rows-3 text-sm divide-y divide-gray-400'>
             <div className='grid grid-cols-5 border-gray-400 border-b p-1 '>
               <div className='font-bold'>Zone</div>
-              <div className='font-bold'># of buldings</div>
-              <div className='font-bold'>$$$ of buldings</div>
-              <div className='font-bold'># in flood zone</div>
-              <div className='font-bold'>$ in losses</div>
+              <div className='font-bold'># of bld</div>
+              <div className='font-bold'>$ of bld</div>
+              <div className='font-bold'># bld in flood zone</div>
+              <div className='font-bold'>$ of bld in zone</div>
             </div>
 
-            {towns.map((town) => (
-              <div className='grid grid-cols-5 p-1 ' key={`town_${town.value}`}>
-                <div>{town.value}</div>
-                <div>{fnumIndex(townTotalBld, 2)}</div>
-                <div>{fnumIndex(townTotalVal, 2, true)}</div>
-                <div>{fnumIndex(townFloodNumBld, 2)}</div>
-                <div>{fnumIndex(townFloodLoss, 2, true)}</div>
-              </div>
-            ))}
+            {Object.keys(townData).map((townName) => {
+              const town = townData[townName];
+
+              const townTotalBld = Object.values(town).reduce((acc, curr) => {
+                return acc + parseInt(curr["count(1)::int as count"]);
+              }, 0);
+              const townTotalVal = Object.values(town).reduce((acc, curr) => {
+                return acc + parseFloat(curr[`sum(${BLD_AV_COLUMN}) as sum`]);
+              }, 0);
+
+              let townFloodLoss = 0;
+              const loss100 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
+              if (!floodZone?.includes("500")) {
+                // 100 only
+                townFloodLoss = loss100;
+              } else {
+                const loss500 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
+                townFloodLoss = loss100 + loss500;
+              }
+
+              let townFloodBld = 0;
+              const count100 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.["count(1)::int as count"]);
+              if (!floodZone?.includes("500")) {
+                // 100 only
+                townFloodBld =  count100;
+              } else {
+                const count500 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.["count(1)::int as count"]);
+                townFloodBld = count100 + count500;
+              }
+
+              return (
+                <div className='grid grid-cols-5 p-1 ' key={`town_${townName}`}>
+                  <div>{townName}</div>
+                  <div>{fnumIndex(townTotalBld, 2)}</div>
+                  <div>{fnumIndex(townTotalVal, 2, true)}</div>
+                  <div>{fnumIndex(townFloodBld, 2)}</div>
+                  <div>{fnumIndex(townFloodLoss, 2, true)}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       ) : (
