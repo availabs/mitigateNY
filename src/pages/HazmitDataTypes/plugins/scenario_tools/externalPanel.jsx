@@ -91,21 +91,20 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [pointLayerId]);
 
-  // const {
-  //   lowerBound,
-  //   upperBound,
-  //   radiusCurve,
-  //   curveFactor,
-  // } = useMemo(() => {
-  //   if (dctx) {
-  //     return extractState(state);
-  //   } else {
-  //     const symbName = Object.keys(state.symbologies)[0];
-  //     const symbPathBase = `symbologies['${symbName}']`;
-  //     const symbData = get(state, symbPathBase, {});
-  //     return extractState(symbData);
-  //   }
-  // }, [state]);
+  const {
+    symbology_id,
+    pageFilters
+  } = useMemo(() => {
+    if (dctx) {
+      return extractState(state);
+    } else {
+      const symbName = Object.keys(state.symbologies)[0];
+      const symbPathBase = `symbologies['${symbName}']`;
+      const symbData = get(state, symbPathBase, {});
+      const pageFilters = symbData.symbology.pageFilters
+      return {...extractState(symbData), pageFilters};
+    }
+  }, [state]);
 
   const geomOptions = JSON.stringify({
     groupBy: [COUNTY_COLUMN],
@@ -169,8 +168,6 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [townLayerViewId]);
 
-
-
   const townControlOptions = useMemo(() => {
     const geomData = get(falcorCache, ["dama", pgEnv, "viewsbyId", townLayerViewId, "options", townGeomOptions, "databyIndex"]);
     if (geomData) {
@@ -207,10 +204,22 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [falcorCache]);
 
+  useEffect(() => {
+    if(pageFilters && pageFilters.length > 0) {
+      const countyPageFilter = pageFilters.find(pf => pf.searchKey === COUNTY_COLUMN);
 
-
-  //TODO WHEN TOWNSHIPS ARE ADDED
-  //will need to add separate or some logic here to handle those borders/changes
+      if(countyPageFilter && countyPageFilter?.values?.length > 0) {
+        setState((draft) => {
+          
+          set(draft, `${pluginDataPath}['${GEOGRAPHY_KEY}']`, [{
+            name:  countyPageFilter.values[0] + " County",
+            value:  countyPageFilter.values[0],
+            type: COUNTY_COLUMN,
+          }])
+        })
+      }
+    }
+  }, [pageFilters])
   useEffect(() => {
     const getFilterBounds = async () => {
       //need array of [{column_name:foo, values:['bar', 'baz']}]
@@ -317,7 +326,6 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   }, [geography]);
 
   useEffect(() => {
-      console.log({ towns });
     if (towns?.length > 0) {
       if (townLayerId) {
         //cenrep source 516 view cities and towns
