@@ -16,7 +16,7 @@ import themes from './dms_themes'
 // import Auth from '~/pages/Auth'
 
 import DamaRoutes from "~/pages/DataManager"
-import hazmitDataTypes from "~/pages/HazmitDataTypes"
+import hazmitDataTypes, { mapPlugins } from "~/pages/HazmitDataTypes"
 import { authMenuConfig } from "~/layout/authMenuConfig"
 import { useFalcor } from "~/modules/avl-falcor"
 import LayoutWrapper from "~/layout/LayoutWrapper"
@@ -79,6 +79,7 @@ function App() {
           //cenrep
           ...LayoutWrapper(
             DamaRoutes({
+              mapPlugins: mapPlugins,
               baseUrl:damaBaseUrl,
               defaultPgEnv,
               navSettings: authMenuConfig,
