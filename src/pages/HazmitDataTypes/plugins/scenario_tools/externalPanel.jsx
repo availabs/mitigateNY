@@ -30,7 +30,9 @@ import {
   YEAR_500_FLD_ZONE_VAL,
   YEAR_500_FLOOD_VAL,
   YEAR_500_2ND_FLOOD_VAL,
+  FLOODPLAIN_COUNTY_COLUMN,
 } from "./constants";
+import { countyNameToFips } from "./countyNameToFips";
 import {
   setInitialGeomStyle,
   setPointLayerStyle,
@@ -251,7 +253,6 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [pageFilters]);
   useEffect(() => {
-    console.log("inside use effect, geography::", geography);
     const getFilterBounds = async () => {
       //need array of [{column_name:foo, values:['bar', 'baz']}]
       //geography is currently [{name: foo, value: 'bar', type:'baz'}]
@@ -291,6 +292,15 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
           set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters']`, geographyFilter);
           set(draft, `${symbologyLayerPath}['${countyLayerId}']['filterMode']`, "all");
         }
+        if (floodplainLayerId) {
+          const selectedCounty = geography.filter((geo) => geo.type === COUNTY_COLUMN);
+
+          const countyName = selectedCounty[0].value
+          const floodplainFips = countyNameToFips[countyName] + "C";
+          const floodplainOpacityStyle = ["case", ["==", ["get", FLOODPLAIN_COUNTY_COLUMN], floodplainFips], .5, 0];
+
+          set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].layers[1].paint['fill-opacity']`, floodplainOpacityStyle);
+        }
       });
     };
 
@@ -300,7 +310,6 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       getFilterBounds();
       //filter and display borders for selected geographie
       const selectedCounty = geography.filter((geo) => geo.type === COUNTY_COLUMN);
-      console.log({ selectedCounty });
       if (selectedCounty.length > 0 && countyLayerId) {
         //cenrep source 1514 view 1989 test NYS_County_Boundaries
         setGeometryBorderFilter({
@@ -343,6 +352,9 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
             setState,
             layerBasePath: symbologyLayerPath,
           });
+        }
+        if (floodplainLayerId) {
+          set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].layers[1].paint['fill-opacity']`, .5);
         }
       });
     }

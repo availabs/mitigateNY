@@ -9,6 +9,8 @@ const COUNTY_LAYER_NAME_COLUMN = "ny_counti_4";
 const BILD_MUNI_COLUMN = "muni_name";
 const FLOODPLAIN_ZONE_COLUMN = "fld_zone";
 const FLOODPLAIN_2ND_ZONE_COLUMN = "zone_subty";
+const FLOODPLAIN_COUNTY_COLUMN = 'dfirm_id';
+
 
 const YEAR_100_FLOOD_VAL = ["A", "AE", "AH", "AO"];
 const YEAR_500_FLD_ZONE_VAL = ['OPEN WATER', 'VE', 'X'];
@@ -85,6 +87,7 @@ export {
   BLD_AV_COLUMN,
   FLOODPLAIN_ZONE_COLUMN,
   FLOODPLAIN_2ND_ZONE_COLUMN,
+  FLOODPLAIN_COUNTY_COLUMN,
   FLOOD_ZONE_KEY,
   TOWNS_KEY,
   getColorRange,

@@ -19,6 +19,7 @@ import {
   COLOR_SCALE_MAX,
   COLOR_SCALE_BREAKS,
   FLOOD_ZONE_COLUMN,
+  FLOODPLAIN_COUNTY_COLUMN
 } from "./constants";
 import { setInitialGeomStyle, resetGeometryBorderFilter, setGeometryBorderFilter, onlyUnique } from "./utils";
 
