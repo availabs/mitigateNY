@@ -17,6 +17,7 @@ const setInitialGeomStyle = ({ setState, layerId, layerBasePath }) => {
       d.layout = { visibility: "none" };
     });
     set(draft, `${layerBasePath}['${layerId}']['legend-orientation']`, "none");
+    set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
   });
 };
 
@@ -116,16 +117,18 @@ const setGeometryBorderFilter = ({ setState, layerId, geomDataKey, values, layer
     draftLayers.forEach((d, i) => {
       d.layout = { visibility: "visible" };
     });
-    const geographyFilter = {
-      columnName: geomDataKey,
-      value: values,
-      operator: "==",
-    };
-    set(draft, `${layerBasePath}['${layerId}']['filter']['${geomDataKey}']`, geographyFilter);
+    // console.log(JSON.parse(JSON.stringify({draftLayers})))
+    // const geographyFilter = {
+    //   columnName: geomDataKey,
+    //   value: values,
+    //   operator: "==",
+    // };
+    // console.log({geographyFilter})
+    //set(draft, `${layerBasePath}['${layerId}']['filter']['${geomDataKey}']`, geographyFilter);
   });
 };
 
-const resetGeometryBorderFilter = ({ setState, layerId, layerBasePath }) => {
+const resetGeometryBorderFilter = ({ setState, layerId, layerBasePath, geomDataKey }) => {
   setState((draft) => {
     set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
 
@@ -133,6 +136,8 @@ const resetGeometryBorderFilter = ({ setState, layerId, layerBasePath }) => {
     draftLayers?.forEach((d, i) => {
       d.layout = { visibility: "none" };
     });
+    set(draft, `${layerBasePath}['${layerId}']['filter']`, undefined);
+    set(draft, `${layerBasePath}['${layerId}']['dynamic-filters']`, []);
   });
 };
 

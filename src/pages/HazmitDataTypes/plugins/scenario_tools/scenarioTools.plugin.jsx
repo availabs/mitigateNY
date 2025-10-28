@@ -21,7 +21,8 @@ import {
   COLOR_SCALE_MAX,
   COLOR_SCALE_BREAKS,
   POLYGON_LAYER_KEY,
-  COUNTY_COLUMN
+  COUNTY_COLUMN,
+  TOWN_LAYER_KEY
 } from "./constants";
 import {
   setPolygonLayerStyle,
@@ -108,6 +109,9 @@ export const ScenarioToolsPlugin = {
 
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
     const polygonLayerId = get(state, `${pluginDataPath}['active-layers'][${POLYGON_LAYER_KEY}]`);
+
+    const countyLayerId = get(state, `${pluginDataPath}['active-layers'][${COUNTY_LAYER_KEY}]`);
+    const townLayerId = get(state, `${pluginDataPath}['active-layers'][${TOWN_LAYER_KEY}]`);
     const geography = get(state, `${pluginDataPath}['${GEOGRAPHY_KEY}']`)
 
     if(pointLayerId) {
@@ -121,7 +125,7 @@ export const ScenarioToolsPlugin = {
       if (pointLayerId) {
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['data-column']`, BLD_AV_COLUMN);
         if(geography && geography.length > 0) {
-          set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, true);
+          set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
         }
       }
       if(polygonLayerId) {
@@ -129,10 +133,32 @@ export const ScenarioToolsPlugin = {
         //since we don't actually want to filter it or anything
         set(draft, `${symbologyLayerPath}['${polygonLayerId}']['data-column']`, `${BLD_AV_COLUMN},${FLOOD_ZONE_COLUMN}`);
         if(geography && geography.length > 0) {
-          set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, true);
+          set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
         }
       }
     });
+    if (countyLayerId) {
+      setInitialGeomStyle({
+        setState,
+        layerId: countyLayerId,
+        layerBasePath: symbologyLayerPath,
+      });
+
+      setState((draft) => {
+        set(draft, `${symbologyLayerPath}['${countyLayerId}'].hover`, "");
+      });
+    }
+    if (townLayerId) {
+      setInitialGeomStyle({
+        setState,
+        layerId: townLayerId,
+        layerBasePath: symbologyLayerPath,
+      });
+
+      setState((draft) => {
+        set(draft, `${symbologyLayerPath}['${townLayerId}'].hover`, "");
+      });
+    }
 
     const MAP_CLICK = (e) => {
       console.log("map was clicked, e::", e);

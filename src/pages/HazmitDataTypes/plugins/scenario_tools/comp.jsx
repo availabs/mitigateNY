@@ -177,7 +177,8 @@ const comp = ({ state, setState }) => {
     const rawTowns = get(falcorCache, bldValFalcorPathTowns);
     //find 3 objects with this town name (flood 100, flood 500, flood none)
     //return 1 object for town
-    return towns.reduce((acc, curr) => {
+    //towns is the currenty selection of towns
+    return towns?.reduce((acc, curr) => {
       acc[curr.value] = Object.values(rawTowns || {}).filter((rt) => rt[BILD_MUNI_COLUMN] === curr.value);
       return acc;
     }, {});
