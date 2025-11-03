@@ -31,6 +31,7 @@ import {
   YEAR_500_FLOOD_VAL,
   YEAR_500_2ND_FLOOD_VAL,
   FLOODPLAIN_COUNTY_COLUMN,
+  TOWN_COUNTY_COLUMN,
 } from "./constants";
 import { countyNameToFips } from "./countyNameToFips";
 import {
@@ -177,7 +178,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   }, [falcorCache]);
 
   const townGeomOptions = JSON.stringify({
-    groupBy: [TOWN_NAME_COLUMN],
+    groupBy: [TOWN_NAME_COLUMN, TOWN_COUNTY_COLUMN],
   });
   useEffect(() => {
     const getGeoms = async () => {
@@ -190,7 +191,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         townGeomOptions,
         "databyIndex",
         { from: 0, to: 200 },
-        [TOWN_NAME_COLUMN],
+        [TOWN_NAME_COLUMN, TOWN_COUNTY_COLUMN],
       ]);
     };
 
@@ -206,9 +207,17 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         [TOWN_NAME_COLUMN]: [],
       };
 
-      Object.values(geomData).forEach((da) => {
-        geoms[TOWN_NAME_COLUMN].push(da[TOWN_NAME_COLUMN]);
-      });
+      Object.values(geomData)
+        .filter((da) => {
+          if (geography && geography.length > 0) {
+            return geography[0].value === da.county;
+          } else {
+            return true;
+          }
+        })
+        .forEach((da) => {
+          geoms[TOWN_NAME_COLUMN].push(da[TOWN_NAME_COLUMN]);
+        });
 
       const nameSort = (a, b) => {
         if (a.name < b.name) {
@@ -295,10 +304,9 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         if (floodplainLayerId) {
           const selectedCounty = geography.filter((geo) => geo.type === COUNTY_COLUMN);
 
-          const countyName = selectedCounty[0].value
+          const countyName = selectedCounty[0].value;
           const floodplainFips = countyNameToFips[countyName] + "C";
-          const floodplainOpacityStyle = ["case", ["==", ["get", FLOODPLAIN_COUNTY_COLUMN], floodplainFips], .5, 0];
-
+          const floodplainOpacityStyle = ["case", ["==", ["get", FLOODPLAIN_COUNTY_COLUMN], floodplainFips], 0.4, 0];
           set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].layers[1].paint['fill-opacity']`, floodplainOpacityStyle);
         }
       });
@@ -354,7 +362,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
           });
         }
         if (floodplainLayerId) {
-          set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].layers[1].paint['fill-opacity']`, .5);
+          set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].layers[1].paint['fill-opacity']`, 0.35);
         }
       });
     }
@@ -450,9 +458,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
 
     //if fld_zone = [A,AE,AH,AO], then it is 100
     //if fld_zone = [X], AND zone_subty = [0.2 PCT ANNUAL CHANCE FLOOD HAZARD], then it is 500
-
     setState((draft) => {
-      //don't want the map zooming around whenever the user changes the displayed flood zone
       if (polygonLayerId) {
         set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
       }
@@ -468,6 +474,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, newPointFilter);
       }
       if (countyLayerId) {
+        //don't want the map zooming around whenever the user changes the displayed flood zone
         set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
       }
       if (floodplainLayerId) {
@@ -478,7 +485,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     //just need to change `filter` to reflect new value
     //todo -- might not need to listen for layerId changes here. since they can only change internally
     //but, otherwise, I need to set defaults in `internalPanel` too, and double code = bad
-  }, [floodZone, pointLayerId]);
+  }, [floodZone]);
 
   return [
     {

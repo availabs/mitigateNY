@@ -14,10 +14,10 @@ const setInitialGeomStyle = ({ setState, layerId, layerBasePath }) => {
       fillLayer.paint = { "fill-opacity": 0, "fill-color": "#fff" };
     }
     draftLayers.forEach((d, i) => {
-      d.layout = { visibility: "none" };
+      //d.layout = { visibility: "none" };
     });
     set(draft, `${layerBasePath}['${layerId}']['legend-orientation']`, "none");
-    set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
+    //set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
   });
 };
 
@@ -91,9 +91,9 @@ const setPointLayerStyle = ({ setState, layerId, layerBasePath }) => {
     ["linear", 1],
     ["to-number", ["get", BLD_AV_COLUMN]],
     circleLowerBound, //min of dataset
-    2, //min radius (px) of circle
+    4, //min radius (px) of circle
     circleUpperBound, //max of dataset
-    8, //max radius (px) of circle
+    12, //max radius (px) of circle
   ];
   setState((draft) => {
     set(draft, `${layerBasePath}['${layerId}']['layers'][0]['paint']`, {
@@ -130,7 +130,7 @@ const setGeometryBorderFilter = ({ setState, layerId, geomDataKey, values, layer
 
 const resetGeometryBorderFilter = ({ setState, layerId, layerBasePath, geomDataKey }) => {
   setState((draft) => {
-    set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
+    //set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
 
     const draftLayers = get(draft, `${layerBasePath}['${layerId}'].layers`);
     draftLayers?.forEach((d, i) => {

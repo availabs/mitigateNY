@@ -1,10 +1,11 @@
 import get from "lodash/get";
 const PLUGIN_ID = "scenarioTools";
 
-const BLD_AV_COLUMN = "building_av";
+const BLD_AV_COLUMN = "full_market_val";
 const FLOOD_ZONE_COLUMN = "flood_zone";
 const COUNTY_COLUMN = "county_name";
 const TOWN_NAME_COLUMN = "name";
+const TOWN_COUNTY_COLUMN = "county";
 const COUNTY_LAYER_NAME_COLUMN = "ny_counti_4";
 const BILD_MUNI_COLUMN = "muni_name";
 const FLOODPLAIN_ZONE_COLUMN = "fld_zone";
@@ -17,7 +18,7 @@ const YEAR_500_FLD_ZONE_VAL = ['OPEN WATER', 'VE', 'X'];
 const YEAR_500_FLOOD_VAL = ["X"];
 const YEAR_500_2ND_FLOOD_VAL = ["0.2 PCT ANNUAL CHANCE FLOOD HAZARD"];
 
-//
+const GEOCODE_COUNTY_KEY = ['geocode-county']
 
 const GEOGRAPHY_KEY = "geography";
 const POINT_LAYER_KEY = "point-layer";
@@ -98,4 +99,6 @@ export {
   YEAR_500_FLD_ZONE_VAL,
   YEAR_500_FLOOD_VAL,
   YEAR_500_2ND_FLOOD_VAL,
+  GEOCODE_COUNTY_KEY,
+  TOWN_COUNTY_COLUMN
 };

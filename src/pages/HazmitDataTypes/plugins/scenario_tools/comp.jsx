@@ -3,7 +3,7 @@ import { DamaContext } from "~/pages/DataManager/store";
 import { CMSContext } from "~/modules/dms/src";
 import get from "lodash/get";
 import set from "lodash/set";
-
+import { Geocoder } from "@mapbox/search-js-react";
 import { cloneDeep } from "lodash-es";
 
 import { Button } from "~/modules/avl-components/src";
@@ -24,6 +24,7 @@ import {
   COLOR_SCALE_BREAKS,
   POLYGON_LAYER_KEY,
   COUNTY_COLUMN,
+  GEOCODE_COUNTY_KEY,
 } from "./constants";
 import {
   setPolygonLayerStyle,
@@ -38,7 +39,7 @@ import { fnumIndex } from "~/pages/DataManager/MapEditor/components/LayerEditor/
 import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/MapEditor/stateUtils";
 import { count } from "d3-array";
 
-const comp = ({ state, setState }) => {
+const comp = ({ state, setState, map }) => {
   const dctx = useContext(DamaContext);
   const cctx = useContext(CMSContext);
   const ctx = dctx?.falcor ? dctx : cctx;
@@ -250,6 +251,36 @@ const comp = ({ state, setState }) => {
       <div className='flex space-between justify-between text-base font-bold pl-2 pr-8'>
         <div>Expected Annualized Avg. Loss</div>
         <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>
+        <Geocoder
+          accessToken='pk.eyJ1IjoiYW0zMDgxIiwiYSI6IkxzS0FpU0UifQ.rYv6mHCcNd7KKMs7yhY3rw'
+          options={{
+            language: "en",
+            country: "US",
+          }}
+          interceptSearch={(inputString) => {
+            if (inputString.length < 7) {
+              return null;
+            } else {
+              return inputString;
+            }
+          }}
+          map={map}
+          onRetrieve={(res) => {
+            console.log("res from mapbox::", res);
+            const searchedCounty = res.properties.context.district.name.split(" County")[0];
+            console.log({ searchedCounty });
+            setState((draft) => {
+              set(draft, `${pluginDataPath}['${GEOGRAPHY_KEY}']`, {
+                name: searchedCounty + " County",
+                value: searchedCounty,
+                type: COUNTY_COLUMN,
+              });
+              if (geography && geography.length > 0 && countyLayerId) {
+                set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
+              }
+            });
+          }}
+        />
       </div>
       {towns?.length ? (
         <div className='mt-8'>
@@ -274,12 +305,16 @@ const comp = ({ state, setState }) => {
               }, 0);
 
               let townFloodLoss = 0;
-              const loss100 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
+              const loss100 = parseInt(
+                Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]
+              );
               if (!floodZone?.includes("500")) {
                 // 100 only
                 townFloodLoss = loss100;
               } else {
-                const loss500 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
+                const loss500 = parseInt(
+                  Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]
+                );
                 townFloodLoss = loss100 + loss500;
               }
 
@@ -287,7 +322,7 @@ const comp = ({ state, setState }) => {
               const count100 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.["count(1)::int as count"]);
               if (!floodZone?.includes("500")) {
                 // 100 only
-                townFloodBld =  count100;
+                townFloodBld = count100;
               } else {
                 const count500 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.["count(1)::int as count"]);
                 townFloodBld = count100 + count500;
