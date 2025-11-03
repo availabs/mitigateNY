@@ -50,14 +50,12 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   const dctx = useContext(DamaContext);
   const cctx = useContext(CMSContext);
   const ctx = dctx?.falcor ? dctx : cctx;
-  let { falcor, falcorCache, pgEnv, baseUrl } = ctx;
 
-  if (!falcorCache) {
-    falcorCache = falcor.getCache();
-  }
-  //const {falcor, falcorCache, pgEnv, baseUrl} = React.useContext(DamaContext);
-  //performence measure (speed, lottr, tttr, etc.) (External Panel) (Dev hard-code)
-  //"second" selection (percentile, amp/pmp) (External Panel) (dependent on first selection, plus dev hard code)
+  const [rawCountyGeoms, setRawCountyGeoms] = useState();
+  const [rawTownGeoms, setRawTownGeoms] = useState();
+
+  let { falcor, pgEnv, baseUrl } = ctx;
+
   const pluginDataPath = `${pathBase}`;
 
   const pluginData = useMemo(() => {
@@ -131,7 +129,10 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   });
   useEffect(() => {
     const getGeoms = async () => {
-      await falcor.get(["dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex", { from: 0, to: 200 }, [COUNTY_COLUMN]]);
+      await falcor.get(["dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex", { from: 0, to: 200 }, [COUNTY_COLUMN]]).then(res => {
+        const geomData = get(res, ["json", "dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex"]);
+        setRawCountyGeoms(geomData);
+      });
     };
 
     if (viewId) {
@@ -140,7 +141,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   }, [viewId]);
 
   const geomControlOptions = useMemo(() => {
-    const geomData = get(falcorCache, ["dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex"]);
+    const geomData = rawCountyGeoms;
     if (geomData) {
       const geoms = {
         [COUNTY_COLUMN]: [],
@@ -175,7 +176,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     } else {
       return [];
     }
-  }, [falcorCache]);
+  }, [rawCountyGeoms]);
 
   const townGeomOptions = JSON.stringify({
     groupBy: [TOWN_NAME_COLUMN, TOWN_COUNTY_COLUMN],
@@ -192,7 +193,10 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         "databyIndex",
         { from: 0, to: 200 },
         [TOWN_NAME_COLUMN, TOWN_COUNTY_COLUMN],
-      ]);
+      ]).then(res => {
+        const geomData = get(res, ["json","dama", pgEnv, "viewsbyId", townLayerViewId, "options", townGeomOptions, "databyIndex"]);
+        setRawTownGeoms(geomData);
+      });
     };
 
     if (townLayerViewId) {
@@ -201,7 +205,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   }, [townLayerViewId]);
 
   const townControlOptions = useMemo(() => {
-    const geomData = get(falcorCache, ["dama", pgEnv, "viewsbyId", townLayerViewId, "options", townGeomOptions, "databyIndex"]);
+    const geomData = rawTownGeoms;
     if (geomData) {
       const geoms = {
         [TOWN_NAME_COLUMN]: [],
@@ -242,7 +246,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     } else {
       return [];
     }
-  }, [falcorCache]);
+  }, [rawTownGeoms]);
 
   useEffect(() => {
     if (pageFilters && pageFilters.length > 0) {
