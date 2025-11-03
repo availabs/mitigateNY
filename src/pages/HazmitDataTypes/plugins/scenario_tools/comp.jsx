@@ -5,6 +5,7 @@ import get from "lodash/get";
 import set from "lodash/set";
 import { Geocoder } from "@mapbox/search-js-react";
 import { cloneDeep } from "lodash-es";
+import mapboxgl from "maplibre-gl";
 
 import { Button } from "~/modules/avl-components/src";
 import {
@@ -43,6 +44,7 @@ const comp = ({ state, setState, map }) => {
   const dctx = useContext(DamaContext);
   const cctx = useContext(CMSContext);
   const ctx = dctx?.falcor ? dctx : cctx;
+  const [marker, setMarker] = useState();
   let { falcor, falcorCache, pgEnv, baseUrl } = ctx;
 
   if (!falcorCache) {
@@ -204,6 +206,45 @@ const comp = ({ state, setState, map }) => {
         maxHeight: "500px",
       }}
     >
+      <div>
+        <Geocoder
+          accessToken='pk.eyJ1IjoiYW0zMDgxIiwiYSI6IkxzS0FpU0UifQ.rYv6mHCcNd7KKMs7yhY3rw'
+          options={{
+            language: "en",
+            country: "US",
+          }}
+          placeholder={"Address search"}
+          interceptSearch={(inputString) => {
+            if (inputString.length < 7) {
+              return null;
+            } else {
+              return inputString;
+            }
+          }}
+          onRetrieve={(res) => {
+            //console.log("mapbox res::",res)
+            const searchedCounty = res.properties.context.district.name.split(" County")[0];
+            const marker = new mapboxgl.Marker().setLngLat(res.geometry.coordinates).addTo(map);
+            setMarker(marker);
+            setState((draft) => {
+              set(draft, `${pluginDataPath}['${GEOGRAPHY_KEY}']`, [
+                {
+                  name: searchedCounty + " County",
+                  value: searchedCounty,
+                  type: COUNTY_COLUMN,
+                },
+              ]);
+              if (geography && geography.length > 0 && countyLayerId) {
+                set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
+              }
+            });
+          }}
+          onClear={() => {
+            marker.remove();
+            setMarker(null);
+          }}
+        />
+      </div>
       <div className='grid grid-rows-3 text-sm divide-y divide-gray-400'>
         <div className='grid grid-cols-4 border-gray-400 border-b p-1 '>
           <div className='font-bold'>Scenario</div>
@@ -251,41 +292,11 @@ const comp = ({ state, setState, map }) => {
       <div className='flex space-between justify-between text-base font-bold pl-2 pr-8'>
         <div>Expected Annualized Avg. Loss</div>
         <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>
-        <Geocoder
-          accessToken='pk.eyJ1IjoiYW0zMDgxIiwiYSI6IkxzS0FpU0UifQ.rYv6mHCcNd7KKMs7yhY3rw'
-          options={{
-            language: "en",
-            country: "US",
-          }}
-          interceptSearch={(inputString) => {
-            if (inputString.length < 7) {
-              return null;
-            } else {
-              return inputString;
-            }
-          }}
-          map={map}
-          onRetrieve={(res) => {
-            console.log("res from mapbox::", res);
-            const searchedCounty = res.properties.context.district.name.split(" County")[0];
-            console.log({ searchedCounty });
-            setState((draft) => {
-              set(draft, `${pluginDataPath}['${GEOGRAPHY_KEY}']`, {
-                name: searchedCounty + " County",
-                value: searchedCounty,
-                type: COUNTY_COLUMN,
-              });
-              if (geography && geography.length > 0 && countyLayerId) {
-                set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
-              }
-            });
-          }}
-        />
       </div>
       {towns?.length ? (
-        <div className='mt-8'>
+        <div className='mt-6'>
           <div className='font-xl font-bold'>Jurisdictions</div>
-          <div className='grid grid-rows-3 text-sm divide-y divide-gray-400'>
+          <div className='grid  text-sm divide-y divide-gray-400'>
             <div className='grid grid-cols-5 border-gray-400 border-b p-1 '>
               <div className='font-bold'>Zone</div>
               <div className='font-bold'># of bld</div>
