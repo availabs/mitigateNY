@@ -246,7 +246,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     } else {
       return [];
     }
-  }, [rawTownGeoms]);
+  }, [rawTownGeoms, geography]);
 
   useEffect(() => {
     if (pageFilters && pageFilters.length > 0) {

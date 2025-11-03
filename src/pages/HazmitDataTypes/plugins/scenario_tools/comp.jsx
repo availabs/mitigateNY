@@ -245,7 +245,7 @@ const comp = ({ state, setState, map }) => {
           }}
         />
       </div>
-      <div className='grid grid-rows-3 text-sm divide-y divide-gray-400'>
+      <div className='grid grid-rows-3 text-sm divide-y divide-gray-400 mt-1'>
         <div className='grid grid-cols-4 border-gray-400 border-b p-1 '>
           <div className='font-bold'>Scenario</div>
           <div className='font-bold'>Visibility</div>
