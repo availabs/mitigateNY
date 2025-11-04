@@ -45,11 +45,11 @@ const comp = ({ state, setState, map }) => {
   const cctx = useContext(CMSContext);
   const ctx = dctx?.falcor ? dctx : cctx;
   const [marker, setMarker] = useState();
-  let { falcor, falcorCache, pgEnv, baseUrl } = ctx;
+  const [countyLossData, setCountyLossData] = useState();
+  const [townLossData, setTownLossData] = useState();
 
-  if (!falcorCache) {
-    falcorCache = falcor.getCache();
-  }
+  let { falcor, pgEnv, baseUrl } = ctx;
+
   let symbologyLayerPath = "";
   let symbPath = "";
   if (state.symbologies) {
@@ -164,28 +164,30 @@ const comp = ({ state, setState, map }) => {
   ];
   useEffect(() => {
     const getData = async () => {
-      falcor.get([...countyLossFalcorPath, ...countyLossApiPath]);
+      falcor.get([...countyLossFalcorPath, ...countyLossApiPath]).then(res => {
+        const resData = get(res, ["json", ...countyLossFalcorPath]);
+        setCountyLossData(resData)
+      });
 
       if (towns && towns.length > 0) {
-        falcor.get([...bldValFalcorPathTowns, ...townsLossApiPath]);
+        falcor.get([...bldValFalcorPathTowns, ...townsLossApiPath]).then(res => {
+          const rawTowns = get(res, ["json", ...bldValFalcorPathTowns]);
+          console.log({rawTowns})
+          setTownLossData(rawTowns);
+        });
       }
     };
     getData();
   }, [bldValFalcorPathTowns, countyLossFalcorPath]);
-
-  const countyLossData = useMemo(() => {
-    return get(falcorCache, countyLossFalcorPath);
-  }, [falcorCache, countyLossFalcorPath]);
   const townData = useMemo(() => {
-    const rawTowns = get(falcorCache, bldValFalcorPathTowns);
     //find 3 objects with this town name (flood 100, flood 500, flood none)
     //return 1 object for town
     //towns is the currenty selection of towns
     return towns?.reduce((acc, curr) => {
-      acc[curr.value] = Object.values(rawTowns || {}).filter((rt) => rt[BILD_MUNI_COLUMN] === curr.value);
+      acc[curr.value] = Object.values(townLossData || {}).filter((rt) => rt[BILD_MUNI_COLUMN] === curr.value);
       return acc;
     }, {});
-  }, [falcorCache, bldValFalcorPathTowns]);
+  }, [townLossData]);
 
   const county100Year = parseFloat(
     Object.values(countyLossData || {}).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]
@@ -212,6 +214,7 @@ const comp = ({ state, setState, map }) => {
           options={{
             language: "en",
             country: "US",
+            proximity:"ip"
           }}
           placeholder={"Address search"}
           interceptSearch={(inputString) => {
@@ -305,7 +308,7 @@ const comp = ({ state, setState, map }) => {
               <div className='font-bold'>$ of bld in zone</div>
             </div>
 
-            {Object.keys(townData).map((townName) => {
+            {Object.keys(townData || {}).map((townName) => {
               const town = townData[townName];
 
               const townTotalBld = Object.values(town).reduce((acc, curr) => {
@@ -344,8 +347,8 @@ const comp = ({ state, setState, map }) => {
                   <div>{townName}</div>
                   <div>{fnumIndex(townTotalBld, 2)}</div>
                   <div>{fnumIndex(townTotalVal, 2, true)}</div>
-                  <div>{fnumIndex(townFloodBld, 2)}</div>
-                  <div>{fnumIndex(townFloodLoss, 2, true)}</div>
+                  <div>{isNaN(townFloodBld) ? '0' : fnumIndex(townFloodBld, 2)}</div>
+                  <div>{isNaN(townFloodLoss) ? '$0' : fnumIndex(townFloodLoss, 2, true)}</div>
                 </div>
               );
             })}

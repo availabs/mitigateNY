@@ -236,7 +236,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         .filter(objectFilter)
         .filter(truthyFilter)
         .map((da) => ({
-          name: da.toLowerCase() + " Town",
+          name: da.toLowerCase(),
           value: da,
           type: "town",
         }))
