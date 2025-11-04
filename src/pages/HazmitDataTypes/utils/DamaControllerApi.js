@@ -44,10 +44,18 @@ export async function getDamaTileServerUrl() {
   return damaTileServerUrl;
 }
 
+// export const getSrcViews = async ({rtPfx, falcor, pgEnv, setVersions, type}) => {
+//   await falcor.get(['dama', pgEnv, 'views', 'bySourceType', type]);
+//   const res = get(falcor.getCache(), ['dama', pgEnv, 'views', 'bySourceType', type, 'value']);
+//   console.log('res', res)
+//   setVersions({views: res})
+
+//   return {views: res}
+// }
+
 export const getSrcViews = async ({rtPfx, falcor, pgEnv, setVersions, type}) => {
-  await falcor.get(['dama', pgEnv, 'views', 'bySourceType', type]);
-  const res = get(falcor.getCache(), ['dama', pgEnv, 'views', 'bySourceType', type, 'value']);
-  console.log('res', res)
+  await falcor.get(['dama', pgEnv, 'views', 'bySourceCategory', type]);
+  const res = get(falcor.getCache(), ['dama', pgEnv, 'views', 'bySourceCategory', type, 'value']);
   setVersions({views: res})
 
   return {views: res}

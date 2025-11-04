@@ -64,3 +64,7 @@ export const RenderVersions = ({ value, setValue, versions, type }) => {
     </div>
   );
 };
+
+export const getType = (source, defaultType) => {
+  return source?.categories?.[0]?.[0] ?? defaultType;
+}

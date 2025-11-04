@@ -1,6 +1,7 @@
 import React from 'react'
 import {useNavigate} from "react-router";
 import { checkApiResponse, getDamaApiRoutePrefix, getSrcViews } from "../utils/DamaControllerApi";
+import { getType } from "../utils/macros";
 import { RenderVersions, range } from "../utils/macros"
 import { DamaContext } from "~/pages/DataManager/store";
 
@@ -10,7 +11,7 @@ const CallServer = async ({rtPfx, baseUrl, source, user, newVersion, navigate, s
 
     const url = `${rtPfx}/hazard_mitigation/enhance-ncei`;
     const body = JSON.stringify({
-        table_name: 'details_enhanced',
+        table_name: getType(source, 'details_enhanced'),
         source_name: source.name,
         existing_source_id: source.source_id,
         view_dependencies: JSON.stringify(viewMetadata),

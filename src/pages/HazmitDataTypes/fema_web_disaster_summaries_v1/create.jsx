@@ -1,5 +1,6 @@
 import React from 'react'
 import { checkApiResponse, getDamaApiRoutePrefix } from "../utils/DamaControllerApi";
+import { getType } from "../utils/macros";
 import {useNavigate} from "react-router";
 import {CallServer} from "../disaster_declarations_summaries_v2/create.jsx";
 import { DamaContext } from "~/pages/DataManager/store";
@@ -35,7 +36,7 @@ const Create = ({ source, newVersion, baseUrl }) => {
             <button
                 className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() => CallServer({
-                rtPfx, baseUrl, source, newVersion, navigate, user, table_name: 'fema_web_disaster_summaries_v1'
+                rtPfx, baseUrl, source, newVersion, navigate, user, table_name: getType(source,'fema_web_disaster_summaries_v1')
             })}> {source.source_id ? 'Add View' : 'Add Source'}</button>
         </div>
     )

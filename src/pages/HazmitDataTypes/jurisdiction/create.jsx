@@ -1,16 +1,13 @@
 import React from 'react'
-
-
-import { checkApiResponse, getDamaApiRoutePrefix } from "../utils/DamaControllerApi";
-import {useNavigate} from "react-router";
-
-import { DamaContext } from "~/pages/DataManager/store";
+import { getDamaApiRoutePrefix } from "../utils/DamaControllerApi.js";
 import { getType } from "../utils/macros";
+import { useNavigate } from "react-router";
+import { DamaContext } from "~/pages/DataManager/store";
 
-export const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user, table_name, shouldFetch}) => {
-    const url = `${rtPfx}/hazard_mitigation/load-ofd`;
+export const CallServer = async ({ rtPfx, baseUrl, source, newVersion, navigate, user, table_name, shouldFetch }) => {
+    const url = `${rtPfx}/hazard_mitigation/load-jurisdiction`;
     const body = JSON.stringify({
-        table_name, // loading depends on the table name
+        table_name,
         source_name: source.name,
         existing_source_id: source.source_id,
         version: newVersion,
@@ -30,7 +27,6 @@ export const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, 
 
     await checkApiResponse(stgLyrDataRes);
     const resJson = await stgLyrDataRes.json();
-    console.log('res', resJson);
 
     navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 }
@@ -45,8 +41,8 @@ const Create = ({ source, newVersion, baseUrl }) => {
             <button
                 className={`mx-6 p-1 text-sm border-2 border-gray-200 rounded-md`}
                 onClick={() => CallServer({
-                rtPfx, baseUrl, source, newVersion, navigate, user, table_name: getType(source, 'disaster_declarations_summaries_v2')
-            })}> {source.source_id ? 'Add View' : 'Add Source'}</button>
+                    rtPfx, baseUrl, source, newVersion, navigate, user, table_name: getType(source, 'jurisdiction')
+                })}> {source.source_id ? 'Add View' : 'Add Source'}</button>
         </div>
     )
 }
