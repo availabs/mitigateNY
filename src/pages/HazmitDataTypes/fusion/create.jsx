@@ -53,10 +53,8 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user, s
 const range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + start);
 
 const Create = ({ source, newVersion, baseUrl }) => {    
-    console.log(source.categories[0][0]);
-    
     const navigate = useNavigate();
-    const { pgEnv, user, falcor } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
 
     const [startYear, setStartYear] = React.useState(1996);
     const [endYear, setEndYear] = React.useState(new Date().getFullYear() - 1);

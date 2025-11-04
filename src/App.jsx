@@ -16,7 +16,7 @@ import themes from './dms_themes'
 // import Auth from '~/pages/Auth'
 
 import DamaRoutes from "~/pages/DataManager"
-import hazmitDataTypes from "~/pages/HazmitDataTypes"
+import hazmitDataTypes, { mapPlugins } from "~/pages/HazmitDataTypes"
 import { authMenuConfig } from "~/layout/authMenuConfig"
 import { useFalcor } from "~/modules/avl-falcor"
 import LayoutWrapper from "~/layout/LayoutWrapper"
@@ -53,6 +53,8 @@ if(testEnv){
     type = 'test1'
 }
 
+const datasets = Object.keys(hazmitDataTypes).map(name => ({name, pages: hazmitDataTypes[name]}));
+
 function App() {
     return (
       <DmsSite
@@ -74,11 +76,12 @@ function App() {
 
         API_HOST={API_HOST}
         AUTH_HOST={AUTH_HOST}
-
+        datasets={datasets}
         routes={[
           //cenrep
           ...LayoutWrapper(
             DamaRoutes({
+              mapPlugins: mapPlugins,
               baseUrl:damaBaseUrl,
               defaultPgEnv,
               navSettings: authMenuConfig,
