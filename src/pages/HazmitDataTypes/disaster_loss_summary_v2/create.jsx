@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from "react-router";
 import { checkApiResponse, getDamaApiRoutePrefix, getSrcViews } from "../utils/DamaControllerApi";
-import { RenderVersions } from "../utils/macros"
+import { RenderVersions, getType } from "../utils/macros"
 
 import { DamaContext } from "~/pages/DataManager/store";
 import ihp_valid_registrations_v1_enhanced from "../ihp_valid_registrations_v1_enhanced/index.jsx";
@@ -23,7 +23,7 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate,
         existing_source_id: source.source_id,
         view_dependencies: JSON.stringify(viewMetadata),
         version: newVersion,
-        table_name: 'disaster_loss_summary_v2',
+        table_name: getType(source, 'disaster_loss_summary_v2'),
 
         ofd_schema: viewPAFPD.table_schema,
 
@@ -86,8 +86,8 @@ const Create = ({ source, newVersion, baseUrl }) => {
 
     React.useEffect(() => {
         async function fetchData() {
-            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsPAFPD, type: 'public_assistance_funded_projects_details_v1_enhanced'});
-            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsIHP, type: 'ihp_valid_registrations_enhanced'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsPAFPD, type: 'public_assistance_funded_projects_details_v2_enhanced'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsIHP, type: 'ihp_valid_registrations_v2_enhanced'});
             await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsDDS, type: 'disaster_declarations_summaries_v2'});
             await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsSBA, type: 'sba_disaster_loan_data_new'});
             await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsNFIP, type: 'fima_nfip_claims_v2_enhanced'});

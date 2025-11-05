@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { checkApiResponse, getDamaApiRoutePrefix } from "../utils/DamaControllerApi";
+import { getType } from "../utils/macros";
 import {useNavigate} from "react-router";
 
 import { DamaContext } from "~/pages/DataManager/store";
@@ -8,7 +9,7 @@ import { DamaContext } from "~/pages/DataManager/store";
 const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user}) => {
     const url = `${rtPfx}/hazard_mitigation/load-ncei`;
     const body = JSON.stringify({
-        table_name: 'details',
+        table_name: getType(source, 'details'),
         source_name: source.name,
         existing_source_id: source.source_id,
         version: newVersion,

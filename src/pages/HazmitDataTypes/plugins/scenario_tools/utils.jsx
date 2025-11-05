@@ -1,6 +1,7 @@
 import { get, set } from "lodash-es";
 import { BLD_AV_COLUMN, COLOR_SCALE_MAX, COLOR_SCALE_BREAKS, getColorRange } from "./constants";
-import { choroplethPaint } from "~/pages/DataManager/MapEditor/components/LayerEditor/datamaps";
+import { choroplethPaint, fnumIndex } from "~/pages/DataManager/MapEditor/components/LayerEditor/datamaps";
+import { cloneDeep } from "lodash-es";
 const setInitialGeomStyle = ({ setState, layerId, layerBasePath }) => {
   setState((draft) => {
     const draftLayers = get(draft, `${layerBasePath}['${layerId}'].layers`);
@@ -13,8 +14,10 @@ const setInitialGeomStyle = ({ setState, layerId, layerBasePath }) => {
       fillLayer.paint = { "fill-opacity": 0, "fill-color": "#fff" };
     }
     draftLayers.forEach((d, i) => {
-      d.layout = { visibility: "none" };
+      //d.layout = { visibility: "none" };
     });
+    set(draft, `${layerBasePath}['${layerId}']['legend-orientation']`, "none");
+    //set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
   });
 };
 
@@ -88,9 +91,9 @@ const setPointLayerStyle = ({ setState, layerId, layerBasePath }) => {
     ["linear", 1],
     ["to-number", ["get", BLD_AV_COLUMN]],
     circleLowerBound, //min of dataset
-    2, //min radius (px) of circle
+    4, //min radius (px) of circle
     circleUpperBound, //max of dataset
-    8, //max radius (px) of circle
+    12, //max radius (px) of circle
   ];
   setState((draft) => {
     set(draft, `${layerBasePath}['${layerId}']['layers'][0]['paint']`, {
@@ -98,7 +101,9 @@ const setPointLayerStyle = ({ setState, layerId, layerBasePath }) => {
       "circle-radius": circleRadius,
       "circle-opacity": 0.5,
     }); //Mapbox
-    set(draft, `${layerBasePath}['${layerId}']['legend-data']`, legend); //AVAIL-written legend component
+    const newLegend = COLOR_SCALE_BREAKS.map(scaleVal => fnumIndex(scaleVal, 0, true))
+    const formattedLegend = cloneDeep(legend).map((lRow, i) => ({...lRow, label:newLegend[i]}))
+    set(draft, `${layerBasePath}['${layerId}']['legend-data']`, formattedLegend); //AVAIL-written legend component
     set(draft, `${layerBasePath}['${layerId}']['legend-orientation']`, "horizontal");
     set(draft, `${layerBasePath}['${layerId}']['category-show-other']`, "#fff");
   });
@@ -112,23 +117,27 @@ const setGeometryBorderFilter = ({ setState, layerId, geomDataKey, values, layer
     draftLayers.forEach((d, i) => {
       d.layout = { visibility: "visible" };
     });
-    const geographyFilter = {
-      columnName: geomDataKey,
-      value: values,
-      operator: "==",
-    };
-    set(draft, `${layerBasePath}['${layerId}']['filter']['${geomDataKey}']`, geographyFilter);
+    // console.log(JSON.parse(JSON.stringify({draftLayers})))
+    // const geographyFilter = {
+    //   columnName: geomDataKey,
+    //   value: values,
+    //   operator: "==",
+    // };
+    // console.log({geographyFilter})
+    //set(draft, `${layerBasePath}['${layerId}']['filter']['${geomDataKey}']`, geographyFilter);
   });
 };
 
-const resetGeometryBorderFilter = ({ setState, layerId, layerBasePath }) => {
+const resetGeometryBorderFilter = ({ setState, layerId, layerBasePath, geomDataKey }) => {
   setState((draft) => {
-    set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
+    //set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
 
     const draftLayers = get(draft, `${layerBasePath}['${layerId}'].layers`);
     draftLayers?.forEach((d, i) => {
       d.layout = { visibility: "none" };
     });
+    set(draft, `${layerBasePath}['${layerId}']['filter']`, undefined);
+    set(draft, `${layerBasePath}['${layerId}']['dynamic-filters']`, []);
   });
 };
 

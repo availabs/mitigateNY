@@ -3,8 +3,9 @@ import { DamaContext } from "~/pages/DataManager/store";
 import { CMSContext } from "~/modules/dms/src";
 import get from "lodash/get";
 import set from "lodash/set";
-
+import { Geocoder } from "@mapbox/search-js-react";
 import { cloneDeep } from "lodash-es";
+import mapboxgl from "maplibre-gl";
 
 import { Button } from "~/modules/avl-components/src";
 import {
@@ -24,6 +25,7 @@ import {
   COLOR_SCALE_BREAKS,
   POLYGON_LAYER_KEY,
   COUNTY_COLUMN,
+  GEOCODE_COUNTY_KEY,
 } from "./constants";
 import {
   setPolygonLayerStyle,
@@ -38,10 +40,11 @@ import { fnumIndex } from "~/pages/DataManager/MapEditor/components/LayerEditor/
 import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/MapEditor/stateUtils";
 import { count } from "d3-array";
 
-const comp = ({ state, setState }) => {
+const comp = ({ state, setState, map }) => {
   const dctx = useContext(DamaContext);
   const cctx = useContext(CMSContext);
   const ctx = dctx?.falcor ? dctx : cctx;
+  const [marker, setMarker] = useState();
   let { falcor, falcorCache, pgEnv, baseUrl } = ctx;
 
   if (!falcorCache) {
@@ -177,7 +180,8 @@ const comp = ({ state, setState }) => {
     const rawTowns = get(falcorCache, bldValFalcorPathTowns);
     //find 3 objects with this town name (flood 100, flood 500, flood none)
     //return 1 object for town
-    return towns.reduce((acc, curr) => {
+    //towns is the currenty selection of towns
+    return towns?.reduce((acc, curr) => {
       acc[curr.value] = Object.values(rawTowns || {}).filter((rt) => rt[BILD_MUNI_COLUMN] === curr.value);
       return acc;
     }, {});
@@ -202,7 +206,46 @@ const comp = ({ state, setState }) => {
         maxHeight: "500px",
       }}
     >
-      <div className='grid grid-rows-3 text-sm divide-y divide-gray-400'>
+      <div>
+        <Geocoder
+          accessToken='pk.eyJ1IjoiYW0zMDgxIiwiYSI6IkxzS0FpU0UifQ.rYv6mHCcNd7KKMs7yhY3rw'
+          options={{
+            language: "en",
+            country: "US",
+          }}
+          placeholder={"Address search"}
+          interceptSearch={(inputString) => {
+            if (inputString.length < 7) {
+              return null;
+            } else {
+              return inputString;
+            }
+          }}
+          onRetrieve={(res) => {
+            //console.log("mapbox res::",res)
+            const searchedCounty = res.properties.context.district.name.split(" County")[0];
+            const marker = new mapboxgl.Marker().setLngLat(res.geometry.coordinates).addTo(map);
+            setMarker(marker);
+            setState((draft) => {
+              set(draft, `${pluginDataPath}['${GEOGRAPHY_KEY}']`, [
+                {
+                  name: searchedCounty + " County",
+                  value: searchedCounty,
+                  type: COUNTY_COLUMN,
+                },
+              ]);
+              if (geography && geography.length > 0 && countyLayerId) {
+                set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
+              }
+            });
+          }}
+          onClear={() => {
+            marker.remove();
+            setMarker(null);
+          }}
+        />
+      </div>
+      <div className='grid grid-rows-3 text-sm divide-y divide-gray-400 mt-1'>
         <div className='grid grid-cols-4 border-gray-400 border-b p-1 '>
           <div className='font-bold'>Scenario</div>
           <div className='font-bold'>Visibility</div>
@@ -251,9 +294,9 @@ const comp = ({ state, setState }) => {
         <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>
       </div>
       {towns?.length ? (
-        <div className='mt-8'>
+        <div className='mt-6'>
           <div className='font-xl font-bold'>Jurisdictions</div>
-          <div className='grid grid-rows-3 text-sm divide-y divide-gray-400'>
+          <div className='grid  text-sm divide-y divide-gray-400'>
             <div className='grid grid-cols-5 border-gray-400 border-b p-1 '>
               <div className='font-bold'>Zone</div>
               <div className='font-bold'># of bld</div>
@@ -273,12 +316,16 @@ const comp = ({ state, setState }) => {
               }, 0);
 
               let townFloodLoss = 0;
-              const loss100 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
+              const loss100 = parseInt(
+                Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]
+              );
               if (!floodZone?.includes("500")) {
                 // 100 only
                 townFloodLoss = loss100;
               } else {
-                const loss500 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
+                const loss500 = parseInt(
+                  Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]
+                );
                 townFloodLoss = loss100 + loss500;
               }
 
@@ -286,7 +333,7 @@ const comp = ({ state, setState }) => {
               const count100 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.["count(1)::int as count"]);
               if (!floodZone?.includes("500")) {
                 // 100 only
-                townFloodBld =  count100;
+                townFloodBld = count100;
               } else {
                 const count500 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.["count(1)::int as count"]);
                 townFloodBld = count100 + count500;
