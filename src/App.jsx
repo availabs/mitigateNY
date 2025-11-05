@@ -53,8 +53,6 @@ if(testEnv){
     type = 'test1'
 }
 
-const datasets = Object.keys(hazmitDataTypes).map(name => ({name, pages: hazmitDataTypes[name]}));
-
 function App() {
     return (
       <DmsSite
@@ -76,7 +74,7 @@ function App() {
 
         API_HOST={API_HOST}
         AUTH_HOST={AUTH_HOST}
-        datasets={datasets}
+        datasets={hazmitDataTypes}
         routes={[
           //cenrep
           ...LayoutWrapper(
