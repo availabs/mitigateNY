@@ -412,7 +412,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         });
       }
     }
-  }, [towns]);
+  }, [towns, geography]);
 
   /**
    * TODO
