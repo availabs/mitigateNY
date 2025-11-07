@@ -8,11 +8,18 @@ import fima_nfip_claims_v2 from "./fema_nfip_claims_v2";
 import fima_nfip_claims_v2_enhanced from "./fema_nfip_claims_v2_enhanced";
 import individuals_and_households_program_valid_registrations_v1
   from "./individuals_and_households_program_valid_registrations_v1";
+import individuals_and_households_program_valid_registrations_v2
+  from "./individuals_and_households_program_valid_registrations_v2";
 import ihp_valid_registrations_v1_enhanced from "./ihp_valid_registrations_v1_enhanced/index.jsx";
+import ihp_valid_registrations_v2_enhanced from "./ihp_valid_registrations_v2_enhanced";
 import public_assistance_funded_projects_details_v1
   from "./public_assistance_funded_projects_details_v1";
+import public_assistance_funded_projects_details_v2
+  from "./public_assistance_funded_projects_details_v2";
 import public_assistance_funded_projects_details_v1_enhanced
   from "./public_assistance_funded_projects_details_v1_enhanced";
+  import public_assistance_funded_projects_details_v2_enhanced
+  from "./public_assistance_funded_projects_details_v2_enhanced";
 import hazard_mitigation_grant_program_disaster_summaries_v2
   from "./hazard_mitigation_grant_program_disaster_summaries_v2/index.jsx";
 import hazard_mitigation_assistance_mitigated_properties_v4
@@ -43,6 +50,7 @@ import sheldus from "./sheldus"
 import gis_least_common_geographic_units from './gis_least_common_geographic_units'
 import parcels2footprints from './parcels2footprints'
 import npmrds from './npmrds'
+import jurisdiction from './jurisdiction'
 
 import geographies2elevations from "./geographies2elevations"
 import aggregate_buildings from "./aggregate_buildings"
@@ -80,16 +88,22 @@ const DataTypes = {
   fema_web_disaster_summaries_v1,
   fima_nfip_claims_v2,
   fima_nfip_claims_v2_enhanced,
-  individuals_and_households_program_valid_registrations_v1,
-  ihp_valid_registrations_v1_enhanced,
-  public_assistance_funded_projects_details_v1,
-  public_assistance_funded_projects_details_v1_enhanced,
+  // individuals_and_households_program_valid_registrations_v1, // deprecated
+  individuals_and_households_program_valid_registrations_v2,
+  // ihp_valid_registrations_v1_enhanced,
+  ihp_valid_registrations_v2_enhanced,
+  // public_assistance_funded_projects_details_v1, // deprecated
+  public_assistance_funded_projects_details_v2,
+  // public_assistance_funded_projects_details_v1_enhanced,
+  public_assistance_funded_projects_details_v2_enhanced,
   hazard_mitigation_grant_program_disaster_summaries_v2,
   hazard_mitigation_assistance_mitigated_properties_v4,
   hazard_mitigation_assistance_projects_v4,
   hazard_mitigation_assistance_projects_v4_enhanced,
 
   disaster_loss_summary_v2,
+
+  jurisdiction,
 
   // hazmit types: AVAIL processing
   per_basis,
