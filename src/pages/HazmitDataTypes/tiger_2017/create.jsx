@@ -74,9 +74,9 @@ const RenderTigerTables = ({ value, setValue, domain }) => {
   );
 };
 
-const Create = ({ source, newVersion, baseUrl }) => {
+const Create = ({ source, newVersion, baseUrl, context }) => {
   const navigate = useNavigate();
-  const { pgEnv } = useContext(DamaContext);
+  const { pgEnv } = useContext(context || DamaContext);
   const [tigerTable, setTigerTable] = useState();
   const [isNewSource, setVar] = useState(true);
   const [sourceValues, setSourceValues] = useState({

@@ -4,9 +4,9 @@ import { checkApiResponse, getDamaApiRoutePrefix } from "../utils/DamaController
 import { useNavigate } from "react-router";
 import { DamaContext } from "~/pages/DataManager/store";
 
-const Create = ({ source, newVersion, baseUrl }) => {
+const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv, user, falcor } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
     return (

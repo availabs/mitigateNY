@@ -34,9 +34,9 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, viewHlr
     navigate(`${baseUrl}/source/${resJson.payload.source_id}/versions`);
 }
 
-const Create = ({ source, newVersion, baseUrl }) => {
+const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv, user, falcor } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
 
     // selected views/versions
     const [viewHlr, setViewHlr] = React.useState();

@@ -34,7 +34,7 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user}) 
 
 const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv, user } = React.useContext(DamaContext || context)
+    const { pgEnv, user } = React.useContext(context || DamaContext)
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
     return (
