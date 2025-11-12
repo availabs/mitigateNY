@@ -1,11 +1,11 @@
 import React from 'react'
 import { useNavigate } from "react-router";
 import { checkApiResponse, getDamaApiRoutePrefix, getSrcViews } from "../utils/DamaControllerApi";
-import { RenderVersions } from "../utils/macros"
+import { RenderVersions, getType } from "../utils/macros"
 
 import { DamaContext } from "~/pages/DataManager/store";
 
-const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user,
+const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user, startYear, endYear,
                               viewDL = {}, viewNCEIE = {}, viewCounty = {}
                           }) => {
     const viewMetadata = [
@@ -18,7 +18,7 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user,
         existing_source_id: source.source_id,
         view_dependencies: JSON.stringify(viewMetadata),
         version: newVersion,
-        table_name: 'fusion',
+        table_name: getType(source, 'fusion'),
 
         user_id: user.id,
         email: user.email,
@@ -30,7 +30,10 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user,
         dl_schema: viewDL.table_schema,
 
         nceie_table: viewNCEIE.table_name,
-        nceie_schema: viewNCEIE.table_schema
+        nceie_schema: viewNCEIE.table_schema,
+
+        start_year: startYear, 
+        end_year: endYear
     });
 
     const stgLyrDataRes = await fetch(url, {
@@ -43,16 +46,19 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user,
 
     await checkApiResponse(stgLyrDataRes);
     const resJson = await stgLyrDataRes.json();
-    console.log('res', resJson);
 
     navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 }
 
 const range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + start);
 
-const Create = ({ source, newVersion, baseUrl, context }) => {
+const Create = ({ source, newVersion, baseUrl }) => {    
     const navigate = useNavigate();
     const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
+
+    const [startYear, setStartYear] = React.useState(1996);
+    const [endYear, setEndYear] = React.useState(new Date().getFullYear() - 1);
+    const years = range(1996, new Date().getFullYear()).reverse();
 
     // selected views/versions
     const [viewDL, setViewDL] = React.useState();
@@ -76,6 +82,8 @@ const Create = ({ source, newVersion, baseUrl, context }) => {
 
     return (
         <div className='w-full'>
+            {RenderVersions({value: startYear, setValue: setStartYear, versions: [startYear], type: 'Start Year'})}
+            {RenderVersions({value: endYear, setValue: setEndYear, versions: years, type: 'End Year'})}
             {RenderVersions({value: viewDL, setValue: setViewDL, versions: versionsDL, type: 'Open Fema Data'})}
             {RenderVersions({value: viewNCEIE, setValue: setViewNCEIE, versions: versionsNCEIE, type: 'NCEI Enhanced'})}
             {RenderVersions({value: viewCounty, setValue: setViewCounty, versions: versionsCounty, type: 'County'})}
@@ -84,6 +92,7 @@ const Create = ({ source, newVersion, baseUrl, context }) => {
                 onClick={() =>
                     CallServer(
                         {rtPfx, baseUrl, source, newVersion, user,
+                            startYear, endYear,
                             viewDL: versionsDL.views.find(v => v.view_id === parseInt(viewDL)),
                             viewNCEIE: versionsNCEIE.views.find(v => v.view_id === parseInt(viewNCEIE)),
                             viewCounty: versionsCounty.views.find(v => v.view_id === parseInt(viewCounty)),

@@ -10,6 +10,7 @@ import {
   COUNTY_LAYER_KEY,
   POLYGON_LAYER_KEY,
   TOWN_LAYER_KEY,
+  FLOODPLAIN_LAYER_KEY,
   FLOOD_ZONE_KEY,
   BLANK_OPTION,
   BLD_AV_COLUMN,
@@ -17,6 +18,7 @@ import {
   defaultFilter,
   COLOR_SCALE_MAX,
   COLOR_SCALE_BREAKS,
+  FLOOD_ZONE_COLUMN
 } from "./constants";
 import { setInitialGeomStyle, resetGeometryBorderFilter, setGeometryBorderFilter, onlyUnique } from "./utils";
 
@@ -35,7 +37,7 @@ const internalPanel = ({ state, setState }) => {
   } else {
     symbologyLayerPath = `symbology.layers`;
   }
-  const { pluginDataPath, pointLayerId, countyLayerId, polygonLayerId, townLayerId } = useMemo(() => {
+  const { pluginDataPath, pointLayerId, countyLayerId, polygonLayerId, townLayerId, floodplainLayerId } = useMemo(() => {
     const pluginDataPath = `symbology.pluginData.${PLUGIN_ID}`;
     return {
       pluginDataPath,
@@ -43,6 +45,7 @@ const internalPanel = ({ state, setState }) => {
       countyLayerId: get(state, `${pluginDataPath}['active-layers'][${COUNTY_LAYER_KEY}]`),
       polygonLayerId: get(state, `${pluginDataPath}['active-layers'][${POLYGON_LAYER_KEY}]`),
       townLayerId: get(state, `${pluginDataPath}['active-layers'][${TOWN_LAYER_KEY}]`),
+      floodplainLayerId: get(state, `${pluginDataPath}['active-layers'][${FLOODPLAIN_LAYER_KEY}]`),
     };
   }, [state]);
 
@@ -56,6 +59,7 @@ const internalPanel = ({ state, setState }) => {
 
       setState((draft) => {
         set(draft, `${symbologyLayerPath}['${countyLayerId}'].hover`, "");
+        set(draft, `${symbologyLayerPath}['${countyLayerId}']['hover-columns']`, []);
       });
     }
   }, [countyLayerId]);
@@ -70,6 +74,7 @@ const internalPanel = ({ state, setState }) => {
 
       setState((draft) => {
         set(draft, `${symbologyLayerPath}['${townLayerId}'].hover`, "");
+        set(draft, `${symbologyLayerPath}['${townLayerId}']['hover-columns']`, []);
       });
     }
   }, [townLayerId]);
@@ -78,6 +83,7 @@ const internalPanel = ({ state, setState }) => {
     if (polygonLayerId) {
       setState(draft => {
         set(draft, `${symbologyLayerPath}['${polygonLayerId}'].hover`, "");
+        set(draft, `${symbologyLayerPath}['${polygonLayerId}']['hover-columns']`, []);
         set(draft, `${symbologyLayerPath}['${polygonLayerId}']['data-column']`, BLD_AV_COLUMN);
       })
     }
@@ -87,12 +93,24 @@ const internalPanel = ({ state, setState }) => {
     if (pointLayerId) {
       setState(draft => {
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['data-column']`, BLD_AV_COLUMN);
+        set(draft, `${symbologyLayerPath}['${pointLayerId}'].hover`, "hover");
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['hover-columns']`, [{column_name: BLD_AV_COLUMN, display_name: BLD_AV_COLUMN},{column_name: FLOOD_ZONE_COLUMN, display_name: FLOOD_ZONE_COLUMN}]);
       })
     }
   }, [pointLayerId]);
 
-
-  const borderLayerIds = [pointLayerId, countyLayerId, polygonLayerId, townLayerId];
+  useEffect(() => {
+    if (floodplainLayerId) {
+      setState(draft => {
+        set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].hover`, "");
+        set(draft, `${symbologyLayerPath}['${floodplainLayerId}']['hover-columns']`, []);
+        set(draft, `${symbologyLayerPath}['${floodplainLayerId}']['legend-orientation']`, "none");
+        set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].layers[0].paint['line-width']`, 0);
+        set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].layers[1].paint['fill-color']`, 'DodgerBlue');
+      })
+    }
+  }, [floodplainLayerId]);
+  const borderLayerIds = [pointLayerId, countyLayerId, polygonLayerId, townLayerId, floodplainLayerId];
   const controls = [
     {
       label: "Point Layer",
@@ -179,6 +197,28 @@ const internalPanel = ({ state, setState }) => {
           },
           //the layer the plugin controls MUST use the `'active-layers'` path/field
           path: `['active-layers'][${TOWN_LAYER_KEY}]`,
+        },
+      ],
+    },
+    {
+      label: "Floodplain Layer",
+      controls: [
+        {
+          type: "select",
+          params: {
+            options: [
+              BLANK_OPTION,
+              ...Object.keys(state.symbology.layers)
+                .filter((layerKey) => !borderLayerIds.includes(layerKey) || layerKey === floodplainLayerId)
+                .map((layerKey, i) => ({
+                  value: layerKey,
+                  name: state.symbology.layers[layerKey].name,
+                })),
+            ],
+            default: "",
+          },
+          //the layer the plugin controls MUST use the `'active-layers'` path/field
+          path: `['active-layers'][${FLOODPLAIN_LAYER_KEY}]`,
         },
       ],
     },

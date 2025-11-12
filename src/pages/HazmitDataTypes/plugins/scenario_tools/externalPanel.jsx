@@ -9,6 +9,7 @@ import {
   POINT_LAYER_KEY,
   COUNTY_LAYER_KEY,
   TOWN_LAYER_KEY,
+  FLOODPLAIN_LAYER_KEY,
   GEOGRAPHY_KEY,
   FLOOD_ZONE_KEY,
   TOWNS_KEY,
@@ -17,12 +18,22 @@ import {
   BLD_AV_COLUMN,
   COUNTY_COLUMN,
   TOWN_NAME_COLUMN,
+  FLOOD_ZONE_COLUMN,
+  FLOODPLAIN_ZONE_COLUMN,
+  FLOODPLAIN_2ND_ZONE_COLUMN,
   getColorRange,
   defaultFilter,
   COLOR_SCALE_MAX,
   COLOR_SCALE_BREAKS,
   POLYGON_LAYER_KEY,
+  YEAR_100_FLOOD_VAL,
+  YEAR_500_FLD_ZONE_VAL,
+  YEAR_500_FLOOD_VAL,
+  YEAR_500_2ND_FLOOD_VAL,
+  FLOODPLAIN_COUNTY_COLUMN,
+  TOWN_COUNTY_COLUMN,
 } from "./constants";
+import { countyNameToFips } from "./countyNameToFips";
 import {
   setInitialGeomStyle,
   setPointLayerStyle,
@@ -39,14 +50,12 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   const dctx = useContext(DamaContext);
   const cctx = useContext(CMSContext);
   const ctx = dctx?.falcor ? dctx : cctx;
-  let { falcor, falcorCache, pgEnv, baseUrl } = ctx;
 
-  if (!falcorCache) {
-    falcorCache = falcor.getCache();
-  }
-  //const {falcor, falcorCache, pgEnv, baseUrl} = React.useContext(DamaContext);
-  //performence measure (speed, lottr, tttr, etc.) (External Panel) (Dev hard-code)
-  //"second" selection (percentile, amp/pmp) (External Panel) (dependent on first selection, plus dev hard code)
+  const [rawCountyGeoms, setRawCountyGeoms] = useState();
+  const [rawTownGeoms, setRawTownGeoms] = useState();
+
+  let { falcor, pgEnv, baseUrl } = ctx;
+
   const pluginDataPath = `${pathBase}`;
 
   const pluginData = useMemo(() => {
@@ -66,7 +75,18 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     symbPath = `symbology`;
   }
 
-  const { viewId, pointLayerId, countyLayerId, geography, floodZone, polygonLayerId, towns, townLayerViewId, townLayerId } = useMemo(() => {
+  const {
+    viewId,
+    pointLayerId,
+    countyLayerId,
+    geography,
+    floodZone,
+    polygonLayerId,
+    towns,
+    townLayerViewId,
+    townLayerId,
+    floodplainLayerId,
+  } = useMemo(() => {
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
     const townLayerId = get(state, `${pluginDataPath}['active-layers'][${TOWN_LAYER_KEY}]`);
     return {
@@ -79,6 +99,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       townLayerViewId: get(state, `${symbologyLayerPath}['${townLayerId}']['view_id']`, null),
       floodZone: get(state, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`),
       towns: get(state, `${pluginDataPath}['${TOWNS_KEY}']`),
+      floodplainLayerId: get(state, `${pluginDataPath}['active-layers'][${FLOODPLAIN_LAYER_KEY}]`),
     };
   }, [pluginData, pluginDataPath]);
 
@@ -91,28 +112,27 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [pointLayerId]);
 
-  // const {
-  //   lowerBound,
-  //   upperBound,
-  //   radiusCurve,
-  //   curveFactor,
-  // } = useMemo(() => {
-  //   if (dctx) {
-  //     return extractState(state);
-  //   } else {
-  //     const symbName = Object.keys(state.symbologies)[0];
-  //     const symbPathBase = `symbologies['${symbName}']`;
-  //     const symbData = get(state, symbPathBase, {});
-  //     return extractState(symbData);
-  //   }
-  // }, [state]);
+  const { symbology_id, pageFilters } = useMemo(() => {
+    if (dctx) {
+      return extractState(state);
+    } else {
+      const symbName = Object.keys(state.symbologies)[0];
+      const symbPathBase = `symbologies['${symbName}']`;
+      const symbData = get(state, symbPathBase, {});
+      const pageFilters = symbData.symbology.pageFilters;
+      return { ...extractState(symbData), pageFilters };
+    }
+  }, [state]);
 
   const geomOptions = JSON.stringify({
     groupBy: [COUNTY_COLUMN],
   });
   useEffect(() => {
     const getGeoms = async () => {
-      await falcor.get(["dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex", { from: 0, to: 200 }, [COUNTY_COLUMN]]);
+      await falcor.get(["dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex", { from: 0, to: 200 }, [COUNTY_COLUMN]]).then(res => {
+        const geomData = get(res, ["json", "dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex"]);
+        setRawCountyGeoms(geomData);
+      });
     };
 
     if (viewId) {
@@ -121,7 +141,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
   }, [viewId]);
 
   const geomControlOptions = useMemo(() => {
-    const geomData = get(falcorCache, ["dama", pgEnv, "viewsbyId", viewId, "options", geomOptions, "databyIndex"]);
+    const geomData = rawCountyGeoms;
     if (geomData) {
       const geoms = {
         [COUNTY_COLUMN]: [],
@@ -143,25 +163,40 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       geoms[COUNTY_COLUMN] = geoms[COUNTY_COLUMN].filter(onlyUnique)
         .filter(objectFilter)
         .filter(truthyFilter)
-        .map((da) => ({
-          name: da.toLowerCase() + " County",
-          value: da,
-          type: COUNTY_COLUMN,
-        }))
+        .map((da) => {
+          return {
+            name: da + " County",
+            value: da,
+            type: COUNTY_COLUMN,
+          };
+        })
         .sort(nameSort);
 
       return [...geoms[COUNTY_COLUMN]];
     } else {
       return [];
     }
-  }, [falcorCache]);
+  }, [rawCountyGeoms]);
 
   const townGeomOptions = JSON.stringify({
-    groupBy: [TOWN_NAME_COLUMN],
+    groupBy: [TOWN_NAME_COLUMN, TOWN_COUNTY_COLUMN],
   });
   useEffect(() => {
     const getGeoms = async () => {
-      await falcor.get(["dama", pgEnv, "viewsbyId", townLayerViewId, "options", townGeomOptions, "databyIndex", { from: 0, to: 200 }, [TOWN_NAME_COLUMN]]);
+      await falcor.get([
+        "dama",
+        pgEnv,
+        "viewsbyId",
+        townLayerViewId,
+        "options",
+        townGeomOptions,
+        "databyIndex",
+        { from: 0, to: 200 },
+        [TOWN_NAME_COLUMN, TOWN_COUNTY_COLUMN],
+      ]).then(res => {
+        const geomData = get(res, ["json","dama", pgEnv, "viewsbyId", townLayerViewId, "options", townGeomOptions, "databyIndex"]);
+        setRawTownGeoms(geomData);
+      });
     };
 
     if (townLayerViewId) {
@@ -169,18 +204,24 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     }
   }, [townLayerViewId]);
 
-
-
   const townControlOptions = useMemo(() => {
-    const geomData = get(falcorCache, ["dama", pgEnv, "viewsbyId", townLayerViewId, "options", townGeomOptions, "databyIndex"]);
+    const geomData = rawTownGeoms;
     if (geomData) {
       const geoms = {
         [TOWN_NAME_COLUMN]: [],
       };
 
-      Object.values(geomData).forEach((da) => {
-        geoms[TOWN_NAME_COLUMN].push(da[TOWN_NAME_COLUMN]);
-      });
+      Object.values(geomData)
+        .filter((da) => {
+          if (geography && geography.length > 0) {
+            return geography[0].value === da.county;
+          } else {
+            return true;
+          }
+        })
+        .forEach((da) => {
+          geoms[TOWN_NAME_COLUMN].push(da[TOWN_NAME_COLUMN]);
+        });
 
       const nameSort = (a, b) => {
         if (a.name < b.name) {
@@ -195,7 +236,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         .filter(objectFilter)
         .filter(truthyFilter)
         .map((da) => ({
-          name: da.toLowerCase() + " Town",
+          name: da.toLowerCase(),
           value: da,
           type: "town",
         }))
@@ -205,12 +246,33 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
     } else {
       return [];
     }
-  }, [falcorCache]);
+  }, [rawTownGeoms, geography]);
 
+  useEffect(() => {
+    if (pageFilters && pageFilters.length > 0) {
+      const countyPageFilter = pageFilters.find((pf) => pf.searchKey === COUNTY_COLUMN);
 
-
-  //TODO WHEN TOWNSHIPS ARE ADDED
-  //will need to add separate or some logic here to handle those borders/changes
+      if (countyPageFilter && countyPageFilter?.values?.length > 0) {
+        setGeometryBorderFilter({
+          setState,
+          layerId: countyLayerId,
+          geomDataKey: COUNTY_LAYER_NAME_COLUMN,
+          values: [countyPageFilter.values[0]],
+          layerBasePath: symbologyLayerPath,
+        });
+        
+        setState((draft) => {
+          set(draft, `${pluginDataPath}['${GEOGRAPHY_KEY}']`, [
+            {
+              name: countyPageFilter.values[0] + " County",
+              value: countyPageFilter.values[0],
+              type: COUNTY_COLUMN,
+            },
+          ]);
+        });
+      }
+    }
+  }, [pageFilters]);
   useEffect(() => {
     const getFilterBounds = async () => {
       //need array of [{column_name:foo, values:['bar', 'baz']}]
@@ -239,7 +301,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         if (polygonLayerId) {
           set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, pointAndPolyGeoFilter);
         }
-        if(countyLayerId) {
+        if (countyLayerId) {
           const geographyFilter = Object.keys(selectedGeographyByType).map((column_name) => {
             return {
               display_name: column_name,
@@ -249,37 +311,34 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
             };
           });
           set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters']`, geographyFilter);
+          set(draft, `${symbologyLayerPath}['${countyLayerId}']['filterMode']`, "all");
+        }
+        if (floodplainLayerId) {
+          const selectedCounty = geography.filter((geo) => geo.type === COUNTY_COLUMN);
+
+          const countyName = selectedCounty[0].value;
+          const floodplainFips = countyNameToFips[countyName] + "C";
+          const floodplainOpacityStyle = ["case", ["==", ["get", FLOODPLAIN_COUNTY_COLUMN], floodplainFips], 0.4, 0];
+          set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].layers[1].paint['fill-opacity']`, floodplainOpacityStyle);
         }
       });
     };
 
     if (geography?.length > 0) {
       //get zoom bounds
+      //IT ALSO sets the data filters for polygons, points, and counties
       getFilterBounds();
       //filter and display borders for selected geographie
       const selectedCounty = geography.filter((geo) => geo.type === COUNTY_COLUMN);
-      console.log({ selectedCounty });
       if (selectedCounty.length > 0 && countyLayerId) {
         //cenrep source 1514 view 1989 test NYS_County_Boundaries
         setGeometryBorderFilter({
           setState,
           layerId: countyLayerId,
           geomDataKey: COUNTY_LAYER_NAME_COLUMN,
-          values: selectedCounty.map((county) => {
-            const lowCountyString = county.value.toLowerCase();
-            return lowCountyString[0].toUpperCase() + lowCountyString.slice(1);
-          }),
+          values: selectedCounty.map((county) => county.value),
           layerBasePath: symbologyLayerPath,
         });
-      } else {
-        if (countyLayerId) {
-          console.log("resetting filter for county::", countyLayerId);
-          resetGeometryBorderFilter({
-            layerId: countyLayerId,
-            setState,
-            layerBasePath: symbologyLayerPath,
-          });
-        }
       }
     } else {
       //resets dynamic filter if there are no geographies selected
@@ -287,37 +346,31 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         const zoomToFilterBounds = get(draft, `${symbPath}.zoomToFilterBounds`);
         if (zoomToFilterBounds?.length > 0) {
           set(draft, `${symbPath}.zoomToFilterBounds`, []);
-          if (pointLayerId) {
-            set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, []);
-          }
-          if (polygonLayerId) {
-            set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, []);
-          }
-          if(countyLayerId) {
-            set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters']`, []);
-          }
         }
-
         if (pointLayerId) {
+          set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`, []);
           set(draft, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, null);
         }
         if (polygonLayerId) {
+          set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters']`, []);
           set(draft, `${symbologyLayerPath}['${polygonLayerId}']['filterMode']`, null);
         }
         if (countyLayerId) {
-          console.log("resetting county filter");
+          //set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters']`, []);
           resetGeometryBorderFilter({
             layerId: countyLayerId,
+            geomDataKey: COUNTY_LAYER_NAME_COLUMN,
             setState,
             layerBasePath: symbologyLayerPath,
           });
         }
+        if (floodplainLayerId) {
+          set(draft, `${symbologyLayerPath}['${floodplainLayerId}'].layers[1].paint['fill-opacity']`, 0.35);
+        }
       });
     }
   }, [geography]);
-
   useEffect(() => {
-      console.log({ towns });
     if (towns?.length > 0) {
       if (townLayerId) {
         //cenrep source 516 view cities and towns
@@ -328,27 +381,38 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
           values: towns.map((town) => town.value),
           layerBasePath: symbologyLayerPath,
         });
-      } else {
-        if (townLayerId) {
-          console.log("resetting filter for county::", townLayerId);
-          resetGeometryBorderFilter({
-            layerId: townLayerId,
-            setState,
-            layerBasePath: symbologyLayerPath,
-          });
-        }
+
+        const townFilter = [
+          {
+            display_name: TOWN_NAME_COLUMN,
+            column_name: TOWN_NAME_COLUMN,
+            values: towns.map((town) => town.value),
+            zoomToFilterBounds: false,
+          },
+        ];
+        setState((draft) => {
+          set(draft, `${symbologyLayerPath}['${townLayerId}']['dynamic-filters']`, townFilter);
+        });
+        // const geographyFilter = {
+        //   columnName: geomDataKey,
+        //   value: values,
+        //   operator: "==",
+        // };
+        // setState((draft) => {
+        //   set(draft, `${symbologyLayerPath}['${townLayerId}']['filter']['${TOWN_NAME_COLUMN}']`, geographyFilter);
+        // })
       }
     } else {
       if (townLayerId) {
-        console.log("resetting town filter");
         resetGeometryBorderFilter({
           layerId: townLayerId,
+          geomDataKey: TOWN_NAME_COLUMN,
           setState,
           layerBasePath: symbologyLayerPath,
         });
       }
     }
-  }, [towns])
+  }, [towns, geography]);
 
   /**
    * TODO
@@ -368,36 +432,63 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
 
   useEffect(() => {
     let floodValue = floodZone;
+    let floodplainFilter = {};
     //all points affected by 500 year flood are also affected by 100 year flood
     if (floodZone === "500") {
       floodValue = ["100", "500"];
+      floodplainFilter = {
+        [FLOODPLAIN_ZONE_COLUMN]: {
+          operator: "!=",
+          value: YEAR_500_FLD_ZONE_VAL,
+          columnName: FLOODPLAIN_ZONE_COLUMN,
+        },
+        [FLOODPLAIN_2ND_ZONE_COLUMN]: {
+          operator: "==",
+          value: YEAR_500_2ND_FLOOD_VAL,
+          columnName: FLOODPLAIN_2ND_ZONE_COLUMN,
+        },
+      };
     } else {
       floodValue = ["100"];
+      floodplainFilter = {
+        [FLOODPLAIN_ZONE_COLUMN]: {
+          operator: "==",
+          value: YEAR_100_FLOOD_VAL,
+          columnName: FLOODPLAIN_ZONE_COLUMN,
+        },
+      };
     }
-    const newFilter = {
-      flood_zone: {
-        operator: "==",
-        value: floodValue,
-        columnName: "flood_zone",
-      },
-    };
+
+    //if fld_zone = [A,AE,AH,AO], then it is 100
+    //if fld_zone = [X], AND zone_subty = [0.2 PCT ANNUAL CHANCE FLOOD HAZARD], then it is 500
     setState((draft) => {
-      //don't want the map zooming around whenever the user changes the displayed flood zone
       if (polygonLayerId) {
         set(draft, `${symbologyLayerPath}['${polygonLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
       }
       if (pointLayerId) {
+        const newPointFilter = {
+          flood_zone: {
+            operator: "==",
+            value: floodValue,
+            columnName: "flood_zone",
+          },
+        };
         set(draft, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
-        set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, newFilter);
+        set(draft, `${symbologyLayerPath}['${pointLayerId}']['filter']`, newPointFilter);
       }
-      if(countyLayerId) {
+      if (countyLayerId) {
+        //don't want the map zooming around whenever the user changes the displayed flood zone
         set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
+      }
+      if (floodplainLayerId) {
+        set(draft, `${symbologyLayerPath}['${floodplainLayerId}']['filter']`, floodplainFilter);
+        set(draft, `${symbologyLayerPath}['${floodplainLayerId}']['filterMode']`, "any");
       }
     });
     //just need to change `filter` to reflect new value
     //todo -- might not need to listen for layerId changes here. since they can only change internally
     //but, otherwise, I need to set defaults in `internalPanel` too, and double code = bad
-  }, [floodZone, pointLayerId]);
+  }, [floodZone]);
 
   return [
     {
