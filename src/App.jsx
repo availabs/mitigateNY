@@ -26,7 +26,7 @@ import siteData from './siteData.json'
 import { DamaMap, Map } from "./pages/DataManager/"
 
 
-import {PROJECT_NAME, API_HOST, AUTH_HOST} from "./config.js";
+import {PROJECT_NAME, API_HOST, AUTH_HOST, DAMA_HOST} from "./config.js";
 
 //import siteData from './siteData.json'
 
@@ -74,6 +74,7 @@ function App() {
 
         API_HOST={API_HOST}
         AUTH_HOST={AUTH_HOST}
+        DAMA_HOST={DAMA_HOST}
         datasets={hazmitDataTypes}
         routes={[
           //cenrep
