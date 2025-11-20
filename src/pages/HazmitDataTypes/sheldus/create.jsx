@@ -45,9 +45,9 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user,
     navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 }
 
-const Create = ({ source, newVersion, baseUrl }) => {
+const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv, user, falcor } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
 
     // selected views/versions
     const [viewFusion, setViewFusion] = React.useState();

@@ -45,9 +45,9 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, viewIHP
     navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 }
 
-const Create = ({ source, newVersion, baseUrl }) => {
+const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv, user, falcor } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
     const [viewState, setViewState] = React.useState();

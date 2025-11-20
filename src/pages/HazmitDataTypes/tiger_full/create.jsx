@@ -22,9 +22,9 @@ const CallServer = async ({ rtPfx, source, newVersion, navigate, baseUrl='cenrep
     }
 };
 
-const Create = ({ source, newVersion, baseUrl }) => {
+const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv } = useContext(DamaContext);
+    const { pgEnv } = useContext(context || DamaContext);
 
     const rtPfx = `${DAMA_HOST}/dama-admin/${pgEnv}` //getDamaApiRoutePrefix(pgEnv);
 

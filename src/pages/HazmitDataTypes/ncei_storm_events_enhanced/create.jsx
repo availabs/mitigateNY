@@ -51,9 +51,9 @@ const CallServer = async ({rtPfx, baseUrl, source, user, newVersion, navigate, s
     navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 };
 
-const Create = ({ source, newVersion, baseUrl }) => {
+const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv, user, falcor } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
 
     const [startYear, setStartYear] = React.useState(1996);
     const [endYear, setEndYear] = React.useState(new Date().getFullYear() - 1);
