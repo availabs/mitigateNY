@@ -59,6 +59,8 @@ import postgres_transfer from "./postgres_transfer"
 
 import acs from "./acs";
 
+import flood_map from './flood_map'
+
 import { ScenarioToolsPlugin } from "./plugins/scenario_tools/scenarioTools.plugin";
 
 const DataTypes = {
@@ -119,7 +121,10 @@ const DataTypes = {
 
   geographies2elevations,
   aggregate_buildings,
-  aggregate_HIFLD
+  aggregate_HIFLD,
+
+  // floodmaps
+  flood_map
 };
 
 export const mapPlugins = {

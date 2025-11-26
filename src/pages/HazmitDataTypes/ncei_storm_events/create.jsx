@@ -27,7 +27,6 @@ const CallServer = async ({rtPfx, baseUrl, source, newVersion, navigate, user}) 
 
     await checkApiResponse(res);
     const resJson = await res.json();
-    console.log('res', resJson);
 
     navigate(resJson.etl_context_id ? `${baseUrl}/task/${resJson.etl_context_id}` : resJson.source_id ? `${baseUrl}/source/${resJson.source_id}/versions` : baseUrl);
 }
