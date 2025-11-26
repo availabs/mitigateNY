@@ -54,7 +54,7 @@ const range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + 
 
 const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(DamaContext)
 
     const [startYear, setStartYear] = React.useState(1996);
     const [endYear, setEndYear] = React.useState(new Date().getFullYear() - 1);
@@ -75,7 +75,7 @@ const Create = ({ source, newVersion, baseUrl, context }) => {
         async function fetchData() {
             await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsDL, type: 'disaster_loss_summary_v2'});
             await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsNCEIE, type: 'ncei_storm_events_enhanced'});
-            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsCounty, type: 'tl_county'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsCounty, type: 'tiger'});
         }
         fetchData();
     }, [rtPfx])

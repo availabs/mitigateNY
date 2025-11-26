@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router";
-import { Icons } from "./icons";
+import { Icons } from "./icons2";
 
 const theme = {
   navOptions: {
