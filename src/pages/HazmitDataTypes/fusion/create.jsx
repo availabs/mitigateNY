@@ -54,7 +54,7 @@ const range = (start, end) => Array.from({length: (end - start)}, (v, k) => k + 
 
 const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv, user, falcor } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
 
     const [startYear, setStartYear] = React.useState(1996);
     const [endYear, setEndYear] = React.useState(new Date().getFullYear() - 1);
