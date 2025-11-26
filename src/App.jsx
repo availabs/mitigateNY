@@ -26,7 +26,7 @@ import siteData from './siteData.json'
 import { DamaMap, Map } from "./pages/DataManager/"
 
 
-import {PROJECT_NAME, API_HOST, AUTH_HOST} from "./config.js";
+import {PROJECT_NAME, API_HOST, AUTH_HOST, DAMA_HOST} from "./config.js";
 
 //import siteData from './siteData.json'
 
@@ -53,8 +53,6 @@ if(testEnv){
     type = 'test1'
 }
 
-const datasets = Object.keys(hazmitDataTypes).map(name => ({name, pages: hazmitDataTypes[name]}));
-
 function App() {
     return (
       <DmsSite
@@ -76,7 +74,8 @@ function App() {
 
         API_HOST={API_HOST}
         AUTH_HOST={AUTH_HOST}
-        datasets={datasets}
+        DAMA_HOST={DAMA_HOST}
+        datasets={hazmitDataTypes}
         routes={[
           //cenrep
           ...LayoutWrapper(

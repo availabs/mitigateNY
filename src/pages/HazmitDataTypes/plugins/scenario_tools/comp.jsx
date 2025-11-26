@@ -6,6 +6,7 @@ import set from "lodash/set";
 import { Geocoder } from "@mapbox/search-js-react";
 import { cloneDeep } from "lodash-es";
 import mapboxgl from "maplibre-gl";
+import { MultiSelectControl } from "~/pages/DataManager/MapEditor/components/PluginControls/PluginControls";
 
 import { Button } from "~/modules/avl-components/src";
 import {
@@ -14,7 +15,10 @@ import {
   FLOOD_ZONE_COLUMN,
   COUNTY_LAYER_KEY,
   FLOOD_ZONE_KEY,
+  TOWN_LAYER_KEY,
   TOWNS_KEY,
+  TOWN_COUNTY_COLUMN,
+  TOWN_NAME_COLUMN,
   BILD_MUNI_COLUMN,
   GEOGRAPHY_KEY,
   BLANK_OPTION,
@@ -45,11 +49,12 @@ const comp = ({ state, setState, map }) => {
   const cctx = useContext(CMSContext);
   const ctx = dctx?.falcor ? dctx : cctx;
   const [marker, setMarker] = useState();
-  let { falcor, falcorCache, pgEnv, baseUrl } = ctx;
+  const [countyLossData, setCountyLossData] = useState();
+  const [townLossData, setTownLossData] = useState();
+  const [rawTownGeoms, setRawTownGeoms] = useState();
 
-  if (!falcorCache) {
-    falcorCache = falcor.getCache();
-  }
+  let { falcor, pgEnv, baseUrl } = ctx;
+
   let symbologyLayerPath = "";
   let symbPath = "";
   if (state.symbologies) {
@@ -68,6 +73,8 @@ const comp = ({ state, setState, map }) => {
   const {
     viewId,
     pointLayerId,
+    townLayerId,
+    townLayerViewId,
     countyLayerId,
     geography,
     floodZone,
@@ -78,13 +85,15 @@ const comp = ({ state, setState, map }) => {
     filterMode,
   } = useMemo(() => {
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
-
+    const townLayerId = get(state, `${pluginDataPath}['active-layers'][${TOWN_LAYER_KEY}]`);
     return {
       viewId: get(state, `${symbologyLayerPath}['${pointLayerId}']['view_id']`, null),
       pointLayerId,
+      townLayerId,
       geography: get(state, `${pluginDataPath}['geography']`, null),
       countyLayerId: get(state, `${pluginDataPath}['active-layers'][${COUNTY_LAYER_KEY}]`),
       polygonLayerId: get(state, `${pluginDataPath}['active-layers'][${POLYGON_LAYER_KEY}]`),
+      townLayerViewId: get(state, `${symbologyLayerPath}['${townLayerId}']['view_id']`, null),
       floodZone: get(state, `${pluginDataPath}['${FLOOD_ZONE_KEY}']`),
       towns: get(state, `${pluginDataPath}['${TOWNS_KEY}']`),
       filter: get(state, `${symbologyLayerPath}['${pointLayerId}']['filter']`, {}),
@@ -164,28 +173,29 @@ const comp = ({ state, setState, map }) => {
   ];
   useEffect(() => {
     const getData = async () => {
-      falcor.get([...countyLossFalcorPath, ...countyLossApiPath]);
+      falcor.get([...countyLossFalcorPath, ...countyLossApiPath]).then((res) => {
+        const resData = get(res, ["json", ...countyLossFalcorPath]);
+        setCountyLossData(resData);
+      });
 
       if (towns && towns.length > 0) {
-        falcor.get([...bldValFalcorPathTowns, ...townsLossApiPath]);
+        falcor.get([...bldValFalcorPathTowns, ...townsLossApiPath]).then((res) => {
+          const rawTowns = get(res, ["json", ...bldValFalcorPathTowns]);
+          setTownLossData(rawTowns);
+        });
       }
     };
     getData();
   }, [bldValFalcorPathTowns, countyLossFalcorPath]);
-
-  const countyLossData = useMemo(() => {
-    return get(falcorCache, countyLossFalcorPath);
-  }, [falcorCache, countyLossFalcorPath]);
   const townData = useMemo(() => {
-    const rawTowns = get(falcorCache, bldValFalcorPathTowns);
     //find 3 objects with this town name (flood 100, flood 500, flood none)
     //return 1 object for town
     //towns is the currenty selection of towns
     return towns?.reduce((acc, curr) => {
-      acc[curr.value] = Object.values(rawTowns || {}).filter((rt) => rt[BILD_MUNI_COLUMN] === curr.value);
+      acc[curr.value] = Object.values(townLossData || {}).filter((rt) => rt[BILD_MUNI_COLUMN] === curr.value);
       return acc;
     }, {});
-  }, [falcorCache, bldValFalcorPathTowns]);
+  }, [townLossData]);
 
   const county100Year = parseFloat(
     Object.values(countyLossData || {}).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]
@@ -193,7 +203,74 @@ const comp = ({ state, setState, map }) => {
   const county500Year = parseFloat(
     Object.values(countyLossData || {}).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]
   );
+  const townGeomOptions = JSON.stringify({
+    groupBy: [TOWN_NAME_COLUMN, TOWN_COUNTY_COLUMN],
+  });
+  useEffect(() => {
+    const getGeoms = async () => {
+      await falcor.get([
+        "dama",
+        pgEnv,
+        "viewsbyId",
+        townLayerViewId,
+        "options",
+        townGeomOptions,
+        "databyIndex",
+        { from: 0, to: 200 },
+        [TOWN_NAME_COLUMN, TOWN_COUNTY_COLUMN],
+      ]).then(res => {
+        const geomData = get(res, ["json","dama", pgEnv, "viewsbyId", townLayerViewId, "options", townGeomOptions, "databyIndex"]);
+        setRawTownGeoms(geomData);
+      });
+    };
 
+    if (townLayerViewId) {
+      getGeoms();
+    }
+  }, [townLayerViewId]);
+  const townControlOptions = useMemo(() => {
+    const geomData = rawTownGeoms;
+    if (geomData) {
+      const geoms = {
+        [TOWN_NAME_COLUMN]: [],
+      };
+
+      Object.values(geomData)
+        .filter((da) => {
+          if (geography && geography.length > 0) {
+            return geography[0].value === da.county;
+          } else {
+            return true;
+          }
+        })
+        .forEach((da) => {
+          geoms[TOWN_NAME_COLUMN].push(da[TOWN_NAME_COLUMN]);
+        });
+
+      const nameSort = (a, b) => {
+        if (a.name < b.name) {
+          return -1;
+        } else {
+          return 1;
+        }
+      };
+      const objectFilter = (da) => typeof da !== "object";
+      const truthyFilter = (val) => !!val;
+      geoms[TOWN_NAME_COLUMN] = geoms[TOWN_NAME_COLUMN].filter(onlyUnique)
+        .filter(objectFilter)
+        .filter(truthyFilter)
+        .map((da) => ({
+          name: da.toLowerCase(),
+          value: da,
+          type: "town",
+        }))
+        .sort(nameSort);
+
+      return [...geoms[TOWN_NAME_COLUMN]];
+    } else {
+      return [];
+    }
+  }, [rawTownGeoms, geography]);
   return (
     <div
       className='flex flex-col pointer-events-auto drop-shadow-lg p-4 bg-white/95'
@@ -212,7 +289,11 @@ const comp = ({ state, setState, map }) => {
           options={{
             language: "en",
             country: "US",
+            proximity: "ip",
           }}
+          map={map}
+          mapboxgl={mapboxgl}
+          marker={true}
           placeholder={"Address search"}
           interceptSearch={(inputString) => {
             if (inputString.length < 7) {
@@ -220,28 +301,6 @@ const comp = ({ state, setState, map }) => {
             } else {
               return inputString;
             }
-          }}
-          onRetrieve={(res) => {
-            //console.log("mapbox res::",res)
-            const searchedCounty = res.properties.context.district.name.split(" County")[0];
-            const marker = new mapboxgl.Marker().setLngLat(res.geometry.coordinates).addTo(map);
-            setMarker(marker);
-            setState((draft) => {
-              set(draft, `${pluginDataPath}['${GEOGRAPHY_KEY}']`, [
-                {
-                  name: searchedCounty + " County",
-                  value: searchedCounty,
-                  type: COUNTY_COLUMN,
-                },
-              ]);
-              if (geography && geography.length > 0 && countyLayerId) {
-                set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters'][0]['zoomToFilterBounds']`, false);
-              }
-            });
-          }}
-          onClear={() => {
-            marker.remove();
-            setMarker(null);
           }}
         />
       </div>
@@ -293,67 +352,74 @@ const comp = ({ state, setState, map }) => {
         <div>Expected Annualized Avg. Loss</div>
         <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>
       </div>
-      {towns?.length ? (
-        <div className='mt-6'>
-          <div className='font-xl font-bold'>Jurisdictions</div>
-          <div className='grid  text-sm divide-y divide-gray-400'>
-            <div className='grid grid-cols-5 border-gray-400 border-b p-1 '>
-              <div className='font-bold'>Zone</div>
-              <div className='font-bold'># of bld</div>
-              <div className='font-bold'>$ of bld</div>
-              <div className='font-bold'># bld in flood zone</div>
-              <div className='font-bold'>$ of bld in zone</div>
-            </div>
-
-            {Object.keys(townData).map((townName) => {
-              const town = townData[townName];
-
-              const townTotalBld = Object.values(town).reduce((acc, curr) => {
-                return acc + parseInt(curr["count(1)::int as count"]);
-              }, 0);
-              const townTotalVal = Object.values(town).reduce((acc, curr) => {
-                return acc + parseFloat(curr[`sum(${BLD_AV_COLUMN}) as sum`]);
-              }, 0);
-
-              let townFloodLoss = 0;
-              const loss100 = parseInt(
-                Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]
-              );
-              if (!floodZone?.includes("500")) {
-                // 100 only
-                townFloodLoss = loss100;
-              } else {
-                const loss500 = parseInt(
-                  Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]
-                );
-                townFloodLoss = loss100 + loss500;
-              }
-
-              let townFloodBld = 0;
-              const count100 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.["count(1)::int as count"]);
-              if (!floodZone?.includes("500")) {
-                // 100 only
-                townFloodBld = count100;
-              } else {
-                const count500 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.["count(1)::int as count"]);
-                townFloodBld = count100 + count500;
-              }
-
-              return (
-                <div className='grid grid-cols-5 p-1 ' key={`town_${townName}`}>
-                  <div>{townName}</div>
-                  <div>{fnumIndex(townTotalBld, 2)}</div>
-                  <div>{fnumIndex(townTotalVal, 2, true)}</div>
-                  <div>{fnumIndex(townFloodBld, 2)}</div>
-                  <div>{fnumIndex(townFloodLoss, 2, true)}</div>
-                </div>
-              );
-            })}
-          </div>
+      <div className='mt-6'>
+        <div className='flex w-full mb-2'>
+          <div className='font-xl font-bold mr-4'>Jurisdictions</div>
+          <MultiSelectControl
+            params={{
+              options: [...townControlOptions],
+              default: "",
+              searchable: true,
+              placeholder: "Add Jurisdiction",
+              width: ""
+            }}
+            path={`${pluginDataPath}['${TOWNS_KEY}']`}
+          />
         </div>
-      ) : (
-        <></>
-      )}
+
+        <div className='grid  text-sm divide-y divide-gray-400'>
+          <div className='grid grid-cols-5 border-gray-400 border-b p-1 '>
+            <div className='font-bold'>Zone</div>
+            <div className='font-bold'># of bld</div>
+            <div className='font-bold'>$ of bld</div>
+            <div className='font-bold'># bld in flood zone</div>
+            <div className='font-bold'>$ of bld in zone</div>
+          </div>
+
+          {Object.keys(townData || {}).map((townName) => {
+            const town = townData[townName];
+
+            const townTotalBld = Object.values(town).reduce((acc, curr) => {
+              return acc + parseInt(curr["count(1)::int as count"]);
+            }, 0);
+            const townTotalVal = Object.values(town).reduce((acc, curr) => {
+              return acc + parseFloat(curr[`sum(${BLD_AV_COLUMN}) as sum`]);
+            }, 0);
+
+            let townFloodLoss = 0;
+            const loss100 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]);
+            if (!floodZone?.includes("500")) {
+              // 100 only
+              townFloodLoss = loss100;
+            } else {
+              const loss500 = parseInt(
+                Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.[`sum(${BLD_AV_COLUMN}) as sum`]
+              );
+              townFloodLoss = loss100 + loss500;
+            }
+
+            let townFloodBld = 0;
+            const count100 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.["count(1)::int as count"]);
+            if (!floodZone?.includes("500")) {
+              // 100 only
+              townFloodBld = count100;
+            } else {
+              const count500 = parseInt(Object.values(town).find((row) => row[FLOOD_ZONE_COLUMN] === "500")?.["count(1)::int as count"]);
+              townFloodBld = count100 + count500;
+            }
+
+            return (
+              <div className='grid grid-cols-5 p-1 ' key={`town_${townName}`}>
+                <div>{townName}</div>
+                <div>{fnumIndex(townTotalBld, 2)}</div>
+                <div>{fnumIndex(townTotalVal, 2, true)}</div>
+                <div>{isNaN(townFloodBld) ? "0" : fnumIndex(townFloodBld, 2)}</div>
+                <div>{isNaN(townFloodLoss) ? "$0" : fnumIndex(townFloodLoss, 2, true)}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };

@@ -236,7 +236,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         .filter(objectFilter)
         .filter(truthyFilter)
         .map((da) => ({
-          name: da.toLowerCase() + " Town",
+          name: da.toLowerCase(),
           value: da,
           type: "town",
         }))
@@ -253,6 +253,14 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
       const countyPageFilter = pageFilters.find((pf) => pf.searchKey === COUNTY_COLUMN);
 
       if (countyPageFilter && countyPageFilter?.values?.length > 0) {
+        setGeometryBorderFilter({
+          setState,
+          layerId: countyLayerId,
+          geomDataKey: COUNTY_LAYER_NAME_COLUMN,
+          values: [countyPageFilter.values[0]],
+          layerBasePath: symbologyLayerPath,
+        });
+        
         setState((draft) => {
           set(draft, `${pluginDataPath}['${GEOGRAPHY_KEY}']`, [
             {
@@ -331,15 +339,6 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
           values: selectedCounty.map((county) => county.value),
           layerBasePath: symbologyLayerPath,
         });
-      } else {
-        if (countyLayerId) {
-          resetGeometryBorderFilter({
-            layerId: countyLayerId,
-            geomDataKey: COUNTY_LAYER_NAME_COLUMN,
-            setState,
-            layerBasePath: symbologyLayerPath,
-          });
-        }
       }
     } else {
       //resets dynamic filter if there are no geographies selected
@@ -357,7 +356,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
           set(draft, `${symbologyLayerPath}['${polygonLayerId}']['filterMode']`, null);
         }
         if (countyLayerId) {
-          set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters']`, []);
+          //set(draft, `${symbologyLayerPath}['${countyLayerId}']['dynamic-filters']`, []);
           resetGeometryBorderFilter({
             layerId: countyLayerId,
             geomDataKey: COUNTY_LAYER_NAME_COLUMN,
@@ -413,7 +412,7 @@ const externalPanel = ({ state, setState, pathBase = "" }) => {
         });
       }
     }
-  }, [towns]);
+  }, [towns, geography]);
 
   /**
    * TODO

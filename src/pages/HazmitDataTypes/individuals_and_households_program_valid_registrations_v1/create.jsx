@@ -27,9 +27,9 @@ import { DamaContext } from "~/pages/DataManager/store";
 //     navigate(`${baseUrl}/source/${resJson.payload.source_id}/versions`);
 // }
 
-const Create = ({ source, newVersion, baseUrl }) => {
+const Create = ({ source, newVersion, baseUrl, context }) => {
     const navigate = useNavigate();
-    const { pgEnv, user } = React.useContext(DamaContext)
+    const { pgEnv, user } = React.useContext(context || DamaContext)
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
     return (

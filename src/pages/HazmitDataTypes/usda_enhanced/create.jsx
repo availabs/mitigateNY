@@ -42,9 +42,9 @@ const CallServer = async ({rtPfx, baseUrl, source, table, newVersion, navigate, 
 
 }
 
-const Create =  ({ source, newVersion, baseUrl })=> {
+const Create =  ({ source, newVersion, baseUrl, context })=> {
     const navigate = useNavigate();
-    const { pgEnv, user, falcor } = React.useContext(DamaContext)
+    const { pgEnv, user, falcor } = React.useContext(context || DamaContext)
     const rtPfx = getDamaApiRoutePrefix(pgEnv);
 
     const [viewUSDA, setViewUSDA] = React.useState();

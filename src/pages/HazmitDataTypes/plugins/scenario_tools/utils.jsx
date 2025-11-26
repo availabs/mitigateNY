@@ -14,10 +14,10 @@ const setInitialGeomStyle = ({ setState, layerId, layerBasePath }) => {
       fillLayer.paint = { "fill-opacity": 0, "fill-color": "#fff" };
     }
     draftLayers.forEach((d, i) => {
-      //d.layout = { visibility: "none" };
+      d.layout = { visibility: "visible" };
     });
     set(draft, `${layerBasePath}['${layerId}']['legend-orientation']`, "none");
-    //set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
+    set(draft, `${layerBasePath}['${layerId}']['isVisible']`, true);
   });
 };
 
@@ -117,6 +117,10 @@ const setGeometryBorderFilter = ({ setState, layerId, geomDataKey, values, layer
     draftLayers.forEach((d, i) => {
       d.layout = { visibility: "visible" };
     });
+    const borderLayer = draftLayers.find((mapLayer) => mapLayer.type === "line");
+    if (borderLayer) {
+      borderLayer.paint = {...borderLayer.paint, "line-opacity": 1 };
+    }
     // console.log(JSON.parse(JSON.stringify({draftLayers})))
     // const geographyFilter = {
     //   columnName: geomDataKey,
@@ -130,7 +134,7 @@ const setGeometryBorderFilter = ({ setState, layerId, geomDataKey, values, layer
 
 const resetGeometryBorderFilter = ({ setState, layerId, layerBasePath, geomDataKey }) => {
   setState((draft) => {
-    //set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
+    set(draft, `${layerBasePath}['${layerId}']['isVisible']`, false);
 
     const draftLayers = get(draft, `${layerBasePath}['${layerId}'].layers`);
     draftLayers?.forEach((d, i) => {
