@@ -75,7 +75,7 @@ const Create = ({ source, newVersion, baseUrl, context }) => {
         async function fetchData() {
             await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsDL, type: 'disaster_loss_summary_v2'});
             await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsNCEIE, type: 'ncei_storm_events_enhanced'});
-            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsCounty, type: 'tl_county'});
+            await getSrcViews({rtPfx, falcor, pgEnv, setVersions: setVersionsCounty, type: 'tiger'});
         }
         fetchData();
     }, [rtPfx])
