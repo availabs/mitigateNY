@@ -1,5 +1,5 @@
 import * as CarbonIcons from '@carbon/icons-react';
-
+import {FEMA} from './fema_icon'
 
 const Default = ({...props}) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"  {...props}>
@@ -175,6 +175,7 @@ const iconSet = iconList.reduce((icons, curr) => {
 
 export const Icons = {
 	Default,
+	FEMA,
 	// -- Icons we Can't find in Carbon
 	Overview,
 	ClimateChange,
