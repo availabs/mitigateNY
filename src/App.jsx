@@ -67,6 +67,7 @@ function App() {
         }
         PROJECT_NAME={PROJECT_NAME}
         adminPath={adminBaseUrl}
+        authPath={authBaseUrl}
         damaBaseUrl={damaBaseUrl}
         pgEnvs={[defaultPgEnv]}
         defaultData={siteData}
