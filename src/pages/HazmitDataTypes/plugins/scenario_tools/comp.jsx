@@ -58,7 +58,7 @@ const comp = ({ state, setState, map }) => {
   const [marker, setMarker] = useState();
   const [countyLossData, setCountyLossData] = useState();
   const [townLossData, setTownLossData] = useState();
-  const [customLossData, setCustomLossData] = useState();
+  const [customLossData, setCustomLossData] = useState({});
   const [rawTownGeoms, setRawTownGeoms] = useState();
 
   let { falcor, pgEnv, baseUrl } = ctx;
@@ -136,8 +136,10 @@ const comp = ({ state, setState, map }) => {
       const mybboxPolygon = bboxPolygon(mybbox);
       map.navControl.delete(e.features[0].id)
       setState((draft) => {
-        const allCustomPoly = [...customPoly];
-        const newCustomPoly = {name: "Test123", coordinates: mybboxPolygon.bbox};
+        const draftPoly =  get(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, []);
+        const allCustomPoly = [...draftPoly];
+        const newName = draftPoly.length ? draftPoly[draftPoly.length-1].name + "(1)" : "Test";
+        const newCustomPoly = {name: newName, coordinates: mybboxPolygon.bbox};
         allCustomPoly.push(newCustomPoly)
         set(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, allCustomPoly);
       });
@@ -188,21 +190,23 @@ const comp = ({ state, setState, map }) => {
       return JSON.stringify({});
     }
   }, [existingDynamicFilter, filterMode, dataFilter, towns]);
+
   const falcorDataFilterForCustomPoly = useMemo(() => {
     if (geography && geography.length > 0 && dataFilter.flood_zone && customPoly.length > 0) {
-      const newDataFilter = cloneDeep(dataFilter);
-      newDataFilter.flood_zone = {};
-      //TODO THIS MUST WORK FOR MULTIPLE CUSTOM POLYGONS
-      const tempPoly = customPoly[0].coordinates
-      const colName = `ST_Intersects(wkb_geometry,ST_MakeEnvelope(${tempPoly.join(",")}, 4326))`;
-      newDataFilter[colName] = { operator: "==", value: [true], column_name: colName };
-      return createFalcorFilterOptions({
-        dynamicFilter: [],
-        filterMode,
-        dataFilter: newDataFilter,
-      });
+      return customPoly.map(customPolygon => {
+        const newDataFilter = cloneDeep(dataFilter);
+        newDataFilter.flood_zone = {};
+        const tempPoly = customPolygon.coordinates
+        const colName = `ST_Intersects(wkb_geometry,ST_MakeEnvelope(${tempPoly.join(",")}, 4326))`;
+        newDataFilter[colName] = { operator: "==", value: [true], column_name: colName };
+        return createFalcorFilterOptions({
+          dynamicFilter: [],
+          filterMode,
+          dataFilter: newDataFilter,
+        });
+      })
     } else {
-      return JSON.stringify({});
+      return [];
     }
   }, [customPoly, dataFilter]);
 
@@ -221,9 +225,11 @@ const comp = ({ state, setState, map }) => {
   }, [falcorDataFilterForTowns]);
 
   const customPolyOptions = useMemo(() => {
-    return JSON.stringify({
-      groupBy: [FLOOD_ZONE_COLUMN],
-      filter: JSON.parse(falcorDataFilterForCustomPoly).filter,
+    return falcorDataFilterForCustomPoly.map(customFilter => {
+      return JSON.stringify({
+        groupBy: [FLOOD_ZONE_COLUMN],
+        filter: JSON.parse(customFilter).filter,
+      });
     });
   }, [falcorDataFilterForCustomPoly]);
 
@@ -234,7 +240,9 @@ const comp = ({ state, setState, map }) => {
     return ["uda", pgEnv, "viewsById", viewId, "options", optionsTowns, "dataByIndex"];
   }, [pgEnv, viewId, optionsTowns]);
   const bldValFalcorPathCustomPoly = useMemo(() => {
-    return ["uda", pgEnv, "viewsById", viewId, "options", customPolyOptions, "dataByIndex"];
+    return customPolyOptions.map(customOption => {
+      return ["uda", pgEnv, "viewsById", viewId, "options", customOption, "dataByIndex"];
+    })
   }, [pgEnv, viewId, customPolyOptions]);
 
   const countyLossApiPath = [{ from: 0, to: 1 }, [FLOOD_ZONE_COLUMN, `sum(${BLD_AV_COLUMN}) as sum`]];
@@ -258,11 +266,16 @@ const comp = ({ state, setState, map }) => {
         });
       }
 
-      if(customPoly.length > 0) {
-        falcor.get([...bldValFalcorPathCustomPoly, ...customLossApiPath]).then((res) => {
-          const rawCustom = get(res, ["json", ...bldValFalcorPathCustomPoly]);
-          setCustomLossData(rawCustom);
-        }); 
+      if(bldValFalcorPathCustomPoly.length > 0) {
+        const newCustomData = {...customLossData};
+        for(let i = 0; i<bldValFalcorPathCustomPoly.length; i++) {
+          const customPolygonPath = bldValFalcorPathCustomPoly[i];
+          const res = await falcor.get([...customPolygonPath, ...customLossApiPath])
+          const rawCustom = get(res, ["json", ...customPolygonPath]);
+
+          newCustomData[customPoly[i].name] = rawCustom;
+        }
+        setCustomLossData(newCustomData);
       }
     };
     getData();
@@ -278,9 +291,10 @@ const comp = ({ state, setState, map }) => {
   }, [townLossData]);
 
   const customData = useMemo(() => {
-    return customPoly.length > 0 ? {
-      custom: Object.values(customLossData || {}).filter((rt) => !Array.isArray(rt))
-    } : {};
+    return customPoly?.reduce((acc, curr) => {
+      acc[curr.name] = Object.values(customLossData[curr.name] || {}).filter(data => !Array.isArray(data));
+      return acc;
+    }, {});
   }, [customLossData]);
 
   const county100Year = parseFloat(
@@ -365,6 +379,7 @@ const comp = ({ state, setState, map }) => {
         const polygon = bboxPolygon(customPolygon.coordinates)
         var feature = {
           type: 'Feature',
+          id: customPolygon.name,
           properties: {},
           geometry: { type: 'Polygon', coordinates: polygon.geometry.coordinates }
         };
@@ -467,8 +482,21 @@ const comp = ({ state, setState, map }) => {
             }}
             path={`${pluginDataPath}['${TOWNS_KEY}']`}
           />
+            <Button 
+              themeOptions={{ size: "xs", color: 'primary' }}
+              onClick={() => {
+                console.log("removing custom areas")
+                customPoly.forEach(customPolygon => {
+                  map.navControl.delete(customPolygon.name)
+                })
+                setCustomLossData({});
+                setState(draft => {
+                  set(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, [])
+                })
+            }}>
+              Remove custom areas
+            </Button>
         </div>
-
         <div className='grid  text-sm divide-y divide-gray-400'>
           <div className='grid grid-cols-5 border-gray-400 border-b p-1 '>
             <div className='font-bold'>Zone</div>
@@ -479,7 +507,7 @@ const comp = ({ state, setState, map }) => {
           </div>
 
           {Object.keys(allJuriData || {}).map((townName) => {
-            const town = allJuriData[townName];
+            const town = allJuriData[townName] || {};
             const townTotalBld = Object.values(town).reduce((acc, curr) => {
               return acc + parseInt(curr["count(1)::int as count"]);
             }, 0);
