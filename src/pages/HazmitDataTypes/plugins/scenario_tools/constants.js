@@ -29,6 +29,8 @@ const FLOODPLAIN_LAYER_KEY = "floodplain-layer";
 const FLOOD_ZONE_KEY = "flood-zone";
 const TOWNS_KEY = "towns";
 
+const CUSTOM_POLY_KEY = "custom-zone"
+
 const BLANK_OPTION = { value: "", name: "" };
 
 import colorbrewer from "colorbrewer";
@@ -71,6 +73,91 @@ const defaultFilter = {
 const COLOR_SCALE_MAX = 1000000;
 const COLOR_SCALE_BREAKS = [0, 200000, 400000, 600000, 800000, COLOR_SCALE_MAX];
 
+const drawProps = {
+  displayControlsDefault: false,
+  controls: {
+    polygon: true,
+    trash: true,
+  },
+  defaultMode: "draw_polygon",
+  styles: [
+    // ACTIVE (being drawn)
+    // line stroke
+    {
+      id: "gl-draw-line",
+      type: "line",
+      filter: ["all", ["==", "$type", "LineString"]],
+      layout: {
+        "line-cap": "round",
+        "line-join": "round",
+      },
+      paint: {
+        "line-color": "#D20C0C",
+        "line-dasharray": [0.2, 2],
+        "line-width": 2,
+      },
+    },
+    // polygon fill
+    {
+      id: "gl-draw-polygon-fill",
+      type: "fill",
+      filter: ["all", ["==", "$type", "Polygon"]],
+      paint: {
+        "fill-color": "#D20C0C",
+        "fill-outline-color": "#D20C0C",
+        "fill-opacity": 0.1,
+      },
+    },
+    // polygon mid points
+    {
+      id: "gl-draw-polygon-midpoint",
+      type: "circle",
+      filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
+      paint: {
+        "circle-radius": 3,
+        "circle-color": "#fbb03b",
+      },
+    },
+    // polygon outline stroke
+    // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
+    {
+      id: "gl-draw-polygon-stroke-active",
+      type: "line",
+      filter: ["all", ["==", "$type", "Polygon"]],
+      layout: {
+        "line-cap": "round",
+        "line-join": "round",
+      },
+      paint: {
+        "line-color": "#D20C0C",
+        "line-dasharray": [0.2, 2],
+        "line-width": 2,
+      },
+    },
+    // vertex point halos
+    {
+      id: "gl-draw-polygon-and-line-vertex-halo-active",
+      type: "circle",
+      filter: ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"]],
+      paint: {
+        "circle-radius": 5,
+        "circle-color": "#FFF",
+      },
+    },
+    // vertex points
+    {
+      id: "gl-draw-polygon-and-line-vertex-active",
+      type: "circle",
+      filter: ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"]],
+      paint: {
+        "circle-radius": 3,
+        "circle-color": "#D20C0C",
+      },
+    },
+  ],
+};
+
+
 export {
   PLUGIN_ID,
   POINT_LAYER_KEY,
@@ -100,5 +187,7 @@ export {
   YEAR_500_FLOOD_VAL,
   YEAR_500_2ND_FLOOD_VAL,
   GEOCODE_COUNTY_KEY,
-  TOWN_COUNTY_COLUMN
+  TOWN_COUNTY_COLUMN,
+  CUSTOM_POLY_KEY,
+  drawProps
 };
