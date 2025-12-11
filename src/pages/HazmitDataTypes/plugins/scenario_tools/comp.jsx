@@ -108,7 +108,7 @@ const comp = ({ state, setState, map }) => {
       filter: get(state, `${symbologyLayerPath}['${pointLayerId}']['filter']`, {}),
       existingDynamicFilter: get(state, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`),
       filterMode: get(state, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, "and"),
-      customPoly:get(state, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, null),
+      customPoly:get(state, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, []),
     };
   }, [state]);
   // const {
@@ -126,15 +126,20 @@ const comp = ({ state, setState, map }) => {
   // }, [state]);
 
   function updateArea(e) {
-    const data = draw.getAll();
-    if (data.features.length > 0) {
-      //const area = turf.area(data);
-
-      const mybbox = bbox(data);
+    console.log("update area e::", e)
+    const newData = {
+      type: "FeatureCollection",
+      features: e.features
+    }
+    if (newData.features.length > 0) {
+      const mybbox = bbox(newData);
       const mybboxPolygon = bboxPolygon(mybbox);
-      console.log({mybboxPolygon})
+      map.navControl.delete(e.features[0].id)
       setState((draft) => {
-        set(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, mybboxPolygon.bbox);
+        const allCustomPoly = [...customPoly];
+        const newCustomPoly = {name: "Test123", coordinates: mybboxPolygon.bbox};
+        allCustomPoly.push(newCustomPoly)
+        set(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, allCustomPoly);
       });
     } else {
       //setRoundedArea();
@@ -153,7 +158,6 @@ const comp = ({ state, setState, map }) => {
       console.log('NavigationControl added.');
     }
   }, [map, navControl]);
-
 
   const falcorDataFilterForCountyLoss = useMemo(() => {
     if (geography && geography.length > 0 && dataFilter.flood_zone) {
@@ -185,10 +189,12 @@ const comp = ({ state, setState, map }) => {
     }
   }, [existingDynamicFilter, filterMode, dataFilter, towns]);
   const falcorDataFilterForCustomPoly = useMemo(() => {
-    if (geography && geography.length > 0 && dataFilter.flood_zone) {
+    if (geography && geography.length > 0 && dataFilter.flood_zone && customPoly.length > 0) {
       const newDataFilter = cloneDeep(dataFilter);
       newDataFilter.flood_zone = {};
-      const colName = `ST_Intersects(wkb_geometry,ST_MakeEnvelope(${customPoly.join(",")}, 4326))`;
+      //TODO THIS MUST WORK FOR MULTIPLE CUSTOM POLYGONS
+      const tempPoly = customPoly[0].coordinates
+      const colName = `ST_Intersects(wkb_geometry,ST_MakeEnvelope(${tempPoly.join(",")}, 4326))`;
       newDataFilter[colName] = { operator: "==", value: [true], column_name: colName };
       return createFalcorFilterOptions({
         dynamicFilter: [],
@@ -252,7 +258,7 @@ const comp = ({ state, setState, map }) => {
         });
       }
 
-      if(customPoly) {
+      if(customPoly.length > 0) {
         falcor.get([...bldValFalcorPathCustomPoly, ...customLossApiPath]).then((res) => {
           const rawCustom = get(res, ["json", ...bldValFalcorPathCustomPoly]);
           setCustomLossData(rawCustom);
@@ -272,9 +278,9 @@ const comp = ({ state, setState, map }) => {
   }, [townLossData]);
 
   const customData = useMemo(() => {
-    return {
+    return customPoly.length > 0 ? {
       custom: Object.values(customLossData || {}).filter((rt) => !Array.isArray(rt))
-    }
+    } : {};
   }, [customLossData]);
 
   const county100Year = parseFloat(
@@ -354,17 +360,18 @@ const comp = ({ state, setState, map }) => {
   const allJuriData ={...townData, ...customData};
 
   useEffect(() => {
-    if(map.navControl) {
-      const polygon = bboxPolygon(customPoly)
-      var feature = {
-        type: 'Feature',
-        properties: {},
-        geometry: { type: 'Polygon', coordinates: polygon.geometry.coordinates }
-      };
-      var featureIds = navControl.add(feature);
+    if(map.navControl && customPoly) {
+      customPoly.forEach(customPolygon => {
+        const polygon = bboxPolygon(customPolygon.coordinates)
+        var feature = {
+          type: 'Feature',
+          properties: {},
+          geometry: { type: 'Polygon', coordinates: polygon.geometry.coordinates }
+        };
+        var featureIds = map.navControl.add(feature);
+      })
     }
-
-  }, [customPoly, navControl])
+  }, [customPoly, map.navControl])
 
   return (
     <div
