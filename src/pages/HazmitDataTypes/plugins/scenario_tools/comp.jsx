@@ -111,22 +111,7 @@ const comp = ({ state, setState, map }) => {
       customPoly:get(state, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, []),
     };
   }, [state]);
-  // const {
-  //   symbology_id,
-  //   filterMode,
-  // } = useMemo(() => {
-  //   if (dctx) {
-  //     return extractState(state);
-  //   } else {
-  //     const symbName = Object.keys(state.symbologies)[0];
-  //     const symbPathBase = `symbologies['${symbName}']`;
-  //     const symbData = get(state, symbPathBase, {});
-  //     return extractState(symbData);
-  //   }
-  // }, [state]);
-
   function updateArea(e) {
-    console.log("update area e::", e)
     const newData = {
       type: "FeatureCollection",
       features: e.features
@@ -470,8 +455,8 @@ const comp = ({ state, setState, map }) => {
         <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>
       </div>
       <div className='mt-6'>
-        <div className='flex w-full mb-2'>
-          <div className='font-xl font-bold mr-4'>Jurisdictions</div>
+        <div className='flex w-full mb-2 items-center'>
+          <div className='font-xl font-bold mr-4 '>Jurisdictions</div>
           <MultiSelectControl
             params={{
               options: [...townControlOptions],
@@ -482,10 +467,10 @@ const comp = ({ state, setState, map }) => {
             }}
             path={`${pluginDataPath}['${TOWNS_KEY}']`}
           />
-            <Button 
-              themeOptions={{ size: "xs", color: 'primary' }}
+            {customPoly.length > 0 && <Button
+            style={{maxHeight:"50px", lineHeight:".75rem"}}
+              themeOptions={{ size: "xs", color: 'danger' }}
               onClick={() => {
-                console.log("removing custom areas")
                 customPoly.forEach(customPolygon => {
                   map.navControl.delete(customPolygon.name)
                 })
@@ -495,7 +480,7 @@ const comp = ({ state, setState, map }) => {
                 })
             }}>
               Remove custom areas
-            </Button>
+            </Button>}
         </div>
         <div className='grid  text-sm divide-y divide-gray-400'>
           <div className='grid grid-cols-5 border-gray-400 border-b p-1 '>
