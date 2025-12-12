@@ -105,7 +105,7 @@ const drawProps = {
       paint: {
         "fill-color": "#D20C0C",
         "fill-outline-color": "#D20C0C",
-        "fill-opacity": 0.1,
+        "fill-opacity": 0.3,
       },
     },
     // polygon mid points
