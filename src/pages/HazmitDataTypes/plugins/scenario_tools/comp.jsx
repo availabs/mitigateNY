@@ -273,7 +273,7 @@ const comp = ({ state, setState, map }) => {
       acc[curr.value] = Object.values(townLossData || {}).filter((rt) => rt[BILD_MUNI_COLUMN] === curr.value);
       return acc;
     }, {});
-  }, [townLossData]);
+  }, [townLossData, towns]);
 
   const customData = useMemo(() => {
     return customPoly?.reduce((acc, curr) => {
@@ -522,7 +522,7 @@ const comp = ({ state, setState, map }) => {
               townFloodBld = count100 + count500;
             }
 
-
+            console.log({town})
             return (
               <div className='grid grid-cols-5 p-1 ' key={`juri_index_${i}`}>
                 {town?.[0]?.muni_name ? <div>{townName}</div> : <input
@@ -543,7 +543,7 @@ const comp = ({ state, setState, map }) => {
                 <div>{isNaN(townFloodBld) ? "0" : fnumIndex(townFloodBld, 2)}</div>
                 <div className="flex">
                   {isNaN(townFloodLoss) ? "$0" : fnumIndex(townFloodLoss, 2, true)} 
-                  {!town?.[0]?.muni_name && 
+                  {town.length === 0 ? <LoadingSpinner /> : !town?.[0]?.muni_name && 
                     <div 
                       className="ml-4 p-1 my-0 py-0 text-sm box-border text-red-400 cursor-pointer font-bold hover:bg-sky-700"
                       onClick={() => {
@@ -565,5 +565,18 @@ const comp = ({ state, setState, map }) => {
     </div>
   );
 };
+
+const LoadingSpinner = () => <span style={{
+      // Force it to be a self-contained square block
+      display: 'inline-block',
+      width: '.75rem',     // Width of fa-xs
+      height: '.75rem',    // Height of fa-xs
+      
+      // Keep the crucial centering properties
+      transformOrigin: '50% 50%', 
+      lineHeight: '1', 
+      verticalAlign: 'middle', 
+    }}
+    className={`ml-2 mt-1 fa-solid fa-spinner fa-spin fa-xs`} />;
 
 export { comp };
