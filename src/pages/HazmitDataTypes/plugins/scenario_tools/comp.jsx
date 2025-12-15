@@ -522,7 +522,7 @@ const comp = ({ state, setState, map }) => {
               townFloodBld = count100 + count500;
             }
 
-            console.log({town})
+            const isLoading = town.length === 0;
             return (
               <div className='grid grid-cols-5 p-1 ' key={`juri_index_${i}`}>
                 {town?.[0]?.muni_name ? <div>{townName}</div> : <input
@@ -538,25 +538,29 @@ const comp = ({ state, setState, map }) => {
                     });
                   }}
                 />}
-                <div>{fnumIndex(townTotalBld, 2)}</div>
-                <div>{fnumIndex(townTotalVal, 2, true)}</div>
-                <div>{isNaN(townFloodBld) ? "0" : fnumIndex(townFloodBld, 2)}</div>
-                <div className="flex">
-                  {isNaN(townFloodLoss) ? "$0" : fnumIndex(townFloodLoss, 2, true)} 
-                  {town.length === 0 ? <LoadingSpinner /> : !town?.[0]?.muni_name && 
-                    <div 
-                      className="ml-4 p-1 my-0 py-0 text-sm box-border text-red-400 cursor-pointer font-bold hover:bg-sky-700"
-                      onClick={() => {
-                        map.navControl.delete(townName);
-                        setState((draft) => {
-                          const draftPoly = get(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, []).filter(p => p.name !== townName);
-                          set(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, draftPoly);
-                        });
-                      }}
-                    >
-                      X
-                    </div>}
-                </div>
+                {isLoading ? <LoadingSpinner /> : (
+                  <>
+                  <div>{fnumIndex(townTotalBld, 2)}</div>
+                  <div>{fnumIndex(townTotalVal, 2, true)}</div>
+                  <div>{isNaN(townFloodBld) ? "0" : fnumIndex(townFloodBld, 2)}</div>
+                  <div className="flex">
+                    {isNaN(townFloodLoss) ? "$0" : fnumIndex(townFloodLoss, 2, true)} 
+                    {!town?.[0]?.muni_name && 
+                      <div 
+                        className="ml-4 p-1 my-0 py-0 text-sm box-border text-red-400 cursor-pointer font-bold hover:bg-sky-700"
+                        onClick={() => {
+                          map.navControl.delete(townName);
+                          setState((draft) => {
+                            const draftPoly = get(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, []).filter(p => p.name !== townName);
+                            set(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, draftPoly);
+                          });
+                        }}
+                      >
+                        X
+                      </div>}
+                  </div>
+                  </>
+                )}
               </div>
             );
           })}
