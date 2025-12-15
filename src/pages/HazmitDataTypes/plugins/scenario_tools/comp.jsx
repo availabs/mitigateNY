@@ -373,6 +373,7 @@ const comp = ({ state, setState, map }) => {
     }
   }, [customPoly, map.navControl])
 
+  const isCountyLoading = isNaN(county100Year);
   return (
     <div
       className='flex flex-col pointer-events-auto drop-shadow-lg p-4 bg-white/95'
@@ -427,14 +428,12 @@ const comp = ({ state, setState, map }) => {
               }
             />
           </div>
-          <div>{fnumIndex(county100Year + county500Year, 1, true)}</div>
-          <div>{fnumIndex((county100Year + county500Year) / 500, 2, true)}</div>
+          <div>{isCountyLoading ? <LoadingSpinner mt={false}/> : fnumIndex(county100Year + county500Year, 1, true)}</div>
+          <div>{isCountyLoading ? <LoadingSpinner mt={false}/> : fnumIndex((county100Year + county500Year) / 500, 2, true)}</div>
         </div>
-
         <div className='grid grid-cols-4 p-1 '>
           <div>Annual 1%</div>
           <div>
-            {" "}
             <input
               type='radio'
               checked={!floodZone?.includes("500")}
@@ -445,14 +444,14 @@ const comp = ({ state, setState, map }) => {
               }
             />
           </div>
-          <div>{fnumIndex(county100Year, 1, true)}</div>
-          <div>{fnumIndex(county100Year / 100, 2, true)}</div>
+            <div>{isCountyLoading ? <LoadingSpinner mt={false} /> : fnumIndex(county100Year, 1, true)}</div>
+            <div>{isCountyLoading ? <LoadingSpinner mt={false} /> : fnumIndex(county100Year / 100, 2, true)}</div>
         </div>
       </div>
 
       <div className='flex space-between justify-between text-base font-bold pl-2 pr-8'>
         <div>Expected Annualized Avg. Loss</div>
-        <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>
+        {isCountyLoading ? <LoadingSpinner /> : <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>}
       </div>
       <div className='mt-6'>
         <div className='flex w-full mb-2 items-center'>
@@ -570,7 +569,7 @@ const comp = ({ state, setState, map }) => {
   );
 };
 
-const LoadingSpinner = () => <span style={{
+const LoadingSpinner = ({mt=true}) => <span style={{
       // Force it to be a self-contained square block
       display: 'inline-block',
       width: '.75rem',     // Width of fa-xs
@@ -581,6 +580,6 @@ const LoadingSpinner = () => <span style={{
       lineHeight: '1', 
       verticalAlign: 'middle', 
     }}
-    className={`ml-2 mt-1 fa-solid fa-spinner fa-spin fa-xs`} />;
+    className={`ml-2 ${mt ? "mt-1" : ""} fa-solid fa-spinner fa-spin fa-xs`} />;
 
 export { comp };
