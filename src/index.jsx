@@ -14,7 +14,7 @@ import {
 import AVL_THEME from "~/layout/avail-theme"
 import App from './App.jsx'
 import './index.css'
-
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 export const falcor = falcorGraph(API_HOST)
 const AuthEnabledApp = App //authProvider(App, { AUTH_HOST, PROJECT_NAME, CLIENT_HOST });

@@ -30,6 +30,8 @@ import {
   POLYGON_LAYER_KEY,
   COUNTY_COLUMN,
   GEOCODE_COUNTY_KEY,
+  CUSTOM_POLY_KEY,
+  drawProps
 } from "./constants";
 import {
   setPolygonLayerStyle,
@@ -43,6 +45,11 @@ import {
 import { fnumIndex } from "~/pages/DataManager/MapEditor/components/LayerEditor/datamaps";
 import { extractState, createFalcorFilterOptions } from "~/pages/DataManager/MapEditor/stateUtils";
 import { count } from "d3-array";
+import bbox from '@turf/bbox';
+import bboxPolygon from '@turf/bbox-polygon';
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+
+const navControl = new MapboxDraw(drawProps);
 
 const comp = ({ state, setState, map }) => {
   const dctx = useContext(DamaContext);
@@ -51,6 +58,7 @@ const comp = ({ state, setState, map }) => {
   const [marker, setMarker] = useState();
   const [countyLossData, setCountyLossData] = useState();
   const [townLossData, setTownLossData] = useState();
+  const [customLossData, setCustomLossData] = useState({});
   const [rawTownGeoms, setRawTownGeoms] = useState();
 
   let { falcor, pgEnv, baseUrl } = ctx;
@@ -83,6 +91,7 @@ const comp = ({ state, setState, map }) => {
     filter: dataFilter,
     existingDynamicFilter,
     filterMode,
+    customPoly
   } = useMemo(() => {
     const pointLayerId = get(state, `${pluginDataPath}['active-layers'][${POINT_LAYER_KEY}]`);
     const townLayerId = get(state, `${pluginDataPath}['active-layers'][${TOWN_LAYER_KEY}]`);
@@ -99,21 +108,43 @@ const comp = ({ state, setState, map }) => {
       filter: get(state, `${symbologyLayerPath}['${pointLayerId}']['filter']`, {}),
       existingDynamicFilter: get(state, `${symbologyLayerPath}['${pointLayerId}']['dynamic-filters']`),
       filterMode: get(state, `${symbologyLayerPath}['${pointLayerId}']['filterMode']`, "and"),
+      customPoly:get(state, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, []),
     };
   }, [state]);
-  // const {
-  //   symbology_id,
-  //   filterMode,
-  // } = useMemo(() => {
-  //   if (dctx) {
-  //     return extractState(state);
-  //   } else {
-  //     const symbName = Object.keys(state.symbologies)[0];
-  //     const symbPathBase = `symbologies['${symbName}']`;
-  //     const symbData = get(state, symbPathBase, {});
-  //     return extractState(symbData);
-  //   }
-  // }, [state]);
+  function updateArea(e) {
+    const newData = {
+      type: "FeatureCollection",
+      features: e.features
+    }
+    if (newData.features.length > 0) {
+      const mybbox = bbox(newData);
+      const mybboxPolygon = bboxPolygon(mybbox);
+      map.navControl.delete(e.features[0].id)
+      setState((draft) => {
+        const draftPoly =  get(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, []);
+        const allCustomPoly = [...draftPoly];
+        const newName = draftPoly.length ? draftPoly[draftPoly.length-1].name + "(1)" : "Test";
+        const newCustomPoly = {name: newName, coordinates: mybboxPolygon.bbox};
+        allCustomPoly.push(newCustomPoly)
+        set(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, allCustomPoly);
+      });
+    } else {
+      //setRoundedArea();
+      if (e.type !== 'draw.delete') alert('Click the map to draw a polygon.');
+    }
+  }
+
+
+  useEffect(() => {
+    if(!map.navControl) {
+      map.addControl(navControl, 'bottom-right');
+      map.navControl = navControl;
+      map.on('draw.create', updateArea);
+      map.on('draw.delete', updateArea);
+      map.on('draw.update', updateArea);
+      console.log('NavigationControl added.');
+    }
+  }, [map, navControl]);
 
   const falcorDataFilterForCountyLoss = useMemo(() => {
     if (geography && geography.length > 0 && dataFilter.flood_zone) {
@@ -145,6 +176,25 @@ const comp = ({ state, setState, map }) => {
     }
   }, [existingDynamicFilter, filterMode, dataFilter, towns]);
 
+  const falcorDataFilterForCustomPoly = useMemo(() => {
+    if (geography && geography.length > 0 && dataFilter.flood_zone && customPoly.length > 0) {
+      return customPoly.map(customPolygon => {
+        const newDataFilter = cloneDeep(dataFilter);
+        newDataFilter.flood_zone = {};
+        const tempPoly = customPolygon.coordinates
+        const colName = `ST_Intersects(wkb_geometry,ST_MakeEnvelope(${tempPoly.join(",")}, 4326))`;
+        newDataFilter[colName] = { operator: "==", value: [true], column_name: colName };
+        return createFalcorFilterOptions({
+          dynamicFilter: [],
+          filterMode,
+          dataFilter: newDataFilter,
+        });
+      })
+    } else {
+      return [];
+    }
+  }, [customPoly, dataFilter]);
+
   const countyLossOptions = useMemo(() => {
     return JSON.stringify({
       groupBy: [FLOOD_ZONE_COLUMN],
@@ -159,18 +209,34 @@ const comp = ({ state, setState, map }) => {
     });
   }, [falcorDataFilterForTowns]);
 
+  const customPolyOptions = useMemo(() => {
+    return falcorDataFilterForCustomPoly.map(customFilter => {
+      return JSON.stringify({
+        groupBy: [FLOOD_ZONE_COLUMN],
+        filter: JSON.parse(customFilter).filter,
+      });
+    });
+  }, [falcorDataFilterForCustomPoly]);
+
   const countyLossFalcorPath = useMemo(() => {
     return ["uda", pgEnv, "viewsById", viewId, "options", countyLossOptions, "dataByIndex"];
   }, [pgEnv, viewId, countyLossOptions]);
   const bldValFalcorPathTowns = useMemo(() => {
     return ["uda", pgEnv, "viewsById", viewId, "options", optionsTowns, "dataByIndex"];
   }, [pgEnv, viewId, optionsTowns]);
+  const bldValFalcorPathCustomPoly = useMemo(() => {
+    return customPolyOptions.map(customOption => {
+      return ["uda", pgEnv, "viewsById", viewId, "options", customOption, "dataByIndex"];
+    })
+  }, [pgEnv, viewId, customPolyOptions]);
 
   const countyLossApiPath = [{ from: 0, to: 1 }, [FLOOD_ZONE_COLUMN, `sum(${BLD_AV_COLUMN}) as sum`]];
   const townsLossApiPath = [
     { from: 0, to: 20 },
     [BILD_MUNI_COLUMN, FLOOD_ZONE_COLUMN, "count(1)::int as count", `sum(${BLD_AV_COLUMN}) as sum`],
   ];
+  const customLossApiPath = [{ from: 0, to: 2 }, [FLOOD_ZONE_COLUMN, "count(1)::int as count", `sum(${BLD_AV_COLUMN}) as sum`]];
+
   useEffect(() => {
     const getData = async () => {
       falcor.get([...countyLossFalcorPath, ...countyLossApiPath]).then((res) => {
@@ -184,9 +250,21 @@ const comp = ({ state, setState, map }) => {
           setTownLossData(rawTowns);
         });
       }
+
+      if(bldValFalcorPathCustomPoly.length > 0) {
+        const newCustomData = {...customLossData};
+        for(let i = 0; i<bldValFalcorPathCustomPoly.length; i++) {
+          const customPolygonPath = bldValFalcorPathCustomPoly[i];
+          const res = await falcor.get([...customPolygonPath, ...customLossApiPath])
+          const rawCustom = get(res, ["json", ...customPolygonPath]);
+
+          newCustomData[customPoly[i].name] = rawCustom;
+        }
+        setCustomLossData(newCustomData);
+      }
     };
     getData();
-  }, [bldValFalcorPathTowns, countyLossFalcorPath]);
+  }, [bldValFalcorPathTowns, countyLossFalcorPath, customPolyOptions]);
   const townData = useMemo(() => {
     //find 3 objects with this town name (flood 100, flood 500, flood none)
     //return 1 object for town
@@ -195,7 +273,14 @@ const comp = ({ state, setState, map }) => {
       acc[curr.value] = Object.values(townLossData || {}).filter((rt) => rt[BILD_MUNI_COLUMN] === curr.value);
       return acc;
     }, {});
-  }, [townLossData]);
+  }, [townLossData, towns]);
+
+  const customData = useMemo(() => {
+    return customPoly?.reduce((acc, curr) => {
+      acc[curr.name] = Object.values(customLossData[curr.name] || {}).filter(data => !Array.isArray(data));
+      return acc;
+    }, {});
+  }, [customLossData, customPoly]);
 
   const county100Year = parseFloat(
     Object.values(countyLossData || {}).find((row) => row[FLOOD_ZONE_COLUMN] === "100")?.[`sum(${BLD_AV_COLUMN}) as sum`]
@@ -271,6 +356,24 @@ const comp = ({ state, setState, map }) => {
       return [];
     }
   }, [rawTownGeoms, geography]);
+  const allJuriData ={...townData, ...customData};
+
+  useEffect(() => {
+    if(map.navControl && customPoly) {
+      customPoly.forEach(customPolygon => {
+        const polygon = bboxPolygon(customPolygon.coordinates)
+        var feature = {
+          type: 'Feature',
+          id: customPolygon.name,
+          properties: {},
+          geometry: { type: 'Polygon', coordinates: polygon.geometry.coordinates }
+        };
+        var featureIds = map.navControl.add(feature);
+      })
+    }
+  }, [customPoly, map.navControl])
+
+  const isCountyLoading = isNaN(county100Year);
   return (
     <div
       className='flex flex-col pointer-events-auto drop-shadow-lg p-4 bg-white/95'
@@ -325,14 +428,12 @@ const comp = ({ state, setState, map }) => {
               }
             />
           </div>
-          <div>{fnumIndex(county100Year + county500Year, 1, true)}</div>
-          <div>{fnumIndex((county100Year + county500Year) / 500, 2, true)}</div>
+          <div>{isCountyLoading ? <LoadingSpinner mt={false}/> : fnumIndex(county100Year + county500Year, 1, true)}</div>
+          <div>{isCountyLoading ? <LoadingSpinner mt={false}/> : fnumIndex((county100Year + county500Year) / 500, 2, true)}</div>
         </div>
-
         <div className='grid grid-cols-4 p-1 '>
           <div>Annual 1%</div>
           <div>
-            {" "}
             <input
               type='radio'
               checked={!floodZone?.includes("500")}
@@ -343,18 +444,18 @@ const comp = ({ state, setState, map }) => {
               }
             />
           </div>
-          <div>{fnumIndex(county100Year, 1, true)}</div>
-          <div>{fnumIndex(county100Year / 100, 2, true)}</div>
+            <div>{isCountyLoading ? <LoadingSpinner mt={false} /> : fnumIndex(county100Year, 1, true)}</div>
+            <div>{isCountyLoading ? <LoadingSpinner mt={false} /> : fnumIndex(county100Year / 100, 2, true)}</div>
         </div>
       </div>
 
       <div className='flex space-between justify-between text-base font-bold pl-2 pr-8'>
         <div>Expected Annualized Avg. Loss</div>
-        <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>
+        {isCountyLoading ? <LoadingSpinner /> : <div>{fnumIndex(county100Year / 100 + county500Year / 500, 2, true)}</div>}
       </div>
       <div className='mt-6'>
-        <div className='flex w-full mb-2'>
-          <div className='font-xl font-bold mr-4'>Jurisdictions</div>
+        <div className='flex w-full mb-2 items-center'>
+          <div className='font-xl font-bold mr-4 '>Jurisdictions</div>
           <MultiSelectControl
             params={{
               options: [...townControlOptions],
@@ -365,8 +466,21 @@ const comp = ({ state, setState, map }) => {
             }}
             path={`${pluginDataPath}['${TOWNS_KEY}']`}
           />
+            {customPoly.length > 0 && <Button
+            style={{maxHeight:"50px", lineHeight:".75rem"}}
+              themeOptions={{ size: "xs", color: 'danger' }}
+              onClick={() => {
+                customPoly.forEach(customPolygon => {
+                  map.navControl.delete(customPolygon.name)
+                })
+                setCustomLossData({});
+                setState(draft => {
+                  set(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, [])
+                })
+            }}>
+              Remove custom areas
+            </Button>}
         </div>
-
         <div className='grid  text-sm divide-y divide-gray-400'>
           <div className='grid grid-cols-5 border-gray-400 border-b p-1 '>
             <div className='font-bold'>Zone</div>
@@ -376,9 +490,8 @@ const comp = ({ state, setState, map }) => {
             <div className='font-bold'>$ of bld in zone</div>
           </div>
 
-          {Object.keys(townData || {}).map((townName) => {
-            const town = townData[townName];
-
+          {Object.keys(allJuriData || {}).map((townName, i) => {
+            const town = allJuriData[townName] || {};
             const townTotalBld = Object.values(town).reduce((acc, curr) => {
               return acc + parseInt(curr["count(1)::int as count"]);
             }, 0);
@@ -408,13 +521,45 @@ const comp = ({ state, setState, map }) => {
               townFloodBld = count100 + count500;
             }
 
+            const isLoading = town.length === 0;
             return (
-              <div className='grid grid-cols-5 p-1 ' key={`town_${townName}`}>
-                <div>{townName}</div>
-                <div>{fnumIndex(townTotalBld, 2)}</div>
-                <div>{fnumIndex(townTotalVal, 2, true)}</div>
-                <div>{isNaN(townFloodBld) ? "0" : fnumIndex(townFloodBld, 2)}</div>
-                <div>{isNaN(townFloodLoss) ? "$0" : fnumIndex(townFloodLoss, 2, true)}</div>
+              <div className='grid grid-cols-5 p-1 ' key={`juri_index_${i}`}>
+                {town?.[0]?.muni_name ? <div>{townName}</div> : <input
+                  className="mr-1"
+                  type='text'
+                  value={townName}
+                  onChange={(e) => {
+                    map.navControl.delete(townName);
+                    setState((draft) => {
+                      const draftPoly = get(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, []);
+                      const changedPoly = draftPoly.find((p) => p.name === townName);
+                      changedPoly.name = e.target.value;
+                    });
+                  }}
+                />}
+                {isLoading ? <LoadingSpinner /> : (
+                  <>
+                  <div>{fnumIndex(townTotalBld, 2)}</div>
+                  <div>{fnumIndex(townTotalVal, 2, true)}</div>
+                  <div>{isNaN(townFloodBld) ? "0" : fnumIndex(townFloodBld, 2)}</div>
+                  <div className="flex">
+                    {isNaN(townFloodLoss) ? "$0" : fnumIndex(townFloodLoss, 2, true)} 
+                    {!town?.[0]?.muni_name && 
+                      <div 
+                        className="ml-4 p-1 my-0 py-0 text-sm box-border text-red-400 cursor-pointer font-bold hover:bg-sky-700"
+                        onClick={() => {
+                          map.navControl.delete(townName);
+                          setState((draft) => {
+                            const draftPoly = get(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, []).filter(p => p.name !== townName);
+                            set(draft, `${pluginDataPath}['${CUSTOM_POLY_KEY}']`, draftPoly);
+                          });
+                        }}
+                      >
+                        X
+                      </div>}
+                  </div>
+                  </>
+                )}
               </div>
             );
           })}
@@ -423,5 +568,18 @@ const comp = ({ state, setState, map }) => {
     </div>
   );
 };
+
+const LoadingSpinner = ({mt=true}) => <span style={{
+      // Force it to be a self-contained square block
+      display: 'inline-block',
+      width: '.75rem',     // Width of fa-xs
+      height: '.75rem',    // Height of fa-xs
+      
+      // Keep the crucial centering properties
+      transformOrigin: '50% 50%', 
+      lineHeight: '1', 
+      verticalAlign: 'middle', 
+    }}
+    className={`ml-2 ${mt ? "mt-1" : ""} fa-solid fa-spinner fa-spin fa-xs`} />;
 
 export { comp };
