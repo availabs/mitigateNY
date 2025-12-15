@@ -79,7 +79,6 @@ const drawProps = {
     polygon: true,
     trash: true,
   },
-  defaultMode: "draw_polygon",
   styles: [
     // ACTIVE (being drawn)
     // line stroke
