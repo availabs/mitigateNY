@@ -488,7 +488,7 @@ const theme = {
       h5: "text-[36px] sm:text-[48px] tracking-[-2px] items-center font-medium font-['Oswald'] text-[#2D3E4C] sm:leading-[100%] uppercase", //'PlaygroundEditorTheme__h5',
       h6: "scroll-mt-36 font-display", //'PlaygroundEditorTheme__h6',
     },
-    paragraph: "m-0 relative", //'PlaygroundEditorTheme__paragraph',
+    paragraph: "m-0", //'PlaygroundEditorTheme__paragraph',
 
     quote:
       "m-0 mb-2 py-6 font-['Oswald'] text-[30px] leading-[36px] text-[#2D3E4C] border-l-4 border-[#37576B] pl-4", //'PlaygroundEditorTheme__quote',
@@ -1014,7 +1014,7 @@ const theme = {
       iconMinusGray: 'w-5 h-5 bg-[url("./icon-minus-gray.svg")]', // .icon-minus-gray
     },
     draggableBlockMenu: {
-      base: "rounded-md p-0.5 cursor-grab opacity-0 absolute -left-0 top-0 will-change-transform hover:bg-gray-200", // .draggable-block-menu
+      base: "rounded-md p-0.5 cursor-grab opacity-0 absolute -left-5 top-0 will-change-transform hover:bg-gray-200", // .draggable-block-menu
       icon: "w-4 h-4 opacity-30 bg-[url(/images/icons/draggable-block-menu.svg)]", // .draggable-block-menu .icon
       active: "cursor-grabbing", // .draggable-block-menu:active
     },
