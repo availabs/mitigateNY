@@ -1,26 +1,224 @@
-import React from "react";
-import { Link } from "react-router";
-import { Icons } from "./icons2";
+import { Icons } from "./icons";
+
 
 const theme = {
-  navOptions: {
-    logo: "",
-    sideNav: {
-      size: "none",
-      search: "none",
-      logo: "top",
-      dropdown: "none",
-      nav: "none",
+  // -------------------- Layout ------------------------
+  layout: {
+    "options": {
+      "activeStyle": 0,
+      "sideNav": {
+        "size": "compact",
+        "nav": "main",
+        "activeStyle": null,
+        "navDepth": "2",
+        "navTitle": "flex-1 text-[24px] font-['Oswald'] font-[500] leading-[24px] text-[#2D3E4C] py-3 px-4 uppercase",
+        "topMenu": [],
+        "bottomMenu": []
+      },
+      "topNav": {
+        "size": "compact",
+        "nav": "main",
+        "leftMenu": [{ type: "Logo" }],
+        "rightMenu": [{ type: "Search" }, { type: "UserMenu" }]
+      }
     },
-    topNav: {
-      size: "compact",
-      dropdown: "right",
-      search: "right",
-      logo: "left",
-      position: "fixed",
-      nav: "main",
-    },
+    "styles": [{
+      outerWrapper: "bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px]",
+      wrapper: "max-w-[1440px] mx-auto",
+      wrapper2: "flex-1 flex items-start flex-col items-stretch max-w-full",
+      wrapper3: "flex flex-1 md:px-4 xl:px-[64px]",
+      childWrapper: "h-full flex-1",
+    }],
   },
+  "sidenav": {
+    "options": {
+      "activeStyle": "0",
+    },
+    "styles": [
+      {
+        "layoutContainer1": "pr-2  hidden lg:block min-w-[302px] max-w-[302px] pt-[88px]  print:hidden ",
+        "layoutContainer2": "hidden scrollbar-sm lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden mt-8",
+        "logoWrapper": "bg-neutral-100 text-slate-800",
+        "sidenavWrapper": "hidden md:flex bg-white w-full h-full z-20  flex-col pr-5",
+        "menuItemWrapper": " flex-1 flex flex-col flex flex-col,flex flex-col",
+        "menuItemWrapper_level_1": "pl-8",
+        "menuItemWrapper_level_2": "",
+        "menuItemWrapper_level_3": "",
+        "menuItemWrapper_level_4": "",
+        "menuIconSide": "hidden size-8 text-[#37576B]",
+        "menuIconSideActive": "hidden size-8 text-[#37576B]",
+        "itemsWrapper": "border-slate-200 py-6 flex-1",
+        "navItemContent": "transition-transform duration-300 ease-in-out flex-1 w-full",
+        "navItemContent_level_1": "pl-1 text-[16px] font-['Oswald'] font-[500] leading-[16px]  text-[#2D3E4C] py-3 uppercase",
+        "navItemContent_level_2": `text-[16px] font-['Proxima_Nova'] font-[600] leading-[19.2px] text-[#37576B] pl-4 py-3`,
+        "navItemContent_level_3": `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
+        "navItemContent_level_4": `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
+        "navitemSide": "md:flex-1 group flex flex-col border-white focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300        transition-all cursor-pointer",
+        "navitemSideActive": "        md:flex-1 group  flex flex-col        focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300        transition-all cursor-pointer border-l-2 border-slate-600       ",
+        "indicatorIcon": "ArrowRight",
+        "indicatorIconOpen": "ArrowDown",
+        "bottomMenuWrapper": "",
+        "topnavWrapper": "w-full h-[50px] flex items-center pr-1",
+        "topnavContent": "flex items-center w-full h-full bg-white lg:bg-zinc-100 dark:bg-zinc-900 dark:lg:bg-zinc-950 justify-between",
+        "topnavMenu": "hidden  lg:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm",
+        "topmenuRightNavContainer": "hidden md:flex h-full items-center",
+        "topnavMobileContainer": "bg-slate-50",
+        "topNavWrapper": "flex flex-row md:flex-col p-2",
+        "indicatorIconWrapper": "text-[#37576B] size-4",
+        "subMenuParentWrapper": "flex w-full",
+        "subMenuOuterWrapper":"",
+        "subMenuWrapperChild": "flex flex-col",
+        "subMenuWrapperTop": "",
+        //"subMenuWrapper_1": "pl-2 w-full",
+        "subMenuWrapper_1": "w-full bg-[#F3F8F9] rounded-[12px] py-[12px]",
+        "subMenuWrapper_2":"w-full bg-[#E0EBF0]"
+
+      },
+      {
+        "layoutContainer1": "pr-2  hidden lg:block min-w-[64px] max-w-[84px]  print:hidden",
+        "layoutContainer2": "hidden scrollbar-sm lg:block sticky top-[9px] h-[calc(100vh_-_20px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden",
+        "logoWrapper": "bg-neutral-100 text-slate-800",
+        "sidenavWrapper": "hidden md:flex flex-col bg-white w-full h-full z-20",
+        "menuItemWrapper": "flex flex-col",
+        "menuIconSide": "size-11 mx-4 text-[#37576B] hover:text-slate-500 ",
+        "menuIconSideActive": "size-10 mx-3 text-[#37576B] ",
+        "itemsWrapper": "border-slate-200 py-6 flex-1",
+        "navItemContent": "hidden",
+        "navItemContents": "hidden",
+        "navitemSide": "md:flex-1 group flex flex-col border-white focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300        transition-all cursor-pointer",
+        "navitemSideActive": "        md:flex-1 group  flex flex-col        focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300        transition-all cursor-pointer border-l-2 border-slate-600       ",
+        "indicatorIcon": "ArrowRight",
+        "indicatorIconOpen": "ArrowDown",
+        "subMenuWrapper": "pl-2 w-full",
+        "subMenuParentWrapper": "flex w-full",
+        "bottomMenuWrapper": "",
+        "topnavWrapper": "w-full h-[50px] flex items-center pr-1",
+        "topnavContent": "flex items-center w-full h-full bg-white lg:bg-zinc-100 dark:bg-zinc-900 dark:lg:bg-zinc-950 justify-between",
+        "topnavMenu": "hidden  lg:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm",
+        "topmenuRightNavContainer": "hidden md:flex h-full items-center",
+        "topnavMobileContainer": "bg-slate-50",
+        "topNavWrapper": "flex flex-row md:flex-col p-2",
+        "indicatorIconWrapper": "text-[#37576B] size-4",
+        "subMenuWrappers": [
+          "w-full bg-[#F3F8F9] rounded-[12px] py-[12px]",
+          "w-full bg-[#E0EBF0]"
+        ],
+        "subMenuOuterWrappers": [
+          "pl-4"
+        ],
+        "subMenuWrapperChild": "flex flex-col",
+        "subMenuWrapperTop": "",
+        "name": "small"
+      }
+    ]
+  },
+  "topnav": {
+    "options": {
+      "activeStyle": "0",
+    },
+    "styles": [{
+      "layoutContainer1": `print:hidden`,
+      "layoutContainer2": `fixed top-0 z-20 max-w-[1440px] left-50% -translate-50% w-full md:px-4 md:pt-[32px] xl:px-[64px] pointer-events-none`,
+      "topnavWrapper": `px-[24px] py-[16px] w-full bg-white h-20 flex items-center md:rounded-lg shadow pointer-events-auto relative`,
+      "topnavContent": `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
+      "topnavMenu": `hidden md:flex items-center flex-1 h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
+      "topmenuRightNavContainer": "hidden md:flex h-full items-center justify-end  min-w-[110px]",
+      "topnavMobileContainer": "bg-white pointer-events-auto h-[calc(100vh_-_80px)] overflow-y-auto",
+      "mobileButton": `md:hidden inline-flex items-center justify-center border rounded-full border-[#E0EBF0] size-8`,
+      "mobileMenuButtonWrapper": "",
+      "menuOpenIcon": `BarsMenu`,
+      "menuCloseIcon": `XMark`,
+
+      // Menu Item Styles
+      menuItemWrapper: "",
+      menuItemWrapper_level_2: 'bg-[#F3F8F9] p-4 rounded-lg',
+      navitemTop: `
+          md:w-fit group  whitespace-nowrap
+          text-[16px] font-['Proxima_Nova'] font-[500] text-[#37576B]
+          px-2
+          focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
+          transition cursor-pointer
+      `,
+      navitemTopActive: `w-fit group  whitespace-nowrap
+        text-[16px] font-['Proxima_Nova'] font-[500] text-[#37576B]
+        px-2 text-blue
+        focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
+        transition cursor-pointer
+      `,
+      menuIcon: `text-[#37576B]  size-6`,
+      menuIconActive: `text-[#37576B] items-center text-lg`,
+      navItemContent_level_1: "",
+      navItemContent_level_2: "uppercase font-[Oswald] text-[14px] flex items-center p-1",
+      navItemDescription_level_1:"hidden",
+      navItemDescription_level_2: `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B] text-wrap`,
+      indicatorIconWrapper: "size-3",
+      indicatorIcon: "ArrowDown",
+      indicatorIconOpen: "ArrowDown",
+
+
+      // SubMenu Styles
+      subMenuWrapper:"absolute left-0 right-0 normal-case z-10 px-4 -mx-[15px] pt-[34px] cursor-default",
+      subMenuWrapper2: `bg-white flex items-stretch rounded-lg p-4 shadow`,
+      subMenuParentContent: "basis-1/3  text-wrap pr-[64px]",
+      subMenuParentName: `text-[36px] font-['Oswald'] font-500 text-[#2D3E4C] uppercase pb-2`,
+      subMenuParentDesc: `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B]`,
+      subMenuParentLink: `w-fit h-fit cursor-pointer uppercase border boder-[#E0EBF0] bg-white hover:bg-[#E0EBF0] text-[#37576B] font-[700] leading-[14.62px] rounded-full text-[12px] text-center py-[16px] px-[24px]`,
+      subMenuItemsWrapperParent: "grid grid-cols-2 gap-1 flex-1",
+      subMenuItemsWrapper: "grid grid-cols-4 flex-1"
+    },
+    ]
+  },
+  layoutGroup: {
+    options: {
+      activeStyle: 0
+    },
+    styles: [
+      {
+        name: "default",
+        wrapper1: "w-full h-full flex-1 flex flex-row pt-2", // inside page header, wraps sidebar
+        wrapper2:
+          "flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
+        iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
+        icon: "text-slate-400 hover:text-blue-500",
+        sideNavContainer1: "hidden xl:block",
+        sideNavContainer2:
+          "min-w-[302px] max-w-[302px] sticky top-20 hidden xl:block h-[100vh_-_102px] pr-2",
+      },
+      {
+        name: "content",
+        wrapper1: "w-full h-full flex-1 flex flex-row lg:pt-[118px] ", // inside page header, wraps sidebar
+        wrapper2:
+          "flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]", // content wrapepr
+      },
+      {
+        name: "darkSection",
+        wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
+        wrapper2: "max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto",
+        wrapper3:
+          "flex flex-1 w-full  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
+      },
+      {
+        name: "lightCentered",
+        wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px] `, // inside page header, wraps sidebar
+        wrapper2: "max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto",
+        wrapper3:
+          "flex flex-1 w-full  shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
+      },
+      {
+        name: "clearCentered",
+        wrapper1: `w-full h-full flex-1 flex flex-row -mt-3`, // inside page header, wraps sidebar
+        wrapper2: "max-w-[1440px] w-full xl:px-[48px] mx-auto",
+        wrapper3: "flex flex-1 w-full flex-col relative h-full min-h-[200px]", // content wrapepr
+      },
+      {
+        name: "header",
+        wrapper1: "w-full h-full flex-1 flex flex-row", // inside page header, wraps sidebar
+        wrapper2: "flex flex-1 w-full  flex-col  relative min-h-[200px]", // content wrapepr
+        wrapper3: ""
+      },
+    ]
+  },
+  // ----------------------- End Layout ------------------------
   pageOptions: {
     settingsPane: [
       {
@@ -59,7 +257,7 @@ const theme = {
     logoWrapper: "",
     logoAltImg: "",
     imgWrapper: "h-12 pl-3 pr-2 flex items-center",
-    img: "/themes/mny/mnyLogo.svg",
+    img: "https://mitigateny.org/themes/mny/mnyLogo.svg",
     titleWrapper: "",
     title: "",
     linkPath: "/",
@@ -79,72 +277,8 @@ const theme = {
     4: "pl-6 pt-2 pb-1 text-sm text-slate-400 hover:underline cursor-pointer border-r-2 mr-4",
   },
 
-  layout: {
-    outerWrapper: "bg-[linear-gradient(0deg,rgba(244,244,244,0.96),rgba(244,244,244,0.96)),url('/themes/mny/topolines.png')]  bg-[size:500px]",
-    wrapper: "max-w-[1440px] mx-auto",
-    wrapper2: "flex-1 flex items-start flex-col items-stretch max-w-full",
-    wrapper3: "flex flex-1 md:px-4 xl:px-[64px]",
-    childWrapper: "h-full flex-1",
-    topnavContainer1: `print:hidden`,
-    topnavContainer2: `fixed top-0 z-20 max-w-[1440px] left-50% -translate-50% w-full md:px-4 md:pt-[32px] xl:px-[64px] pointer-events-none`,
-    sidenavContainer1:
-      "pr-2  hidden lg:block min-w-[302px] max-w-[302px] pt-[88px] print:hidden",
-    sidenavContainer2:
-      "hidden scrollbar-sm lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden",
-  },
-  pages: {
-    sectionGroup: {
-      edit: 'default',
-      group: {
-        default: {
-          wrapper1: "w-full h-full flex-1 flex flex-row pt-2", // inside page header, wraps sidebar
-          wrapper2:
-            "flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
-          iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
-          icon: "text-slate-400 hover:text-blue-500",
-          sideNavContainer1: "hidden xl:block",
-          sideNavContainer2:
-            "min-w-[302px] max-w-[302px] sticky top-20 hidden xl:block h-[100vh_-_102px] pr-2",
-        },
-        content: {
-          wrapper1: "w-full h-full flex-1 flex flex-row lg:pt-[118px] ", // inside page header, wraps sidebar
-          wrapper2:
-            "flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]", // content wrapepr
-          iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
-          icon: "text-slate-400 hover:text-blue-500",
-        },
-        darkSection: {
-          wrapper1: `w-full h-full flex-1 flex flex-row -my-8 py-10 bg-[linear-gradient(0deg,rgba(33,52,64,.96),rgba(55,87,107,.96)),url('/themes/mny/topolines.png')]  bg-[size:500px] pb-[4px]`, // inside page header, wraps sidebar
-          wrapper2: "max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto",
-          wrapper3:
-            "flex flex-1 w-full  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
-          iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
-          icon: "text-slate-400 hover:text-blue-500",
-        },
-        lightCentered: {
-          wrapper1: `w-full h-full flex-1 flex flex-row pb-[4px] `, // inside page header, wraps sidebar
-          wrapper2: "max-w-[1440px]  xl:px-[64px] md:px-4 mx-auto",
-          wrapper3:
-            "flex flex-1 w-full  shadow-md bg-white rounded-lg  flex-col  relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
-          iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
-          icon: "text-slate-400 hover:text-blue-500",
-        },
-        clearCentered: {
-          wrapper1: `w-full h-full flex-1 flex flex-row -mt-3`, // inside page header, wraps sidebar
-          wrapper2: "max-w-[1440px] w-full xl:px-[48px] mx-auto",
-          wrapper3: "flex flex-1 w-full flex-col relative h-full min-h-[200px]", // content wrapepr
-          iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
-          icon: "text-slate-400 hover:text-blue-500",
-        },
-        header: {
-          wrapper1: "w-full h-full flex-1 flex flex-row", // inside page header, wraps sidebar
-          wrapper2: "flex flex-1 w-full  flex-col  relative min-h-[200px]", // content wrapepr
-          iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
-          icon: "text-slate-400 hover:text-blue-500",
-        },
-      }
-    },
-  },
+
+
   sectionArray: {
     container: "w-full grid grid-cols-6 md:grid-cols-12 ",
     gridSize: 12,
@@ -175,106 +309,7 @@ const theme = {
     2: "",
     3: "",
   },
-  sidenav: {
-    fixed: ``,
-    logoWrapper: `bg-neutral-100 text-slate-800`,
-    sidenavWrapper: `hidden md:block bg-white w-full h-full z-20 pr-5`,
-    menuItemWrapper: ["flex flex-col pl-3", "flex flex-col", "flex flex-col"],
-    menuIconSide: `hidden`,
-    menuIconSideActive: `hidden`,
 
-    itemsWrapper: `border-slate-200 py-6`,
-    navItemContent: `transition-transform duration-300 ease-in-out flex-1`,
-    navItemContents: [
-      `text-[16px] font-['Oswald'] font-[500] leading-[16px]  text-[#2D3E4C] pl-4 py-3 uppercase`,
-      `text-[16px] font-['Proxima_Nova'] font-[600] leading-[19.2px] text-[#37576B] pl-4 py-3`,
-      `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
-      `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
-      `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
-    ],
-    navitemSide: `
-        md:flex-1 group flex flex-col
-        border-white
-        focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
-        transition-all cursor-pointer
-     `,
-    navitemSideActive: `
-        md:flex-1 group  flex flex-col
-        focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
-        transition-all cursor-pointer border-l-2 border-slate-600
-
-      `,
-    indicatorIconWrapper: "text-[#37576B] size-4",
-    indicatorIcon: "ArrowRight",
-    indicatorIconOpen: "ArrowDown",
-    subMenuWrapper: `pl-2 w-full`,
-    subMenuOuterWrappers: ["pl-4"],
-    subMenuWrappers: [
-      "w-full bg-[#F3F8F9] rounded-[12px] py-[12px]",
-      "w-full bg-[#E0EBF0]",
-    ],
-    subMenuWrapperChild: "flex flex-col",
-    subMenuParentWrapper: `flex w-full`,
-    subMenuWrapperTop: "",
-    bottomMenuWrapper: "",
-  },
-  topnav: {
-    fixed: "mt-8",
-    topnavWrapper: `px-[24px] py-[16px] w-full bg-white h-20 flex items-center md:rounded-lg shadow pointer-events-auto`,
-    topnavContent: `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
-    topnavMenu: `hidden md:flex items-center flex-1 h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
-    mobileButton: `md:hidden inline-flex items-center justify-center border rounded-full border-[#E0EBF0] size-8`,
-    mobileMenuButtonWrapper: "",
-    indicatorIcon: "ArrowDown",
-    indicatorIconOpen: "ArrowDown",
-    indicatorIconWrapper: "size-3",
-    menuItemWrapper1: [" ", ""],
-    menuItemWrapper1Parent: [" ", "bg-[#F3F8F9] p-4 rounded-lg"],
-    menuItemWrapper2: ["flex text-[#37576B] ", " "],
-    menuIconTop: `text-[#37576B]  size-6`,
-    menuIconTopActive: `text-[#37576B] items-center text-lg`,
-    menuOpenIcon: `BarsMenu`,
-    menuCloseIcon: `XMark`,
-    navitemTop: `
-          md:w-fit group  whitespace-nowrap
-           flex items-center
-          text-[16px] font-['Proxima_Nova'] font-[500]
-          px-2
-          focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
-          transition cursor-pointer
-      `,
-    navItemContent: [
-      "",
-      "uppercase font-[Oswald] text-[14px] flex items-center p-1",
-    ],
-    navitemTopActive: ` w-fit group  whitespace-nowrap
-          flex  items-center
-          text-[16px] font-['Proxima_Nova'] font-[500]
-          px-2 text-blue
-          focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
-          transition cursor-pointer
-        `,
-
-    navItemDescription: [
-      "hidden",
-      `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B] text-wrap`,
-    ],
-    //`px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center  border-transparent  leading-5 text-white hover:bg-white hover:text-darkblue-500 border-gray-200 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full`,
-    topmenuRightNavContainer: "hidden md:flex h-full items-center",
-    topnavMobileContainer:
-      "bg-white pointer-events-auto h-[calc(100vh_-_80px)] overflow-y-auto",
-
-    subMenuWrapper1: [
-      "absolute left-0 right-0 normal-case mt-4 z-10 px-4 pt-[42px] px-[62px] cursor-default",
-    ],
-    subMenuWrapper2: `bg-white flex items-stretch rounded-lg p-4 shadow`,
-    subMenuParentContent: "basis-1/3  text-wrap pr-[64px]",
-    subMenuParentName: `text-[36px] font-['Oswald'] font-500 text-[#2D3E4C] uppercase pb-2`,
-    subMenuParentDesc: `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B]`,
-    subMenuParentLink: `w-fit h-fit cursor-pointer uppercase border boder-[#E0EBF0] bg-white hover:bg-[#E0EBF0] text-[#37576B] font-[700] leading-[14.62px] rounded-full text-[12px] text-center py-[16px] px-[24px]`,
-    subMenuItemsWrapperParent: "grid grid-cols-2 gap-1 flex-1",
-    subMenuItemsWrapper: "grid grid-cols-4 flex-1",
-  },
   table: {
     tableContainer:
       "relative flex flex-col w-full h-full overflow-x-auto scrollbar-sm border rounded-t-[12px]",
@@ -789,7 +824,7 @@ const theme = {
           base: "max-w-full cursor-default", //.editor-shell .editor-image img
           focused: "outline outline-2 outline-blue-600", //.editor-shell .editor-image img.focused
           draggable: {
-            base: "cursor-grab", // .editor-shell .editor-image img.focused.draggable
+            base: "cursor-grab", // .editor-shell .editor-image img.foculayoutGroupsed.draggable
             active: "cursor-grabbing", //.editor-shell .editor-image img.focused.draggable:active
           },
         },
@@ -1074,7 +1109,7 @@ const theme = {
 
 export default {
   ...theme,
-  Icons,
+  Icons
 };
 
 export const themeOptions = {
