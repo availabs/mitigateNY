@@ -7,13 +7,9 @@ import {
   useAuth
 } from "./modules/dms/src"
 
-//import ComponentRegistry from '~/component_registry'
-// import AdditionalComponents from "./additional_components";
 
 import themes from './dms_themes'
 
-// import { withAuth, useAuth } from "~/modules/ams/src"
-// import Auth from '~/pages/Auth'
 
 import DamaRoutes from "~/pages/DataManager"
 import hazmitDataTypes, { mapPlugins } from "~/pages/HazmitDataTypes"

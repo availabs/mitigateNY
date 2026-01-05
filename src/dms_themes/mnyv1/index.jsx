@@ -40,7 +40,7 @@ const theme = {
         "layoutContainer2": "hidden scrollbar-sm lg:block sticky top-[120px] h-[calc(100vh_-_125px)] bg-white rounded-lg shadow-md w-full overflow-y-auto overflow-x-hidden mt-8",
         "logoWrapper": "bg-neutral-100 text-slate-800",
         "sidenavWrapper": "hidden md:flex bg-white w-full h-full z-20  flex-col pr-5",
-        "menuItemWrapper": " flex-1 flex flex-col flex flex-col,flex flex-col",
+        "menuItemWrapper": " flex-1 flex flex-col flex flex-col",
         "menuItemWrapper_level_1": "pl-8",
         "menuItemWrapper_level_2": "",
         "menuItemWrapper_level_3": "",
@@ -53,8 +53,8 @@ const theme = {
         "navItemContent_level_2": `text-[16px] font-['Proxima_Nova'] font-[600] leading-[19.2px] text-[#37576B] pl-4 py-3`,
         "navItemContent_level_3": `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
         "navItemContent_level_4": `text-[14px] font-['Proxima_Nova'] font-[400] leading-[19.6px] text-[#37576B] pl-4 py-2`,
-        "navitemSide": "md:flex-1 group flex flex-col border-white focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300        transition-all cursor-pointer",
-        "navitemSideActive": "        md:flex-1 group  flex flex-col        focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300        transition-all cursor-pointer border-l-2 border-slate-600       ",
+        "navitemSide": "w-full md:flex-1  group flex flex-col border-white focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300        transition-all cursor-pointer",
+        "navitemSideActive": " w-full md:flex-1 group  flex flex-col focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300        transition-all cursor-pointer border-l-2 border-slate-600       ",
         "indicatorIcon": "ArrowRight",
         "indicatorIconOpen": "ArrowDown",
         "bottomMenuWrapper": "",
@@ -99,13 +99,6 @@ const theme = {
         "topnavMobileContainer": "bg-slate-50",
         "topNavWrapper": "flex flex-row md:flex-col p-2",
         "indicatorIconWrapper": "text-[#37576B] size-4",
-        "subMenuWrappers": [
-          "w-full bg-[#F3F8F9] rounded-[12px] py-[12px]",
-          "w-full bg-[#E0EBF0]"
-        ],
-        "subMenuOuterWrappers": [
-          "pl-4"
-        ],
         "subMenuWrapperChild": "flex flex-col",
         "subMenuWrapperTop": "",
         "name": "small"
@@ -121,51 +114,54 @@ const theme = {
       "layoutContainer2": `fixed top-0 z-20 max-w-[1440px] left-50% -translate-50% w-full md:px-4 md:pt-[32px] xl:px-[64px] pointer-events-none`,
       "topnavWrapper": `px-[24px] py-[16px] w-full bg-white h-20 flex items-center md:rounded-lg shadow pointer-events-auto relative`,
       "topnavContent": `flex items-center w-full h-full  max-w-[1400px] mx-auto `,
-      "topnavMenu": `hidden md:flex items-center flex-1 h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
-      "topmenuRightNavContainer": "hidden md:flex h-full items-center justify-end  min-w-[110px]",
-      "topnavMobileContainer": "bg-white pointer-events-auto h-[calc(100vh_-_80px)] overflow-y-auto",
-      "mobileButton": `md:hidden inline-flex items-center justify-center border rounded-full border-[#E0EBF0] size-8`,
-      "mobileMenuButtonWrapper": "",
+      "leftMenuContainer": '',
+      "centerMenuContainer": `hidden md:flex items-center flex-1 h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
+      "rightMenuContainer": "hidden md:flex h-full items-center justify-end  min-w-[110px]",
+      "mobileNavContainer": "bg-white pointer-events-auto h-[calc(100vh_-_80px)] overflow-y-auto",
+      "mobileButtonContainer": "flex flex-1 justify-end content-end md:hidden",
+      "mobileButton": `md:hidden inline-flex items-center justify-center border-3 rounded-full border-[#E0EBF0] size-8`,
       "menuOpenIcon": `BarsMenu`,
       "menuCloseIcon": `XMark`,
 
       // Menu Item Styles
-      menuItemWrapper: "",
-      menuItemWrapper_level_2: 'bg-[#F3F8F9] p-4 rounded-lg',
-      navitemTop: `
+      "navitemWrapper": "",
+      "navitemWrapper_level_2": 'bg-[#F3F8F9] p-4 rounded-lg',
+      "navitem": `
           md:w-fit group  whitespace-nowrap
           text-[16px] font-['Proxima_Nova'] font-[500] text-[#37576B]
           px-2
           focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
           transition cursor-pointer
       `,
-      navitemTopActive: `w-fit group  whitespace-nowrap
+      "navitemActive": `w-fit group  whitespace-nowrap
         text-[16px] font-['Proxima_Nova'] font-[500] text-[#37576B]
         px-2 text-blue
         focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300
         transition cursor-pointer
       `,
-      menuIcon: `text-[#37576B]  size-6`,
-      menuIconActive: `text-[#37576B] items-center text-lg`,
-      navItemContent_level_1: "",
-      navItemContent_level_2: "uppercase font-[Oswald] text-[14px] flex items-center p-1",
-      navItemDescription_level_1:"hidden",
-      navItemDescription_level_2: `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B] text-wrap`,
-      indicatorIconWrapper: "size-3",
-      indicatorIcon: "ArrowDown",
-      indicatorIconOpen: "ArrowDown",
+      "navitemContent": "flex-1 flex items-center gap-[2px]",
+      "navIcon": `text-[#37576B]  size-6`,
+      "navIconActive": `text-[#37576B] items-center text-lg`,
+      "navitemDescription":"hidden",
+      "navitemDescription_level_2": `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B] text-wrap`,
+      "navitemName_level_1": "",
+      "navitemName_level_2": "uppercase font-[Oswald] text-[14px] flex items-center p-1",
+
+      "indicatorIconWrapper": "size-3",
+      "indicatorIcon": "ArrowDown",
+      "indicatorIconOpen": "ArrowDown",
 
 
       // SubMenu Styles
-      subMenuWrapper:"absolute left-0 right-0 normal-case z-10 px-4 -mx-[15px] pt-[34px] cursor-default",
-      subMenuWrapper2: `bg-white flex items-stretch rounded-lg p-4 shadow`,
-      subMenuParentContent: "basis-1/3  text-wrap pr-[64px]",
-      subMenuParentName: `text-[36px] font-['Oswald'] font-500 text-[#2D3E4C] uppercase pb-2`,
-      subMenuParentDesc: `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B]`,
-      subMenuParentLink: `w-fit h-fit cursor-pointer uppercase border boder-[#E0EBF0] bg-white hover:bg-[#E0EBF0] text-[#37576B] font-[700] leading-[14.62px] rounded-full text-[12px] text-center py-[16px] px-[24px]`,
-      subMenuItemsWrapperParent: "grid grid-cols-2 gap-1 flex-1",
-      subMenuItemsWrapper: "grid grid-cols-4 flex-1"
-    },
+      "subMenuWrapper":"absolute left-0 right-0 normal-case z-10 px-4 -mx-[15px] pt-[34px] cursor-default",
+      "subMenuWrapper2": `bg-white flex items-stretch rounded-lg p-4 shadow`,
+      "subMenuParentContent": "basis-1/3  text-wrap pr-[64px]",
+      "subMenuParentName": `text-[36px] font-['Oswald'] font-500 text-[#2D3E4C] uppercase pb-2`,
+      "subMenuParentDesc": `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B]`,
+      "subMenuParentLink": `w-fit h-fit cursor-pointer uppercase border boder-[#E0EBF0] bg-white hover:bg-[#E0EBF0] text-[#37576B] font-[700] leading-[14.62px] rounded-full text-[12px] text-center py-[16px] px-[24px]`,
+      "subMenuItemsWrapperParent": "grid grid-cols-2 gap-1 flex-1",
+      "subMenuItemsWrapper": "grid grid-cols-4 flex-1"
+    }
     ]
   },
   layoutGroup: {
@@ -178,17 +174,14 @@ const theme = {
         wrapper1: "w-full h-full flex-1 flex flex-row pt-2", // inside page header, wraps sidebar
         wrapper2:
           "flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[200px]", // content wrapepr
-        iconWrapper: "z-5 absolute right-[10px] top-[5px] print:hidden",
-        icon: "text-slate-400 hover:text-blue-500",
-        sideNavContainer1: "hidden xl:block",
-        sideNavContainer2:
-          "min-w-[302px] max-w-[302px] sticky top-20 hidden xl:block h-[100vh_-_102px] pr-2",
+        wrapper3:""
       },
       {
         name: "content",
-        wrapper1: "w-full h-full flex-1 flex flex-row lg:pt-[118px] ", // inside page header, wraps sidebar
+        wrapper1: "w-full h-full flex-1 flex flex-row lg:pt-[118px] pb-[5px]", // inside page header, wraps sidebar
         wrapper2:
           "flex flex-1 w-full  flex-col  shadow-md bg-white rounded-lg relative text-md font-light leading-7 p-4 h-full min-h-[calc(100vh_-_102px)]", // content wrapepr
+        wrapper3: ""
       },
       {
         name: "darkSection",
@@ -488,7 +481,7 @@ const theme = {
       h5: "text-[36px] sm:text-[48px] tracking-[-2px] items-center font-medium font-['Oswald'] text-[#2D3E4C] sm:leading-[100%] uppercase", //'PlaygroundEditorTheme__h5',
       h6: "scroll-mt-36 font-display", //'PlaygroundEditorTheme__h6',
     },
-    paragraph: "m-0", //'PlaygroundEditorTheme__paragraph',
+    paragraph: "m-0 relative", //'PlaygroundEditorTheme__paragraph',
 
     quote:
       "m-0 mb-2 py-6 font-['Oswald'] text-[30px] leading-[36px] text-[#2D3E4C] border-l-4 border-[#37576B] pl-4", //'PlaygroundEditorTheme__quote',
@@ -1014,7 +1007,7 @@ const theme = {
       iconMinusGray: 'w-5 h-5 bg-[url("./icon-minus-gray.svg")]', // .icon-minus-gray
     },
     draggableBlockMenu: {
-      base: "rounded-md p-0.5 cursor-grab opacity-0 absolute -left-5 top-0 will-change-transform hover:bg-gray-200", // .draggable-block-menu
+      base: "rounded-md p-0.5 cursor-grab opacity-0 absolute -left-0 top-0 will-change-transform hover:bg-gray-200", // .draggable-block-menu
       icon: "w-4 h-4 opacity-30 bg-[url(/images/icons/draggable-block-menu.svg)]", // .draggable-block-menu .icon
       active: "cursor-grabbing", // .draggable-block-menu:active
     },
