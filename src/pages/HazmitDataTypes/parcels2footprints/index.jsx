@@ -330,7 +330,7 @@ const samSources = useGetSources({ falcorCache,
 const jurisdictionsSources = useGetSources({ falcorCache,
                                         pgEnv,
                                         categories: ["jurisdictions"],
-                                        columns: ["geom"]
+                                        columns: ["wkb_geometry"]
                                         });
 
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.parcelSourceId });
