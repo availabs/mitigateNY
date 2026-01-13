@@ -142,7 +142,10 @@ function Create ({
       floodZoneViewId: null,
 
       samSourceId: null,
-      samViewId: null      
+      samViewId: null,
+
+      jurisdictionsSourceId: null,
+      jurisdictionsViewId: null
   });
 
   const hasAllData = React.useMemo(() => {
@@ -162,6 +165,7 @@ function Create ({
       orptsCommercialViewId = null,
 
       samViewId = null,
+      jurisdictionsViewId = null,
     } = createState;
     return Boolean(parcelViewId &&
                     footprintViewId &&
@@ -175,7 +179,8 @@ function Create ({
                     hifldViewId &&
                     historicViewId &&
                     floodZoneViewId && 
-                    samViewId
+                    samViewId && 
+                    jurisdictionsViewId
                   );
   }, [createState]);
 
@@ -209,7 +214,8 @@ function Create ({
       hifld_view_id: createState.hifldViewId,
       historic_view_id: createState.historicViewId,
       flood_zone_view_id: createState.floodZoneViewId,
-      sam_view_id : createState.samViewId
+      sam_view_id : createState.samViewId,
+      jurisdictions_view_id : createState.jurisdictionsViewId
     };
     fetch(
       `${ DAMA_HOST }/dama-admin/${ pgEnv }/parcels2footprints`,
@@ -320,7 +326,13 @@ const samSources = useGetSources({ falcorCache,
                                         columns: ["ogc_fid", "wkb_geometry"]
                                       });
 // console.log("samSources: ", samSources);
-  
+
+const jurisdictionsSources = useGetSources({ falcorCache,
+                                        pgEnv,
+                                        categories: ["jurisdictions"],
+                                        columns: ["wkb_geometry"]
+                                        });
+
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.parcelSourceId });
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.footprintSourceId });
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.ogsSourceId });
@@ -334,6 +346,7 @@ const samSources = useGetSources({ falcorCache,
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.nriSourceId });
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.floodZoneSourceId });
   useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.samSourceId });
+  useFetchSourceViews({ falcor, falcorCache, pgEnv, source_id: createState.jurisdictionsSourceId });
 
   const parcelViews = useGetViews({ falcorCache, pgEnv, source_id: createState.parcelSourceId });
   const footprintViews = useGetViews({ falcorCache, pgEnv, source_id: createState.footprintSourceId });
@@ -348,7 +361,8 @@ const samSources = useGetSources({ falcorCache,
   const nriViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.nriSourceId });
   const floodZoneViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.floodZoneSourceId });
   const samViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.samSourceId });
-
+  const jurisdictionsViews = useGetViews({ falcor, falcorCache, pgEnv, source_id: createState.jurisdictionsSourceId });
+  
   return (
     <div className="group mb-40">
 
@@ -565,6 +579,22 @@ const samSources = useGetSources({ falcorCache,
             views={ floodZoneViews }
             viewKey="floodZoneViewId"
             viewValue={ createState.floodZoneViewId }
+
+            setCreateState={ setCreateState }/>
+        )
+      }
+
+      { createState.floodZoneViewId && (
+          <SourceAndViewSelectors
+            label="Jurisdiction"
+
+            sources={ jurisdictionsSources }
+            sourceKey="jurisdictionsSourceId"
+            sourceValue={ createState.jurisdictionsSourceId }
+
+            views={ jurisdictionsViews }
+            viewKey="jurisdictionsViewId"
+            viewValue={ createState.jurisdictionsViewId }
 
             setCreateState={ setCreateState }/>
         )
