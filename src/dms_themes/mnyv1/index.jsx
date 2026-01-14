@@ -393,7 +393,7 @@ const theme = {
     ]
   },
   attribution: {
-    wrapper: "w-full flex flex-col gap-[4px] text-[#2D3E4C] text-xs",
+    wrapper: "w-full flex flex-col gap-[4px] text-[#2D3E4C] text-xs pt-[16px]",
     label: "font-semibold text-[12px] leading-[14.62px] border-t pt-[14px]",
     link: "font-normal leading-[14.62px] text-[12px] underline",
   },
