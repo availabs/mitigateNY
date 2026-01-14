@@ -298,25 +298,6 @@ const theme = {
     4: "pl-6 pt-2 pb-1 text-sm text-slate-400 hover:underline cursor-pointer border-r-2 mr-4",
   },
 
-
-
-  sectionArray: {
-    container: "w-full grid grid-cols-6 md:grid-cols-12 ",
-    gridSize: 12,
-    layouts: {
-      centered: "max-w-[1020px] mx-auto  px-0 lg:px-[56px]",
-      fullwidth: "",
-    },
-    sizes: {
-      "1/4": { className: "col-span-6 md:col-span-3", iconSize: 25 },
-      "1/3": { className: "col-span-6 md:col-span-4", iconSize: 33 },
-      "1/2": { className: "col-span-6 md:col-span-6", iconSize: 50 },
-      "2/3": { className: "col-span-6 md:col-span-8", iconSize: 66 },
-      1: { className: "col-span-6 md:col-span-9", iconSize: 75 },
-      2: { className: "col-span-6 md:col-span-12", iconSize: 100 },
-    },
-  },
-
   pageControls: {
     controlItem:
       "pl-6 py-0.5 text-md cursor-pointer hover:text-blue-500 text-slate-400 flex items-center",
