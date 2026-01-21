@@ -10,6 +10,7 @@ export default defineConfig({
     ]
   },
   build: {
+    outDir: 'build',
     rollupOptions: {
       output: {
         // You can define a manualChunks function for custom splitting
@@ -24,14 +25,15 @@ export default defineConfig({
     }
   },
   plugins: [
-    react({
-        babel: {
-          plugins: [
-            'babel-plugin-react-compiler',
-            // Or with options: ['babel-plugin-react-compiler', ReactCompilerConfig],
-          ],
-        },
-      }),
+    react(),
+    // {
+    //     babel: {
+    //       plugins: [
+    //         'babel-plugin-react-compiler',
+    //         // Or with options: ['babel-plugin-react-compiler', ReactCompilerConfig],
+    //       ],
+    //     },
+    //   }),
     tailwindcss()
   ],
 })

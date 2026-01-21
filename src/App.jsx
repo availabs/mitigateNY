@@ -34,7 +34,7 @@ registerComponents({
 })
 
 // const WrappedAuth = LayoutWrapper(Auth)
-//console.log('mny auth', Auth, WrappedAuth)
+
 const defaultPgEnv = 'hazmit_dama';
 const adminBaseUrl = '/list'
 const authBaseUrl = '/auth'
@@ -50,6 +50,7 @@ if(testEnv){
 }
 
 function App() {
+    console.log('app js', themes)
     return (
       <DmsSite
         dmsConfig = {
