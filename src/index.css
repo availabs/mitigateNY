@@ -1,14 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 html, body, #root {
   height: 100%;
 }
 
-input {
+/*input {
   background: none;
-}
+}*/
 
 .scrollbar-sm::-webkit-scrollbar {
     height: 6px;
@@ -27,13 +26,3 @@ input {
 .top-full {
     top: 100%;
 }
-/*
-@media (min-width: 768px) {
-    .md\:pt-12 {
-        padding-top: 3rem;
-    }
-    .md\:pt-24 {
-        padding-top: 6rem;
-    }
-}
-*/

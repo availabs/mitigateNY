@@ -1,17 +1,37 @@
-import { defineConfig, splitVendorChunkPlugin } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path'
 
-//console.log('what', path.resolve(__dirname, './src'))
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), splitVendorChunkPlugin()],
-  build: {
-    outDir: './build'
-  },
   resolve: {
     alias: [
       { find: "~", replacement: resolve(__dirname, "./src") }
     ]
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // You can define a manualChunks function for custom splitting
+        manualChunks: (id) => {
+          if (id.includes('maplibre-gl')) {
+            return 'maplibre';
+          } else if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
+      },
+    }
+  },
+  plugins: [
+    react({
+        babel: {
+          plugins: [
+            'babel-plugin-react-compiler',
+            // Or with options: ['babel-plugin-react-compiler', ReactCompilerConfig],
+          ],
+        },
+      }),
+    tailwindcss()
+  ],
 })
