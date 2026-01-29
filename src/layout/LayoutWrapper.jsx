@@ -2,7 +2,7 @@ import React, {useEffect, useLayoutEffect, useState} from 'react';
 import { useLocation } from "react-router";
 import cloneDeep from 'lodash/cloneDeep'
 import Layout from './avail-layout'
-import { useAuth } from '../modules/dms/src';
+import { useAuth } from '../modules/dms/packages/dms/src';
 
 const Wrapper = ({children}) => {
   const location = useLocation();

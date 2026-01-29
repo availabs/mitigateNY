@@ -7,7 +7,7 @@ import GeographySearch from "../../component_registry/shared/geographySearch.jsx
 import {Loading} from "~/utils/loading.jsx";
 import {getDefaultJustify, RenderColumnControls} from "../../component_registry/shared/columnControls.jsx";
 import {ButtonSelector} from "../../component_registry/shared/buttonSelector.jsx";
-import {dmsDataLoader} from "~/modules/dms/src";
+import {dmsDataLoader} from "~/modules/dms/packages/dms/src";
 import {getMeta, setMeta, getAccessor, getColAccessor, defaultOpenOutAttributes} from "./utils.js";
 const formsConfigFormat = {
     app: "dms-site",
@@ -322,9 +322,9 @@ const Edit = ({value, onChange}) => {
                                 className={
                                     `
                                     ${striped ? 'bg-indigo-600' : 'bg-gray-200'}
-                                    relative inline-flex 
+                                    relative inline-flex
                                      h-4 w-10 shrink
-                                     cursor-pointer rounded-full border-2 border-transparent 
+                                     cursor-pointer rounded-full border-2 border-transparent
                                      transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
                                      focus:ring-indigo-600 focus:ring-offset-2`
                                 }
@@ -335,7 +335,7 @@ const Edit = ({value, onChange}) => {
                                     className={
                                         `
                                         ${striped ? 'translate-x-5' : 'translate-x-0'}
-                                        pointer-events-none inline-block 
+                                        pointer-events-none inline-block
                                         h-3 w-4
                                         transform rounded-full bg-white shadow ring-0 t
                                         transition duration-200 ease-in-out`
@@ -357,9 +357,9 @@ const Edit = ({value, onChange}) => {
                                 className={
                                     `
                                 ${extFiltersDefaultOpen ? 'bg-indigo-600' : 'bg-gray-200'}
-                                relative inline-flex 
+                                relative inline-flex
                                  h-4 w-10 shrink
-                                 cursor-pointer rounded-full border-2 border-transparent 
+                                 cursor-pointer rounded-full border-2 border-transparent
                                  transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
                                  focus:ring-indigo-600 focus:ring-offset-2`
                                 }
@@ -370,7 +370,7 @@ const Edit = ({value, onChange}) => {
                                     className={
                                         `
                                     ${extFiltersDefaultOpen ? 'translate-x-5' : 'translate-x-0'}
-                                    pointer-events-none inline-block 
+                                    pointer-events-none inline-block
                                     h-3 w-4
                                     transform rounded-full bg-white shadow ring-0 t
                                     transition duration-200 ease-in-out`
@@ -390,9 +390,9 @@ const Edit = ({value, onChange}) => {
                                 className={
                                     `
                                 ${showCsvDownload ? 'bg-indigo-600' : 'bg-gray-200'}
-                                relative inline-flex 
+                                relative inline-flex
                                  h-4 w-10 shrink
-                                 cursor-pointer rounded-full border-2 border-transparent 
+                                 cursor-pointer rounded-full border-2 border-transparent
                                  transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0.5
                                  focus:ring-indigo-600 focus:ring-offset-2`
                                 }
@@ -403,7 +403,7 @@ const Edit = ({value, onChange}) => {
                                     className={
                                         `
                                     ${showCsvDownload ? 'translate-x-5' : 'translate-x-0'}
-                                    pointer-events-none inline-block 
+                                    pointer-events-none inline-block
                                     h-3 w-4
                                     transform rounded-full bg-white shadow ring-0 t
                                     transition duration-200 ease-in-out`
