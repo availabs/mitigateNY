@@ -571,7 +571,7 @@ const theme = {
     "listboxOption": "group flex gap-2 bg-white data-[focus]:bg-blue-100 z-30",
     "listboxButton": "relative block w-full rounded-lg bg-white/5 py-1.5 pr-8 pl-3 text-left text-sm/6 text-white focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
   },
-  table: {
+  "table": {
     options: {
       activeStyle: 0
     },
@@ -579,7 +579,7 @@ const theme = {
       {
         name: "mny",
         tableContainer:
-            "relative flex flex-col w-full h-full min-h-[200px] max-h-[calc(100vh_-_90px)] overflow-y-auto overflow-x-auto scrollbar-sm border rounded-t-[12px]",
+            "relative flex flex-col w-full h-full min-h-[200px] max-h-[calc(100vh_-_85px)] overflow-y-auto overflow-x-auto scrollbar-sm rounded-t-[12px]",
         tableContainerNoPagination: "rounded-b-[12px]",
         // tableContainer1: "flex flex-col no-wrap min-h-[200px] max-h-[calc(78vh_-_10px)] overflow-y-auto scrollbar-sm",
         headerContainer: "sticky top-0 grid ",

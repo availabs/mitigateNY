@@ -5,7 +5,7 @@ import {
   adminConfig,
   registerComponents,
   useAuth
-} from "./modules/dms/src"
+} from "./modules/dms/packages/dms/src"
 
 
 import themes from './dms_themes'
@@ -50,7 +50,7 @@ if(testEnv){
 }
 
 function App() {
-    console.log('app js', themes)
+    //console.log('app js', themes)
     return (
       <DmsSite
         dmsConfig = {
@@ -59,7 +59,6 @@ function App() {
               themes,
               baseUrl: adminBaseUrl,
               authPath: authBaseUrl,
-             API_HOST, AUTH_HOST
           })
         }
         PROJECT_NAME={PROJECT_NAME}
@@ -73,7 +72,7 @@ function App() {
         API_HOST={API_HOST}
         AUTH_HOST={AUTH_HOST}
         DAMA_HOST={DAMA_HOST}
-        datasets={hazmitDataTypes}
+        damaDataTypes={hazmitDataTypes}
         routes={[
           //cenrep
           ...LayoutWrapper(

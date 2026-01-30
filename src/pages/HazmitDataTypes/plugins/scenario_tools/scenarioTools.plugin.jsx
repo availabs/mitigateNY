@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, createContext, useRef, useContext } from "react";
 import { DamaContext } from "~/pages/DataManager/store";
-import { CMSContext } from "~/modules/dms/src";
+import { CMSContext } from "~/modules/dms/packages/dms/src";
 import get from "lodash/get";
 import set from "lodash/set";
 

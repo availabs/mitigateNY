@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, createContext, useRef, useContext } from "react";
 import { DamaContext } from "~/pages/DataManager/store";
-import { CMSContext } from "~/modules/dms/src";
+import { CMSContext } from "~/modules/dms/packages/dms/src";
 import get from "lodash/get";
 import set from "lodash/set";
 import { Geocoder } from "@mapbox/search-js-react";
@@ -543,9 +543,9 @@ const comp = ({ state, setState, map }) => {
                   <div>{fnumIndex(townTotalVal, 2, true)}</div>
                   <div>{isNaN(townFloodBld) ? "0" : fnumIndex(townFloodBld, 2)}</div>
                   <div className="flex">
-                    {isNaN(townFloodLoss) ? "$0" : fnumIndex(townFloodLoss, 2, true)} 
-                    {!town?.[0]?.muni_name && 
-                      <div 
+                    {isNaN(townFloodLoss) ? "$0" : fnumIndex(townFloodLoss, 2, true)}
+                    {!town?.[0]?.muni_name &&
+                      <div
                         className="ml-4 p-1 my-0 py-0 text-sm box-border text-red-400 cursor-pointer font-bold hover:bg-sky-700"
                         onClick={() => {
                           map.navControl.delete(townName);
@@ -574,11 +574,11 @@ const LoadingSpinner = ({mt=true}) => <span style={{
       display: 'inline-block',
       width: '.75rem',     // Width of fa-xs
       height: '.75rem',    // Height of fa-xs
-      
+
       // Keep the crucial centering properties
-      transformOrigin: '50% 50%', 
-      lineHeight: '1', 
-      verticalAlign: 'middle', 
+      transformOrigin: '50% 50%',
+      lineHeight: '1',
+      verticalAlign: 'middle',
     }}
     className={`ml-2 ${mt ? "mt-1" : ""} fa-solid fa-spinner fa-spin fa-xs`} />;
 
