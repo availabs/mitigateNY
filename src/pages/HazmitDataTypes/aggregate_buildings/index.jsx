@@ -72,7 +72,8 @@ const viewDisplayAccessor = v => v.version;
 
 const Create = props => {
   const {
-    source: { name: damaSourceName }
+    source: { name: damaSourceName, source_id, type },
+    user = {}
   } = props;
 
   const { pgEnv, baseUrl, falcor, falcorCache } = React.useContext(DamaContext);
@@ -220,13 +221,15 @@ console.log("BUILDING SOURCES:", buildingSources)
       sourceValues: {
         name: damaSourceName,
         type: 'gis_dataset',
-        categories: [["Buildings", "Buildings Aggregated"]]
+        categories: [["Buildings", "Buildings Aggregated"]],
+        source_id
       },
-      viewIds: selectedSourcesAndViews.map(srcNview => srcNview.viewId)
+      viewIds: selectedSourcesAndViews.map(srcNview => srcNview.viewId),
+      user_id: user?.id
     };
 
     fetch(
-      `${ DAMA_HOST }/dama-admin/${ pgEnv }/aggregate_buildings`,
+      `${ DAMA_HOST }/dama-admin/${ pgEnv }/aggregate_buildings_v2`,
       { method: "POST",
         body: JSON.stringify(publishData),
         headers: {

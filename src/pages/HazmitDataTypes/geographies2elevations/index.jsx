@@ -68,9 +68,11 @@ const viewDisplayAccessor = v => v.version;
 
 const Create = props => {
   const {
-    source: { name: damaSourceName }
+    source: { name: damaSourceName, source_id },
+    user: { id: user_id}
   } = props;
 
+  
   const { pgEnv, baseUrl, falcor, falcorCache } = React.useContext(DamaContext);
 
   const [sourcesWithGeometries, setSourcesWithGeometries] = React.useState([]);
@@ -162,9 +164,11 @@ const Create = props => {
       sourceValues: {
         name: damaSourceName,
         type: 'gis_dataset',
-        categories: [["Elevations"]]
+        categories: [["Elevations"]],
+        source_id
       },
-      sourceViewId
+      sourceViewId,
+      user_id
     };
 
     fetch(
