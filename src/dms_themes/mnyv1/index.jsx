@@ -7,7 +7,7 @@ const theme = {
     "options": {
       "activeStyle": 0,
       "sideNav": {
-        "size": "compact",
+        "size": "none",
         "nav": "main",
         "activeStyle": null,
         "navDepth": "2",
