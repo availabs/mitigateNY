@@ -26,12 +26,12 @@ import {PROJECT_NAME, API_HOST, AUTH_HOST, DAMA_HOST} from "./config.js";
 
 //import siteData from './siteData.json'
 
-registerComponents({
-  // ...ComponentRegistry,
-  // ...AdditionalComponents,
-  "Map: Dama Map": DamaMap,
-  // "Map": Map
-})
+// registerComponents({
+//   // ...ComponentRegistry,
+//   // ...AdditionalComponents,
+//   // "Map: Dama Map": DamaMap,
+//   // "Map": Map
+// })
 
 // const WrappedAuth = LayoutWrapper(Auth)
 
