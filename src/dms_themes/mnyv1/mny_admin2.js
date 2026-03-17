@@ -772,13 +772,13 @@ const theme = {
         "listitem": "list-none before:hidden after:hidden"
       },
       "olDepth": [
-        "list-inside list-decimal m-0 p-0 ",
-        "m-0 p-0 list-inside list-alpha",
-        "m-0 p-0 list-inside list-lower-alpha",
-        "m-0 p-0 list-inside list-upper-roman",
-        "m-0 p-0 list-inside list-lower-roman"
+        "list-outside list-decimal m-0 p-0 ",
+        "m-0 p-0 list-outside list-alpha",
+        "m-0 p-0 list-outside list-lower-alpha",
+        "m-0 p-0 list-outside list-upper-roman",
+        "m-0 p-0 list-outside list-lower-roman"
       ],
-      "ul": "m-0 p-0 list-inside list-disc"
+      "ul": "m-0 p-0 list-outside list-disc"
     },
     "token": {
       "comment": "text-slate-500",
