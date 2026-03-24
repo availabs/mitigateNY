@@ -551,12 +551,12 @@ const theme = {
         paragraph: "m-0 relative",
         layoutContainer: "grid",
         layoutItem: "border-b border-slate-300 min-w-0 max-w-full",
-        heading_h1: "pl-[4px] pt-[8px] font-[500] text-[34px] text-[#2D3E4C] leading-[40px] uppercase font-['Oswald'] pb-[12px]",
-        heading_h2: "pl-[4px] pt-[8px] font-[500] text-[24px] text-[#2D3E4C] leading-[24px] scroll-mt-36 font-['Oswald']",
-        heading_h3: "pl-[4px] pt-[8px] font-[500] text-[16px] text-[#2D3E4C] font-['Oswald']",
-        heading_h4: "pl-[4px] pt-[8px] font-medium scroll-mt-36 text-[#2D3E4C] font-display",
-        heading_h5: "pl-[4px] scroll-mt-36 font-display",
-        heading_h6: "pl-[4px] scroll-mt-36 font-display",
+        heading_h1: "pt-[8px] font-[500] text-[34px] text-[#2D3E4C] leading-[40px] uppercase font-['Oswald'] pb-[12px]",
+        heading_h2: "pt-[8px] font-[500] text-[24px] text-[#2D3E4C] leading-[24px] scroll-mt-36 font-['Oswald']",
+        heading_h3: "pt-[8px] font-[500] text-[16px] text-[#2D3E4C] font-['Oswald']",
+        heading_h4: "pt-[8px] font-medium scroll-mt-36 text-[#2D3E4C] font-display",
+        heading_h5: "scroll-mt-36 font-display",
+        heading_h6: "scroll-mt-36 font-display",
       },
       {
         // Style 3: Annotation Image Card
