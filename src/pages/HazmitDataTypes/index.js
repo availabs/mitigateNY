@@ -53,9 +53,12 @@ import npmrds from './npmrds'
 import jurisdiction from './jurisdiction'
 
 import geographies2elevations from "./geographies2elevations"
-import aggregate_buildings from "./aggregate_buildings"
+import aggregate_buildings from "./aggregate_buildings";
+import aggregate_buildings_v2 from "./aggregate_buildings";
 import aggregate_HIFLD from "./aggregate_HIFLD"
 import postgres_transfer from "./postgres_transfer"
+import bild_simplified from "./bild_simplified/index.jsx";
+import bild_critical from "./bild_critical";
 
 import acs from "./acs";
 
@@ -120,8 +123,11 @@ const DataTypes = {
   parcels2footprints,
 
   geographies2elevations,
-  aggregate_buildings,
+  // aggregate_buildings,
+  bild_simplified,
+  aggregate_buildings_v2,
   aggregate_HIFLD,
+  bild_critical,
 
   // floodmaps
   flood_map

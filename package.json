@@ -26,9 +26,8 @@
     ]
   },
   "dependencies": {
-    "@availabs/ams": "^2.0.6",
     "@availabs/avl-falcor": "^0.0.5",
-    "@availabs/dms": "^0.1.9",
+    "@availabs/dms": "^0.1.11",
     "@carbon/icons-react": "^11.58.0",
     "@hello-pangea/dnd": "^16.6.0",
     "@heroicons/react": "^2.0.17",
@@ -65,7 +64,6 @@
     "react-color": "^2.19.3",
     "react-csv": "^2.2.2",
     "react-dom": "^19.1.0",
-    "react-frame-component": "^5.2.7",
     "react-json-view-lite": "^1.2.1",
     "react-markdown": "^8.0.7",
     "react-redux": "^8.0.5",

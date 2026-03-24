@@ -30,7 +30,7 @@ registerComponents({
   // ...ComponentRegistry,
   // ...AdditionalComponents,
   "Map: Dama Map": DamaMap,
-  "Map": Map
+  // "Map": Map
 })
 
 // const WrappedAuth = LayoutWrapper(Auth)

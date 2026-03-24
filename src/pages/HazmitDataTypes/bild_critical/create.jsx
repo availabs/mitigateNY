@@ -233,7 +233,7 @@ function Create({
             parcel_view_id: createState.bildViewId,
         };
         fetch(
-            `${DAMA_HOST}/dama-admin/${pgEnv}/bild_simplified`,
+            `${DAMA_HOST}/dama-admin/${pgEnv}/bild_critical`,
             {
                 method: "POST",
                 body: JSON.stringify(publishData),
