@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@availabs/avl-falcor": "^0.0.5",
-    "@availabs/dms": "^0.1.11",
+    "@availabs/dms": "^0.1.12",
     "@carbon/icons-react": "^11.58.0",
     "@hello-pangea/dnd": "^16.6.0",
     "@heroicons/react": "^2.0.17",
@@ -61,7 +61,6 @@
     "maplibre-gl": "^3.0.1",
     "pretty-bytes": "^6.1.0",
     "react": "^19.1.0",
-    "react-color": "^2.19.3",
     "react-csv": "^2.2.2",
     "react-dom": "^19.1.0",
     "react-json-view-lite": "^1.2.1",
@@ -74,8 +73,7 @@
     "use-immer": "^0.9.0",
     "uuid": "^10.0.0",
     "write-excel-file": "^2.0.9",
-    "xhr2": "^0.2.1",
-    "yjs": "^13.6.1"
+    "xhr2": "^0.2.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
