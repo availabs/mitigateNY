@@ -73,7 +73,8 @@
     "use-immer": "^0.9.0",
     "uuid": "^10.0.0",
     "write-excel-file": "^2.0.9",
-    "xhr2": "^0.2.1"
+    "xhr2": "^0.2.1",
+    "y-protocols": "^1.0.7"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",

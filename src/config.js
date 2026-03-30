@@ -1,8 +1,8 @@
 export const PROJECT_NAME = "hazard_mitigation";
 
-let API_HOST = "https://graph.availabs.org";
+let API_HOST = "https://dmsserver.availabs.org";
 let DAMA_HOST = "https://graph.availabs.org";
-let AUTH_HOST = "https://graph.availabs.org";
+let AUTH_HOST = "https://dmsserver.availabs.org";
 let CLIENT_HOST = "mitigateny.org";
 
 if (process.env.NODE_ENV === "development") {
