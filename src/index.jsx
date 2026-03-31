@@ -5,7 +5,7 @@ import { API_HOST, AUTH_HOST, PROJECT_NAME, CLIENT_HOST }  from './config'
 import {
   FalcorProvider,
   falcorGraph
-} from "~/modules/avl-falcor"
+} from "~/modules/avl-falcor/src"
 
 import {
   ThemeContext

@@ -14,7 +14,7 @@ import themes from './dms_themes'
 import DamaRoutes from "~/pages/DataManager"
 import hazmitDataTypes, { mapPlugins } from "~/pages/HazmitDataTypes"
 import { authMenuConfig } from "~/layout/authMenuConfig"
-import { useFalcor } from "~/modules/avl-falcor"
+import { useFalcor } from "~/modules/avl-falcor/src"
 import LayoutWrapper from "~/layout/LayoutWrapper"
 
 import siteData from './siteData.json'
