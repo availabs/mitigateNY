@@ -11,11 +11,11 @@ import {
 import themes from './dms_themes'
 
 
-import DamaRoutes from "~/pages/DataManager"
+//import DamaRoutes from "~/pages/DataManager"
 import hazmitDataTypes, { mapPlugins } from "~/pages/HazmitDataTypes"
-import { authMenuConfig } from "~/layout/authMenuConfig"
-import { useFalcor } from "~/modules/avl-falcor"
-import LayoutWrapper from "~/layout/LayoutWrapper"
+// import { authMenuConfig } from "~/layout/authMenuConfig"
+// import { useFalcor } from "~/modules/avl-falcor"
+// import LayoutWrapper from "~/layout/LayoutWrapper"
 
 import siteData from './siteData.json'
 
@@ -66,29 +66,29 @@ function App() {
         authPath={authBaseUrl}
         damaBaseUrl={damaBaseUrl}
         pgEnvs={[defaultPgEnv]}
-        defaultData={siteData}
+        // defaultData={siteData}
         themes={themes}
 
         API_HOST={API_HOST}
         AUTH_HOST={AUTH_HOST}
         DAMA_HOST={DAMA_HOST}
         damaDataTypes={hazmitDataTypes}
-        routes={[
-          //cenrep
-          ...LayoutWrapper(
-            DamaRoutes({
-              mapPlugins: mapPlugins,
-              baseUrl:damaBaseUrl,
-              defaultPgEnv,
-              navSettings: authMenuConfig,
-              dataTypes: hazmitDataTypes,
-              useFalcor,
-              useAuth
-            })
-          ),
-          // Auth
-          // ...WrappedAuth
-        ]}
+        // routes={[
+        //   //cenrep
+        //   ...LayoutWrapper(
+        //     DamaRoutes({
+        //       mapPlugins: mapPlugins,
+        //       baseUrl:damaBaseUrl,
+        //       defaultPgEnv,
+        //       navSettings: authMenuConfig,
+        //       dataTypes: hazmitDataTypes,
+        //       useFalcor,
+        //       useAuth
+        //     })
+        //   ),
+        //   // Auth
+        //   // ...WrappedAuth
+        // ]}
       />
     )
 }
