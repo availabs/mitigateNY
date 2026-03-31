@@ -224,6 +224,9 @@ const theme = {
         {
           container: "w-full grid grid-cols-6 md:grid-cols-12 ",
           gridSize: 12,
+          sectionEditHover: 'absolute inset-0 border border-transparent group-hover:border-[#37576b] border border-2 pointer-events-none z-10 rounded-md',
+          addSectionIcon: 'size-6 p-1.5 text-white bg-[#37576b] rounded-full group-hover/icon:hidden',
+          addSectionText: 'px-1.5 py-1 text-white text-sm font-semibold bg-[#37576b] rounded-full',
           layouts: {
             centered: "max-w-[1020px] mx-auto  px-0 lg:px-[56px]",
             fullwidth: "",
