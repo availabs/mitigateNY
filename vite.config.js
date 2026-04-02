@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   resolve: {
     alias: [
       { find: "~", replacement: resolve(__dirname, "./src") }
@@ -25,15 +25,13 @@ export default defineConfig({
     }
   },
   plugins: [
-    react(),
-    // {
-    //     babel: {
-    //       plugins: [
-    //         'babel-plugin-react-compiler',
-    //         // Or with options: ['babel-plugin-react-compiler', ReactCompilerConfig],
-    //       ],
-    //     },
-    //   }),
+    // Dev: skip React Compiler so referential-identity bugs surface during
+    // development instead of being silently masked by auto-memoization.
+    react(mode === 'production' ? {
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    } : {}),
     tailwindcss()
   ],
-})
+}))
