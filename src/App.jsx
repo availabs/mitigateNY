@@ -49,6 +49,7 @@ if(testEnv){
     type = 'test1'
 }
 
+console.log('pgEnvs', [defaultPgEnv])
 function App() {
     //console.log('app js', themes)
     return (
