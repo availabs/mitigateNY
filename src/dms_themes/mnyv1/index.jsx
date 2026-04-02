@@ -250,7 +250,7 @@ const theme = {
         {
           sectionTargetWrapper: 'py-2 px-3 text-xs font-semibold uppercase tracking-wide text-[#37576B] bg-white cursor-default flex justify-between items-center',
           sectionTargetDivider: 'border-t border-[#C5D7E0]',
-          addGroupBtn: 'text-[#6D96AE] hover:bg-[#C5D7E0] rounded px-2 py-1 transition-colors font-medium normal-case',
+          addGroupBtn: 'text-[#6D96AE] hover:bg-[#F3F8F9] rounded px-2 py-1 transition-colors font-medium normal-case',
           sectionGroupWrapper: 'group rounded-sm mx-2 px-2 py-1 hover:bg-[#E0EBF0] flex justify-between items-center transition-all',
           activePageSectionBorder: `border border-dashed border-orange-200 hover:border-orange-300`,
           sectionGroupBorder: `border border-[#C5D7E0] hover:border-[#6D96AE]`,
@@ -265,7 +265,7 @@ const theme = {
           sectionGroupTitle: 'text-sm font-medium text-[#2D3E4C]',
 
           pageSectionIcon: 'hidden',
-          pageSectionTitle: 'text-sm font-medium text-[#37576B]',
+          pageSectionTitle: 'text-sm font-medium text-[#2D3E4C]',
 
           controlsWrapper: 'flex gap-1 items-center',
           expandGroupIcon: 'size-6 place-content-center cursor-pointer text-[#37576B] hover:text-[#2D3E4C]',
