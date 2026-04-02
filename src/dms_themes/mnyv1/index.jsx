@@ -159,7 +159,7 @@ const theme = {
       "subMenuParentContent": "basis-1/3  text-wrap pr-[64px]",
       "subMenuParentName": `text-[36px] font-['Oswald'] font-500 text-[#2D3E4C] uppercase pb-2`,
       "subMenuParentDesc": `text-[16px] font-['Proxima_Nova'] font-[400] text-[#37576B]`,
-      "subMenuParentLink": `w-fit h-fit cursor-pointer uppercase border boder-[#E0EBF0] bg-white hover:bg-[#E0EBF0] text-[#37576B] font-[700] leading-[14.62px] rounded-full text-[12px] text-center py-[16px] px-[24px]`,
+      "subMenuParentLink": `w-fit h-fit cursor-pointer uppercase border border-[#E0EBF0] bg-white hover:bg-[#E0EBF0] text-[#37576B] font-[700] leading-[14.62px] rounded-full text-[12px] text-center py-[16px] px-[24px]`,
       "subMenuItemsWrapperParent": "grid grid-cols-2 gap-1 flex-1",
       "subMenuItemsWrapper": "grid grid-cols-4 flex-1"
     }
@@ -241,7 +241,37 @@ const theme = {
           },
         }
       ]
-    }
+    },
+    sectionGroupsPane: {
+      options: {
+        activeStyle: 0
+      },
+      styles: [
+        {
+          sectionTargetWrapper: 'py-2 px-3 text-xs font-semibold uppercase tracking-wide text-[#37576B] bg-white cursor-default flex justify-between items-center',
+          sectionTargetDivider: 'border-t border-[#C5D7E0]',
+          addGroupBtn: 'text-[#6D96AE] hover:bg-[#C5D7E0] rounded px-2 py-1 transition-colors font-medium normal-case',
+          sectionGroupWrapper: 'group rounded-sm mx-2 px-2 py-1 hover:bg-[#E0EBF0] flex justify-between items-center transition-all',
+          activePageSectionBorder: `border border-dashed border-orange-200 hover:border-orange-300`,
+          sectionGroupBorder: `border border-[#C5D7E0] hover:border-[#6D96AE]`,
+          pageSectionBG: `bg-[#F3F8F9] hover:bg-[#E0EBF0]`,
+          expandedGroupBG: `bg-white`,
+          unexpandedGroupBG: `bg-white`,
+          pageSectionCursor: `cursor-pointer`,
+          sectionGroupCursor: `cursor-grab`,
+          titleWrapper: 'flex items-center gap-3',
+
+          sectionGroupIcon: 'size-4 text-[#37576B] group-hover:text-[#2D3E4C]',
+          sectionGroupTitle: 'text-sm font-medium text-[#2D3E4C]',
+
+          pageSectionIcon: 'hidden',
+          pageSectionTitle: 'text-sm font-medium text-[#37576B]',
+
+          controlsWrapper: 'flex gap-1 items-center',
+          expandGroupIcon: 'size-6 place-content-center cursor-pointer text-[#37576B] hover:text-[#2D3E4C]',
+        }
+      ]
+    },
   },
   pageOptions: {
     settingsPane: [
