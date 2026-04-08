@@ -56,9 +56,9 @@ const theme = {
             default: {
                 wrapper1: "w-screen h-screen flex flex-row", // inside page header, wraps sidebar
                 wrapper2: "flex w-screen h-screen justify-center",
-                wrapper3: "w-full sm:w-1/2 place-content-start md:place-content-center",
-                wrapper4: "hidden md:flex items-center relative w-1/2 bg-[linear-gradient(258.63deg,#213440_10%,#37576B_100%)]",
-                wrapper4Img: "relative w-[45vw] aspect-square -left-[8vw] bg-contain bg-bottom bg-no-repeat",
+                wrapper3: "w-full md:w-1/2 place-content-start md:place-content-center",
+                wrapper4: "relative hidden md:flex items-center xl:items-start w-1/2 bg-[linear-gradient(258.63deg,#213440_10%,#37576B_100%)]",
+                wrapper4Img: "absolute w-full aspect-square left-[4vw] md:left-[0vw] lg:left-[-5vw] xl:left-[-10vw] bg-contain xl:bg-cover bg-bottom xl:bg-top bg-no-repeat",
                 wrapper4ImgList: [
                     '/themes/mny/hazards/mny-avalanche.webp',
                     '/themes/mny/hazards/mny-drought.webp',
