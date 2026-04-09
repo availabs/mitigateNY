@@ -1,4 +1,5 @@
 import { Icons } from "./icons";
+import mny_auth from "../mny_auth/index.jsx";
 
 
 const theme = {
@@ -273,6 +274,7 @@ const theme = {
       ]
     },
   },
+  auth: mny_auth,
   pageOptions: {
     settingsPane: [
       {
