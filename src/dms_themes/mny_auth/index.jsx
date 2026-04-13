@@ -42,7 +42,7 @@ const theme = {
                 pageWrapper: "max-w-lg mx-auto my-auto flex flex-col gap-[2vh] p-4",
                 pageTitle: "font-[Oswald] font-medium text-[#2D3E4C] text-2xl leading-none tracking-normal uppercase",
                 forgotPasswordText: "font-[Proxima_Nova] font-normal text-[#37576B] text-sm leading-none tracking-normal underline decoration-solid",
-                actionButton: "w-fit opacity-100 gap-2 rounded-full pt-4 pr-6 pb-4 pl-6 bg-[#EAAD43]",
+                actionButton: "w-fit opacity-100 gap-2 rounded-full px-6 py-2 bg-[#EAAD43] cursor-pointer",
                 actionText: "font-['Proxima_Nova'] font-bold text-[#2D3E4C] text-xs leading-none tracking-normal text-center uppercase",
                 prompt: "font-[Proxima_Nova] font-normal text-[#37576B] text-sm leading-none tracking-normal flex gap-1",
             },

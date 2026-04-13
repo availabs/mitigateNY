@@ -179,9 +179,9 @@ const theme = {
       {
         name: 'auth',
         fixed: 'mt-8',
-        topnavWrapper: `px-[2vw] py-[2vh] w-full bg-transparent h-[15vh] md:h-40 flex items-center rounded-lg pointer-events-auto`,
-        topnavContent: `flex flex-1 justify-between`,
-        layoutContainer1: 'absolute w-full p-4 z-1',
+        layoutContainer1: 'absolute w-full md:w-1/2 z-1 px-2 px-32 py-[2vh]',
+        topnavWrapper: `w-full bg-transparent h-[15vh] md:h-40 flex items-center rounded-lg pointer-events-auto`,
+        topnavContent: `max-w-lg mx-auto my-auto flex flex-1`,
         topnavMenu: `hidden  md:flex items-center flex-1  h-full overflow-x-auto overflow-y-hidden scrollbar-sm`,
         menuItemWrapper: 'hidden text-[#37576B]',
         menuIconTop: `text-blue-400 mr-3 text-lg group-hover:text-blue-500`,
