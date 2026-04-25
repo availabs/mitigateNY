@@ -46,7 +46,7 @@ export const RenderVersions = ({ value, setValue, versions, type }) => {
                 setValue(e.target.value);
               }}>
               <option value="" disabled key={type}>Select your option</option>
-              {(versions.views || versions)
+              {(versions.views || versions || [])
                 .sort((a, b) => (b.view_id) - (a.view_id))
                 .map(v =>
                   <option
